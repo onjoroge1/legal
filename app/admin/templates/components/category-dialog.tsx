@@ -62,9 +62,18 @@ export function CategoryDialog({ mode, category, onSuccess }: CategoryDialogProp
       console.log("[CategoryDialog] Response status:", response.status)
       
       if (!response.ok) {
-        const errorData = await response.json()
-        console.log("[CategoryDialog] Error response:", errorData)
-        throw new Error(errorData.error || `Failed to ${mode} category`)
+        let errorMessage = `Failed to ${mode} category`
+        try {
+          const errorData = await response.json()
+          console.log("[CategoryDialog] Error response:", errorData)
+          errorMessage = errorData.error || errorMessage
+        } catch (jsonError) {
+          // If JSON parsing fails, try to get the text content
+          const errorText = await response.text()
+          console.log("[CategoryDialog] Error text response:", errorText)
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()

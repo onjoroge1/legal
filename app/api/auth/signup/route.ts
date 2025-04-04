@@ -7,8 +7,9 @@ import { generateToken } from '@/lib/tokens'
 export async function POST(req: Request) {
   try {
     console.log("[Signup] Starting signup process")
-    const { name, email, password, plan } = await req.json()
-    console.log("[Signup] Request body:", { ...req.json(), password: "[REDACTED]" })
+    const body = await req.json()
+    const { name, email, password, plan } = body
+    console.log("[Signup] Request body:", { ...body, password: "[REDACTED]" })
 
     if (!name || !email || !password) {
       console.log("[Signup] Missing required fields:", { 
@@ -68,8 +69,9 @@ export async function POST(req: Request) {
       console.log("[Signup] User created successfully:", { id: user.id, email: user.email })
     } catch (dbError) {
       console.error("[Signup] Database error creating user:", dbError)
+      const errorMessage = dbError instanceof Error ? dbError.message : 'Unknown database error'
       return NextResponse.json(
-        { message: 'Database error creating user' },
+        { message: 'Database error creating user', error: errorMessage },
         { status: 500 }
       )
     }
@@ -103,10 +105,18 @@ export async function POST(req: Request) {
     )
   } catch (error) {
     console.error("[Signup] Error in signup process:", error)
+    console.error("[Signup] Error details:", {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    
+    // Return a more specific error message
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred during signup'
     return NextResponse.json(
       { 
-        message: 'Internal server error', 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        message: errorMessage,
+        error: errorMessage
       },
       { status: 500 }
     )

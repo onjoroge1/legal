@@ -120,23 +120,70 @@ model DocumentParty {
   document   Document @relation(fields: [documentId], references: [id])
 }
 
-model DocumentTemplate {
-  id          String           @id @default(cuid())
-  code        String?          // Making it optional initially
+model Questionnaire {
+  id          String    @id @default(cuid())
   name        String
-  type        String
   description String?
-  content     String?          // Making it optional before removal
-  state       String?
-  categoryId  String
-  category    Category         @relation(fields: [categoryId], references: [id])
-  version     String           @default("1.0.0")
-  metadata    Json?
-  variables   Json?            // Making it optional before removal
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  documents   Document[]
-  fields      TemplateField[]
+  templateId  String
+  template    DocumentTemplate @relation(fields: [templateId], references: [id])
+  questions   Question[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Question {
+  id             String       @id @default(cuid())
+  label          String
+  type           String      // text, select, multiselect, etc.
+  required       Boolean     @default(false)
+  section        String
+  helpText       String?
+  placeholder    String?
+  questionnaireId String
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  options        QuestionOption[]
+  dependencies   QuestionDependency[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model QuestionOption {
+  id         String   @id @default(cuid())
+  value      String
+  label      String?
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model QuestionDependency {
+  id                String   @id @default(cuid())
+  questionId        String
+  question          Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  dependsOnQuestionId String
+  conditionType     String   // equals, not_equals, greater_than, etc.
+  conditionValue    String
+  createdAt         DateTime @default(now())
+}
+
+model DocumentTemplate {
+  id            String         @id @default(cuid())
+  code          String?        // Making it optional initially
+  name          String
+  type          String
+  description   String?
+  content       String?        // Making it optional before removal
+  state         String?
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  version       String         @default("1.0.0")
+  metadata      Json?
+  variables     Json?          // Making it optional before removal
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  documents     Document[]
+  fields        TemplateField[]
+  questionnaires Questionnaire[]
 
   @@unique([code])            // Add unique constraint for when we make it required
 }

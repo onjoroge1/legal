@@ -10,32 +10,76 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Trash2 } from "lucide-react"
+import { Trash2, ChevronDown, ChevronRight } from "lucide-react"
 import { QuestionnaireDialog } from "./questionnaire-dialog"
 import { useToast } from "@/components/ui/use-toast"
+import React from "react"
+
+interface Category {
+  id: string
+  name: string
+  description?: string
+}
+
+interface Question {
+  id: string
+  label: string
+  type: string
+  required: boolean
+  section: string
+  helpText?: string
+  placeholder?: string
+}
+
+interface Template {
+  id: string
+  name: string
+  category: Category
+}
 
 interface Questionnaire {
   id: string
   name: string
-  description: string | null
-  questions: any[]
+  description?: string
   templateId: string
-  template: {
-    id: string
-    name: string
-    category: {
-      id: string
-      name: string
-    }
+  template?: {
+    category?: Category
   }
+  metadata?: {
+    fields: any[]
+  }
+  questions?: Question[]
   createdAt: string
+  updatedAt: string
 }
 
 export function QuestionnairesTable() {
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [expandedQuestionnaires, setExpandedQuestionnaires] = useState<Set<string>>(new Set())
   const { toast } = useToast()
+
+  const toggleExpand = (id: string) => {
+    const newExpanded = new Set(expandedQuestionnaires)
+    if (newExpanded.has(id)) {
+      newExpanded.delete(id)
+    } else {
+      newExpanded.add(id)
+    }
+    setExpandedQuestionnaires(newExpanded)
+  }
+
+  const groupQuestionsBySection = (questions: Question[] = []) => {
+    return questions.reduce((acc, question) => {
+      const section = question.section || 'Other'
+      if (!acc[section]) {
+        acc[section] = []
+      }
+      acc[section].push(question)
+      return acc
+    }, {} as Record<string, Question[]>)
+  }
 
   const fetchQuestionnaires = async () => {
     try {
@@ -106,56 +150,42 @@ export function QuestionnairesTable() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Questionnaires</h2>
-          <p className="text-muted-foreground">
-            Manage your document questionnaires
-          </p>
-        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Questionnaires</h2>
         <QuestionnaireDialog mode="add" onSuccess={fetchQuestionnaires} />
       </div>
-      <div className="rounded-md border">
+      {loading ? (
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-500">{error}</div>
+      ) : questionnaires.length === 0 ? (
+        <div className="text-center text-gray-500">No questionnaires found</div>
+      ) : (
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[30px]"></TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Template</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : error ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-destructive">
-                  {error}
-                </TableCell>
-              </TableRow>
-            ) : questionnaires.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  <div className="flex flex-col items-center gap-2">
-                    <p className="text-muted-foreground">No questionnaires found</p>
-                    <p className="text-sm text-muted-foreground">Create your first questionnaire to get started</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              questionnaires.map((questionnaire) => (
-                <TableRow key={questionnaire.id}>
+            {questionnaires.map((questionnaire) => (
+              <React.Fragment key={questionnaire.id}>
+                <TableRow className="cursor-pointer hover:bg-muted/50">
+                  <TableCell onClick={() => toggleExpand(questionnaire.id)}>
+                    {expandedQuestionnaires.has(questionnaire.id) ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">{questionnaire.name}</TableCell>
-                  <TableCell>{questionnaire.template.name}</TableCell>
-                  <TableCell>{questionnaire.template.category.name}</TableCell>
+                  <TableCell>{questionnaire.template?.category?.name || "Uncategorized"}</TableCell>
                   <TableCell>{questionnaire.description || "No description"}</TableCell>
                   <TableCell>
                     {new Date(questionnaire.createdAt).toLocaleDateString()}
@@ -164,31 +194,52 @@ export function QuestionnairesTable() {
                     <div className="flex items-center gap-2">
                       <QuestionnaireDialog
                         mode="edit"
-                        questionnaire={{
-                          id: questionnaire.id,
-                          name: questionnaire.name,
-                          description: questionnaire.description || undefined,
-                          templateId: questionnaire.templateId,
-                          questions: questionnaire.questions,
-                        }}
+                        questionnaire={questionnaire}
                         onSuccess={fetchQuestionnaires}
                       />
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(questionnaire.id)}
-                        className="text-destructive hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
+                {expandedQuestionnaires.has(questionnaire.id) && questionnaire.questions && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="bg-muted/50">
+                      <div className="py-4">
+                        {Object.entries(groupQuestionsBySection(questionnaire.questions)).map(([section, questions]) => (
+                          <div key={section} className="mb-4 last:mb-0">
+                            <h3 className="font-semibold text-sm mb-2">{section}</h3>
+                            <ul className="space-y-2 pl-4">
+                              {questions.map((question) => (
+                                <li key={question.id} className="text-sm">
+                                  <span className="text-muted-foreground">{question.label}</span>
+                                  {question.required && (
+                                    <span className="text-destructive ml-1">*</span>
+                                  )}
+                                  {question.helpText && (
+                                    <span className="text-muted-foreground ml-2 text-xs">
+                                      ({question.helpText})
+                                    </span>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
           </TableBody>
         </Table>
-      </div>
+      )}
     </div>
   )
 } 

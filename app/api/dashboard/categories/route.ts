@@ -75,7 +75,7 @@ export async function GET() {
     // Check if client has cached version
     if (ifNoneMatch === etag) {
       console.log("[GET /api/dashboard/categories] Using cached version")
-      return NextResponse.json({ cached: true }, { status: 304 })
+      return new NextResponse(null, { status: 304 })
     }
 
     // Fetch categories with optimized query

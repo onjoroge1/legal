@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import DashboardSidebar from "@/components/dashboard/dashboard-sidebar"
 import AuthCheck from "@/components/auth-check"
+import { FileText } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Dashboard | LegalLawDocs.com",

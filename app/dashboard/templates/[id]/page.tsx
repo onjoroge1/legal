@@ -45,17 +45,62 @@ const sectionOrder = [
   'Approvals'
 ]
 
+interface FieldOption {
+  id: string
+  value: string
+  label?: string
+}
+
+interface FieldDependency {
+  id: string
+  dependsOnQuestionId: string
+  conditionType: string
+  conditionValue: string
+}
+
+interface ITemplateField {
+  id: string
+  fieldId: string
+  label: string
+  type: string
+  required: boolean
+  section: string
+  helpText?: string
+  placeholder?: string
+  options: FieldOption[]
+  dependencies: FieldDependency[]
+}
+
+interface IQuestion {
+  id: string
+  label: string
+  type: string
+  required: boolean
+  section: string
+  helpText?: string
+  placeholder?: string
+  options: FieldOption[]
+  dependencies: FieldDependency[]
+}
+
+interface IQuestionnaire {
+  id: string
+  name: string
+  description?: string
+  questions: IQuestion[]
+}
+
 export default function TemplatePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [mounted, setMounted] = useState(false)
   const [formData, setFormData] = useState<Record<string, any>>({})
-  const [currentSection, setCurrentSection] = useState<string>(sectionOrder[0])
+  const [currentSection, setCurrentSection] = useState<string>("")
   const [formProgress, setFormProgress] = useState(0)
 
   // Fetch template fields from the API
-  const { data: templateFields = [], isLoading: isLoadingFields, error: templateError } = useQuery({
+  const { data: templateFields = [], isLoading: isLoadingFields, error: templateError } = useQuery<ITemplateField[]>({
     queryKey: ['templateFields', resolvedParams.id],
     queryFn: async () => {
       console.log('Client - Debug - Fetching fields for template:', resolvedParams.id)
@@ -80,7 +125,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       const data = await response.json()
       console.log('Client - Debug - Received template fields:', {
         count: data.length,
-        fields: data.map(f => ({
+        fields: data.map((f: ITemplateField) => ({
           id: f.id,
           section: f.section,
           type: f.type
@@ -93,39 +138,107 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
     staleTime: 30000,
   })
 
+  // Fetch questionnaires for the template
+  const { data: questionnaires = [], isLoading: isLoadingQuestionnaires } = useQuery<IQuestionnaire[]>({
+    queryKey: ['questionnaires', resolvedParams.id],
+    queryFn: async () => {
+      console.log('Client - Debug - Fetching questionnaires for template:', resolvedParams.id)
+      const response = await fetch(`/api/templates/${resolvedParams.id}/questionnaires`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error('Client - Debug - API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        })
+        throw new Error(errorData.error || 'Failed to fetch questionnaires')
+      }
+
+      const data = await response.json()
+      console.log('Client - Debug - Received questionnaires:', {
+        count: data.length
+      })
+      return data
+    },
+    retry: 1,
+    retryDelay: 1000,
+    staleTime: 30000,
+  })
+
   useEffect(() => {
     setMounted(true)
-  }, [])
+    // Set initial section based on available questions or template fields
+    if (questionnaires.length > 0 && questionnaires[0].questions.length > 0) {
+      // Get all unique sections from questions
+      const sections = [...new Set(questionnaires[0].questions.map(q => q.section))]
+      if (sections.length > 0) {
+        setCurrentSection(sections[0])
+        console.log('Client - Debug - Setting initial section:', {
+          sections,
+          selectedSection: sections[0],
+          questionsCount: questionnaires[0].questions.length
+        })
+      }
+    } else if (templateFields.length > 0) {
+      const firstSection = templateFields[0].section
+      setCurrentSection(firstSection)
+    }
+  }, [questionnaires, templateFields])
 
   // Calculate form progress based on required fields
   useEffect(() => {
     if (!mounted) return
 
-    const requiredFields = templateFields.filter((field) => field.required)
-    const filledFields = requiredFields.filter((field) => {
+    const allRequiredFields = [
+      ...templateFields.filter((field) => field.required),
+      ...questionnaires[0]?.questions.filter((question) => question.required) || []
+    ]
+
+    const filledFields = allRequiredFields.filter((field) => {
       const value = formData[field.id]
       return value !== undefined && value !== null && value !== ""
     })
-    const progress = (filledFields.length / requiredFields.length) * 100
+
+    const progress = allRequiredFields.length > 0 
+      ? (filledFields.length / allRequiredFields.length) * 100 
+      : 0
     setFormProgress(progress)
-  }, [formData, templateFields, mounted])
+  }, [formData, templateFields, questionnaires, mounted])
 
   // Group fields by section
-  const fieldsBySection = templateFields.reduce((acc, field) => {
+  const fieldsBySection = templateFields.reduce((acc: Record<string, ITemplateField[]>, field: ITemplateField) => {
     if (!acc[field.section]) {
       acc[field.section] = []
     }
     acc[field.section].push(field)
     return acc
-  }, {} as Record<string, TemplateField[]>)
+  }, {})
 
   // Get sorted section names based on the order they appear in the API response
-  const sortedSections = Array.from(new Set(templateFields.map(field => field.section)))
+  const sortedSections = [
+    ...(questionnaires.length > 0 && questionnaires[0]?.questions?.length > 0
+      ? [...new Set(questionnaires[0].questions.map(q => q.section))]
+      : []),
+    ...sectionOrder.filter(section => templateFields.some(field => field.section === section))
+  ].filter(Boolean)
 
   // Log the sections and fields
   console.log('Client - Debug - Current state:', {
     templateId: resolvedParams.id,
     sections: sortedSections,
+    questionnaires: questionnaires.length,
+    currentSection,
+    questions: questionnaires[0]?.questions?.map(q => ({
+      section: q.section,
+      label: q.label
+    })) || [],
     fieldsBySection: Object.entries(fieldsBySection).map(([section, fields]) => ({
       section,
       fieldCount: fields.length,
@@ -177,6 +290,14 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
           <p className="text-muted-foreground">
             Fill out the form below to generate your document
           </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => console.log('Saving...')}>
+            Save Draft
+          </Button>
+          <Button onClick={() => console.log('Generating...')}>
+            Generate Document
+          </Button>
         </div>
       </div>
 
@@ -230,6 +351,81 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
               <CardTitle>{currentSection}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {questionnaires.length > 0 && questionnaires[0].questions
+                .filter(question => question.section === currentSection)
+                .map((question) => (
+                  <div key={question.id} className="space-y-2">
+                    <Label htmlFor={question.id} className="font-medium">
+                      {question.label}
+                      {question.required && <span className="text-destructive ml-1">*</span>}
+                    </Label>
+                    {question.helpText && (
+                      <p className="text-sm text-muted-foreground">
+                        {question.helpText}
+                      </p>
+                    )}
+                    {question.type === "text" && (
+                      <Input
+                        id={question.id}
+                        placeholder={question.placeholder || ""}
+                        value={formData[question.id] || ""}
+                        onChange={(e) => handleInputChange(question.id, e.target.value)}
+                        required={question.required}
+                      />
+                    )}
+                    {question.type === "textarea" && (
+                      <Textarea
+                        id={question.id}
+                        placeholder={question.placeholder || ""}
+                        value={formData[question.id] || ""}
+                        onChange={(e) => handleInputChange(question.id, e.target.value)}
+                        required={question.required}
+                      />
+                    )}
+                    {question.type === "select" && question.options && (
+                      <Select
+                        value={formData[question.id] || ""}
+                        onValueChange={(value) => handleInputChange(question.id, value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={question.placeholder || "Select an option"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {question.options.map((option) => (
+                            <SelectItem key={option.id} value={option.value}>
+                              {option.label || option.value}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {question.type === "radio" && question.options && (
+                      <RadioGroup
+                        value={formData[question.id] || ""}
+                        onValueChange={(value) => handleInputChange(question.id, value)}
+                      >
+                        {question.options.map((option) => (
+                          <div key={option.id} className="flex items-center space-x-2">
+                            <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
+                            <Label htmlFor={`${question.id}-${option.value}`}>{option.label || option.value}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    )}
+                    {question.type === "checkbox" && (
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={question.id}
+                          checked={formData[question.id] || false}
+                          onCheckedChange={(checked) =>
+                            handleInputChange(question.id, checked)
+                          }
+                        />
+                        <Label htmlFor={question.id}>{question.label}</Label>
+                      </div>
+                    )}
+                  </div>
+                ))}
               {fieldsBySection[currentSection]?.map((field) => (
                 <div key={field.id} className="space-y-2">
                   <Label htmlFor={field.id}>
@@ -257,7 +453,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                       placeholder={field.placeholder}
                     />
                   )}
-                  {field.type === "select" && (
+                  {field.type === "select" && field.options && (
                     <Select
                       value={formData[field.id] || ""}
                       onValueChange={(value) => handleInputChange(field.id, value)}
@@ -266,23 +462,23 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                         <SelectValue placeholder="Select an option" />
                       </SelectTrigger>
                       <SelectContent>
-                        {field.options?.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
+                        {field.options.map((option) => (
+                          <SelectItem key={`${option.id}`} value={`${option.value}`}>
+                            {option.label || option.value}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   )}
-                  {field.type === "radio" && (
+                  {field.type === "radio" && field.options && (
                     <RadioGroup
                       value={formData[field.id] || ""}
                       onValueChange={(value) => handleInputChange(field.id, value)}
                     >
-                      {field.options?.map((option) => (
-                        <div key={option} className="flex items-center space-x-2">
-                          <RadioGroupItem value={option} id={`${field.id}-${option}`} />
-                          <Label htmlFor={`${field.id}-${option}`}>{option}</Label>
+                      {field.options.map((option) => (
+                        <div key={`${option.id}`} className="flex items-center space-x-2">
+                          <RadioGroupItem value={`${option.value}`} id={`${field.id}-${option.value}`} />
+                          <Label htmlFor={`${field.id}-${option.value}`}>{option.label || option.value}</Label>
                         </div>
                       ))}
                     </RadioGroup>
@@ -313,8 +509,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                       type="number"
                       value={formData[field.id] || ""}
                       onChange={(e) => handleInputChange(field.id, e.target.value)}
-                      min={field.validation?.min}
-                      max={field.validation?.max}
                     />
                   )}
                   {field.type === "currency" && (

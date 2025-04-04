@@ -50,9 +50,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // For admin routes, check if user has admin role
-  if (isAdminPath && token) {
-    // Note: The actual role check should be done in the API route
-    // This is just a basic check to ensure the user is authenticated
+  if (isAdminPath) {
+    if (!token) {
+      console.log("[Middleware] No token for admin route, redirecting to login")
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    // Check if user is admin
+    const isAdmin = token.isAdmin as boolean
+    if (!isAdmin) {
+      console.log("[Middleware] Non-admin user attempting to access admin route")
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
     console.log("[Middleware] Admin route access granted")
     return NextResponse.next()
   }

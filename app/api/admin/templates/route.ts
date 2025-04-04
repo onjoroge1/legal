@@ -21,10 +21,9 @@ export async function GET() {
   }
 
   try {
-    const templates = await prisma.template.findMany({
+    const templates = await prisma.documentTemplate.findMany({
       include: {
         category: true,
-        questionnaires: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -59,16 +58,29 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { name, description, categoryId, content } = body
 
-    const template = await prisma.template.create({
+    // First, get the category to ensure it exists
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId }
+    })
+
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 })
+    }
+
+    const template = await prisma.documentTemplate.create({
       data: {
         name,
         description,
-        content,
+        content: content || "",
+        type: "document", // Default type
         categoryId,
+        version: "1.0.0",
+        state: "draft",
+        metadata: {},
+        variables: []
       },
       include: {
         category: true,
-        questionnaires: true,
       },
     })
 

@@ -30,7 +30,7 @@ export function CategoriesTable() {
   const fetchCategories = async () => {
     console.log("[CategoriesTable] Fetching categories")
     try {
-      const response = await fetch("/api/admin/templates", {
+      const response = await fetch("/api/dashboard/categories", {
         headers: {
           "Cache-Control": "no-cache",
         },
@@ -38,13 +38,7 @@ export function CategoriesTable() {
       
       console.log("[CategoriesTable] Response status:", response.status)
       
-      // Handle 304 Not Modified - this means we can use cached data
-      if (response.status === 304) {
-        console.log("[CategoriesTable] Using cached data")
-        return null // React Query will keep using the cached data
-      }
-
-      if (!response.ok && response.status !== 304) {
+      if (!response.ok) {
         console.log("[CategoriesTable] Error response status:", response.status)
         const errorText = await response.text()
         console.log("[CategoriesTable] Error response:", errorText)
@@ -53,10 +47,13 @@ export function CategoriesTable() {
 
       const data = await response.json()
       console.log("[CategoriesTable] Received data:", data)
-      return data
+      setCategories(data)
+      setLoading(false)
+      setError(null)
     } catch (error) {
       console.error("[CategoriesTable] Fetch error:", error)
-      throw error
+      setError(error instanceof Error ? error.message : "Failed to fetch categories")
+      setLoading(false)
     }
   }
 

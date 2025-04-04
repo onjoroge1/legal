@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, FileText, Settings } from "lucide-react"
+import { Users, FileText, Settings, ScrollText } from "lucide-react"
 import { toast } from "sonner"
 
 export default function AdminPage() {
@@ -86,6 +86,23 @@ export default function AdminPage() {
                 <CardContent>
             <Button onClick={() => router.push("/admin/templates")}>
               Manage Templates
+            </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ScrollText className="h-5 w-5" />
+              Questionnaire Management
+            </CardTitle>
+            <CardDescription>
+              Create and manage document questionnaires
+            </CardDescription>
+                </CardHeader>
+                <CardContent>
+            <Button onClick={() => router.push("/admin/questionnaires")}>
+              Manage Questionnaires
             </Button>
                 </CardContent>
               </Card>

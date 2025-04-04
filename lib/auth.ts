@@ -11,6 +11,7 @@ declare module "next-auth" {
       id: string
       email: string
       name: string
+      isAdmin: boolean
     }
   }
 }
@@ -80,6 +81,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
           email: token.email as string,
           name: token.name as string,
+          isAdmin: token.isAdmin as boolean,
         }
       }
       console.log("[Auth] Session callback - session:", session)
@@ -98,6 +100,12 @@ export const authOptions: NextAuthOptions = {
         where: {
           email,
         },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          isAdmin: true,
+        },
       })
 
       if (!dbUser) {
@@ -111,6 +119,7 @@ export const authOptions: NextAuthOptions = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
+        isAdmin: dbUser.isAdmin,
       }
     },
     async redirect({ url, baseUrl }) {

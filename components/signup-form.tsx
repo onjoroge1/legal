@@ -97,7 +97,8 @@ export default function SignupForm() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to sign up")
+        console.error("[SignupForm] Signup failed:", data)
+        throw new Error(data.message || data.error || "Failed to sign up")
       }
 
       // Sign in the user after successful signup
