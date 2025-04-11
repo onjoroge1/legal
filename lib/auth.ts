@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 import { prisma } from "@/lib/prisma"
 import { verifyPassword } from './auth-server'
 import { compare } from "bcryptjs"
+import { NextResponse } from "next/server"
 
 declare module "next-auth" {
   interface Session {
@@ -155,4 +156,8 @@ export const authOptions: NextAuthOptions = {
       console.log("[Auth] Session event:", message)
     },
   },
+}
+
+export async function logoutUser() {
+  return NextResponse.json({ success: true })
 } 

@@ -61,42 +61,29 @@ export async function PATCH(
 
 // DELETE /api/admin/categories/[categoryId] - Delete a category
 export async function DELETE(
-  req: Request,
-  { params }: { params: { categoryId: string } }
+  request: Request,
+  context: { params: { categoryId: string } }
 ) {
   try {
-    console.log("[DELETE /api/admin/categories] Starting request", { categoryId: params.categoryId })
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
-      console.log("[DELETE /api/admin/categories] No session found")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Check if category exists
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: params.categoryId }
-    })
+    const { categoryId } = context.params
 
-    if (!existingCategory) {
-      console.log("[DELETE /api/admin/categories] Category not found:", params.categoryId)
-      return NextResponse.json({ error: "Category not found" }, { status: 404 })
-    }
-
-    console.log("[DELETE /api/admin/categories] Deleting category:", params.categoryId)
-    // Delete category
+    // Delete the category
     await prisma.category.delete({
-      where: { id: params.categoryId }
+      where: { id: categoryId }
     })
 
-    console.log("[DELETE /api/admin/categories] Category deleted successfully")
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("[DELETE /api/admin/categories] Error:", error)
-    if (error instanceof Error) {
-      console.error("[DELETE /api/admin/categories] Error message:", error.message)
-      console.error("[DELETE /api/admin/categories] Error stack:", error.stack)
-    }
-    return NextResponse.json({ error: "Failed to delete category" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 } 
