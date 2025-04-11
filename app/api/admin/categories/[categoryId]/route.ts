@@ -65,7 +65,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/admin/categories/[categoryId] - Delete a category
+/*
 export async function DELETE(
   request: NextRequest,
   context: Context
@@ -99,4 +99,5 @@ export async function DELETE(
       { status: 500 }
     )
   }
-} 
+}
+*/ 
