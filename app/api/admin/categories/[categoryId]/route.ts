@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
@@ -61,45 +61,45 @@ export async function PATCH(
 
 // DELETE /api/admin/categories/[categoryId] - Delete a category
 export async function DELETE(
-  req: Request,
-  { params }: { params: { categoryId: string } }
+  req: NextRequest,
+  context: { params: { categoryId: string } }
 ) {
+  const { categoryId } = context.params;
+
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { 
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      })
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    // Check if category exists
     const existingCategory = await prisma.category.findUnique({
-      where: { id: params.categoryId }
-    })
+      where: { id: categoryId },
+    });
 
     if (!existingCategory) {
-      return new Response(JSON.stringify({ error: "Category not found" }), { 
+      return new Response(JSON.stringify({ error: "Category not found" }), {
         status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      })
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    // Delete the category
     await prisma.category.delete({
-      where: { id: params.categoryId }
-    })
+      where: { id: categoryId },
+    });
 
-    return new Response(JSON.stringify({ success: true }), { 
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    })
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error("[DELETE /api/admin/categories] Error:", error)
-    return new Response(JSON.stringify({ error: "Internal server error" }), { 
+    console.error("[DELETE /api/admin/categories] Error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+      headers: { "Content-Type": "application/json" },
+    });
   }
 } 
