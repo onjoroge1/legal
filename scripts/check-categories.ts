@@ -8,31 +8,31 @@ async function main() {
 
     // Corporate Governance
     const corporateGovernance = await prisma.category.upsert({
-      where: { id: 'cm9bhpeod000xvbl04d2dxx55' },
-      update: {
-        name: 'Corporate Governance',
-        description: 'Board resolutions, bylaws, and corporate policies'
+      where: {
+        id: 'corporate-governance'
       },
       create: {
-        id: 'cm9bhpeod000xvbl04d2dxx55',
+        id: 'corporate-governance',
         name: 'Corporate Governance',
+        slug: 'corporate',
         description: 'Board resolutions, bylaws, and corporate policies'
-      }
+      },
+      update: {}
     })
     console.log('Corporate Governance category:', corporateGovernance)
 
     // Employment & HR
     const employmentHR = await prisma.category.upsert({
-      where: { id: 'cm9bh3u2e0000vbcg33mxuc64' },
-      update: {
-        name: 'Employment & HR',
-        description: 'Employment contracts, offer letters, NDAs, and other HR documents'
+      where: {
+        id: 'employment-hr'
       },
       create: {
-        id: 'cm9bh3u2e0000vbcg33mxuc64',
+        id: 'employment-hr',
         name: 'Employment & HR',
+        slug: 'employment',
         description: 'Employment contracts, offer letters, NDAs, and other HR documents'
-      }
+      },
+      update: {}
     })
     console.log('Employment & HR category:', employmentHR)
 
@@ -59,18 +59,24 @@ async function main() {
 
     // Real Estate
     const realEstate = await prisma.category.upsert({
-      where: { id: 'cm9bh3u330002vbcg4nkjeixo' },
-      update: {
-        name: 'Real Estate',
-        description: 'Lease agreements, property contracts, and real estate documents'
+      where: {
+        id: 'real-estate'
       },
       create: {
-        id: 'cm9bh3u330002vbcg4nkjeixo',
+        id: 'real-estate',
         name: 'Real Estate',
-        description: 'Lease agreements, property contracts, and real estate documents'
-      }
+        slug: 'real-estate',
+        description: 'Legal documents for real estate transactions'
+      },
+      update: {}
     })
     console.log('\nReal Estate category:', realEstate)
+
+    console.log('Categories:', {
+      corporateGovernance: corporateGovernance.id,
+      employmentHR: employmentHR.id,
+      realEstate: realEstate.id
+    })
 
   } catch (error) {
     console.error('Error:', error)
@@ -79,4 +85,11 @@ async function main() {
   }
 }
 
-main() 
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  }) 

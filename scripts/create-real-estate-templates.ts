@@ -23,12 +23,22 @@ async function createRealEstateTemplates() {
     })
 
     // Create apartment lease template
-    const apartmentLease = await prisma.documentTemplate.create({
-      data: {
+    const apartmentLease = await prisma.documentTemplate.upsert({
+      where: { id: 'apartment-lease' },
+      update: {
+        categoryId: realEstateCategory.id,
+        name: 'Apartment Lease Agreement',
+        type: 'lease',
+        description: 'Standard apartment lease agreement template',
+        version: '1.0.0'
+      },
+      create: {
         id: 'apartment-lease',
         name: 'Apartment Lease Agreement',
         type: 'lease',
         description: 'Standard apartment lease agreement template',
+        categoryId: realEstateCategory.id,
+        version: '1.0.0',
         content: [
           '# Apartment Lease Agreement',
           '',
@@ -90,8 +100,6 @@ async function createRealEstateTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        categoryId: realEstateCategory.id,
-        version: '1.0.0',
         metadata: {
           category: 'real-estate',
           type: 'lease',

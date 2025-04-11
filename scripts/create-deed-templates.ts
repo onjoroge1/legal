@@ -8,7 +8,7 @@ async function createDeedTemplates() {
 
     // Get the real estate category
     const realEstateCategory = await prisma.category.findUnique({
-      where: { id: 'real-estate' }
+      where: { id: 'cm9bhpf6d000yvbl0qw9aqww3' }
     })
 
     if (!realEstateCategory) {

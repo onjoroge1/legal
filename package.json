@@ -13,7 +13,14 @@
     "make-admin": "ts-node scripts/make-admin.ts",
     "seed:business": "ts-node scripts/seed-business-formation.ts",
     "seed:legal": "ts-node scripts/seed-legal-documents.ts",
-    "add:templates": "ts-node scripts/add-templates.ts"
+    "add:templates": "ts-node scripts/add-templates.ts",
+    "backup-db": "ts-node scripts/backup-db.ts",
+    "seed:corporate": "ts-node scripts/seed-corporate-governance.ts && ts-node scripts/seed-business-formation.ts && ts-node scripts/seed-legal-documents.ts",
+    "seed:corporate-governance": "ts-node scripts/seed-corporate-governance.ts",
+    "seed:business-formation": "ts-node scripts/seed-business-formation.ts",
+    "seed:legal-docs": "ts-node scripts/seed-legal-documents.ts",
+    "seed:employment": "ts-node scripts/seed-employment-templates.ts",
+    "seed:real-estate": "ts-node scripts/create-real-estate-templates.ts && ts-node scripts/create-real-estate-templates-2.ts && ts-node scripts/create-roommate-and-trust-deed.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",

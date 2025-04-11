@@ -5,29 +5,28 @@ const prisma = new PrismaClient()
 export default async function seedLegalDocuments() {
   console.log('Starting legal documents seed...')
 
-  // Create Corporate Governance category
-  const corporateCategory = await prisma.category.upsert({
-    where: { id: 'corporate' },
-    update: {},
-    create: {
-      id: 'corporate',
-      name: 'Corporate Governance',
-      description: 'Board resolutions, bylaws, and corporate policies'
-    }
-  })
-  console.log('Created/Updated category:', corporateCategory.name)
+  // Use existing Corporate Governance category ID
+  const CORPORATE_CATEGORY_ID = 'cm9bhpeod000xvbl04d2dxx55'
 
   // Create Corporate Resolution template
   await prisma.documentTemplate.upsert({
     where: { id: 'corporate-resolution' },
     update: {
-      categoryId: corporateCategory.id
+      categoryId: CORPORATE_CATEGORY_ID,
+      name: 'Corporate Resolution',
+      description: 'Formal documentation of corporate decisions and authorizations',
+      type: 'document',
+      version: '1.0.0',
+      state: 'published'
     },
     create: {
       id: 'corporate-resolution',
       name: 'Corporate Resolution',
       description: 'Formal documentation of corporate decisions and authorizations',
-      categoryId: corporateCategory.id,
+      categoryId: CORPORATE_CATEGORY_ID,
+      type: 'document',
+      version: '1.0.0',
+      state: 'published',
       content: `# CORPORATE RESOLUTION
 [CORPORATION_NAME]
 
@@ -87,7 +86,7 @@ ___________________________
       }
     }
   })
-  console.log('Created/Updated template:', 'Corporate Resolution')
+  console.log('Created/Updated template: Corporate Resolution')
 
   // Create Corporate Resolution questionnaire
   await prisma.questionnaire.upsert({
@@ -308,13 +307,21 @@ ___________________________
   await prisma.documentTemplate.upsert({
     where: { id: 'certificate-of-incumbency' },
     update: {
-      categoryId: corporateCategory.id
+      categoryId: CORPORATE_CATEGORY_ID,
+      name: 'Certificate of Incumbency',
+      description: 'Official certification of current directors and officers of the corporation',
+      type: 'document',
+      version: '1.0.0',
+      state: 'published'
     },
     create: {
       id: 'certificate-of-incumbency',
       name: 'Certificate of Incumbency',
       description: 'Official certification of current directors and officers of the corporation',
-      categoryId: corporateCategory.id,
+      categoryId: CORPORATE_CATEGORY_ID,
+      type: 'document',
+      version: '1.0.0',
+      state: 'published',
       content: `# CERTIFICATE OF INCUMBENCY
 
 I, [CERTIFYING_OFFICER], do hereby certify that I am the duly appointed and acting [OFFICER_TITLE] of [CORPORATION_NAME], a corporation organized and existing under the laws of the State of [STATE] (the "Corporation"), and as such, I am authorized to execute and deliver this Certificate of Incumbency.
@@ -596,13 +603,21 @@ ___________________________
   await prisma.documentTemplate.upsert({
     where: { id: 'consent-to-action' },
     update: {
-      categoryId: corporateCategory.id
+      categoryId: CORPORATE_CATEGORY_ID,
+      name: 'Consent to Action Without Meeting',
+      description: 'Written consent for corporate actions without a formal meeting',
+      type: 'document',
+      version: '1.0.0',
+      state: 'published'
     },
     create: {
       id: 'consent-to-action',
       name: 'Consent to Action Without Meeting',
       description: 'Written consent for corporate actions without a formal meeting',
-      categoryId: corporateCategory.id,
+      categoryId: CORPORATE_CATEGORY_ID,
+      type: 'document',
+      version: '1.0.0',
+      state: 'published',
       content: `# CONSENT TO ACTION WITHOUT MEETING
 
 ## CORPORATE INFORMATION
@@ -919,13 +934,21 @@ ___________________________
   const consentToServeTemplate = await prisma.documentTemplate.upsert({
     where: { id: 'consent-to-serve' },
     update: {
-      categoryId: corporateCategory.id
+      categoryId: CORPORATE_CATEGORY_ID,
+      name: 'Consent to be Director and Officer',
+      description: 'Written consent for an individual to serve as director and/or officer',
+      type: 'document',
+      version: '1.0.0',
+      state: 'published'
     },
     create: {
       id: 'consent-to-serve',
       name: 'Consent to be Director and Officer',
       description: 'Written consent for an individual to serve as director and/or officer',
-      categoryId: corporateCategory.id,
+      categoryId: CORPORATE_CATEGORY_ID,
+      type: 'document',
+      version: '1.0.0',
+      state: 'published',
       content: `# CONSENT TO SERVE AS DIRECTOR AND/OR OFFICER
 
 ## CORPORATE INFORMATION
@@ -1235,658 +1258,22 @@ ___________________________
   const directorsOrgMeetingTemplate = await prisma.documentTemplate.upsert({
     where: { id: 'directors-org-meeting' },
     update: {
-      categoryId: corporateCategory.id
+      categoryId: CORPORATE_CATEGORY_ID,
+      name: 'Directors\' Organizational Meeting',
+      description: 'Documentation of the initial organizational meeting of the board of directors',
+      type: 'document',
+      version: '1.0.0',
+      state: 'published'
     },
     create: {
       id: 'directors-org-meeting',
       name: 'Directors\' Organizational Meeting',
       description: 'Documentation of the initial organizational meeting of the board of directors',
-      categoryId: corporateCategory.id,
+      categoryId: CORPORATE_CATEGORY_ID,
+      type: 'document',
+      version: '1.0.0',
+      state: 'published',
       content: `# DIRECTORS' ORGANIZATIONAL MEETING
-
-## CORPORATE INFORMATION
-[CORPORATION_NAME]
-Date of Incorporation: [INCORPORATION_DATE]
-
-## MEETING DETAILS
-Date: [MEETING_DATE]
-Time: [MEETING_TIME]
-Location: [MEETING_LOCATION]
-Temporary Chairperson: [CHAIRPERSON]
-Temporary Secretary: [SECRETARY]
-
-## INITIAL DIRECTORS
-[DIRECTORS_LIST]
-
-## CORPORATE GOVERNANCE
-Articles of Incorporation: [ARTICLES_STATUS]
-Bylaws: [BYLAWS_STATUS]
-Corporate Seal: [SEAL_STATUS]
-Stock Certificate Form: [STOCK_CERTIFICATE_STATUS]
-
-## OFFICERS
-[OFFICERS_LIST]
-
-## FINANCIAL MATTERS
-Bank Designation: [BANK_DETAILS]
-Signing Authority: [SIGNING_AUTHORITY]
-Compensation: [COMPENSATION_DETAILS]
-Accounting Methods: [ACCOUNTING_METHODS]
-Fiscal Year: [FISCAL_YEAR]
-
-## SHARES AND STOCK
-Initial Shares: [SHARES_DETAILS]
-Consideration: [CONSIDERATION_DETAILS]
-
-## ADDITIONAL MATTERS
-Organizational Expenses: [EXPENSES_STATUS]
-Pre-incorporation Agreements: [AGREEMENTS_STATUS]
-Business Licenses: [LICENSES_STATUS]
-Employee Benefits: [BENEFITS_STATUS]
-Registered Agent: [REGISTERED_AGENT]
-Board Committees: [COMMITTEES_STATUS]
-
-## CERTIFICATION
-I, [SECRETARY_NAME], do hereby certify that the foregoing is a true and correct record of the proceedings of the Organizational Meeting of the Board of Directors of [CORPORATION_NAME] held on [MEETING_DATE].
-
-IN WITNESS WHEREOF, I have executed this Certificate as of [CERTIFICATION_DATE]
-
-___________________________
-[SECRETARY_NAME]
-Secretary
-
-## ATTACHMENTS
-[LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
-      metadata: {
-        sections: [
-          'Basic Information',
-          'Meeting Details',
-          'Initial Directors',
-          'Corporate Governance',
-          'Officers',
-          'Financial Matters',
-          'Shares and Stock',
-          'Additional Matters',
-          'Certification',
-          'Attachments'
-        ]
-      }
-    }
-  })
-  console.log('Created/Updated template:', 'Directors\' Organizational Meeting')
-
-  // Create Directors' Organizational Meeting questionnaire
-  await prisma.questionnaire.upsert({
-    where: { id: 'directors-org-meeting-questions' },
-    update: {},
-    create: {
-      id: 'directors-org-meeting-questions',
-      name: 'Directors\' Organizational Meeting Questionnaire',
-      description: 'Questions for creating a Directors\' Organizational Meeting document',
-      templateId: directorsOrgMeetingTemplate.id,
-      questions: {
-        create: [
-          {
-            label: 'What is the exact legal name of the corporation?',
-            type: 'text',
-            required: true,
-            section: 'Basic Information',
-            helpText: 'Enter the complete legal name of the corporation as registered',
-            placeholder: 'e.g., Acme Corporation, Inc.'
-          },
-          {
-            label: 'What is the date of incorporation?',
-            type: 'date',
-            required: true,
-            section: 'Basic Information',
-            helpText: 'Enter the date when the corporation was incorporated'
-          },
-          {
-            label: 'Who are the initial directors named in the Articles of Incorporation or appointed by the incorporator(s)?',
-            type: 'textarea',
-            required: true,
-            section: 'Initial Directors',
-            helpText: 'List all initial directors with their full names',
-            placeholder: '1. John Smith\n2. Jane Doe\n3. Robert Johnson'
-          },
-          {
-            label: 'What is the date, time, and location of the organizational meeting?',
-            type: 'text',
-            required: true,
-            section: 'Meeting Details',
-            helpText: 'Enter the complete meeting details',
-            placeholder: 'e.g., January 1, 2024, 10:00 AM, Corporate Headquarters'
-          },
-          {
-            label: 'Who will serve as temporary chairperson and secretary of the meeting?',
-            type: 'text',
-            required: true,
-            section: 'Meeting Details',
-            helpText: 'Enter the names of the temporary officers',
-            placeholder: 'Chairperson: John Smith, Secretary: Jane Doe'
-          },
-          {
-            label: 'Will the Articles of Incorporation be reviewed and ratified?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if the Articles will be reviewed and ratified',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'What bylaws will be adopted?',
-            type: 'textarea',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Describe the bylaws to be adopted',
-            placeholder: 'e.g., Standard corporate bylaws with specific provisions for...'
-          },
-          {
-            label: 'Who will be elected as officers?',
-            type: 'textarea',
-            required: true,
-            section: 'Officers',
-            helpText: 'List all officers and their positions',
-            placeholder: 'President: John Smith\nSecretary: Jane Doe\nTreasurer: Robert Johnson'
-          },
-          {
-            label: 'What will be the compensation for directors and officers, if any?',
-            type: 'textarea',
-            required: true,
-            section: 'Financial Matters',
-            helpText: 'Describe the compensation structure',
-            placeholder: 'e.g., Annual retainer of $X for directors, Salary of $Y for officers'
-          },
-          {
-            label: 'What bank(s) will be designated for corporate accounts?',
-            type: 'text',
-            required: true,
-            section: 'Financial Matters',
-            helpText: 'List the designated banks',
-            placeholder: 'e.g., First National Bank, Account #123456'
-          },
-          {
-            label: 'Who will have signing authority on corporate accounts?',
-            type: 'textarea',
-            required: true,
-            section: 'Financial Matters',
-            helpText: 'List authorized signatories',
-            placeholder: 'e.g., President and Treasurer, or any two officers'
-          },
-          {
-            label: 'Will an S-Corporation election be authorized?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if S-Corporation status will be elected',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation adopt a corporate seal?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if a corporate seal will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation adopt a stock certificate form?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if a stock certificate form will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation authorize the issuance of initial shares?',
-            type: 'textarea',
-            required: true,
-            section: 'Shares and Stock',
-            helpText: 'Describe the initial share issuance',
-            placeholder: 'e.g., 1,000,000 shares to John Smith, 500,000 shares to Jane Doe'
-          },
-          {
-            label: 'What will be the consideration for shares?',
-            type: 'textarea',
-            required: true,
-            section: 'Shares and Stock',
-            helpText: 'Describe the consideration for shares',
-            placeholder: 'e.g., Cash payment of $X, Services valued at $Y'
-          },
-          {
-            label: 'Will any organizational expenses be approved for reimbursement?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if organizational expenses will be reimbursed',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation adopt any specific accounting methods?',
-            type: 'textarea',
-            required: true,
-            section: 'Financial Matters',
-            helpText: 'Describe the accounting methods to be adopted',
-            placeholder: 'e.g., Accrual basis, specific depreciation methods'
-          },
-          {
-            label: 'Will the corporation adopt a fiscal year?',
-            type: 'text',
-            required: true,
-            section: 'Financial Matters',
-            helpText: 'Specify the fiscal year',
-            placeholder: 'e.g., Calendar year, or specific fiscal year period'
-          },
-          {
-            label: 'Will any corporate contracts or leases be approved?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if contracts or leases will be approved',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will any employee benefit plans be adopted?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if benefit plans will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation apply for any business licenses or permits?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if licenses or permits will be applied for',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporation ratify any pre-incorporation agreements?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if pre-incorporation agreements will be ratified',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will a registered agent be appointed or confirmed?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if a registered agent will be appointed',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will any board committees be established?',
-            type: 'textarea',
-            required: false,
-            section: 'Additional Matters',
-            helpText: 'List any committees to be established',
-            placeholder: 'e.g., Audit Committee, Compensation Committee'
-          }
-        ]
-      }
-    }
-  })
-  console.log('Created/Updated questionnaire:', 'Directors\' Organizational Meeting Questionnaire')
-
-  // Create Directors' Resolution template
-  const directorsResolutionTemplate = await prisma.documentTemplate.upsert({
-    where: { id: 'directors-resolution' },
-    update: {
-      categoryId: corporateCategory.id
-    },
-    create: {
-      id: 'directors-resolution',
-      name: 'Directors\' Resolution',
-      description: 'Formal documentation of board decisions and authorizations',
-      categoryId: corporateCategory.id,
-      content: `# DIRECTORS' RESOLUTION
-
-## CORPORATE INFORMATION
-[CORPORATION_NAME]
-
-## RESOLUTION DETAILS
-Action Authorized: [ACTION_DETAILS]
-Meeting Date: [MEETING_DATE]
-Present Directors: [PRESENT_DIRECTORS]
-Quorum Status: [QUORUM_STATUS]
-Voting Outcome: [VOTING_OUTCOME]
-
-## BUSINESS JUSTIFICATION
-[BUSINESS_JUSTIFICATION]
-
-## IMPLEMENTATION
-Authorized Persons: [AUTHORIZED_PERSONS]
-Terms and Conditions: [TERMS_CONDITIONS]
-Effective Date: [EFFECTIVE_DATE]
-
-## LEGAL COMPLIANCE
-Shareholder Approval Required: [SHAREHOLDER_APPROVAL]
-Compliance Status: [COMPLIANCE_STATUS]
-Previous Resolutions: [PREVIOUS_RESOLUTIONS]
-Related Resolutions: [RELATED_RESOLUTIONS]
-
-## CONFLICTS OF INTEREST
-Conflicts Present: [CONFLICTS_STATUS]
-Procedures Followed: [CONFLICT_PROCEDURES]
-Recusals: [RECUSALS]
-
-## CERTIFICATION
-I, [CERTIFYING_OFFICER], do hereby certify that:
-1. I am the duly appointed [OFFICER_TITLE] of [CORPORATION_NAME]
-2. The foregoing resolution was duly adopted at a meeting of the Board of Directors
-3. Said resolution has not been modified, amended, or rescinded and remains in full force and effect as of the date hereof.
-
-IN WITNESS WHEREOF, I have executed this Certificate as of [CERTIFICATION_DATE]
-
-___________________________
-[CERTIFYING_OFFICER_NAME]
-[OFFICER_TITLE]
-
-## ATTACHMENTS
-[LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
-      metadata: {
-        sections: [
-          'Basic Information',
-          'Resolution Details',
-          'Business Justification',
-          'Implementation',
-          'Legal Compliance',
-          'Conflicts of Interest',
-          'Certification',
-          'Attachments'
-        ]
-      }
-    }
-  })
-  console.log('Created/Updated template:', 'Directors\' Resolution')
-
-  // Create Directors' Resolution questionnaire
-  await prisma.questionnaire.upsert({
-    where: { id: 'directors-resolution-questions' },
-    update: {},
-    create: {
-      id: 'directors-resolution-questions',
-      name: 'Directors\' Resolution Questionnaire',
-      description: 'Questions for creating a Directors\' Resolution',
-      templateId: directorsResolutionTemplate.id,
-      questions: {
-        create: [
-          {
-            label: 'What is the exact legal name of the corporation?',
-            type: 'text',
-            required: true,
-            section: 'Basic Information',
-            helpText: 'Enter the complete legal name of the corporation as registered',
-            placeholder: 'e.g., Acme Corporation, Inc.'
-          },
-          {
-            label: 'What is the specific action being authorized by the directors?',
-            type: 'textarea',
-            required: true,
-            section: 'Resolution Details',
-            helpText: 'Describe the specific action being authorized',
-            placeholder: 'e.g., Authorization to enter into a specific contract'
-          },
-          {
-            label: 'What is the date of the meeting where this resolution was adopted?',
-            type: 'date',
-            required: true,
-            section: 'Resolution Details',
-            helpText: 'Enter the date of the meeting'
-          },
-          {
-            label: 'Who was present at the meeting?',
-            type: 'textarea',
-            required: true,
-            section: 'Resolution Details',
-            helpText: 'List all directors present at the meeting',
-            placeholder: '1. John Smith\n2. Jane Doe\n3. Robert Johnson'
-          },
-          {
-            label: 'Was a quorum present at the meeting?',
-            type: 'select',
-            required: true,
-            section: 'Resolution Details',
-            helpText: 'Indicate if a quorum was present',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'What was the voting outcome?',
-            type: 'select',
-            required: true,
-            section: 'Resolution Details',
-            helpText: 'Indicate the voting result',
-            options: {
-              create: [
-                { value: 'unanimous', label: 'Unanimous' },
-                { value: 'majority', label: 'Majority' },
-                { value: 'specific', label: 'Specific Count' }
-              ]
-            }
-          },
-          {
-            label: 'What is the business justification for this action?',
-            type: 'textarea',
-            required: true,
-            section: 'Business Justification',
-            helpText: 'Explain the business reasons for this action',
-            placeholder: 'e.g., Strategic expansion, cost savings, etc.'
-          },
-          {
-            label: 'Who will be authorized to implement this resolution?',
-            type: 'textarea',
-            required: true,
-            section: 'Implementation',
-            helpText: 'List authorized persons',
-            placeholder: 'e.g., President and CFO, or any officer'
-          },
-          {
-            label: 'Are there any specific terms or conditions for implementing this resolution?',
-            type: 'textarea',
-            required: false,
-            section: 'Implementation',
-            helpText: 'Describe any specific terms or conditions',
-            placeholder: 'e.g., Budget limitations, time constraints'
-          },
-          {
-            label: 'Does this resolution require shareholder approval?',
-            type: 'select',
-            required: true,
-            section: 'Legal Compliance',
-            helpText: 'Indicate if shareholder approval is required',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Does this resolution comply with the Articles of Incorporation and Bylaws?',
-            type: 'select',
-            required: true,
-            section: 'Legal Compliance',
-            helpText: 'Indicate if the resolution complies with corporate documents',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Does this resolution modify or rescind any previous resolutions?',
-            type: 'select',
-            required: true,
-            section: 'Legal Compliance',
-            helpText: 'Indicate if this affects previous resolutions',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Is this resolution part of a series of related resolutions?',
-            type: 'select',
-            required: true,
-            section: 'Legal Compliance',
-            helpText: 'Indicate if this is part of a series',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'What is the effective date of the resolution?',
-            type: 'date',
-            required: true,
-            section: 'Implementation',
-            helpText: 'Enter the effective date'
-          },
-          {
-            label: 'Are there any regulatory filings required as a result of this resolution?',
-            type: 'select',
-            required: true,
-            section: 'Legal Compliance',
-            helpText: 'Indicate if regulatory filings are required',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Does this resolution involve any conflicts of interest for any directors?',
-            type: 'select',
-            required: true,
-            section: 'Conflicts of Interest',
-            helpText: 'Indicate if there are any conflicts of interest',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'If conflicts exist, what procedures were followed to address them?',
-            type: 'textarea',
-            required: false,
-            section: 'Conflicts of Interest',
-            helpText: 'Describe the procedures followed',
-            placeholder: 'e.g., Disclosure, recusal, independent committee review'
-          },
-          {
-            label: 'Will any directors be recusing themselves from voting?',
-            type: 'textarea',
-            required: false,
-            section: 'Conflicts of Interest',
-            helpText: 'List any recusing directors',
-            placeholder: 'e.g., John Smith due to personal interest'
-          },
-          {
-            label: 'Are there any attachments or exhibits to this resolution?',
-            type: 'textarea',
-            required: false,
-            section: 'Attachments',
-            helpText: 'List any attachments',
-            placeholder: 'e.g., Contracts, agreements, reports'
-          },
-          {
-            label: 'Who will certify this resolution?',
-            type: 'text',
-            required: true,
-            section: 'Certification',
-            helpText: 'Enter the name and title of the certifying officer',
-            placeholder: 'e.g., John Smith, Corporate Secretary'
-          }
-        ]
-      }
-    }
-  })
-  console.log('Created/Updated questionnaire:', 'Directors\' Resolution Questionnaire')
-
-  // Create Incorporators' Organizational Meeting template
-  const incorporatorsMeetingTemplate = await prisma.documentTemplate.upsert({
-    where: { id: 'incorporators-meeting' },
-    update: {
-      categoryId: corporateCategory.id
-    },
-    create: {
-      id: 'incorporators-meeting',
-      name: 'Incorporators\' Organizational Meeting',
-      description: 'Documentation of the initial organizational meeting of the incorporators',
-      categoryId: corporateCategory.id,
-      content: `# INCORPORATORS' ORGANIZATIONAL MEETING
 
 ## CORPORATE INFORMATION
 [CORPORATION_NAME]

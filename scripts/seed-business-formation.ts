@@ -5,14 +5,6 @@ const prisma = new PrismaClient()
 export default async function seedBusinessFormation() {
   try {
     console.log('Starting business formation seed...')
-
-    // Clean up existing data
-    console.log('Cleaning up existing data...')
-    await prisma.questionOption.deleteMany({})
-    await prisma.questionDependency.deleteMany({})
-    await prisma.question.deleteMany({})
-    await prisma.questionnaire.deleteMany({})
-    await prisma.documentTemplate.deleteMany({ where: { categoryId: 'business' } })
     
     // Get or create the Business Formation category
     const category = await prisma.category.upsert({
