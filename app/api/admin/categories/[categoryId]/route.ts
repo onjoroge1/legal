@@ -62,7 +62,7 @@ export async function PATCH(
 // DELETE /api/admin/categories/[categoryId] - Delete a category
 export async function DELETE(
   request: Request,
-  context: { params: { categoryId: string } }
+  { params }: { params: { categoryId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -73,7 +73,7 @@ export async function DELETE(
 
     // Check if category exists
     const existingCategory = await prisma.category.findUnique({
-      where: { id: context.params.categoryId }
+      where: { id: params.categoryId }
     })
 
     if (!existingCategory) {
@@ -82,7 +82,7 @@ export async function DELETE(
 
     // Delete the category
     await prisma.category.delete({
-      where: { id: context.params.categoryId }
+      where: { id: params.categoryId }
     })
 
     return NextResponse.json({ success: true })
