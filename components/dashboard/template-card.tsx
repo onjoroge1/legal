@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 
 interface TemplateCardProps {
   id: string
+  code?: string
   title: string
   description: string
   popularity?: string
@@ -18,7 +19,7 @@ interface TemplateCardProps {
   category: string
 }
 
-export default function TemplateCard({ id, title, description, popularity, usageCount, category }: TemplateCardProps) {
+export default function TemplateCard({ id, code, title, description, popularity, usageCount, category }: TemplateCardProps) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const router = useRouter()
 
@@ -37,7 +38,8 @@ export default function TemplateCard({ id, title, description, popularity, usage
   }
 
   const handleUseTemplate = () => {
-    router.push(`/dashboard/create?template=${encodeURIComponent(id)}&title=${encodeURIComponent(title)}&type=${encodeURIComponent(getTemplateType(title))}`)
+    const templateId = code || id
+    router.push(`/dashboard/templates/${templateId}`)
   }
 
   return (

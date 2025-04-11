@@ -90,8 +90,20 @@ interface IQuestionnaire {
   questions: IQuestion[]
 }
 
+interface Template {
+  id: string
+  name: string
+  description: string | null
+  type: string
+  category: {
+    id: string
+    name: string
+    code: string | null
+  }
+}
+
 export default function TemplatePage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params)
+  const { id } = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [mounted, setMounted] = useState(false)
@@ -99,12 +111,25 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   const [currentSection, setCurrentSection] = useState<string>("")
   const [formProgress, setFormProgress] = useState(0)
 
+  // Fetch template details
+  const { data: template, isLoading: isLoadingTemplate } = useQuery<Template>({
+    queryKey: ['template', id],
+    queryFn: async () => {
+      const response = await fetch(`/api/templates/${id}`)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Failed to fetch template' }))
+        throw new Error(errorData.error || 'Failed to fetch template')
+      }
+      return response.json()
+    }
+  })
+
   // Fetch template fields from the API
   const { data: templateFields = [], isLoading: isLoadingFields, error: templateError } = useQuery<ITemplateField[]>({
-    queryKey: ['templateFields', resolvedParams.id],
+    queryKey: ['templateFields', id],
     queryFn: async () => {
-      console.log('Client - Debug - Fetching fields for template:', resolvedParams.id)
-      const response = await fetch(`/api/templates/${resolvedParams.id}/fields`, {
+      console.log('Client - Debug - Fetching fields for template:', id)
+      const response = await fetch(`/api/templates/${id}/fields`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +138,7 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       })
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        const errorData = await response.json().catch(() => ({ error: 'Failed to fetch template fields' }))
         console.error('Client - Debug - API error:', {
           status: response.status,
           statusText: response.statusText,
@@ -123,6 +148,11 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       }
 
       const data = await response.json()
+      if (!Array.isArray(data)) {
+        console.error('Client - Debug - Invalid response format:', data)
+        throw new Error('Invalid response format')
+      }
+
       console.log('Client - Debug - Received template fields:', {
         count: data.length,
         fields: data.map((f: ITemplateField) => ({
@@ -140,10 +170,10 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
 
   // Fetch questionnaires for the template
   const { data: questionnaires = [], isLoading: isLoadingQuestionnaires } = useQuery<IQuestionnaire[]>({
-    queryKey: ['questionnaires', resolvedParams.id],
+    queryKey: ['questionnaires', id],
     queryFn: async () => {
-      console.log('Client - Debug - Fetching questionnaires for template:', resolvedParams.id)
-      const response = await fetch(`/api/templates/${resolvedParams.id}/questionnaires`, {
+      console.log('Client - Debug - Fetching questionnaires for template:', id)
+      const response = await fetch(`/api/templates/${id}/questionnaires`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -222,16 +252,16 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   }, {})
 
   // Get sorted section names based on the order they appear in the API response
-  const sortedSections = [
+  const sortedSections = Array.from(new Set([
     ...(questionnaires.length > 0 && questionnaires[0]?.questions?.length > 0
-      ? [...new Set(questionnaires[0].questions.map(q => q.section))]
+      ? questionnaires[0].questions.map(q => q.section)
       : []),
     ...sectionOrder.filter(section => templateFields.some(field => field.section === section))
-  ].filter(Boolean)
+  ])).filter(Boolean)
 
   // Log the sections and fields
   console.log('Client - Debug - Current state:', {
-    templateId: resolvedParams.id,
+    templateId: id,
     sections: sortedSections,
     questionnaires: questionnaires.length,
     currentSection,
@@ -258,14 +288,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
     return template?.name || "Document Form"
   }
 
-  if (!mounted || isLoadingFields) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
-
   if (templateError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -286,10 +308,23 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold">{getTemplateName(resolvedParams.id)}</h1>
+          <h1 className="text-3xl font-bold">
+            {isLoadingTemplate ? (
+              <span className="text-muted">Loading template...</span>
+            ) : template?.name ? (
+              template.name
+            ) : (
+              "Document Form"
+            )}
+          </h1>
           <p className="text-muted-foreground">
-            Fill out the form below to generate your document
+            {template?.description || "Fill out the form below to generate your document"}
           </p>
+          {template?.category && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Category: {template.category.name}
+            </p>
+          )}
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => console.log('Saving...')}>

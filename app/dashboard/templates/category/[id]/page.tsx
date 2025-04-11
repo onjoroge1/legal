@@ -9,6 +9,7 @@ import Link from "next/link"
 
 interface Template {
   id: string
+  code: string
   name: string
   description: string
 }
@@ -16,6 +17,7 @@ interface Template {
 interface Category {
   id: string
   name: string
+  slug: string
   description: string
   templates: Template[]
 }
@@ -29,7 +31,7 @@ function TemplateCard({ template }: { template: Template }) {
       </CardHeader>
       <CardContent>
         <Button asChild>
-          <Link href={`/dashboard/templates/${template.id}`}>
+          <Link href={`/dashboard/templates/${template.code || template.id}`}>
             Generate Document
           </Link>
         </Button>
@@ -40,12 +42,12 @@ function TemplateCard({ template }: { template: Template }) {
 
 export default function CategoryPage() {
   const params = useParams()
-  const categoryId = params.id as string
+  const categorySlug = params.id as string
 
   const { data: category, isLoading, error } = useQuery<Category>({
-    queryKey: ['categories', categoryId],
+    queryKey: ['categories', categorySlug],
     queryFn: async () => {
-      const response = await fetch(`/api/dashboard/categories/${categoryId}`)
+      const response = await fetch(`/api/dashboard/categories/${categorySlug}`)
       if (!response.ok) {
         throw new Error('Failed to fetch category')
       }

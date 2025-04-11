@@ -5,11 +5,10 @@ import { prisma } from "@/lib/prisma"
 
 // GET /api/dashboard/categories/[id] - Get a single category with templates
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
-    console.log("[GET /api/dashboard/categories/[id]] Starting request", { id: params.id })
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
@@ -17,13 +16,23 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get category with templates
-    const category = await prisma.category.findUnique({
-      where: { id: params.id },
+    const params = context.params
+    const id = params.id
+    console.log("[GET /api/dashboard/categories/[id]] Starting request", { id })
+
+    // Get category with templates by ID or slug
+    const category = await prisma.category.findFirst({
+      where: {
+        OR: [
+          { id },
+          { slug: id }
+        ]
+      },
       include: {
         templates: {
           select: {
             id: true,
+            code: true,
             name: true,
             description: true
           }
@@ -32,7 +41,7 @@ export async function GET(
     })
 
     if (!category) {
-      console.log("[GET /api/dashboard/categories/[id]] Category not found:", params.id)
+      console.log("[GET /api/dashboard/categories/[id]] Category not found:", id)
       return NextResponse.json({ error: "Category not found" }, { status: 404 })
     }
 

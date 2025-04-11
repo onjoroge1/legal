@@ -6,9 +6,26 @@ async function createRealEstateTemplates() {
   try {
     console.log('Creating real estate templates...')
 
+    // First, ensure the real estate category exists
+    const realEstateCategory = await prisma.category.upsert({
+      where: { id: 'cm9bhpf6d000yvbl0qw9aqww3' },
+      update: {
+        name: 'Real Estate',
+        slug: 'real-estate',
+        description: 'Legal documents for real estate transactions'
+      },
+      create: {
+        id: 'cm9bhpf6d000yvbl0qw9aqww3',
+        name: 'Real Estate',
+        slug: 'real-estate',
+        description: 'Legal documents for real estate transactions'
+      }
+    })
+
     // Create apartment lease template
     const apartmentLease = await prisma.documentTemplate.create({
       data: {
+        id: 'apartment-lease',
         name: 'Apartment Lease Agreement',
         type: 'lease',
         description: 'Standard apartment lease agreement template',
@@ -73,7 +90,7 @@ async function createRealEstateTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -115,6 +132,7 @@ async function createRealEstateTemplates() {
     // Create lease termination template
     const leaseTermination = await prisma.documentTemplate.create({
       data: {
+        id: 'lease-termination',
         name: 'Lease Termination Agreement',
         type: 'termination',
         description: 'Agreement to terminate a lease before its original end date',
@@ -155,7 +173,7 @@ async function createRealEstateTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -184,6 +202,7 @@ async function createRealEstateTemplates() {
     // Create rental application template
     const rentalApplication = await prisma.documentTemplate.create({
       data: {
+        id: 'rental-application',
         name: 'Rental Application Form',
         type: 'application',
         description: 'Application form for potential tenants',
@@ -227,7 +246,7 @@ async function createRealEstateTemplates() {
           'Applicant Signature: _________________',
           'Date: {signingDate}'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -298,7 +317,7 @@ async function createRealEstateTemplates() {
           'Subtenant: _________________',
           'Date: {signingDate}'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',

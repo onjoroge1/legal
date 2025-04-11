@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
   try {
     // Check authentication
@@ -14,33 +14,28 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const params = await context.params
-    const { id } = params
+    const { id } = context.params
 
-    // Get questionnaires for the template
-    const questionnaires = await prisma.questionnaire.findMany({
+    // Try to find template by ID or code
+    const template = await prisma.documentTemplate.findFirst({
       where: {
-        templateId: id
+        OR: [
+          { id },
+          { code: id }
+        ]
       },
       include: {
-        questions: {
-          include: {
-            options: true,
-            dependencies: true
-          },
-          orderBy: {
-            createdAt: 'asc'
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
+        category: true
       }
     })
 
-    return NextResponse.json(questionnaires)
+    if (!template) {
+      return NextResponse.json({ error: 'Template not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(template)
   } catch (error) {
-    console.error('Error fetching questionnaires:', error)
+    console.error('Error fetching template:', error)
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

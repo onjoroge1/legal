@@ -14,14 +14,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Plus, Edit } from "lucide-react"
+import { SearchableSelect } from "@/components/ui/searchable-select"
 
 interface Category {
   id: string
@@ -123,7 +117,7 @@ export function TemplateDialog({ mode, template, onSuccess }: TemplateDialogProp
             </DialogTitle>
             <DialogDescription>
               {mode === "add"
-                ? "Create a new template for generating documents."
+                ? "Create a new template for your documents."
                 : "Update the template details."}
             </DialogDescription>
           </DialogHeader>
@@ -149,18 +143,16 @@ export function TemplateDialog({ mode, template, onSuccess }: TemplateDialogProp
             </div>
             <div className="grid gap-2">
               <Label htmlFor="category">Category</Label>
-              <Select value={categoryId} onValueChange={setCategoryId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                options={categories.map(category => ({
+                  value: category.id,
+                  label: category.name
+                }))}
+                value={categoryId}
+                onValueChange={setCategoryId}
+                placeholder="Select a category"
+                emptyText="No categories found"
+              />
             </div>
           </div>
           <DialogFooter>

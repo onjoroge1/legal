@@ -1,0 +1,1 @@
+SELECT * FROM "Category" WHERE id = 'corporate'; 

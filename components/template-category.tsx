@@ -3,17 +3,18 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 interface TemplateCategoryProps {
+  id: string
   name: string
   description: string
   icon: string
-  onSelect: (category: string) => void
+  onSelect: (categoryId: string) => void
   isSelected: boolean
 }
 
-export function TemplateCategory({ name, description, icon, onSelect, isSelected }: TemplateCategoryProps) {
+export function TemplateCategory({ id, name, description, icon, onSelect, isSelected }: TemplateCategoryProps) {
   const handleClick = () => {
-    console.log(`[TemplateCategory] Clicked category: ${name}, Currently selected: ${isSelected}`)
-    onSelect(name)
+    console.log(`[TemplateCategory] Clicked category: ${name} (${id}), Currently selected: ${isSelected}`)
+    onSelect(id)
   }
 
   return (

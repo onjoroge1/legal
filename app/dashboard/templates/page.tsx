@@ -5,74 +5,50 @@ import { TemplateActions } from "@/components/template-actions"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Briefcase, Scale, Building, Home, FileText, Users, Handshake, Heart, Car } from "lucide-react"
+import { FileText } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/skeleton"
+
+interface Template {
+  id: string
+  code?: string
+  name: string
+  description: string
+}
 
 interface Category {
   id: string
   name: string
+  slug: string
   description: string
   templates: Template[]
 }
 
-interface Template {
-  id: string
-  name: string
-  description: string
-}
-
-interface Questionnaire {
-  id: string
-  name: string
-  description: string
-}
-
-const categoryIcons: { [key: string]: any } = {
-  "Employment & HR": Briefcase,
-  "Business Formation": Building,
-  "Real Estate": Home,
-  "Intellectual Property": FileText,
-  "General Contracts": Scale,
-  "Corporate Governance": Users,
-  "Partnerships & Joint Ventures": Handshake,
-  "Family & Personal": Heart,
-  "Automotive & Transport": Car,
-}
-
-const categoryColors: { [key: string]: string } = {
-  "Employment & HR": "text-blue-500",
-  "Business Formation": "text-green-500",
-  "Real Estate": "text-purple-500",
-  "Intellectual Property": "text-yellow-500",
-  "General Contracts": "text-red-500",
-  "Corporate Governance": "text-indigo-500",
-  "Partnerships & Joint Ventures": "text-emerald-500",
-  "Family & Personal": "text-pink-500",
-  "Automotive & Transport": "text-slate-500",
-}
-
 function CategoryCard({ category }: { category: Category }) {
-  const Icon = categoryIcons[category.name] || FileText
-  const color = categoryColors[category.name] || "text-gray-500"
-  
   return (
     <Link 
-      href={`/dashboard/templates/category/${category.id}`}
+      href={`/dashboard/templates/category/${category.slug}`}
       className="block"
     >
       <Card className="hover:shadow-md transition-shadow h-full">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Icon className={`h-6 w-6 ${color}`} />
+            <FileText className="h-6 w-6 text-primary" />
             <CardTitle>{category.name}</CardTitle>
           </div>
           <CardDescription>{category.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {category.templates.length} templates available
-          </p>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">
+              {category.templates.length} {category.templates.length === 1 ? 'template' : 'templates'} available
+            </p>
+            {category.templates.length === 0 && (
+              <p className="text-xs text-muted-foreground italic">
+                No templates in this category yet
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
     </Link>
@@ -101,7 +77,12 @@ export default function TemplatesPage() {
     queryKey: ['categories'],
     queryFn: async () => {
       console.log("[TemplatesPage] Fetching categories from API")
-      const response = await fetch("/api/dashboard/categories")
+      const response = await fetch("/api/dashboard/categories", {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       console.log("[TemplatesPage] API Response status:", response.status)
       
       if (!response.ok) {
@@ -113,9 +94,10 @@ export default function TemplatesPage() {
       
       const data = await response.json()
       console.log("[TemplatesPage] Received categories:", data)
-      return data
+      return data as Category[]
     },
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    staleTime: 0, // Consider data stale immediately
+    gcTime: 0, // Don't cache at all
   })
 
   useEffect(() => {
@@ -127,12 +109,6 @@ export default function TemplatesPage() {
     console.log("[TemplatesPage] Component not mounted yet")
     return null
   }
-
-  console.log("[TemplatesPage] Rendering with state:", {
-    categoriesCount: categories?.length ?? 0,
-    isLoading,
-    error: error ? error.message : null
-  })
 
   return (
     <div key="templates-page" className="container mx-auto py-6">

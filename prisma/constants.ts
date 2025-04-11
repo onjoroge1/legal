@@ -1,4 +1,4 @@
-export interface Template {
+export interface PrismaTemplate {
   id: string
   name: string
   description: string
@@ -6,16 +6,16 @@ export interface Template {
   category?: string
 }
 
-export interface TemplateCategory {
+export interface PrismaTemplateCategory {
   id: string
   name: string
   description: string
-  templates: Template[]
+  templates: PrismaTemplate[]
 }
 
-export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
+export const PRISMA_TEMPLATE_CATEGORIES: PrismaTemplateCategory[] = [
   {
-    id: "employment",
+    id: "cm9bh3u2e0000vbcg33mxuc64",
     name: "Employment & HR",
     description: "Employment contracts, offer letters, NDAs, and other HR documents",
     templates: [
@@ -60,9 +60,9 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
     ]
   },
   {
-    id: "real-estate",
+    id: "cm9bh3u330002vbcg4nkjeixo",
     name: "Real Estate",
-    description: "Legal documents for real estate transactions",
+    description: "Lease agreements, property contracts, and real estate documents",
     templates: [
       {
         id: "apartment-lease",

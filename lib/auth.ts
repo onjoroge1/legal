@@ -25,6 +25,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     verifyRequest: "/verify-request",
+    error: "/auth/error",
   },
   providers: [
     GoogleProvider({
@@ -49,6 +50,13 @@ export const authOptions: NextAuthOptions = {
           where: {
             email: credentials.email,
           },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            password: true,
+            isAdmin: true,
+          },
         })
 
         if (!user) {
@@ -69,6 +77,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          isAdmin: user.isAdmin,
         }
       },
     }),
@@ -87,9 +96,10 @@ export const authOptions: NextAuthOptions = {
       console.log("[Auth] Session callback - session:", session)
       return session
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       console.log("[Auth] JWT callback - token:", token)
       console.log("[Auth] JWT callback - user:", user)
+      console.log("[Auth] JWT callback - account:", account)
       
       const email = token.email
       if (typeof email !== 'string') {

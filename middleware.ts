@@ -22,9 +22,9 @@ export async function middleware(request: NextRequest) {
     path
   })
   
-  // Skip middleware for API routes and static files
-  if (isApiPath || isStaticPath) {
-    console.log("[Middleware] Skipping middleware for API/static path")
+  // Skip middleware for static files only
+  if (isStaticPath) {
+    console.log("[Middleware] Skipping middleware for static path")
     return NextResponse.next()
   }
 
@@ -35,9 +35,14 @@ export async function middleware(request: NextRequest) {
   })
   console.log("[Middleware] Auth token present:", !!token)
 
-  // If trying to access protected route without token, redirect to login
+  // If trying to access protected route or API without token, redirect to login or return 401
   if (!isPublicPath && !token) {
-    console.log("[Middleware] No token for protected route, redirecting to login")
+    console.log("[Middleware] No token for protected route")
+    if (isApiPath) {
+      console.log("[Middleware] Returning 401 for API route")
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    console.log("[Middleware] Redirecting to login")
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('callbackUrl', path)
     return NextResponse.redirect(loginUrl)

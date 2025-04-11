@@ -101,8 +101,8 @@ model Document {
   updatedAt     DateTime               @updatedAt
   userId        String
   templateId    String?
-  template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   user          User                   @relation(fields: [userId], references: [id])
+  template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   collaborators DocumentCollaborator[]
   parties       DocumentParty[]
   signatures    DocumentSignature[]
@@ -121,30 +121,31 @@ model DocumentParty {
 }
 
 model Questionnaire {
-  id          String    @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
   description String?
   templateId  String
-  template    DocumentTemplate @relation(fields: [templateId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  metadata    Json?
   questions   Question[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  template    DocumentTemplate @relation(fields: [templateId], references: [id])
 }
 
 model Question {
-  id             String       @id @default(cuid())
-  label          String
-  type           String      // text, select, multiselect, etc.
-  required       Boolean     @default(false)
-  section        String
-  helpText       String?
-  placeholder    String?
+  id              String               @id @default(cuid())
+  label           String
+  type            String
+  required        Boolean              @default(false)
+  section         String
+  helpText        String?
+  placeholder     String?
   questionnaireId String
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
-  options        QuestionOption[]
-  dependencies   QuestionDependency[]
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  questionnaire   Questionnaire        @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  dependencies    QuestionDependency[]
+  options         QuestionOption[]
 }
 
 model QuestionOption {
@@ -152,57 +153,55 @@ model QuestionOption {
   value      String
   label      String?
   questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model QuestionDependency {
-  id                String   @id @default(cuid())
-  questionId        String
-  question          Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(cuid())
+  questionId          String
   dependsOnQuestionId String
-  conditionType     String   // equals, not_equals, greater_than, etc.
-  conditionValue    String
-  createdAt         DateTime @default(now())
+  conditionType       String
+  conditionValue      String
+  createdAt           DateTime @default(now())
+  question            Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model DocumentTemplate {
-  id            String         @id @default(cuid())
-  code          String?        // Making it optional initially
-  name          String
-  type          String
-  description   String?
-  content       String?        // Making it optional before removal
-  state         String?
-  categoryId    String
-  category      Category       @relation(fields: [categoryId], references: [id])
-  version       String         @default("1.0.0")
-  metadata      Json?
-  variables     Json?          // Making it optional before removal
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  documents     Document[]
-  fields        TemplateField[]
+  id             String          @id @default(cuid())
+  code           String?         @unique
+  name           String
+  type           String
+  description    String?
+  content        String?
+  state          String?
+  categoryId     String
+  version        String          @default("1.0.0")
+  metadata       Json?
+  variables      Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  documents      Document[]
+  category       Category        @relation(fields: [categoryId], references: [id])
   questionnaires Questionnaire[]
-
-  @@unique([code])            // Add unique constraint for when we make it required
+  fields         TemplateField[]
 }
 
 model TemplateField {
-  id            String            @id @default(cuid())
-  fieldId       String            // e.g. "state", "propertyAddress"
-  label         String
-  type          String
-  required      Boolean           @default(false)
-  section       String
-  helpText      String?
-  placeholder   String?
-  templateId    String
-  template      DocumentTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  options       FieldOption[]
-  dependencies  FieldDependency[]
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id           String            @id @default(cuid())
+  fieldId      String
+  label        String
+  type         String
+  required     Boolean           @default(false)
+  section      String
+  helpText     String?
+  placeholder  String?
+  templateId   String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  dependencies FieldDependency[]
+  options      FieldOption[]
+  template     DocumentTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@unique([templateId, fieldId])
 }
@@ -212,18 +211,18 @@ model FieldOption {
   value     String
   label     String?
   fieldId   String
-  field     TemplateField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now())
+  field     TemplateField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model FieldDependency {
-  id                String        @id @default(cuid())
+  id               String        @id @default(cuid())
   fieldId          String
-  field            TemplateField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
   dependsOnFieldId String
-  conditionType    String        // e.g. "equals", "not_equals", "greater_than"
+  conditionType    String
   conditionValue   String
   createdAt        DateTime      @default(now())
+  field            TemplateField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model DocumentCollaborator {
@@ -233,8 +232,8 @@ model DocumentCollaborator {
   role       String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id])
   document   Document @relation(fields: [documentId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model DocumentSignature {
@@ -243,15 +242,16 @@ model DocumentSignature {
   userId     String
   signedAt   DateTime @default(now())
   signature  String
-  user       User     @relation(fields: [userId], references: [id])
   document   Document @relation(fields: [documentId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model Category {
-  id          String           @id @default(cuid())
+  id          String             @id @default(cuid())
   name        String
+  slug        String             @unique
   description String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   templates   DocumentTemplate[]
 }

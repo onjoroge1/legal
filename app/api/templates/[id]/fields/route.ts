@@ -33,7 +33,7 @@ const sectionOrder = [
 
 export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
   try {
     // Check authentication
@@ -42,8 +42,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const params = await context.params
-    const { id } = params
+    const { id } = context.params
     console.log('API Route - Debug - Request params:', { id })
 
     // First, let's check if the template exists
@@ -56,6 +55,16 @@ export async function GET(
           include: {
             options: true,
             dependencies: true
+          }
+        },
+        questionnaires: {
+          include: {
+            questions: {
+              include: {
+                options: true,
+                dependencies: true
+              }
+            }
           }
         }
       }
@@ -73,30 +82,31 @@ export async function GET(
       code: template.code,
       name: template.name,
       fieldsCount: template.fields.length,
-      fields: template.fields
+      questionnairesCount: template.questionnaires.length
     })
 
-    // Transform fields to include their options and dependencies
+    // Transform template fields
     const transformedFields = template.fields.map(field => ({
       ...field,
       options: field.options || [],
       dependencies: field.dependencies || []
     }))
 
-    console.log('API Route - Found template:', {
-      id: template.id,
-      code: template.code,
-      name: template.name,
-      fieldsCount: transformedFields.length
-    })
+    // Transform questionnaire questions
+    const questionnaireQuestions = template.questionnaires.flatMap(questionnaire => 
+      questionnaire.questions.map(question => ({
+        ...question,
+        options: question.options || [],
+        dependencies: question.dependencies || []
+      }))
+    )
 
-    // Sort sections based on the order they appear in the template
-    const sections = Array.from(new Set(transformedFields.map(field => field.section)))
-    console.log('API Route - Sections order after sorting:', sections)
+    // Combine both fields and questions
+    const allFields = [...transformedFields, ...questionnaireQuestions]
 
-    console.log('API Route - Successfully transformed fields:', transformedFields.length)
+    console.log('API Route - Successfully transformed fields:', allFields.length)
 
-    return NextResponse.json(transformedFields)
+    return NextResponse.json(allFields)
   } catch (error) {
     console.error('Error fetching template fields:', error)
     return NextResponse.json(
