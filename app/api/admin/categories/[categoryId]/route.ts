@@ -61,14 +61,17 @@ export async function PATCH(
 
 // DELETE /api/admin/categories/[categoryId] - Delete a category
 export async function DELETE(
-  request: Request,
+  req: Request,
   { params }: { params: { categoryId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { 
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // Check if category exists
@@ -77,7 +80,10 @@ export async function DELETE(
     })
 
     if (!existingCategory) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 })
+      return new Response(JSON.stringify({ error: "Category not found" }), { 
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // Delete the category
@@ -85,12 +91,15 @@ export async function DELETE(
       where: { id: params.categoryId }
     })
 
-    return NextResponse.json({ success: true })
+    return new Response(JSON.stringify({ success: true }), { 
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
   } catch (error) {
     console.error("[DELETE /api/admin/categories] Error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return new Response(JSON.stringify({ error: "Internal server error" }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 } 
