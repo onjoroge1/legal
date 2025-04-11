@@ -51,12 +51,15 @@ export default async function seedFamily() {
 
     // Get or create family category
     const familyCategory = await prisma.category.upsert({
-      where: { id: 'family' },
+      where: {
+        id: "family"
+      },
       update: {},
       create: {
-        id: 'family',
-        name: 'Family',
-        description: 'Legal documents related to family matters including child care, medical consent, and more'
+        id: "family",
+        name: "Family",
+        description: "Legal documents related to family matters including child care, medical consent, and more",
+        slug: "family"
       }
     })
 
