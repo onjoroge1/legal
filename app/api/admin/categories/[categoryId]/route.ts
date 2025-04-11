@@ -62,7 +62,7 @@ export async function PATCH(
 // DELETE /api/admin/categories/[categoryId] - Delete a category
 export async function DELETE(
   request: Request,
-  context: { params: { categoryId: string } }
+  { params }: { params: { categoryId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -71,11 +71,18 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { categoryId } = context.params
+    // Check if category exists
+    const existingCategory = await prisma.category.findUnique({
+      where: { id: params.categoryId }
+    })
+
+    if (!existingCategory) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 })
+    }
 
     // Delete the category
     await prisma.category.delete({
-      where: { id: categoryId }
+      where: { id: params.categoryId }
     })
 
     return NextResponse.json({ success: true })
