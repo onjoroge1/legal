@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Save, FileDown, Send, Sparkles, Trash2 } from "lucide-react"
+import { ArrowLeft, Save, FileDown, Send, Sparkles, Trash2, Loader2 } from "lucide-react"
 import Link from "next/link"
 import DocumentEditor from "@/components/dashboard/document-editor"
 import { useState, useEffect } from "react"
@@ -24,17 +24,23 @@ interface Party {
 export default function CreateDocumentPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [activeTab, setActiveTab] = useState("details")
   const [parties, setParties] = useState<Party[]>([
     { name: "", type: "individual", address: "", email: "" },
     { name: "", type: "individual", address: "", email: "" },
   ])
   const [title, setTitle] = useState(searchParams.get("title") || "")
   const [type, setType] = useState(searchParams.get("type") || "agreement")
+  const [customType, setCustomType] = useState("")
+  const [category, setCategory] = useState("")
+  const [jurisdiction, setJurisdiction] = useState("")
   const [description, setDescription] = useState("")
   const [state, setState] = useState("ca")
   const [generatedContent, setGeneratedContent] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
+  const [suggestedTypes, setSuggestedTypes] = useState<string[]>([])
   const { toast } = useToast()
 
   useEffect(() => {
@@ -56,6 +62,59 @@ export default function CreateDocumentPage() {
         })
     }
   }, [searchParams, toast])
+
+  // Function to get document type suggestions
+  const getDocumentTypeSuggestions = async (query: string) => {
+    if (!query.trim()) {
+      setSuggestedTypes([])
+      return
+    }
+
+    try {
+      setIsSearching(true)
+      const response = await fetch("/api/documents/suggest-types", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to get suggestions")
+      }
+
+      const data = await response.json()
+      setSuggestedTypes(data.suggestions)
+    } catch (error) {
+      console.error("Error getting suggestions:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to get document type suggestions",
+        variant: "destructive",
+      })
+      // Show some default suggestions even if the API fails
+      setSuggestedTypes([
+        "Non-Disclosure Agreement",
+        "Service Agreement",
+        "Employment Contract",
+        "Lease Agreement",
+        "Purchase Agreement"
+      ])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  // Debounce the search to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getDocumentTypeSuggestions(description)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [description])
 
   const addParty = () => {
     setParties([...parties, { name: "", type: "individual", address: "", email: "" }])
@@ -89,19 +148,27 @@ export default function CreateDocumentPage() {
         },
         body: JSON.stringify({
           title,
-          type,
+          type: type === "custom" ? customType : type,
+          category,
+          jurisdiction,
           description,
           state,
           parties,
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to generate document")
+        throw new Error(data.details || data.error || "Failed to generate document")
       }
 
-      const data = await response.json()
+      if (!data.content) {
+        throw new Error("No content was generated")
+      }
+
       setGeneratedContent(data.content)
+      setActiveTab("preview")
       toast({
         title: "Document Generated",
         description: "Your document has been generated successfully.",
@@ -110,8 +177,9 @@ export default function CreateDocumentPage() {
       console.error("Error generating document:", error)
       toast({
         title: "Error",
-        description: "Failed to generate document. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to generate document. Please try again.",
         variant: "destructive",
+        duration: 5000,
       })
     } finally {
       setIsGenerating(false)
@@ -122,7 +190,9 @@ export default function CreateDocumentPage() {
     console.log("[Document Save] Save button clicked")
     console.log("[Document Save] Current state:", { 
       title, 
-      type, 
+      type: type === "custom" ? customType : type,
+      category,
+      jurisdiction,
       description, 
       state, 
       hasContent: !!generatedContent,
@@ -154,7 +224,9 @@ export default function CreateDocumentPage() {
       setIsSaving(true)
       const documentData = {
         title,
-        type,
+        type: type === "custom" ? customType : type,
+        category,
+        jurisdiction,
         description,
         state,
         content: generatedContent,
@@ -162,7 +234,9 @@ export default function CreateDocumentPage() {
       }
       console.log("[Document Save] Sending document data:", { 
         title, 
-        type, 
+        type: type === "custom" ? customType : type,
+        category,
+        jurisdiction,
         description, 
         state, 
         contentLength: generatedContent.length,
@@ -238,7 +312,7 @@ export default function CreateDocumentPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="details" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="details">Document Details</TabsTrigger>
           <TabsTrigger value="editor">Document Editor</TabsTrigger>
@@ -264,18 +338,99 @@ export default function CreateDocumentPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="document-type">Document Type</Label>
-                  <Select value={type} onValueChange={setType}>
-                    <SelectTrigger id="document-type">
-                      <SelectValue placeholder="Select document type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="agreement">Agreement</SelectItem>
-                      <SelectItem value="contract">Contract</SelectItem>
-                      <SelectItem value="letter">Legal Letter</SelectItem>
-                      <SelectItem value="policy">Policy</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-4">
+                    <Select value={type} onValueChange={setType}>
+                      <SelectTrigger id="document-type">
+                        <SelectValue placeholder="Select document type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="agreement">Agreement</SelectItem>
+                        <SelectItem value="contract">Contract</SelectItem>
+                        <SelectItem value="letter">Legal Letter</SelectItem>
+                        <SelectItem value="policy">Policy</SelectItem>
+                        <SelectItem value="custom">Custom Document</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {type === "custom" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="custom-type">Custom Document Type</Label>
+                        <Input
+                          id="custom-type"
+                          placeholder="Enter your custom document type"
+                          value={customType}
+                          onChange={(e) => setCustomType(e.target.value)}
+                        />
+                        <p className="text-sm text-muted-foreground">
+                          Describe the type of document you want to create
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Document Type Suggestions */}
+                    {suggestedTypes.length > 0 && (
+                      <div className="space-y-2">
+                        <Label>Suggested Document Types</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {suggestedTypes.map((suggestion, index) => (
+                            <Button
+                              key={index}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setType("custom")
+                                setCustomType(suggestion)
+                              }}
+                            >
+                              {suggestion}
+                            </Button>
+                          ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Based on your description, these document types might be relevant
+                        </p>
+                      </div>
+                    )}
+
+                    {isSearching && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Finding relevant document types...</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <Label htmlFor="document-category">Document Category</Label>
+                      <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger id="document-category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="business">Business</SelectItem>
+                          <SelectItem value="employment">Employment</SelectItem>
+                          <SelectItem value="real-estate">Real Estate</SelectItem>
+                          <SelectItem value="intellectual-property">Intellectual Property</SelectItem>
+                          <SelectItem value="personal">Personal</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="document-jurisdiction">Jurisdiction</Label>
+                      <Select value={jurisdiction} onValueChange={setJurisdiction}>
+                        <SelectTrigger id="document-jurisdiction">
+                          <SelectValue placeholder="Select jurisdiction" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="federal">Federal</SelectItem>
+                          <SelectItem value="state">State</SelectItem>
+                          <SelectItem value="local">Local</SelectItem>
+                          <SelectItem value="international">International</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -297,57 +452,79 @@ export default function CreateDocumentPage() {
                     <SelectValue placeholder="Select state" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="al">Alabama</SelectItem>
-                    <SelectItem value="ak">Alaska</SelectItem>
-                    <SelectItem value="az">Arizona</SelectItem>
-                    <SelectItem value="ar">Arkansas</SelectItem>
-                    <SelectItem value="ca">California</SelectItem>
-                    <SelectItem value="co">Colorado</SelectItem>
-                    <SelectItem value="ct">Connecticut</SelectItem>
-                    <SelectItem value="de">Delaware</SelectItem>
-                    <SelectItem value="fl">Florida</SelectItem>
-                    <SelectItem value="ga">Georgia</SelectItem>
-                    <SelectItem value="hi">Hawaii</SelectItem>
-                    <SelectItem value="id">Idaho</SelectItem>
-                    <SelectItem value="il">Illinois</SelectItem>
-                    <SelectItem value="in">Indiana</SelectItem>
-                    <SelectItem value="ia">Iowa</SelectItem>
-                    <SelectItem value="ks">Kansas</SelectItem>
-                    <SelectItem value="ky">Kentucky</SelectItem>
-                    <SelectItem value="la">Louisiana</SelectItem>
-                    <SelectItem value="me">Maine</SelectItem>
-                    <SelectItem value="md">Maryland</SelectItem>
-                    <SelectItem value="ma">Massachusetts</SelectItem>
-                    <SelectItem value="mi">Michigan</SelectItem>
-                    <SelectItem value="mn">Minnesota</SelectItem>
-                    <SelectItem value="ms">Mississippi</SelectItem>
-                    <SelectItem value="mo">Missouri</SelectItem>
-                    <SelectItem value="mt">Montana</SelectItem>
-                    <SelectItem value="ne">Nebraska</SelectItem>
-                    <SelectItem value="nv">Nevada</SelectItem>
-                    <SelectItem value="nh">New Hampshire</SelectItem>
-                    <SelectItem value="nj">New Jersey</SelectItem>
-                    <SelectItem value="nm">New Mexico</SelectItem>
-                    <SelectItem value="ny">New York</SelectItem>
-                    <SelectItem value="nc">North Carolina</SelectItem>
-                    <SelectItem value="nd">North Dakota</SelectItem>
-                    <SelectItem value="oh">Ohio</SelectItem>
-                    <SelectItem value="ok">Oklahoma</SelectItem>
-                    <SelectItem value="or">Oregon</SelectItem>
-                    <SelectItem value="pa">Pennsylvania</SelectItem>
-                    <SelectItem value="ri">Rhode Island</SelectItem>
-                    <SelectItem value="sc">South Carolina</SelectItem>
-                    <SelectItem value="sd">South Dakota</SelectItem>
-                    <SelectItem value="tn">Tennessee</SelectItem>
-                    <SelectItem value="tx">Texas</SelectItem>
-                    <SelectItem value="ut">Utah</SelectItem>
-                    <SelectItem value="vt">Vermont</SelectItem>
-                    <SelectItem value="va">Virginia</SelectItem>
-                    <SelectItem value="wa">Washington</SelectItem>
-                    <SelectItem value="wv">West Virginia</SelectItem>
-                    <SelectItem value="wi">Wisconsin</SelectItem>
-                    <SelectItem value="wy">Wyoming</SelectItem>
-                    <SelectItem value="dc">District of Columbia</SelectItem>
+                    {jurisdiction === "international" ? (
+                      <>
+                        <SelectItem value="us">United States</SelectItem>
+                        <SelectItem value="ca">Canada</SelectItem>
+                        <SelectItem value="uk">United Kingdom</SelectItem>
+                        <SelectItem value="au">Australia</SelectItem>
+                        <SelectItem value="nz">New Zealand</SelectItem>
+                        <SelectItem value="de">Germany</SelectItem>
+                        <SelectItem value="fr">France</SelectItem>
+                        <SelectItem value="it">Italy</SelectItem>
+                        <SelectItem value="es">Spain</SelectItem>
+                        <SelectItem value="jp">Japan</SelectItem>
+                        <SelectItem value="cn">China</SelectItem>
+                        <SelectItem value="in">India</SelectItem>
+                        <SelectItem value="br">Brazil</SelectItem>
+                        <SelectItem value="mx">Mexico</SelectItem>
+                        <SelectItem value="za">South Africa</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="al">Alabama</SelectItem>
+                        <SelectItem value="ak">Alaska</SelectItem>
+                        <SelectItem value="az">Arizona</SelectItem>
+                        <SelectItem value="ar">Arkansas</SelectItem>
+                        <SelectItem value="ca">California</SelectItem>
+                        <SelectItem value="co">Colorado</SelectItem>
+                        <SelectItem value="ct">Connecticut</SelectItem>
+                        <SelectItem value="de">Delaware</SelectItem>
+                        <SelectItem value="fl">Florida</SelectItem>
+                        <SelectItem value="ga">Georgia</SelectItem>
+                        <SelectItem value="hi">Hawaii</SelectItem>
+                        <SelectItem value="id">Idaho</SelectItem>
+                        <SelectItem value="il">Illinois</SelectItem>
+                        <SelectItem value="in">Indiana</SelectItem>
+                        <SelectItem value="ia">Iowa</SelectItem>
+                        <SelectItem value="ks">Kansas</SelectItem>
+                        <SelectItem value="ky">Kentucky</SelectItem>
+                        <SelectItem value="la">Louisiana</SelectItem>
+                        <SelectItem value="me">Maine</SelectItem>
+                        <SelectItem value="md">Maryland</SelectItem>
+                        <SelectItem value="ma">Massachusetts</SelectItem>
+                        <SelectItem value="mi">Michigan</SelectItem>
+                        <SelectItem value="mn">Minnesota</SelectItem>
+                        <SelectItem value="ms">Mississippi</SelectItem>
+                        <SelectItem value="mo">Missouri</SelectItem>
+                        <SelectItem value="mt">Montana</SelectItem>
+                        <SelectItem value="ne">Nebraska</SelectItem>
+                        <SelectItem value="nv">Nevada</SelectItem>
+                        <SelectItem value="nh">New Hampshire</SelectItem>
+                        <SelectItem value="nj">New Jersey</SelectItem>
+                        <SelectItem value="nm">New Mexico</SelectItem>
+                        <SelectItem value="ny">New York</SelectItem>
+                        <SelectItem value="nc">North Carolina</SelectItem>
+                        <SelectItem value="nd">North Dakota</SelectItem>
+                        <SelectItem value="oh">Ohio</SelectItem>
+                        <SelectItem value="ok">Oklahoma</SelectItem>
+                        <SelectItem value="or">Oregon</SelectItem>
+                        <SelectItem value="pa">Pennsylvania</SelectItem>
+                        <SelectItem value="ri">Rhode Island</SelectItem>
+                        <SelectItem value="sc">South Carolina</SelectItem>
+                        <SelectItem value="sd">South Dakota</SelectItem>
+                        <SelectItem value="tn">Tennessee</SelectItem>
+                        <SelectItem value="tx">Texas</SelectItem>
+                        <SelectItem value="ut">Utah</SelectItem>
+                        <SelectItem value="vt">Vermont</SelectItem>
+                        <SelectItem value="va">Virginia</SelectItem>
+                        <SelectItem value="wa">Washington</SelectItem>
+                        <SelectItem value="wv">West Virginia</SelectItem>
+                        <SelectItem value="wi">Wisconsin</SelectItem>
+                        <SelectItem value="wy">Wyoming</SelectItem>
+                        <SelectItem value="dc">District of Columbia</SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -470,7 +647,17 @@ export default function CreateDocumentPage() {
             </CardHeader>
             <CardContent>
               <div className="border rounded-md p-6 min-h-[500px] bg-white">
-                {generatedContent || (
+                {generatedContent ? (
+                  <div className="prose max-w-none">
+                    <div className="text-center mb-8">
+                      <h1 className="text-2xl font-bold mb-2 uppercase">{title}</h1>
+                      <p className="text-sm text-gray-500 text-center">Generated on {new Date().toLocaleDateString()}</p>
+                    </div>
+                    <div className="whitespace-pre-wrap font-serif">
+                      {generatedContent}
+                    </div>
+                  </div>
+                ) : (
                   <div className="text-center text-muted-foreground">
                     Generate a document to see the preview
                   </div>
