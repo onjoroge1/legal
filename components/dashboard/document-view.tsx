@@ -13,6 +13,7 @@ import { ArrowLeft, Save, FileDown, Send, Sparkles, Trash2, FileText, Clock, Che
 import Link from "next/link"
 import DocumentEditor from "@/components/dashboard/document-editor"
 import { useToast } from "@/components/ui/use-toast"
+import { convertToPDF, convertToDOCX } from "@/utils/document-converter"
 
 interface Party {
   id: string
@@ -41,11 +42,13 @@ export default function DocumentView() {
   const router = useRouter()
   console.log("[Document View] Params:", params)
   
-  const [document, setDocument] = useState<Document | null>(null)
+  const [currentDocument, setCurrentDocument] = useState<Document | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
+  const [downloadFormat, setDownloadFormat] = useState("pdf")
+  const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     console.log("[Document View] Component mounted with ID:", params.id)
@@ -75,7 +78,6 @@ export default function DocumentView() {
         },
       })
       console.log("[Document View] Fetch response status:", response.status)
-      console.log("[Document View] Fetch response headers:", Object.fromEntries(response.headers.entries()))
       
       if (!response.ok) {
         const errorData = await response.json()
@@ -85,15 +87,7 @@ export default function DocumentView() {
 
       const data = await response.json()
       console.log("[Document View] Document fetched successfully:", data.id)
-      console.log("[Document View] Document data:", {
-        id: data.id,
-        title: data.title,
-        type: data.type,
-        status: data.status,
-        hasContent: !!data.content,
-        partiesCount: data.parties?.length
-      })
-      setDocument(data)
+      setCurrentDocument(data)
     } catch (error) {
       console.error("[Document View] Error fetching document:", error)
       setError(error instanceof Error ? error.message : "Failed to fetch document")
@@ -108,23 +102,23 @@ export default function DocumentView() {
   }
 
   const updateDocument = async () => {
-    if (!document) return
+    if (!currentDocument) return
 
     try {
       console.log("[Document View] Starting document update")
       setIsSaving(true)
-      const response = await fetch(`/api/documents/${document.id}`, {
+      const response = await fetch(`/api/documents/${currentDocument.id}`, {
         method: "PUT",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: document.title,
-          type: document.type,
-          description: document.description,
-          state: document.state,
-          content: document.content,
+          title: currentDocument.title,
+          type: currentDocument.type,
+          description: currentDocument.description,
+          state: currentDocument.state,
+          content: currentDocument.content,
         }),
       })
 
@@ -137,7 +131,7 @@ export default function DocumentView() {
 
       const updatedDoc = await response.json()
       console.log("[Document View] Document updated successfully:", updatedDoc.id)
-      setDocument(updatedDoc)
+      setCurrentDocument(updatedDoc)
       toast({
         title: "Document Updated",
         description: "Your document has been updated successfully.",
@@ -151,6 +145,61 @@ export default function DocumentView() {
       })
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleDownload = async () => {
+    if (!currentDocument) return
+
+    try {
+      setIsDownloading(true)
+      
+      const response = await fetch(`/api/documents/${currentDocument.id}/convert`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ format: downloadFormat }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to download document")
+      }
+
+      // Get the filename from the Content-Disposition header
+      const contentDisposition = response.headers.get("Content-Disposition")
+      const filename = contentDisposition
+        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
+        : `${currentDocument.title}.${downloadFormat}`
+
+      // Create a blob from the response
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      
+      // Create a temporary link and trigger download
+      const link = document.createElement("a") as HTMLAnchorElement
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+
+      toast({
+        title: "Success",
+        description: "Document downloaded successfully",
+      })
+    } catch (error) {
+      console.error("Download error:", error)
+      toast({
+        title: "Error",
+        description: "Failed to download document",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDownloading(false)
     }
   }
 
@@ -193,7 +242,7 @@ export default function DocumentView() {
     )
   }
 
-  if (!document) {
+  if (!currentDocument) {
     console.log("[Document View] No document found")
     return (
       <div className="flex items-center justify-center h-screen">
@@ -210,7 +259,7 @@ export default function DocumentView() {
     )
   }
 
-  console.log("[Document View] Rendering document:", document.id)
+  console.log("[Document View] Rendering document:", currentDocument.id)
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -223,7 +272,7 @@ export default function DocumentView() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{document.title}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{currentDocument.title}</h1>
             <p className="text-muted-foreground">View and edit your document</p>
           </div>
         </div>
@@ -237,10 +286,29 @@ export default function DocumentView() {
             <Save className="h-4 w-4" />
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
-          <Button className="gap-1">
-            <FileDown className="h-4 w-4" />
-            Download
-          </Button>
+          <div className="flex items-center gap-2">
+            <Select
+              value={downloadFormat}
+              onValueChange={setDownloadFormat}
+            >
+              <SelectTrigger className="w-[100px]">
+                <SelectValue placeholder="Format" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="txt">TXT</SelectItem>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="docx">DOCX</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button 
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="gap-1"
+            >
+              <FileDown className="h-4 w-4" />
+              {isDownloading ? "Downloading..." : "Download"}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -262,15 +330,15 @@ export default function DocumentView() {
                 <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
-                  value={document.title}
-                  onChange={(e) => setDocument({ ...document, title: e.target.value })}
+                  value={currentDocument.title}
+                  onChange={(e) => setCurrentDocument({ ...currentDocument, title: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="type">Type</Label>
                 <Select
-                  value={document.type}
-                  onValueChange={(value) => setDocument({ ...document, type: value })}
+                  value={currentDocument.type}
+                  onValueChange={(value) => setCurrentDocument({ ...currentDocument, type: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select document type" />
@@ -286,15 +354,15 @@ export default function DocumentView() {
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  value={document.description || ""}
-                  onChange={(e) => setDocument({ ...document, description: e.target.value })}
+                  value={currentDocument.description || ""}
+                  onChange={(e) => setCurrentDocument({ ...currentDocument, description: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="state">State</Label>
                 <Select
-                  value={document.state || ""}
-                  onValueChange={(value) => setDocument({ ...document, state: value })}
+                  value={currentDocument.state || ""}
+                  onValueChange={(value) => setCurrentDocument({ ...currentDocument, state: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select state" />
@@ -318,8 +386,8 @@ export default function DocumentView() {
             </CardHeader>
             <CardContent>
               <DocumentEditor
-                content={document.content}
-                onChange={(content) => setDocument({ ...document, content })}
+                content={currentDocument.content}
+                onChange={(content) => setCurrentDocument({ ...currentDocument, content })}
               />
             </CardContent>
           </Card>
@@ -336,15 +404,15 @@ export default function DocumentView() {
                 <div className="p-8 max-w-4xl mx-auto">
                   {/* Document Header */}
                   <div className="text-center mb-16">
-                    <h1 className="text-4xl font-extrabold uppercase tracking-wider mb-12">{document.title}</h1>
+                    <h1 className="text-4xl font-extrabold uppercase tracking-wider mb-12">{currentDocument.title}</h1>
                     <p className="text-base leading-relaxed">
-                      This {document.title} (the "Agreement") is entered into as of {new Date().toLocaleDateString()} by and between:
+                      This {currentDocument.title} (the "Agreement") is entered into as of {new Date().toLocaleDateString()} by and between:
                     </p>
                   </div>
 
                   {/* Document Parties */}
                   <div className="mb-12">
-                    {document.parties && document.parties.map((party, index) => (
+                    {currentDocument.parties && currentDocument.parties.map((party, index) => (
                       <div key={party.id} className="mb-6">
                         <p className="leading-relaxed">
                           <span className="font-bold">{party.type === 'disclosing' ? 'Disclosing Party' : 'Receiving Party'}:</span>{' '}
@@ -356,7 +424,7 @@ export default function DocumentView() {
 
                   {/* Document Content */}
                   <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert">
-                    {document.content.split('\n').map((paragraph, index) => {
+                    {currentDocument.content.split('\n').map((paragraph, index) => {
                       // Main section header (##)
                       if (paragraph.startsWith('##')) {
                         return (
@@ -449,10 +517,29 @@ export default function DocumentView() {
                 <Send className="h-4 w-4" />
                 Send for Review
               </Button>
-              <Button className="gap-1">
-                <FileDown className="h-4 w-4" />
-                Download
-              </Button>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={downloadFormat}
+                  onValueChange={setDownloadFormat}
+                >
+                  <SelectTrigger className="w-[100px]">
+                    <SelectValue placeholder="Format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="txt">TXT</SelectItem>
+                    <SelectItem value="pdf">PDF</SelectItem>
+                    <SelectItem value="docx">DOCX</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="gap-1"
+                >
+                  <FileDown className="h-4 w-4" />
+                  {isDownloading ? "Downloading..." : "Download"}
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         </TabsContent>

@@ -6,104 +6,87 @@ import { prisma } from "@/lib/prisma"
 export async function POST(req: Request) {
   try {
     console.log("[Document Creation] Starting document creation process")
+    console.log("[Document Creation] Request URL:", req.url)
+    
+    // Log the request body
+    const body = await req.json()
+    console.log("[Document Creation] Received body:", body)
+    
     const session = await getServerSession(authOptions)
-    console.log("[Document Creation] Session:", session)
     
     if (!session?.user?.email) {
-      console.log("[Document Creation] No session found, returning 401")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    console.log("[Document Creation] Session found for user:", session.user.email)
-    const body = await req.json()
-    console.log("[Document Creation] Request body:", body)
-    const { title, type, category, jurisdiction, description, state, content, parties } = body
+    const { title, type, jurisdiction, description, state, content, parties, status, metadata } = body
 
     // Validate required fields
-    if (!title || !type || !content) {
-      console.log("[Document Creation] Missing required fields")
+    if (!title || !type || !content || !status) {
       return NextResponse.json({ 
         error: "Missing required fields",
         details: {
           title: !title,
           type: !type,
-          content: !content
+          content: !content,
+          status: !status
         }
       }, { status: 400 })
     }
-
-    console.log("[Document Creation] Received document data:", { 
-      title, 
-      type, 
-      category,
-      jurisdiction,
-      description, 
-      state, 
-      partiesCount: parties?.length 
-    })
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     })
 
     if (!user) {
-      console.log("[Document Creation] User not found in database")
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    try {
-      console.log("[Document Creation] Creating document for user:", user.id)
-      const documentData = {
-        title,
-        type,
-        category,
-        jurisdiction,
-        description,
-        state,
-        content,
-        status: "draft",
-        userId: user.id,
-      }
-
-      // Create the document first
-      const document = await prisma.document.create({
-        data: documentData,
-      })
-
-      // If there are parties, create them separately
-      if (parties?.length > 0) {
-        await prisma.documentParty.createMany({
-          data: parties.map((party: any) => ({
-            name: party.name || "",
-            type: party.type || "individual",
-            address: party.address || "",
-            email: party.email || "",
-            documentId: document.id,
-          })),
-        })
-      }
-
-      // Fetch the complete document with parties
-      const completeDocument = await prisma.document.findUnique({
-        where: { id: document.id },
-        include: { parties: true },
-      })
-
-      console.log("[Document Creation] Document created successfully:", document.id)
-      return NextResponse.json(completeDocument)
-    } catch (dbError) {
-      console.error("[Document Creation] Database error:", dbError)
-      return NextResponse.json({ 
-        error: "Failed to create document in database",
-        details: dbError instanceof Error ? dbError.message : "Unknown database error"
-      }, { status: 500 })
+    // Create the document with all fields
+    const documentData = {
+      title,
+      type,
+      content,
+      userId: user.id,
+      status,
+      metadata: metadata || {},
+      ...(jurisdiction && { jurisdiction }),
+      ...(description && { description }),
+      ...(state && { state })
     }
+
+    console.log("[Document Creation] Creating document with data:", documentData)
+
+    const document = await prisma.document.create({
+      data: {
+        ...documentData,
+        parties: {
+          create: parties?.map((party: { name: string; type: string; address?: string; email?: string }) => ({
+            name: party.name,
+            type: party.type,
+            address: party.address,
+            email: party.email
+          })) || []
+        }
+      },
+      include: {
+        parties: true
+      }
+    })
+
+    console.log("[Document Creation] Document created successfully:", document.id)
+    return NextResponse.json(document)
   } catch (error) {
-    console.error("[Document Creation] Error creating document:", error)
+    // Safely log the error without risking null values
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    const errorStack = error instanceof Error ? error.stack : "No stack trace"
+    
+    console.log("[Document Creation] Error occurred:", errorMessage)
+    console.log("[Document Creation] Error stack:", errorStack)
+
     return NextResponse.json(
-      { 
+      {
         error: "Failed to create document",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: errorMessage,
       },
       { status: 500 }
     )
@@ -115,17 +98,11 @@ export async function GET(req: Request) {
     console.log("[Document Fetch] Starting document fetch process")
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      console.log("[Document Fetch] No session found, returning 401")
+      console.log("[Document Fetch] No session found")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     console.log("[Document Fetch] Session found for user:", session.user.email)
-    const { searchParams } = new URL(req.url)
-    const status = searchParams.get("status")
-    const type = searchParams.get("type")
-    const search = searchParams.get("search")
-    console.log("[Document Fetch] Query parameters:", { status, type, search })
-
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     })
@@ -135,35 +112,56 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    console.log("[Document Fetch] Fetching documents for user:", user.id)
-    const where = {
-      userId: user.id,
-      ...(status && { status }),
-      ...(type && { type }),
-      ...(search && {
-        OR: [
-          { title: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-        ],
-      }),
-    }
+    // Get query parameters for filtering
+    const { searchParams } = new URL(req.url)
+    const status = searchParams.get("status")
+    const type = searchParams.get("type")
+    const search = searchParams.get("search")
+
+    console.log("[Document Fetch] Query parameters:", { status, type, search })
 
     const documents = await prisma.document.findMany({
-      where,
+      where: {
+        userId: user.id,
+        deletedAt: null,
+        ...(status && { status }),
+        ...(type && { type }),
+        ...(search && {
+          OR: [
+            { title: { contains: search } },
+            { description: { contains: search } },
+          ],
+        }),
+      },
       include: {
-        parties: true,
+        parties: true
       },
       orderBy: {
-        updatedAt: "desc",
-      },
+        updatedAt: "desc"
+      }
     })
 
-    console.log("[Document Fetch] Found documents:", documents.length)
+    console.log("[Document Fetch] Successfully fetched", documents.length, "documents")
     return NextResponse.json(documents)
   } catch (error) {
-    console.error("[Document Fetch] Error fetching documents:", error)
+    console.log("✅ Entered catch block after Prisma failure")
+    console.error("[Document Creation] Error:", error)
+  
+    console.error(
+      "[Document Creation] Error stack:",
+      error instanceof Error ? error.stack : "No stack trace"
+    )
+  
+    const message =
+      error && typeof error === "object" && "message" in error
+        ? (error as Error).message
+        : "Unknown error"
+  
     return NextResponse.json(
-      { error: "Failed to fetch documents" },
+      {
+        error: "Failed to create document",
+        details: message,
+      },
       { status: 500 }
     )
   }

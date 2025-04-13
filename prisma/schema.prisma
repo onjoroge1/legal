@@ -52,6 +52,7 @@ model User {
   collaboratedDocs        DocumentCollaborator[]
   signatures              DocumentSignature[]
   sessions                Session[]
+  userDocuments           UserDocument[]
 }
 
 model Account {
@@ -96,12 +97,14 @@ model Document {
   status        String
   content       String
   state         String?
+  category      String?
+  jurisdiction  String?
   metadata      Json?
   createdAt     DateTime               @default(now())
   updatedAt     DateTime               @updatedAt
-  deletedAt     DateTime?
   userId        String
   templateId    String?
+  deletedAt     DateTime?
   user          User                   @relation(fields: [userId], references: [id])
   template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   collaborators DocumentCollaborator[]
@@ -110,15 +113,17 @@ model Document {
 }
 
 model DocumentParty {
-  id         String   @id @default(cuid())
-  name       String
-  type       String
-  address    String?
-  email      String?
-  documentId String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  document   Document @relation(fields: [documentId], references: [id])
+  id             String       @id @default(cuid())
+  name           String
+  type           String
+  address        String?
+  email          String?
+  documentId     String?
+  userDocumentId String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  document       Document?    @relation(fields: [documentId], references: [id])
+  userDocument   UserDocument? @relation(fields: [userDocumentId], references: [id])
 }
 
 model Questionnaire {
@@ -251,10 +256,31 @@ model DocumentSignature {
 model Category {
   id          String             @id @default(cuid())
   name        String
-  slug        String             @unique
+  slug        String
   description String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   deletedAt   DateTime?
   templates   DocumentTemplate[]
+}
+
+model UserDocument {
+  id            String    @id @default(cuid())
+  title         String
+  type          String
+  category      String?
+  jurisdiction  String?
+  description   String?
+  content       String
+  state         String?
+  status        String    @default("draft")
+  metadata      Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  parties       DocumentParty[]
+
+  @@index([userId])
 }

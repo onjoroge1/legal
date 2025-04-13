@@ -4,6 +4,10 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("OPENAI_API_KEY is not set in environment variables")
+}
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
@@ -24,76 +28,70 @@ export async function POST(req: Request) {
     console.log("[Document Generation] Session found for user:", session.user.id)
 
     const body = await req.json()
-    console.log("[Document Generation] Request body:", body)
+    console.log("[Document Generation] Request body:", JSON.stringify(body, null, 2))
 
-    const { templateId, formData } = body
+    const { title, type, category, jurisdiction, description, state, parties } = body
 
-    // Check if template exists
-    let template = await prisma.documentTemplate.findUnique({
-      where: { id: templateId }
-    })
-
-    // If template doesn't exist, create sample templates
-    if (!template) {
-      console.log("[Document Generation] Template not found, creating sample templates")
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/templates/sample`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    if (!title || !type || !category || !jurisdiction || !description || !state || !parties) {
+      console.error("[Document Generation] Missing required fields:", {
+        title: !title,
+        type: !type,
+        category: !category,
+        jurisdiction: !jurisdiction,
+        description: !description,
+        state: !state,
+        parties: !parties
+      })
+      return NextResponse.json(
+        { 
+          error: "Missing required fields",
+          details: {
+            title: !title,
+            type: !type,
+            category: !category,
+            jurisdiction: !jurisdiction,
+            description: !description,
+            state: !state,
+            parties: !parties
+          }
         },
-        credentials: "include",
-      })
-
-      if (!response.ok) {
-        console.error("[Document Generation] Failed to create sample templates")
-        return NextResponse.json(
-          { error: "Failed to create sample templates" },
-          { status: 500 }
-        )
-      }
-
-      // Fetch the template again after creating sample templates
-      template = await prisma.documentTemplate.findUnique({
-        where: { id: templateId }
-      })
-
-      if (!template) {
-        console.error("[Document Generation] Template still not found after creating samples")
-        return NextResponse.json(
-          { error: "Template not found" },
-          { status: 404 }
-        )
-      }
+        { status: 400 }
+      )
     }
 
-    console.log("[Document Generation] Template found:", template.id)
-
     // Create the prompt for OpenAI
-    const prompt = `You are a legal assistant responsible for drafting a comprehensive, ironclad, and professional residential lease agreement based on the provided template and user-supplied form data. Follow these rules explicitly:
+    const prompt = `You are a legal assistant responsible for drafting a comprehensive, ironclad, and professional ${type} document. Follow these rules explicitly:
 
-1. Integrate all form data into the provided template placeholders accurately.
-2. Verify the completeness of each field; if any required field is missing, clearly state which field is missing and request its completion.
-3. Ensure the final document is professionally formatted, consistently structured, and error-free.
-4. Include standard and necessary legal language customary in residential lease agreements to ensure enforceability.
-5. Maintain clarity, precision, and a professional tone throughout.
-6. The document should adhere strictly to best legal practices for residential leases.
+1. The document should be appropriate for ${jurisdiction} jurisdiction.
+2. The document should be categorized under ${category}.
+3. The document should be governed by the laws of ${state}.
+4. Include all necessary parties: ${parties.map((p: any) => `${p.name} (${p.type})`).join(", ")}.
+5. Format the document with proper legal document structure including:
+   - Title centered at the top
+   - Current date of execution (${new Date().toLocaleDateString()})
+   - Parties section with full details
+   - Recitals/Whereas clauses
+   - Numbered sections with clear headings
+   - Definitions section if needed
+   - Proper spacing and indentation
+   - Signature blocks at the end with current date
+6. Include standard and necessary legal language customary in ${type} documents to ensure enforceability.
+7. Maintain clarity, precision, and a professional tone throughout.
+8. The document should adhere strictly to best legal practices for ${type} documents.
+9. Use the current date for all date references.
 
-TEMPLATE:
-${template.content}
+Document Description:
+${description}
 
-FORM DATA (JSON):
-${JSON.stringify(formData, null, 2)}
+Generate a complete legal document following the guidelines above. Ensure all necessary sections are included and the document is ready for use. Format the output with proper spacing, indentation, and section breaks to make it look like a professional legal document.`
 
-GENERATE:
-Now generate the complete legal document strictly following the guidelines above. The output must seamlessly blend the provided form data into the lease agreement template, filling in all placeholders. Ensure no placeholders remain unfilled, and clearly state if any mandatory information is missing.`
-
-    console.log("[Document Generation] Calling OpenAI API")
+    console.log("[Document Generation] Calling OpenAI API with prompt:", prompt)
     const completion = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
       messages: [
         {
           role: "system",
-          content: "You are a legal document generation assistant specializing in residential lease agreements. Generate professional, comprehensive, and legally sound documents based on templates and form data."
+          content: `You are a legal document generation assistant specializing in ${type} documents. Generate professional, comprehensive, and legally sound documents based on the provided information. Format the output to look like a professional legal document with proper spacing, indentation, and section breaks.`
         },
         {
           role: "user",
@@ -108,34 +106,39 @@ Now generate the complete legal document strictly following the guidelines above
     const generatedContent = completion.choices[0].message.content
     console.log("[Document Generation] Generated content length:", generatedContent?.length)
 
-    // Save the document to the database
-    const document = await prisma.document.create({
-      data: {
-        title: `${template.name} - ${new Date().toLocaleDateString()}`,
-        content: generatedContent || "",
-        status: "draft",
-        type: template.type,
-        templateId: template.id,
-        userId: session.user.id,
-        metadata: {
-          templateName: template.name,
-          templateType: template.type,
-          formData: formData
-        }
-      }
-    })
-
-    console.log("[Document Generation] Document saved to database:", document.id)
+    if (!generatedContent) {
+      console.error("[Document Generation] No content generated from OpenAI")
+      return NextResponse.json(
+        { error: "No content generated" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
-      message: "Document generated successfully",
-      documentId: document.id
+      content: generatedContent,
+      message: "Document generated successfully"
     })
 
   } catch (error) {
     console.error("[Document Generation] Error:", error instanceof Error ? error.message : 'Unknown error')
+    console.error("[Document Generation] Error stack:", error instanceof Error ? error.stack : 'No stack trace')
+    
+    // Handle OpenAI API quota errors specifically
+    if (error instanceof Error && error.message.includes('429')) {
+      return NextResponse.json(
+        { 
+          error: "OpenAI API quota exceeded",
+          details: "Please check your OpenAI API billing and quota settings. You may need to add payment information or upgrade your plan."
+        },
+        { status: 429 }
+      )
+    }
+
     return NextResponse.json(
-      { error: "Failed to generate document" },
+      { 
+        error: "Failed to generate document",
+        details: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     )
   }
