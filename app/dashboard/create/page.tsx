@@ -13,6 +13,7 @@ import DocumentEditor from "@/components/dashboard/document-editor"
 import { useState, useEffect } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter, useSearchParams } from "next/navigation"
+import { convertToPDF, convertToDOCX } from "@/utils/document-converter"
 
 interface Party {
   name: string
@@ -42,6 +43,8 @@ export default function CreateDocumentPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [suggestedTypes, setSuggestedTypes] = useState<string[]>([])
   const { toast } = useToast()
+  const [downloadFormat, setDownloadFormat] = useState("txt")
+  const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     const templateId = searchParams.get("template")
@@ -139,6 +142,52 @@ export default function CreateDocumentPage() {
   }
 
   const generateDocument = async () => {
+    // Validate required fields
+    if (!title.trim()) {
+      toast({
+        title: "Title Required",
+        description: "Please enter a document title.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!category) {
+      toast({
+        title: "Category Required",
+        description: "Please select a document category.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!jurisdiction) {
+      toast({
+        title: "Jurisdiction Required",
+        description: "Please select a jurisdiction.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!description.trim()) {
+      toast({
+        title: "Description Required",
+        description: "Please enter a document description.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!parties.every(party => party.name.trim())) {
+      toast({
+        title: "Party Information Required",
+        description: "Please enter names for all parties involved.",
+        variant: "destructive",
+      })
+      return
+    }
+
     try {
       setIsGenerating(true)
       const response = await fetch("/api/documents/generate", {
@@ -187,60 +236,55 @@ export default function CreateDocumentPage() {
   }
 
   const saveDocument = async () => {
-    console.log("[Document Save] Save button clicked")
-    console.log("[Document Save] Current state:", { 
-      title, 
-      type: type === "custom" ? customType : type,
-      category,
-      jurisdiction,
-      description, 
-      state, 
-      hasContent: !!generatedContent,
-      partiesCount: parties.length 
-    })
-
-    if (!title.trim()) {
-      console.log("[Document Save] Title is required")
+    console.log("[Document Save] Starting save process from:", window.location.pathname)
+    
+    if (!generatedContent) {
       toast({
-        title: "Title required",
-        description: "Please enter a document title.",
+        title: "Error",
+        description: "Please generate the document content first",
         variant: "destructive",
       })
       return
     }
 
-    if (!generatedContent.trim()) {
-      console.log("[Document Save] Content is required")
+    // Validate required fields
+    if (!title || !type) {
       toast({
-        title: "Content required",
-        description: "Please generate or enter document content.",
+        title: "Error",
+        description: "Please fill in all required fields (title and type)",
         variant: "destructive",
       })
       return
     }
 
     try {
-      console.log("[Document Save] Starting document save process")
       setIsSaving(true)
       const documentData = {
         title,
-        type: type === "custom" ? customType : type,
+        type,
         category,
         jurisdiction,
         description,
         state,
         content: generatedContent,
-        parties,
+        status: "draft", // Required by schema
+        metadata: {}, // Required by schema
+        parties: parties.map(party => ({
+          name: party.name,
+          type: party.type,
+          address: party.address,
+          email: party.email
+        }))
       }
-      console.log("[Document Save] Sending document data:", { 
-        title, 
-        type: type === "custom" ? customType : type,
-        category,
-        jurisdiction,
-        description, 
-        state, 
-        contentLength: generatedContent.length,
-        partiesCount: parties.length 
+
+      console.log("[Document Save] Validating document data:", {
+        hasTitle: !!title,
+        hasType: !!type,
+        hasContent: !!generatedContent,
+        hasStatus: true, // We're setting it to "draft"
+        hasMetadata: true, // We're setting it to {}
+        hasParties: parties.length > 0,
+        fullData: documentData
       })
 
       const response = await fetch("/api/documents", {
@@ -251,29 +295,86 @@ export default function CreateDocumentPage() {
         body: JSON.stringify(documentData),
       })
 
-      console.log("[Document Save] Save response status:", response.status)
+      const responseData = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json()
-        console.error("[Document Save] Failed to save document:", errorData)
-        throw new Error(errorData.error || "Failed to save document")
+        console.error("[Document Save] Failed to save document. Status:", response.status)
+        console.error("[Document Save] Error details:", responseData)
+        throw new Error(responseData.error || "Failed to save document")
       }
 
-      const document = await response.json()
-      console.log("[Document Save] Document saved successfully:", document.id)
+      console.log("[Document Save] Document saved successfully:", responseData.id)
+      
       toast({
-        title: "Document Saved",
-        description: "Your document has been saved successfully.",
+        title: "Success",
+        description: "Document saved successfully",
       })
-      router.push('/dashboard/documents')
+      
+      router.push(`/dashboard/documents/${responseData.id}`)
     } catch (error) {
-      console.error("[Document Save] Error saving document:", error)
+      console.error("[Document Save] Error:", error)
+      console.error("[Document Save] Error stack:", error instanceof Error ? error.stack : "No stack trace")
       toast({
         title: "Error",
-        description: "Failed to save document. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save document",
         variant: "destructive",
       })
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const downloadDocument = async () => {
+    if (!generatedContent) {
+      toast({
+        title: "No content to download",
+        description: "Please generate or edit document content first",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      setIsDownloading(true)
+      let blob: Blob
+      let filename = `${title || 'document'}`
+
+      switch (downloadFormat) {
+        case "pdf":
+          blob = await convertToPDF(generatedContent, title)
+          filename += ".pdf"
+          break
+        case "docx":
+          blob = await convertToDOCX(generatedContent, title)
+          filename += ".docx"
+          break
+        default:
+          blob = new Blob([generatedContent], { type: 'text/plain' })
+          filename += ".txt"
+      }
+
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast({
+        title: "Download Complete",
+        description: `Document downloaded as ${filename}`,
+      })
+    } catch (error) {
+      console.error("Download error:", error)
+      toast({
+        title: "Download Failed",
+        description: "Failed to download document. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDownloading(false)
     }
   }
 
@@ -328,18 +429,23 @@ export default function CreateDocumentPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="document-title">Document Title</Label>
+                  <Label htmlFor="document-title">
+                    Document Title <span className="text-red-500">*</span>
+                  </Label>
                   <Input 
                     id="document-title" 
                     placeholder="Enter document title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="document-type">Document Type</Label>
+                  <Label htmlFor="document-type">
+                    Document Type <span className="text-red-500">*</span>
+                  </Label>
                   <div className="space-y-4">
-                    <Select value={type} onValueChange={setType}>
+                    <Select value={type} onValueChange={setType} required>
                       <SelectTrigger id="document-type">
                         <SelectValue placeholder="Select document type" />
                       </SelectTrigger>
@@ -400,8 +506,10 @@ export default function CreateDocumentPage() {
                     )}
 
                     <div className="space-y-2">
-                      <Label htmlFor="document-category">Document Category</Label>
-                      <Select value={category} onValueChange={setCategory}>
+                      <Label htmlFor="document-category">
+                        Document Category <span className="text-red-500">*</span>
+                      </Label>
+                      <Select value={category} onValueChange={setCategory} required>
                         <SelectTrigger id="document-category">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
@@ -417,8 +525,10 @@ export default function CreateDocumentPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="document-jurisdiction">Jurisdiction</Label>
-                      <Select value={jurisdiction} onValueChange={setJurisdiction}>
+                      <Label htmlFor="document-jurisdiction">
+                        Jurisdiction <span className="text-red-500">*</span>
+                      </Label>
+                      <Select value={jurisdiction} onValueChange={setJurisdiction} required>
                         <SelectTrigger id="document-jurisdiction">
                           <SelectValue placeholder="Select jurisdiction" />
                         </SelectTrigger>
@@ -435,19 +545,24 @@ export default function CreateDocumentPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="document-description">Document Description</Label>
+                <Label htmlFor="document-description">
+                  Document Description <span className="text-red-500">*</span>
+                </Label>
                 <Textarea 
                   id="document-description" 
                   placeholder="Enter a brief description of the document" 
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="state">Governing State/Jurisdiction</Label>
-                <Select value={state} onValueChange={setState}>
+                <Label htmlFor="state">
+                  Governing State/Jurisdiction <span className="text-red-500">*</span>
+                </Label>
+                <Select value={state} onValueChange={setState} required>
                   <SelectTrigger id="state">
                     <SelectValue placeholder="Select state" />
                   </SelectTrigger>
@@ -669,10 +784,26 @@ export default function CreateDocumentPage() {
                 <Send className="h-4 w-4" />
                 Send for Review
               </Button>
-              <Button className="gap-1">
-                <FileDown className="h-4 w-4" />
-                Download
-              </Button>
+              <div className="flex items-center gap-2">
+                <Select value={downloadFormat} onValueChange={setDownloadFormat}>
+                  <SelectTrigger className="w-[100px]">
+                    <SelectValue placeholder="Format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="txt">TXT</SelectItem>
+                    <SelectItem value="pdf">PDF</SelectItem>
+                    <SelectItem value="docx">DOCX</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button 
+                  className="gap-1"
+                  onClick={downloadDocument}
+                  disabled={isDownloading}
+                >
+                  <FileDown className="h-4 w-4" />
+                  {isDownloading ? "Downloading..." : "Download"}
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         </TabsContent>

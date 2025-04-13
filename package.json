@@ -20,11 +20,14 @@
     "seed:business-formation": "ts-node scripts/seed-business-formation.ts",
     "seed:legal-docs": "ts-node scripts/seed-legal-documents.ts",
     "seed:employment": "ts-node scripts/seed-employment-templates.ts",
-    "seed:real-estate": "ts-node scripts/create-real-estate-templates.ts && ts-node scripts/create-real-estate-templates-2.ts && ts-node scripts/create-roommate-and-trust-deed.ts"
+    "seed:real-estate": "ts-node scripts/create-real-estate-templates.ts && ts-node scripts/create-real-estate-templates-2.ts && ts-node scripts/create-roommate-and-trust-deed.ts",
+    "backup": "ts-node scripts/backup-data.ts",
+    "restore": "ts-node scripts/restore-data.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.9.1",
+    "@prisma/client": "^6.6.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
@@ -64,6 +67,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^2.30.0",
+    "docx": "^9.3.0",
     "embla-carousel-react": "8.5.1",
     "input-otp": "1.4.1",
     "jsonwebtoken": "^9.0.2",
@@ -72,6 +76,7 @@
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
     "openai": "^4.89.1",
+    "pdfkit": "^0.17.0",
     "react": "^18.2.0",
     "react-day-picker": "latest",
     "react-dom": "^18.2.0",
@@ -87,12 +92,12 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "@prisma/client": "^6.6.0",
     "@types/node": "^22.14.0",
+    "@types/pdfkit": "^0.13.9",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "postcss": "^8",
-    "prisma": "^6.5.0",
+    "prisma": "^6.6.0",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
