@@ -13,16 +13,30 @@ export async function GET(request: Request) {
       )
     }
 
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
     // Get the user's documents
     const documents = await prisma.document.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
       take: 5,
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        createdAt: true,
+      }
     })
 
     // Get total document count
     const totalDocuments = await prisma.document.count({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
     })
 
     // Get documents created in the last 30 days
@@ -30,7 +44,7 @@ export async function GET(request: Request) {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
     const documentsCreated = await prisma.document.count({
       where: {
-        userId: session.user.id,
+        userId: user.id,
         createdAt: {
           gte: thirtyDaysAgo,
         },
@@ -57,9 +71,22 @@ export async function GET(request: Request) {
       })),
     })
   } catch (error) {
-    console.error('[Dashboard] Error:', error)
+    console.log("✅ Entered catch block after Prisma failure")
+    
+    if (error instanceof Error) {
+      console.error("[Dashboard] Error:", error.message)
+      console.error("[Dashboard] Stack:", error.stack)
+    } else {
+      console.error("[Dashboard] Unknown error:", error)
+    }
+    
+    const message =
+      error && typeof error === "object" && "message" in error
+        ? (error as Error).message
+        : "Unknown error"
+    
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard data' },
+      { error: "Failed to fetch dashboard data", details: message },
       { status: 500 }
     )
   }

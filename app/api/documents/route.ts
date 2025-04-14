@@ -41,24 +41,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    // Create the document with all fields
-    const documentData = {
-      title,
-      type,
-      content,
-      userId: user.id,
-      status,
-      metadata: metadata || {},
-      ...(jurisdiction && { jurisdiction }),
-      ...(description && { description }),
-      ...(state && { state })
-    }
-
-    console.log("[Document Creation] Creating document with data:", documentData)
-
+    // Create the document with valid fields only
     const document = await prisma.document.create({
       data: {
-        ...documentData,
+        title,
+        type,
+        content,
+        userId: user.id,
+        status,
+        description,
+        state,
+        metadata: metadata || {},
         parties: {
           create: parties?.map((party: { name: string; type: string; address?: string; email?: string }) => ({
             name: party.name,

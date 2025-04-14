@@ -113,17 +113,17 @@ model Document {
 }
 
 model DocumentParty {
-  id             String       @id @default(cuid())
+  id             String        @id @default(cuid())
   name           String
   type           String
   address        String?
   email          String?
   documentId     String?
   userDocumentId String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  document       Document?    @relation(fields: [documentId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   userDocument   UserDocument? @relation(fields: [userDocumentId], references: [id])
+  document       Document?     @relation(fields: [documentId], references: [id])
 }
 
 model Questionnaire {
@@ -265,22 +265,22 @@ model Category {
 }
 
 model UserDocument {
-  id            String    @id @default(cuid())
-  title         String
-  type          String
-  category      String?
-  jurisdiction  String?
-  description   String?
-  content       String
-  state         String?
-  status        String    @default("draft")
-  metadata      Json?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  parties       DocumentParty[]
+  id           String          @id @default(cuid())
+  title        String
+  type         String
+  category     String?
+  jurisdiction String?
+  description  String?
+  content      String
+  state        String?
+  status       String          @default("draft")
+  metadata     Json?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+  userId       String
+  parties      DocumentParty[]
+  user         User            @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

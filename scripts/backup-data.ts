@@ -7,74 +7,56 @@ const prisma = new PrismaClient()
 async function backupData() {
   try {
     console.log('Starting data backup...')
-    
-    // Backup Users
-    const users = await prisma.user.findMany({
-      include: {
-        accounts: true,
-        sessions: true,
-        documents: true,
-        collaboratedDocs: true,
-        signatures: true
-      }
-    })
 
-    // Backup Documents
+    // Create backup directory if it doesn't exist
+    const backupDir = path.join(process.cwd(), 'prisma', 'backups')
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true })
+    }
+
+    // Get all data from each model
+    const users = await prisma.user.findMany()
     const documents = await prisma.document.findMany({
       include: {
         parties: true,
         collaborators: true,
-        signatures: true,
-        template: true
+        signatures: true
       }
     })
-
-    // Backup Document Templates
-    const templates = await prisma.documentTemplate.findMany({
-      include: {
-        fields: {
-          include: {
-            options: true,
-            dependencies: true
-          }
-        },
-        questionnaires: {
-          include: {
-            questions: {
-              include: {
-                options: true,
-                dependencies: true
-              }
-            }
-          }
-        }
-      }
-    })
-
-    // Backup Categories
     const categories = await prisma.category.findMany()
+    const templates = await prisma.documentTemplate.findMany()
+    const questionnaires = await prisma.questionnaire.findMany()
+    const questions = await prisma.question.findMany()
+    const questionOptions = await prisma.questionOption.findMany()
+    const questionDependencies = await prisma.questionDependency.findMany()
+    const templateFields = await prisma.templateField.findMany()
+    const fieldOptions = await prisma.fieldOption.findMany()
+    const fieldDependencies = await prisma.fieldDependency.findMany()
 
-    // Create backup directory if it doesn't exist
-    const backupDir = path.join(process.cwd(), 'backups')
-    if (!fs.existsSync(backupDir)) {
-      fs.mkdirSync(backupDir)
-    }
-
-    // Save backup data
-    const backupData = {
-      timestamp: new Date().toISOString(),
+    // Create backup object
+    const backup = {
       users,
       documents,
+      categories,
       templates,
-      categories
+      questionnaires,
+      questions,
+      questionOptions,
+      questionDependencies,
+      templateFields,
+      fieldOptions,
+      fieldDependencies,
+      timestamp: new Date().toISOString()
     }
 
+    // Save backup to file
     const backupPath = path.join(backupDir, `backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`)
-    fs.writeFileSync(backupPath, JSON.stringify(backupData, null, 2))
+    fs.writeFileSync(backupPath, JSON.stringify(backup, null, 2))
 
-    console.log(`Backup completed successfully! Data saved to: ${backupPath}`)
+    console.log(`Backup completed successfully! Saved to: ${backupPath}`)
   } catch (error) {
     console.error('Error during backup:', error)
+    throw error
   } finally {
     await prisma.$disconnect()
   }
