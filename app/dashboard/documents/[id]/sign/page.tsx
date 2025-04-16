@@ -1,29 +1,168 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import type { Metadata } from "next"
-import { ArrowLeft, Send, Download, Clock, Pen } from "lucide-react"
+import { ArrowLeft, Send, Download, Clock, Pen, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 import SignatureCanvas from "@/components/dashboard/signature-canvas"
 import SignatureRequestForm from "@/components/dashboard/signature-request-form"
 import SignatureStatus from "@/components/dashboard/signature-status"
+import SignatureRequestConfirmation from "@/components/dashboard/signature-request-confirmation"
+import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import { use } from "react"
+import { useSearchParams } from 'next/navigation'
 
-interface DocumentSignPageProps {
-  params: {
-    id: string
-  }
+interface DocumentParty {
+  id: string
+  name: string
+  type: string
+  email: string
+  signed: boolean
+  signedAt?: string
 }
 
-export function generateMetadata({ params }: DocumentSignPageProps): Metadata {
-  return {
-    title: `Sign Document | LegalLawDocs.com`,
-    description: `Sign and request signatures for your legal document`,
-  }
+interface Document {
+  id: string
+  title: string
+  content: string
+  parties: DocumentParty[]
+}
+
+interface DocumentSignPageProps {
+  params: Promise<{
+    id: string
+  }>
 }
 
 export default function DocumentSignPage({ params }: DocumentSignPageProps) {
-  const documentId = params.id
+  const resolvedParams = use(params)
+  const documentId = resolvedParams.id
+  const searchParams = useSearchParams()
+  const defaultTab = searchParams.get('tab') || 'sign'
+  const [document, setDocument] = useState<Document | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    const fetchDocument = async () => {
+      try {
+        const response = await fetch(`/api/documents/${documentId}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch document')
+        }
+        const data = await response.json()
+        setDocument(data)
+      } catch (error) {
+        console.error('Error fetching document:', error)
+        toast({
+          title: "Error",
+          description: "Failed to load document. Please try again.",
+          variant: "destructive",
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDocument()
+  }, [documentId, toast])
+
+  const handleSign = async (partyId: string, signature: string) => {
+    try {
+      const response = await fetch(`/api/documents/${documentId}/sign`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ partyId, signature }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to save signature')
+      }
+
+      // Update local state
+      setDocument(prev => {
+        if (!prev) return null
+        return {
+          ...prev,
+          parties: prev.parties.map(party => 
+            party.id === partyId 
+              ? { ...party, signed: true, signedAt: new Date().toISOString() }
+              : party
+          )
+        }
+      })
+
+      toast({
+        title: "Success",
+        description: "Signature saved successfully",
+      })
+    } catch (error) {
+      console.error('Error saving signature:', error)
+      toast({
+        title: "Error",
+        description: "Failed to save signature. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleSendForSignature = async () => {
+    setIsConfirmationOpen(true)
+  }
+
+  const handleConfirmSignatureRequest = async () => {
+    try {
+      const response = await fetch(`/api/documents/${documentId}/send-signature-request`, {
+        method: 'POST',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to send signature requests')
+      }
+
+      toast({
+        title: "Success",
+        description: "Signature requests sent successfully",
+      })
+    } catch (error) {
+      console.error('Error sending signature requests:', error)
+      toast({
+        title: "Error",
+        description: "Failed to send signature requests",
+        variant: "destructive",
+      })
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  if (!document) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Document not found</p>
+          <Button variant="outline" asChild>
+            <Link href="/dashboard/documents">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Documents
+            </Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -36,7 +175,7 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Service Agreement</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{document.title}</h1>
             <p className="text-muted-foreground">Electronic signature workflow</p>
           </div>
         </div>
@@ -45,14 +184,14 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
             <Download className="h-4 w-4" />
             Download
           </Button>
-          <Button className="gap-1">
+          <Button className="gap-1" onClick={handleSendForSignature}>
             <Send className="h-4 w-4" />
             Send for Signature
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="sign" className="space-y-4">
+      <Tabs defaultValue={defaultTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="sign" className="gap-1">
             <Pen className="h-4 w-4" />
@@ -76,77 +215,48 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="border rounded-md p-6 min-h-[400px] bg-white">
-                <h2 className="text-xl font-bold text-center mb-6">SERVICE AGREEMENT</h2>
-                <p className="mb-4">
-                  This Service Agreement (the "Agreement") is entered into as of [Date], by and between:
-                </p>
-                <p className="mb-4">
-                  <strong>Party 1:</strong> [Party 1 Name], with an address at [Party 1 Address] ("Client")
-                </p>
-                <p className="mb-4">
-                  <strong>Party 2:</strong> [Party 2 Name], with an address at [Party 2 Address] ("Service Provider")
-                </p>
-                <p className="mb-4">
-                  WHEREAS, Client wishes to engage Service Provider to provide certain services, and Service Provider is
-                  willing to provide such services to Client;
-                </p>
-                <p className="mb-4">
-                  NOW, THEREFORE, in consideration of the mutual covenants and agreements herein contained, the parties
-                  hereto agree as follows:
-                </p>
-                <p className="mb-4">
-                  <strong>1. Services.</strong> Service Provider shall provide to Client the services (the "Services")
-                  described in Exhibit A attached hereto.
-                </p>
-                <p className="mb-4">
-                  <strong>2. Term.</strong> This Agreement shall commence on [Start Date] and shall continue until [End
-                  Date], unless earlier terminated as provided herein.
-                </p>
-                <p className="mb-4">
-                  <strong>3. Compensation.</strong> In consideration for the Services, Client shall pay Service Provider
-                  the amounts set forth in Exhibit B attached hereto.
-                </p>
+                <div className="max-w-4xl mx-auto">
+                  {/* Document Header */}
+                  <div className="text-center mb-8">
+                    <h1 className="text-2xl font-bold mb-2">{document.title}</h1>
+                    <p className="text-sm text-gray-500">Document ID: {document.id}</p>
+                  </div>
 
-                <div className="mt-12 border-t pt-6">
-                  <div className="grid grid-cols-2 gap-8">
-                    <div>
-                      <p className="font-medium mb-2">CLIENT:</p>
-                      <p className="mb-1">[Client Name]</p>
-                      <div className="border-b border-dashed border-black h-10 mb-2 flex items-center">
-                        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Signature Required</Badge>
+                  {/* Document Content */}
+                  <div className="prose max-w-none">
+                    <div className="whitespace-pre-wrap">{document.content}</div>
+                  </div>
+
+                  {/* Signature Areas */}
+                  <div className="mt-12 space-y-8">
+                    {document.parties.map((party) => (
+                      <div key={party.id} className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold">{party.name}</h3>
+                          <Badge variant={party.signed ? "default" : "secondary"}>
+                            {party.signed ? "Signed" : "Pending Signature"}
+                          </Badge>
+                        </div>
+                        <div className="border rounded-md p-4 min-h-[100px] bg-gray-50">
+                          {party.signed ? (
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center">
+                                <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                                <p className="text-sm text-gray-500">Signed on {party.signedAt}</p>
+                              </div>
+                            </div>
+                          ) : (
+                            <SignatureCanvas
+                              onSign={(signature: string) => handleSign(party.id, signature)}
+                            />
+                          )}
+                        </div>
                       </div>
-                      <p>Name: [Name]</p>
-                      <p>Title: [Title]</p>
-                      <p>Date: [Date]</p>
-                    </div>
-                    <div>
-                      <p className="font-medium mb-2">SERVICE PROVIDER:</p>
-                      <p className="mb-1">[Service Provider Name]</p>
-                      <div className="border-b border-dashed border-black h-10 mb-2 flex items-center">
-                        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Signature Required</Badge>
-                      </div>
-                      <p>Name: [Name]</p>
-                      <p>Title: [Title]</p>
-                      <p>Date: [Date]</p>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Signature</CardTitle>
-              <CardDescription>Draw your signature or type it</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SignatureCanvas />
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline">Clear</Button>
-              <Button>Apply Signature</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
 
@@ -157,7 +267,10 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
               <CardDescription>Send this document to others for electronic signature</CardDescription>
             </CardHeader>
             <CardContent>
-              <SignatureRequestForm />
+              <SignatureRequestForm 
+                documentId={documentId} 
+                parties={document?.parties || []} 
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -169,11 +282,22 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
               <CardDescription>Track the status of all required signatures</CardDescription>
             </CardHeader>
             <CardContent>
-              <SignatureStatus />
+              <SignatureStatus documentId={documentId} />
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {document && (
+        <SignatureRequestConfirmation
+          documentId={document.id}
+          documentTitle={document.title}
+          parties={document.parties}
+          isOpen={isConfirmationOpen}
+          onClose={() => setIsConfirmationOpen(false)}
+          onConfirm={handleConfirmSignatureRequest}
+        />
+      )}
     </div>
   )
 }

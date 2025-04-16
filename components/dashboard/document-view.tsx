@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Save, FileDown, Send, Sparkles, Trash2, FileText, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { ArrowLeft, Save, FileDown, Send, Sparkles, Trash2, FileText, Clock, CheckCircle2, AlertCircle, Pen } from "lucide-react"
 import Link from "next/link"
 import DocumentEditor from "@/components/dashboard/document-editor"
 import { useToast } from "@/components/ui/use-toast"
@@ -513,9 +513,11 @@ export default function DocumentView() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between border-t p-4">
-              <Button variant="outline" className="gap-1">
-                <Send className="h-4 w-4" />
-                Send for Review
+              <Button variant="outline" className="gap-1" asChild>
+                <Link href={`/dashboard/documents/${currentDocument.id}/sign`}>
+                  <Pen className="h-4 w-4" />
+                  Send for Signature
+                </Link>
               </Button>
               <div className="flex items-center gap-2">
                 <Select
