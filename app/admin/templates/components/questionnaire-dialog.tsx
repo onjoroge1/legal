@@ -170,9 +170,10 @@ export function QuestionnaireDialog({ mode, questionnaire, onSuccess }: Question
       onSuccess()
     } catch (error) {
       console.error("Error saving questionnaire:", error)
+      const description = error instanceof Error ? error.message : "Failed to save questionnaire"
       toast({
         title: "Error",
-        description: error.message || "Failed to save questionnaire",
+        description,
         variant: "destructive",
       })
     } finally {
