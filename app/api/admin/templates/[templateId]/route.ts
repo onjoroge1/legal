@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { templateId: string } }
+  { params }: { params: Promise<{ templateId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function PATCH(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { templateId } = params;
+    const { templateId } = await params;
     const body = await request.json();
     const { name, description, content, categoryId } = body;
 
@@ -42,7 +42,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { templateId: string } }
+  { params }: { params: Promise<{ templateId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -50,7 +50,7 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { templateId } = params;
+    const { templateId } = await params;
 
     const existingTemplate = await prisma.documentTemplate.findUnique({
       where: { id: templateId }

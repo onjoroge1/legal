@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { categoryId: string } }
+  { params }: { params: Promise<{ categoryId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function PATCH(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { categoryId } = params;
+    const { categoryId } = await params;
     const body = await request.json();
     const { name, description } = body;
 

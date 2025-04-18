@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 // GET /api/dashboard/categories/[id] - Get a single category with templates
 export async function GET(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -16,8 +16,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const params = context.params
-    const id = params.id
+    const { id } = await params
     console.log("[GET /api/dashboard/categories/[id]] Starting request", { id })
 
     // Get category with templates by ID or slug
