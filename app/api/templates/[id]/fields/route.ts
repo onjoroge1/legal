@@ -33,7 +33,7 @@ const sectionOrder = [
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -42,7 +42,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = context.params
+    const { id } = (await context.params)
     console.log('API Route - Debug - Request params:', { id })
 
     // First, let's check if the template exists

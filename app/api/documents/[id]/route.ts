@@ -3,10 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     console.log("[Document API] GET request received for document ID:", params.id)
     console.log("[Document API] Request URL:", req.url)
@@ -67,10 +65,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
@@ -115,10 +111,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {

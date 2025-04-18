@@ -6,12 +6,13 @@ import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
 
 interface DocumentPreviewPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export function generateMetadata({ params }: DocumentPreviewPageProps): Metadata {
+export async function generateMetadata(props: DocumentPreviewPageProps): Promise<Metadata> {
+  const params = await props.params;
   return {
     title: `${getDocumentTitle(params.id)} Preview | LegalLawDocs.com`,
     description: `Preview the ${getDocumentTitle(params.id)} sample document before downloading`,
@@ -34,7 +35,8 @@ function getDocumentTitle(id: string): string {
   return documentTitles[id] || "Document"
 }
 
-export default function DocumentPreviewPage({ params }: DocumentPreviewPageProps) {
+export default async function DocumentPreviewPage(props: DocumentPreviewPageProps) {
+  const params = await props.params;
   const documentTitle = getDocumentTitle(params.id)
   const previewUrl = `/samples/${params.id}-preview.pdf`
   const downloadUrl = `/samples/${params.id}-sample.pdf`

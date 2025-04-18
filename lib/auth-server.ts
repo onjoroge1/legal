@@ -29,7 +29,7 @@ export async function createUser(email: string, password: string, name?: string)
 
 export async function getCurrentUser() {
   try {
-    const cookiesList = cookies() as unknown as RequestCookies
+    const cookiesList = await cookies() as unknown as RequestCookies
     const sessionCookie = cookiesList.get('next-auth.session-token')
     const sessionToken = sessionCookie?.value
 
@@ -55,7 +55,7 @@ export async function getCurrentUser() {
 
 export async function logoutUser() {
   try {
-    const cookiesList = cookies() as unknown as RequestCookies
+    const cookiesList = await cookies() as unknown as RequestCookies
     const sessionCookie = cookiesList.get('next-auth.session-token')
     const sessionToken = sessionCookie?.value
 

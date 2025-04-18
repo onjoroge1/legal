@@ -6,10 +6,8 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {

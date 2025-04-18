@@ -12,9 +12,9 @@ import DocumentCollaborationEditor from "@/components/dashboard/document-collabo
 import DocumentSharingOptions from "@/components/dashboard/document-sharing-options"
 
 interface DocumentCollaboratePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export function generateMetadata({ params }: DocumentCollaboratePageProps): Metadata {
@@ -24,7 +24,8 @@ export function generateMetadata({ params }: DocumentCollaboratePageProps): Meta
   }
 }
 
-export default function DocumentCollaboratePage({ params }: DocumentCollaboratePageProps) {
+export default async function DocumentCollaboratePage(props: DocumentCollaboratePageProps) {
+  const params = await props.params;
   const documentId = params.id
 
   // Active collaborators (would come from a real-time service in production)

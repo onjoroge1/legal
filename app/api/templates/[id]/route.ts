@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authentication
@@ -14,7 +14,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = context.params
+    const { id } = (await context.params)
 
     // Try to find template by ID or code
     const template = await prisma.documentTemplate.findFirst({

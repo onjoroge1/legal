@@ -4,10 +4,8 @@ import { verify } from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-export async function GET(
-  request: Request,
-  { params }: { params: { token: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
   try {
     // Verify the token
     const decoded = verify(params.token, JWT_SECRET) as {
@@ -86,10 +84,8 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { token: string } }
-) {
+export async function POST(request: Request, props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
   try {
     // Verify the token
     const decoded = verify(params.token, JWT_SECRET) as {

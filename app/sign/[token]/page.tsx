@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,7 +24,8 @@ interface Document {
   parties: DocumentParty[]
 }
 
-export default function PublicSignPage({ params }: { params: { token: string } }) {
+export default function PublicSignPage(props: { params: Promise<{ token: string }> }) {
+  const params = use(props.params);
   const router = useRouter()
   const [document, setDocument] = useState<Document | null>(null)
   const [isLoading, setIsLoading] = useState(true)
