@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { checkSubscriptionAccess } from "@/middleware/subscription-guard"
 
 export async function POST(req: Request) {
   try {
@@ -21,6 +22,16 @@ export async function POST(req: Request) {
       formData,
       status 
     } = body
+
+    // Check subscription access
+    const accessCheck = await checkSubscriptionAccess(session.user.id)
+    if (!accessCheck.allowed) {
+      return NextResponse.json({ 
+        error: accessCheck.message,
+        redirectTo: accessCheck.redirectTo 
+      }, { status: 403 })
+    }
+
     console.log("[Document Draft] Request body:", { templateId, status, formDataKeys: Object.keys(formData) })
 
     // Get template details

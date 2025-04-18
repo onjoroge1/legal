@@ -5,9 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash2, CreditCard, Check } from "lucide-react"
 import BillingHistory from "@/components/dashboard/billing-history"
-import PaymentMethodCard from "@/components/dashboard/payment-method-card"
+import PaymentMethodForm from "@/components/dashboard/payment-method-form"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface Subscription {
   tier: string
@@ -24,31 +32,104 @@ interface BillingHistory {
   description: string
 }
 
+interface PaymentMethod {
+  id: string
+  type: string
+  last4: string
+  expiry: string
+  isDefault: boolean
+}
+
 export default function BillingPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [billingHistory, setBillingHistory] = useState<BillingHistory[]>([])
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isAddingPaymentMethod, setIsAddingPaymentMethod] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
-    fetchSubscriptionData()
+    fetchBillingData()
   }, [])
 
-  const fetchSubscriptionData = async () => {
+  const fetchBillingData = async () => {
     try {
       const response = await fetch("/api/billing/subscription")
       const data = await response.json()
       setSubscription(data.subscription)
       setBillingHistory(data.billingHistory)
+      setPaymentMethods(data.paymentMethods || [])
     } catch (error) {
-      console.error("Error fetching subscription data:", error)
+      console.error("Error fetching billing data:", error)
       toast({
         title: "Error",
-        description: "Failed to load subscription data",
+        description: "Failed to load billing data",
         variant: "destructive",
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleRemovePaymentMethod = async (paymentMethodId: string) => {
+    try {
+      const response = await fetch("/api/payment/remove-method", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ paymentMethodId }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to remove payment method")
+      }
+
+      toast({
+        title: "Success",
+        description: "Payment method removed successfully",
+      })
+
+      // Refresh payment methods
+      await fetchBillingData()
+    } catch (error) {
+      console.error("Error removing payment method:", error)
+      toast({
+        title: "Error",
+        description: "Failed to remove payment method",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleSetDefaultPaymentMethod = async (paymentMethodId: string) => {
+    try {
+      const response = await fetch("/api/payment/set-default", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ paymentMethodId }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to set default payment method")
+      }
+
+      toast({
+        title: "Success",
+        description: "Default payment method updated successfully",
+      })
+
+      // Refresh payment methods
+      await fetchBillingData()
+    } catch (error) {
+      console.error("Error setting default payment method:", error)
+      toast({
+        title: "Error",
+        description: "Failed to set default payment method",
+        variant: "destructive",
+      })
     }
   }
 
@@ -254,15 +335,100 @@ export default function BillingPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <PaymentMethodCard type="visa" last4="4242" expiry="09/2024" isDefault={true} />
+                {paymentMethods.map((method) => (
+                  <Card key={method.id} className="relative">
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <CreditCard className="h-6 w-6" />
+                          <div>
+                            <p className="font-medium">
+                              {method.type} ending in {method.last4}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Expires {method.expiry}
+                            </p>
+                          </div>
+                        </div>
+                        {method.isDefault && (
+                          <Badge variant="secondary">Default</Badge>
+                        )}
+                      </div>
+                      <div className="mt-4 flex items-center space-x-2">
+                        {!method.isDefault && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleSetDefaultPaymentMethod(method.id)}
+                          >
+                            Set as Default
+                          </Button>
+                        )}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remove Payment Method</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to remove this payment method? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleRemovePaymentMethod(method.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Remove
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
 
-                <PaymentMethodCard type="mastercard" last4="5678" expiry="12/2025" isDefault={false} />
-
-                <Card className="flex flex-col items-center justify-center p-6 h-[180px] border-dashed">
-                  <Button variant="outline" className="gap-1">
-                    Add Payment Method
-                  </Button>
-                </Card>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Card className="flex flex-col items-center justify-center p-6 h-[180px] border-dashed cursor-pointer hover:border-primary">
+                      <Button variant="outline" className="gap-1">
+                        <CreditCard className="h-4 w-4" />
+                        Add Payment Method
+                      </Button>
+                    </Card>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Payment Method</DialogTitle>
+                      <DialogDescription>
+                        Add a new payment method to your account
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Elements stripe={stripePromise}>
+                      <PaymentMethodForm
+                        onSuccess={() => {
+                          fetchBillingData()
+                          toast({
+                            title: "Success",
+                            description: "Payment method added successfully",
+                          })
+                        }}
+                        onError={(error) => {
+                          toast({
+                            title: "Error",
+                            description: error,
+                            variant: "destructive",
+                          })
+                        }}
+                      />
+                    </Elements>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
