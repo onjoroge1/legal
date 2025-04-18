@@ -45,6 +45,7 @@ export default function CreateDocumentPage() {
   const { toast } = useToast()
   const [downloadFormat, setDownloadFormat] = useState("txt")
   const [isDownloading, setIsDownloading] = useState(false)
+  const [savedDocumentId, setSavedDocumentId] = useState<string | null>(null)
 
   useEffect(() => {
     const templateId = searchParams.get("template")
@@ -267,8 +268,8 @@ export default function CreateDocumentPage() {
         description,
         state,
         content: generatedContent,
-        status: "draft", // Required by schema
-        metadata: {}, // Required by schema
+        status: "draft",
+        metadata: {},
         parties: parties.map(party => ({
           name: party.name,
           type: party.type,
@@ -276,16 +277,6 @@ export default function CreateDocumentPage() {
           email: party.email
         }))
       }
-
-      console.log("[Document Save] Validating document data:", {
-        hasTitle: !!title,
-        hasType: !!type,
-        hasContent: !!generatedContent,
-        hasStatus: true, // We're setting it to "draft"
-        hasMetadata: true, // We're setting it to {}
-        hasParties: parties.length > 0,
-        fullData: documentData
-      })
 
       const response = await fetch("/api/documents", {
         method: "POST",
@@ -298,22 +289,30 @@ export default function CreateDocumentPage() {
       const responseData = await response.json()
 
       if (!response.ok) {
-        console.error("[Document Save] Failed to save document. Status:", response.status)
-        console.error("[Document Save] Error details:", responseData)
+        // Check if it's a subscription limit error
+        if (response.status === 403 && responseData.redirectTo) {
+          toast({
+            title: "Subscription Limit Reached",
+            description: responseData.error,
+            variant: "destructive",
+          })
+          router.push(responseData.redirectTo)
+          return
+        }
         throw new Error(responseData.error || "Failed to save document")
       }
 
-      console.log("[Document Save] Document saved successfully:", responseData.id)
-      
+      setSavedDocumentId(responseData.id)
+
       toast({
         title: "Success",
         description: "Document saved successfully",
       })
-      
+
+      // Redirect to the document view page
       router.push(`/dashboard/documents/${responseData.id}`)
     } catch (error) {
       console.error("[Document Save] Error:", error)
-      console.error("[Document Save] Error stack:", error instanceof Error ? error.stack : "No stack trace")
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to save document",
@@ -780,12 +779,14 @@ export default function CreateDocumentPage() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between border-t p-4">
-              <Button variant="outline" className="gap-1" asChild>
-                <Link href={`/dashboard/documents/${documentId}/sign`}>
-                  <Pen className="h-4 w-4" />
-                  Send for Signature
-                </Link>
-              </Button>
+              {savedDocumentId && (
+                <Button variant="outline" className="gap-1" asChild>
+                  <Link href={`/dashboard/documents/${savedDocumentId}/sign`}>
+                    <Pen className="h-4 w-4" />
+                    Send for Signature
+                  </Link>
+                </Button>
+              )}
               <div className="flex items-center gap-2">
                 <Select value={downloadFormat} onValueChange={setDownloadFormat}>
                   <SelectTrigger className="w-[100px]">

@@ -17,6 +17,14 @@ interface BillingHistoryItem {
   description: string;
 }
 
+interface PaymentMethod {
+  id: string;
+  type: string;
+  last4: string;
+  expiry: string;
+  isDefault: boolean;
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -40,6 +48,8 @@ export async function GET() {
     }
 
     let billingHistory: BillingHistoryItem[] = []
+    let paymentMethods: PaymentMethod[] = []
+
     if (user.stripeCustomerId) {
       const charges = await stripe.charges.list({
         customer: user.stripeCustomerId,
@@ -54,6 +64,29 @@ export async function GET() {
         date: new Date(charge.created * 1000).toISOString(),
         description: charge.description || "Subscription payment",
       }))
+
+      const methods = await stripe.paymentMethods.list({
+        customer: user.stripeCustomerId,
+        type: "card",
+      })
+
+      const customer = await stripe.customers.retrieve(user.stripeCustomerId)
+      if (customer.deleted) {
+        return NextResponse.json(
+          { error: "Customer account deleted" },
+          { status: 404 }
+        )
+      }
+
+      const defaultPaymentMethod = (customer as Stripe.Customer).invoice_settings?.default_payment_method
+
+      paymentMethods = methods.data.map((method: Stripe.PaymentMethod) => ({
+        id: method.id,
+        type: method.card?.brand || "unknown",
+        last4: method.card?.last4 || "",
+        expiry: `${method.card?.exp_month}/${method.card?.exp_year}`,
+        isDefault: method.id === defaultPaymentMethod,
+      }))
     }
 
     return NextResponse.json({
@@ -64,6 +97,7 @@ export async function GET() {
         endDate: user.subscriptionEndDate,
       },
       billingHistory,
+      paymentMethods,
     })
   } catch (error) {
     console.error("Error fetching subscription data:", error)

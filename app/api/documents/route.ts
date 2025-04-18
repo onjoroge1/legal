@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { checkSubscriptionAccess } from "@/middleware/subscription-guard"
 
 export async function POST(req: Request) {
   try {
@@ -39,6 +40,15 @@ export async function POST(req: Request) {
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // Check subscription access
+    const accessCheck = await checkSubscriptionAccess(user.id)
+    if (!accessCheck.allowed) {
+      return NextResponse.json({ 
+        error: accessCheck.message,
+        redirectTo: accessCheck.redirectTo 
+      }, { status: 403 })
     }
 
     // Create the document with valid fields only
