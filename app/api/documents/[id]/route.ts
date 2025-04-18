@@ -9,7 +9,11 @@ export async function GET(req: Request, props: { params: Promise<{ id: string }>
     console.log("[Document API] GET request received for document ID:", params.id)
     console.log("[Document API] Request URL:", req.url)
     console.log("[Document API] Request method:", req.method)
-    console.log("[Document API] Request headers:", Object.fromEntries(req.headers.entries()))
+    console.log("[Document API] Request headers:", {
+      authorization: req.headers.get("authorization"),
+      cookie: req.headers.get("cookie"),
+      "user-agent": req.headers.get("user-agent"),
+    })
     
     const session = await getServerSession(authOptions)
     console.log("[Document API] Session:", session ? "Found" : "Not found")
