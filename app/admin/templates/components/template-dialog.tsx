@@ -29,6 +29,7 @@ interface TemplateDialogProps {
     name: string
     description?: string
     categoryId: string
+    content?: string
   }
   onSuccess: () => void
 }
