@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -27,7 +27,8 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const invoice = await stripe.invoices.retrieve(params.id)
+    const { id } = await params
+    const invoice = await stripe.invoices.retrieve(id)
 
     // Verify the invoice belongs to the customer
     if (invoice.customer !== user.stripeCustomerId) {
