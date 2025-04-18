@@ -3,6 +3,14 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
+// Helper function to generate a slug from a string
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 // GET /api/admin/categories - Get all categories
 export async function GET() {
   console.log("[GET /api/admin/categories] Starting request")
@@ -50,6 +58,7 @@ export async function POST(request: Request) {
       data: {
         name,
         description,
+        slug: generateSlug(name),
       },
     })
     console.log("[POST /api/admin/categories] Category created:", category.id)
