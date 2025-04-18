@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     }
 
     // Create the questionnaire and its questions in a transaction
-    const questionnaire = await prisma.$transaction(async (tx: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use">) => {
+    const questionnaire = await prisma.$transaction(async (tx) => {
       // Create the questionnaire
       const questionnaire = await tx.questionnaire.create({
         data: {
