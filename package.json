@@ -26,7 +26,10 @@
     "seed:employment": "ts-node scripts/seed-employment-templates.ts",
     "seed:real-estate": "ts-node scripts/create-real-estate-templates.ts && ts-node scripts/create-real-estate-templates-2.ts && ts-node scripts/create-roommate-and-trust-deed.ts",
     "backup": "ts-node scripts/backup-data.ts",
-    "restore": "ts-node scripts/restore-data.ts"
+    "restore": "ts-node scripts/restore-data.ts",
+    "db:reset": "prisma migrate reset --force",
+    "vercel-build": "npm run db:reset && prisma generate && next build",
+    "db:deploy": "ts-node scripts/deploy-db.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
