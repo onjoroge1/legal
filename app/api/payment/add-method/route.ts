@@ -24,6 +24,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
+    if (!user.stripeCustomerId) {
+      return NextResponse.json(
+        { error: "No Stripe customer found" },
+        { status: 400 }
+      )
+    }
+
     const { paymentMethodId } = await request.json()
 
     if (!paymentMethodId) {
@@ -38,19 +45,18 @@ export async function POST(request: Request) {
       customer: user.stripeCustomerId,
     })
 
-    // Set as default if this is the first payment method
+    // List all payment methods for the customer
     const paymentMethods = await stripe.paymentMethods.list({
       customer: user.stripeCustomerId,
       type: "card",
     })
 
-    if (paymentMethods.data.length === 1) {
-      await stripe.customers.update(user.stripeCustomerId, {
-        invoice_settings: {
-          default_payment_method: paymentMethodId,
-        },
-      })
-    }
+    // Update the customer's default payment method
+    await stripe.customers.update(user.stripeCustomerId, {
+      invoice_settings: {
+        default_payment_method: paymentMethodId,
+      },
+    })
 
     return NextResponse.json({
       success: true,

@@ -248,9 +248,8 @@ model DocumentSignature {
   id         String   @id @default(cuid())
   documentId String
   userId     String
-  metadata   Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  signature  String
+  signedAt   DateTime @default(now())
   document   Document @relation(fields: [documentId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
 

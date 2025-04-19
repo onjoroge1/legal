@@ -24,6 +24,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
+    if (!user.stripeCustomerId) {
+      return NextResponse.json(
+        { error: "No Stripe customer found" },
+        { status: 400 }
+      )
+    }
+
     const { paymentMethodId } = await request.json()
 
     if (!paymentMethodId) {
@@ -34,8 +41,11 @@ export async function POST(request: Request) {
     }
 
     // Check if this is the default payment method
-    const customer = await stripe.customers.retrieve(user.stripeCustomerId)
+    const customer = await stripe.customers.retrieve(user.stripeCustomerId) as Stripe.Customer
     const isDefault = customer.invoice_settings?.default_payment_method === paymentMethodId
+
+    // Detach the payment method
+    await stripe.paymentMethods.detach(paymentMethodId)
 
     if (isDefault) {
       // Find another payment method to set as default
@@ -44,21 +54,14 @@ export async function POST(request: Request) {
         type: "card",
       })
 
-      const otherPaymentMethod = paymentMethods.data.find(
-        (pm) => pm.id !== paymentMethodId
-      )
-
-      if (otherPaymentMethod) {
+      if (paymentMethods.data.length > 0) {
         await stripe.customers.update(user.stripeCustomerId, {
           invoice_settings: {
-            default_payment_method: otherPaymentMethod.id,
+            default_payment_method: paymentMethods.data[0].id,
           },
         })
       }
     }
-
-    // Detach the payment method
-    await stripe.paymentMethods.detach(paymentMethodId)
 
     return NextResponse.json({
       success: true,

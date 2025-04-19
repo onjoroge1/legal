@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const categorySlugMap = {
+const categorySlugMap: Record<string, string> = {
   'cm9bhpeod000xvbl04d2dxx55': 'corporate',
   'cm9bh3u2e0000vbcg33mxuc64': 'employment',
   'cm9bhpf6d000yvbl0qw9aqww3': 'real-estate',

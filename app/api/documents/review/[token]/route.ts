@@ -5,12 +5,14 @@ export async function GET(req: Request, props: { params: Promise<{ token: string
   const params = await props.params;
   try {
     const { token } = params
+    const path = ["reviewToken"] as const
 
     // Find the document collaborator with the review token
     const collaborator = await prisma.documentCollaborator.findFirst({
       where: {
+        documentId: document.id,
         metadata: {
-          path: ["reviewToken"],
+          path,
           equals: token
         }
       },
@@ -23,7 +25,7 @@ export async function GET(req: Request, props: { params: Promise<{ token: string
       return NextResponse.json({ error: "Review not found" }, { status: 404 })
     }
 
-    return NextResponse.json(collaborator.document)
+    return NextResponse.json(collaborator?.document)
   } catch (error) {
     console.error("[Document Review] Error:", error)
     return NextResponse.json(

@@ -34,13 +34,13 @@ export async function POST() {
     }
 
     // Create apartment lease template
-    const apartmentLease = await prisma.documentTemplate.create({
-      data: {
-        id: "apartment-lease",
-        name: "Apartment Lease Agreement",
-        type: "lease",
-        description: "Standard apartment lease agreement template",
-        content: `# Apartment Lease Agreement
+    const templateVariables = {
+      rentAmount: "1500",
+      securityDeposit: "1500",
+      // ... other variables
+    }
+
+    const content = `# Apartment Lease Agreement
 
 This Lease Agreement ("Agreement") is made on {{leaseStartDate}} between:
 
@@ -52,8 +52,8 @@ Property Address: {{propertyAddress}}
 ## Terms and Conditions
 
 1. Lease Term: {{leaseTerm}} months
-2. Monthly Rent: ${{rentAmount}}
-3. Security Deposit: ${{securityDeposit}}
+2. Monthly Rent: $${templateVariables.rentAmount}
+3. Security Deposit: $${templateVariables.securityDeposit}
 4. Utilities: {{utilities}}
 
 ## Additional Terms
@@ -64,7 +64,15 @@ Property Address: {{propertyAddress}}
 
 Landlord: _________________
 Tenant: _________________
-Date: {{signatureDate}}`,
+Date: {{signatureDate}}`
+
+    const apartmentLease = await prisma.documentTemplate.create({
+      data: {
+        id: "apartment-lease",
+        name: "Apartment Lease Agreement",
+        type: "lease",
+        description: "Standard apartment lease agreement template",
+        content: content,
         version: "1.0",
         category: "real-estate",
         variables: [
