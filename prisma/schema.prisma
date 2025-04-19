@@ -97,14 +97,14 @@ model Document {
   status        String
   content       String
   state         String?
-  category      String?
-  jurisdiction  String?
   metadata      Json?
   createdAt     DateTime               @default(now())
   updatedAt     DateTime               @updatedAt
   userId        String
   templateId    String?
   deletedAt     DateTime?
+  category      String?
+  jurisdiction  String?
   user          User                   @relation(fields: [userId], references: [id])
   template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   collaborators DocumentCollaborator[]
@@ -237,9 +237,9 @@ model DocumentCollaborator {
   documentId String
   userId     String
   role       String
-  metadata   Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  metadata   Json?
   document   Document @relation(fields: [documentId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
 }
@@ -250,8 +250,8 @@ model DocumentSignature {
   userId     String
   signature  String
   signedAt   DateTime @default(now())
-  document   Document @relation(fields: [documentId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+  document   Document @relation(fields: [documentId], references: [id])
 
   @@unique([documentId, userId])
 }
@@ -259,7 +259,7 @@ model DocumentSignature {
 model Category {
   id          String             @id @default(cuid())
   name        String
-  slug        String             @unique
+  slug        String
   description String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt

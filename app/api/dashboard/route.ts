@@ -3,10 +3,21 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function GET(request: Request) {
+interface Document {
+  id: string
+  title: string
+  type: string
+  createdAt: Date
+}
+
+export const GET = async (request: Request) => {
   try {
+    console.log("[Dashboard API] Starting request")
     const session = await getServerSession(authOptions)
+    console.log("[Dashboard API] Session:", session)
+    
     if (!session?.user?.email) {
+      console.log("[Dashboard API] No session or email")
       return NextResponse.json(
         { error: 'Not authenticated' },
         { status: 401 }
@@ -15,9 +26,17 @@ export async function GET(request: Request) {
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isAdmin: true,
+      }
     })
+    console.log("[Dashboard API] User lookup result:", user)
 
     if (!user) {
+      console.log("[Dashboard API] User not found")
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
@@ -33,6 +52,7 @@ export async function GET(request: Request) {
         createdAt: true,
       }
     })
+    console.log("[Dashboard API] Found documents:", documents)
 
     // Get total document count
     const totalDocuments = await prisma.document.count({
@@ -51,8 +71,7 @@ export async function GET(request: Request) {
       },
     })
 
-    // Return mock data for storage and subscription
-    return NextResponse.json({
+    const response = {
       totalDocuments,
       documentsCreated,
       storage: {
@@ -63,21 +82,24 @@ export async function GET(request: Request) {
         type: "Free",
         status: "active",
       },
-      recentDocuments: documents.map(doc => ({
+      recentDocuments: documents.map((doc: Document) => ({
         id: doc.id,
         title: doc.title,
         createdAt: doc.createdAt.toISOString(),
         type: doc.type,
       })),
-    })
+    }
+    console.log("[Dashboard API] Sending response:", response)
+    
+    return NextResponse.json(response)
   } catch (error) {
-    console.log("✅ Entered catch block after Prisma failure")
+    console.log("[Dashboard API] Entered catch block after error")
     
     if (error instanceof Error) {
-      console.error("[Dashboard] Error:", error.message)
-      console.error("[Dashboard] Stack:", error.stack)
+      console.error("[Dashboard API] Error:", error.message)
+      console.error("[Dashboard API] Stack:", error.stack)
     } else {
-      console.error("[Dashboard] Unknown error:", error)
+      console.error("[Dashboard API] Unknown error:", error)
     }
     
     const message =

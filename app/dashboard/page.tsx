@@ -50,16 +50,24 @@ export default function DashboardPage() {
     const fetchDashboardData = async () => {
       try {
         console.log("[Dashboard] Fetching dashboard data from /api/dashboard")
-        const response = await fetch('/api/dashboard')
+        const response = await fetch('/api/dashboard', {
+          credentials: 'include', // Ensure cookies are sent with the request
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         console.log("[Dashboard] Dashboard data response status:", response.status)
         
         if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          console.error("[Dashboard] Error response data:", errorData)
+          
           if (response.status === 401) {
             console.log("[Dashboard] Unauthorized, redirecting to login")
             router.replace('/login')
             return
           }
-          throw new Error('Failed to fetch dashboard data')
+          throw new Error(errorData.message || 'Failed to fetch dashboard data')
         }
         const dashboardData = await response.json()
         console.log("[Dashboard] Dashboard data received:", dashboardData)
@@ -69,7 +77,7 @@ export default function DashboardPage() {
       } catch (error) {
         console.error('[Dashboard] Error fetching dashboard data:', error)
         if (mounted) {
-          setError('Failed to load dashboard data')
+          setError(error instanceof Error ? error.message : 'Failed to load dashboard data')
         }
       } finally {
         if (mounted) {
@@ -98,18 +106,19 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-muted-foreground">Loading dashboard...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-500">Error loading dashboard</h2>
-          <p className="text-muted-foreground">{error}</p>
+          <p className="text-muted-foreground mt-2">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             Try Again
           </Button>
