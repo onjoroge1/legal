@@ -33,10 +33,27 @@ export async function POST() {
       })
     }
 
+    // Find or create the real estate category
+    let realEstateCategory = await prisma.category.findFirst({
+      where: { slug: "real-estate" }
+    })
+
+    if (!realEstateCategory) {
+      realEstateCategory = await prisma.category.create({
+        data: {
+          id: "real-estate",
+          name: "Real Estate",
+          slug: "real-estate",
+          description: "Real estate related documents"
+        }
+      })
+    }
+
     // Create apartment lease template
     const templateVariables = {
       rentAmount: "1500",
       securityDeposit: "1500",
+      baseSalary: "50000",
       // ... other variables
     }
 
@@ -74,7 +91,11 @@ Date: {{signatureDate}}`
         description: "Standard apartment lease agreement template",
         content: content,
         version: "1.0",
-        category: "real-estate",
+        category: {
+          connect: {
+            id: realEstateCategory.id
+          }
+        },
         variables: [
           "leaseStartDate",
           "landlordName",
@@ -96,6 +117,22 @@ Date: {{signatureDate}}`
     })
 
     console.log("[Sample Templates] Created apartment lease template:", apartmentLease.id)
+
+    // Find or create the employment category
+    let employmentCategory = await prisma.category.findFirst({
+      where: { slug: "employment" }
+    })
+
+    if (!employmentCategory) {
+      employmentCategory = await prisma.category.create({
+        data: {
+          id: "employment",
+          name: "Employment",
+          slug: "employment",
+          description: "Employment related documents"
+        }
+      })
+    }
 
     // Create employment contract template
     const employmentContract = await prisma.documentTemplate.create({
@@ -120,7 +157,7 @@ Employment Type: {{employmentType}}
 
 ## Compensation
 
-Base Salary: ${{baseSalary}}
+Base Salary: $\${templateVariables.baseSalary}
 Benefits: {{benefits}}
 Bonus Structure: {{bonusStructure}}
 
@@ -134,7 +171,11 @@ Employer: _________________
 Employee: _________________
 Date: {{signatureDate}}`,
         version: "1.0",
-        category: "employment",
+        category: {
+          connect: {
+            id: employmentCategory.id
+          }
+        },
         variables: [
           "startDate",
           "employerName",
@@ -157,6 +198,22 @@ Date: {{signatureDate}}`,
     })
 
     console.log("[Sample Templates] Created employment contract template:", employmentContract.id)
+
+    // Find or create the business category
+    let businessCategory = await prisma.category.findFirst({
+      where: { slug: "business" }
+    })
+
+    if (!businessCategory) {
+      businessCategory = await prisma.category.create({
+        data: {
+          id: "business",
+          name: "Business",
+          slug: "business",
+          description: "Business related documents"
+        }
+      })
+    }
 
     // Create NDA template
     const nda = await prisma.documentTemplate.create({
@@ -194,7 +251,11 @@ Disclosing Party: _________________
 Receiving Party: _________________
 Date: {{signatureDate}}`,
         version: "1.0",
-        category: "business",
+        category: {
+          connect: {
+            id: businessCategory.id
+          }
+        },
         variables: [
           "startDate",
           "disclosingParty",

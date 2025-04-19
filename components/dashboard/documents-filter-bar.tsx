@@ -117,7 +117,7 @@ export default function DocumentsFilterBar() {
             mode="range"
             defaultMonth={dateRange.from}
             selected={dateRange}
-            onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
+            onSelect={(range) => setDateRange(range ? { from: range.from, to: range.to || range.from } : { from: undefined, to: undefined })}
             numberOfMonths={2}
           />
         </PopoverContent>

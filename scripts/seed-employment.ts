@@ -6,15 +6,18 @@ export default async function seedEmployment() {
   console.log('Starting employment seed...')
 
   // Ensure employment category exists
-  await prisma.category.upsert({
+  const category = await prisma.category.upsert({
     where: { id: 'employment' },
     update: {},
     create: {
       id: 'employment',
       name: 'Employment & HR',
+      slug: 'employment-hr',
       description: 'Employment contracts, offer letters, NDAs, and other HR documents'
     }
   })
+
+  console.log('Created/Updated employment category:', category)
 
   // Create templates in batch
   const templates = [

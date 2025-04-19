@@ -11,17 +11,20 @@ export async function POST(req: Request) {
     const { name, email, password, plan } = body
     console.log("[Signup] Request body:", { ...body, password: "[REDACTED]" })
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
       console.log("[Signup] Missing required fields:", { 
-        hasName: !!name,
         hasEmail: !!email,
         hasPassword: !!password
       })
       return NextResponse.json(
-        { message: 'Missing required fields' },
+        { message: 'Email and password are required' },
         { status: 400 }
       )
     }
+
+    // Ensure name is a string, use email prefix as fallback
+    const userName = name || email.split('@')[0]
+    console.log("[Signup] Using name:", userName)
 
     console.log("[Signup] Validating email:", email)
 
@@ -57,7 +60,7 @@ export async function POST(req: Request) {
     try {
       user = await prisma.user.create({
         data: {
-          name,
+          name: userName,
           email,
           password: hashedPassword,
           verificationToken,
@@ -80,7 +83,7 @@ export async function POST(req: Request) {
     try {
       await sendVerificationEmail({
         to: email,
-        name,
+        name: userName,
         verificationToken,
       })
       console.log("[Signup] Verification email sent successfully")

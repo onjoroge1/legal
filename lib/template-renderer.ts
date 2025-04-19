@@ -7,10 +7,16 @@ const openai = new OpenAI({
 
 export class TemplateRenderer {
   static async render(template: DocumentTemplate, variables: any) {
-    let content = template.content
+    if (!template.content) {
+      return {
+        content: '',
+        analysis: '',
+        suggestions: []
+      }
+    }
     
     // Replace variables
-    content = this.replaceVariables(content, variables)
+    const content = this.replaceVariables(template.content, variables)
     
     // Apply AI analysis
     const analysis = await this.analyzeTemplate(content, variables)
@@ -31,7 +37,7 @@ export class TemplateRenderer {
   }
 
   private static getNestedValue(obj: any, path: string) {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+    return path.split('.').reduce((current, key) => current?.[key], obj)
   }
 
   private static async analyzeTemplate(content: string, variables: any) {
@@ -71,35 +77,8 @@ Please analyze:
   }
 
   private static generateSuggestions(analysis: string) {
-    // Parse the AI analysis and generate actionable suggestions
-    const suggestions = {
-      criticalClauses: [] as string[],
-      risks: [] as string[],
-      customizations: [] as string[],
-      compliance: [] as string[],
-      improvements: [] as string[]
-    }
-
-    // Parse the analysis text and categorize suggestions
-    const lines = analysis.split('\n')
-    let currentCategory = ''
-
-    lines.forEach(line => {
-      if (line.includes('Missing critical clauses')) {
-        currentCategory = 'criticalClauses'
-      } else if (line.includes('Potential risks')) {
-        currentCategory = 'risks'
-      } else if (line.includes('Areas needing customization')) {
-        currentCategory = 'customizations'
-      } else if (line.includes('Compliance')) {
-        currentCategory = 'compliance'
-      } else if (line.includes('Suggested improvements')) {
-        currentCategory = 'improvements'
-      } else if (line.trim() && currentCategory) {
-        suggestions[currentCategory as keyof typeof suggestions].push(line.trim())
-      }
-    })
-
-    return suggestions
+    // Extract key suggestions from the analysis
+    // This is a placeholder implementation
+    return analysis.split('\n').filter(line => line.includes('suggest') || line.includes('recommend'))
   }
 } 

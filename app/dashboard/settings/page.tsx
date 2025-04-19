@@ -176,7 +176,7 @@ export default function SettingsPage() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex flex-col items-center gap-4">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={session?.user?.image || "/placeholder.svg"} alt="Profile picture" />
+                    <AvatarImage src="/placeholder.svg" alt="Profile picture" />
                     <AvatarFallback>{settings.firstName?.[0]}{settings.lastName?.[0]}</AvatarFallback>
                   </Avatar>
                   <Button variant="outline" size="sm">

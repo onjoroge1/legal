@@ -10,6 +10,18 @@ async function cleanupTemplates() {
     await prisma.documentTemplate.deleteMany()
     console.log('Deleted all templates')
 
+    // Get or create the real estate category
+    const realEstateCategory = await prisma.category.upsert({
+      where: { id: 'cm9bh3u330002vbcg4nkjeixo' },
+      update: {},
+      create: {
+        id: 'cm9bh3u330002vbcg4nkjeixo',
+        name: 'Real Estate',
+        slug: 'real-estate',
+        description: 'Real estate related document templates'
+      }
+    })
+
     // Create apartment lease template
     const apartmentLease = await prisma.documentTemplate.create({
       data: {
@@ -78,7 +90,7 @@ async function cleanupTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -158,7 +170,7 @@ async function cleanupTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -207,7 +219,7 @@ async function cleanupTemplates() {
           'Signed on {signingDate}',
           'Applicant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -259,7 +271,7 @@ async function cleanupTemplates() {
           'Original Tenant: _________________',
           'Subtenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -311,7 +323,7 @@ async function cleanupTemplates() {
           'Landlord/Agent: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -360,7 +372,7 @@ async function cleanupTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -408,7 +420,7 @@ async function cleanupTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -455,7 +467,7 @@ async function cleanupTemplates() {
           'Landlord: _________________',
           'Tenant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -507,7 +519,7 @@ async function cleanupTemplates() {
           'Property Owner: _________________',
           'Property Manager: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -558,7 +570,7 @@ async function cleanupTemplates() {
           'Signed on {signingDate}',
           'Applicant: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',
@@ -624,7 +636,7 @@ async function cleanupTemplates() {
           'Primary Tenant: _________________',
           'Co-Signer: _________________'
         ].join('\n'),
-        category: 'real-estate',
+        categoryId: realEstateCategory.id,
         version: '1.0.0',
         metadata: {
           category: 'real-estate',

@@ -33,6 +33,16 @@ async function main() {
       console.log(`Updated ${update.code} category`)
     }
 
+    // Update any templates using the old category IDs
+    await prisma.documentTemplate.updateMany({
+      where: {
+        categoryId: "employment"
+      },
+      data: {
+        categoryId: "cm9bh3u2e0000vbcg33mxuc64"
+      }
+    })
+
     console.log('Successfully updated all category codes')
   } catch (error) {
     console.error('Error updating category codes:', error)

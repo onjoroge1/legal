@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, DocumentTemplate, TemplateField as PrismaTemplateField } from '@prisma/client';
 import { prisma } from '../db';
 
 export interface TemplateField {
@@ -22,12 +22,19 @@ export interface Template {
   code: string | null;
   name: string;
   type: string;
-  category: string;
+  categoryId: string;
   description?: string | null;
   version: string;
   metadata?: Prisma.JsonValue | null;
   fields: TemplateField[];
 }
+
+type DocumentTemplateWithFields = DocumentTemplate & {
+  fields: (PrismaTemplateField & {
+    options: { value: string }[];
+    dependencies: { dependsOnFieldId: string; conditionValue: string }[];
+  })[];
+};
 
 export const templateApi = {
   // Get all templates
@@ -42,17 +49,17 @@ export const templateApi = {
             }
           }
         }
-      });
+      }) as DocumentTemplateWithFields[];
 
       return templates.map(template => ({
         id: template.id,
         code: template.code,
         name: template.name,
         type: template.type,
-        category: template.category,
+        categoryId: template.categoryId,
         description: template.description,
         version: template.version,
-        metadata: template.metadata,
+        metadata: template.metadata as Prisma.JsonValue,
         fields: template.fields.map(field => ({
           id: field.id,
           fieldId: field.fieldId,
@@ -88,7 +95,7 @@ export const templateApi = {
             }
           }
         }
-      });
+      }) as DocumentTemplateWithFields | null;
 
       if (!template) return null;
 
@@ -97,10 +104,10 @@ export const templateApi = {
         code: template.code,
         name: template.name,
         type: template.type,
-        category: template.category,
+        categoryId: template.categoryId,
         description: template.description,
         version: template.version,
-        metadata: template.metadata,
+        metadata: template.metadata as Prisma.JsonValue,
         fields: template.fields.map(field => ({
           id: field.id,
           fieldId: field.fieldId,
@@ -131,9 +138,9 @@ export const templateApi = {
           code: template.code,
           name: template.name,
           type: template.type,
-          category: template.category,
+          categoryId: template.categoryId,
           description: template.description,
-          metadata: template.metadata,
+          metadata: template.metadata as Prisma.InputJsonValue,
           fields: {
             create: template.fields.map(field => ({
               fieldId: field.fieldId,
@@ -169,17 +176,17 @@ export const templateApi = {
             }
           }
         }
-      });
+      }) as DocumentTemplateWithFields;
 
       return {
         id: created.id,
         code: created.code,
         name: created.name,
         type: created.type,
-        category: created.category,
+        categoryId: created.categoryId,
         description: created.description,
         version: created.version,
-        metadata: created.metadata,
+        metadata: created.metadata as Prisma.JsonValue,
         fields: created.fields.map(field => ({
           id: field.id,
           fieldId: field.fieldId,
@@ -210,9 +217,9 @@ export const templateApi = {
         data: {
           name: template.name,
           type: template.type,
-          category: template.category,
+          categoryId: template.categoryId,
           description: template.description,
-          metadata: template.metadata,
+          metadata: template.metadata as Prisma.InputJsonValue,
           fields: template.fields ? {
             deleteMany: {},
             create: template.fields.map(field => ({
@@ -249,17 +256,17 @@ export const templateApi = {
             }
           }
         }
-      });
+      }) as DocumentTemplateWithFields;
 
       return {
         id: updated.id,
         code: updated.code,
         name: updated.name,
         type: updated.type,
-        category: updated.category,
+        categoryId: updated.categoryId,
         description: updated.description,
         version: updated.version,
-        metadata: updated.metadata,
+        metadata: updated.metadata as Prisma.JsonValue,
         fields: updated.fields.map(field => ({
           id: field.id,
           fieldId: field.fieldId,

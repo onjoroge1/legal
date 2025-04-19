@@ -1,0 +1,14 @@
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Sign Up | LegalLawDocs.com",
+  description: "Create a new LegalLawDocs.com account",
+}
+
+export default function SignupLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return children
+} 

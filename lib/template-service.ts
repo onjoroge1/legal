@@ -26,7 +26,7 @@ export class TemplateService {
     description?: string
     content: string
     state?: string
-    category: string
+    categoryId: string
     variables: any
     metadata: any
   }) {
@@ -37,7 +37,7 @@ export class TemplateService {
         description: data.description,
         content: data.content,
         state: data.state,
-        category: data.category,
+        categoryId: data.categoryId,
         variables: data.variables,
         metadata: data.metadata,
         version: "1.0.0"
@@ -59,7 +59,7 @@ export class TemplateService {
         description: data.description,
         content: data.content,
         state: data.state,
-        category: data.category,
+        categoryId: data.categoryId,
         variables: data.variables,
         metadata: data.metadata,
         version: data.version
@@ -69,17 +69,23 @@ export class TemplateService {
 
   static async getTemplate(id: string) {
     return prisma.documentTemplate.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        category: true
+      }
     })
   }
 
-  static async listTemplates(category?: string) {
+  static async listTemplates(categoryId?: string) {
     const where: any = {}
-    if (category) {
-      where.category = category
+    if (categoryId) {
+      where.categoryId = categoryId
     }
     return prisma.documentTemplate.findMany({
       where,
+      include: {
+        category: true
+      },
       orderBy: { createdAt: 'desc' }
     })
   }
@@ -99,10 +105,22 @@ export class TemplateService {
         return
       }
 
+      // Create or get the employment category
+      const category = await prisma.category.upsert({
+        where: { id: 'cm9bh3u2e0000vbcg33mxuc64' },
+        update: {},
+        create: {
+          id: 'cm9bh3u2e0000vbcg33mxuc64',
+          name: 'Employment',
+          slug: 'employment',
+          description: 'Employment-related document templates'
+        }
+      })
+
       const templateData = {
         name: "Standard Employment Agreement",
         description: "Comprehensive employment agreement template with standard clauses and protections",
-        category: "Employment",
+        categoryId: category.id,
         type: "agreement",
         content: `# EMPLOYMENT AGREEMENT
 

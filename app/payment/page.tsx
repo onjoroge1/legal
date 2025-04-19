@@ -1,11 +1,11 @@
 "use client"
 
+import { Suspense } from "react"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle2, CreditCard, Shield, Zap } from "lucide-react"
-import { Loader2 } from "lucide-react"
+import { CheckCircle2, CreditCard, Shield, Zap, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
@@ -90,7 +90,7 @@ function PaymentForm({ amount, tier }: { amount: number; tier: string }) {
   )
 }
 
-export default function PaymentPage() {
+function PaymentPageContent() {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
@@ -248,9 +248,11 @@ export default function PaymentPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <PaymentForm amount={amount} tier={tier} />
-              </Elements>
+              {clientSecret && (
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                  <PaymentForm amount={amount} tier={tier} />
+                </Elements>
+              )}
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <AlertDialog>
@@ -288,5 +290,20 @@ export default function PaymentPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <p className="text-sm text-muted-foreground">Loading payment details...</p>
+        </div>
+      </div>
+    }>
+      <PaymentPageContent />
+    </Suspense>
   )
 } 

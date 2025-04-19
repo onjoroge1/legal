@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { compare, hash } from 'bcryptjs'
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
 
 // Helper functions for password management
@@ -13,14 +13,17 @@ export async function verifyPassword(password: string, hashedPassword: string) {
 }
 
 // User management functions
-export async function createUser(email: string, password: string, name?: string) {
-  const hashedPassword = await hashPassword(password)
-  
+export async function createUser({ email, password, name }: { email: string; password: string; name?: string }) {
+  const hashedPassword = await hash(password, 12)
+
+  // Use email prefix as fallback for name if not provided
+  const userName = name || email.split('@')[0]
+
   const user = await prisma.user.create({
     data: {
       email,
       password: hashedPassword,
-      name,
+      name: userName,
     },
   })
 

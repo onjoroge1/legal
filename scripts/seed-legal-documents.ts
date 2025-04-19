@@ -70,9 +70,6 @@ ___________________________
 
 ## ATTACHMENTS
 [LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
       metadata: {
         sections: [
           'Basic Information',
@@ -373,9 +370,6 @@ ___________________________
 [ATTESTING_OFFICER_TITLE]
 
 [CORPORATE_SEAL]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
       metadata: {
         sections: [
           'Basic Information',
@@ -669,9 +663,6 @@ ___________________________
 
 ## ATTACHMENTS
 [LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
       metadata: {
         sections: [
           'Basic Information',
@@ -991,9 +982,6 @@ ___________________________
 
 ## ATTACHMENTS
 [LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
       metadata: {
         sections: [
           'Basic Information',
@@ -1254,93 +1242,89 @@ ___________________________
   })
   console.log('Created/Updated questionnaire:', 'Consent to be Director and Officer Questionnaire')
 
-  // Create Directors' Organizational Meeting template
-  const directorsOrgMeetingTemplate = await prisma.documentTemplate.upsert({
-    where: { id: 'directors-org-meeting' },
+  // Create Incorporators' Meeting template
+  const incorporatorsMeetingTemplate = await prisma.documentTemplate.upsert({
+    where: { id: 'incorporators-meeting' },
     update: {
       categoryId: CORPORATE_CATEGORY_ID,
-      name: 'Directors\' Organizational Meeting',
-      description: 'Documentation of the initial organizational meeting of the board of directors',
+      name: 'Incorporators\' Organizational Meeting',
+      description: 'Minutes and resolutions from the initial organizational meeting of incorporators',
       type: 'document',
       version: '1.0.0',
       state: 'published'
     },
     create: {
-      id: 'directors-org-meeting',
-      name: 'Directors\' Organizational Meeting',
-      description: 'Documentation of the initial organizational meeting of the board of directors',
+      id: 'incorporators-meeting',
+      name: 'Incorporators\' Organizational Meeting',
+      description: 'Minutes and resolutions from the initial organizational meeting of incorporators',
       categoryId: CORPORATE_CATEGORY_ID,
       type: 'document',
       version: '1.0.0',
       state: 'published',
-      content: `# DIRECTORS' ORGANIZATIONAL MEETING
-
-## CORPORATE INFORMATION
+      content: `# MINUTES OF ORGANIZATIONAL MEETING OF INCORPORATORS
 [CORPORATION_NAME]
-Date of Incorporation: [INCORPORATION_DATE]
 
 ## MEETING DETAILS
 Date: [MEETING_DATE]
 Time: [MEETING_TIME]
 Location: [MEETING_LOCATION]
-Incorporators Present: [INCORPORATORS_LIST]
 
-## CORPORATE STATUS
-Certificate of Incorporation Status: [CERTIFICATE_STATUS]
+## ATTENDANCE
+Present were the following incorporators:
+[INCORPORATORS_PRESENT]
 
-## INITIAL DIRECTORS
-[DIRECTORS_LIST]
+## CALL TO ORDER
+[MEETING_CHAIR] called the meeting to order and acted as Chair.
+[MEETING_SECRETARY] was appointed Secretary of the meeting.
 
-## CORPORATE GOVERNANCE
-Bylaws: [BYLAWS_STATUS]
-Corporate Seal: [SEAL_STATUS]
-Stock Certificate Form: [STOCK_CERTIFICATE_STATUS]
+## CERTIFICATE OF INCORPORATION
+The Secretary presented the Certificate of Incorporation, showing that it was filed with the Secretary of State of [STATE] on [FILING_DATE].
 
-## SHARES AND STOCK
-Initial Shares: [SHARES_DETAILS]
-Consideration: [CONSIDERATION_DETAILS]
+## BYLAWS
+The proposed Bylaws were presented and discussed.
+RESOLVED, that the Bylaws presented to this meeting are hereby adopted as the Bylaws of the Corporation.
 
-## ADDITIONAL MATTERS
-Pre-incorporation Agreements: [AGREEMENTS_STATUS]
-Banking Resolutions: [BANKING_RESOLUTIONS]
-Expense Reimbursement: [EXPENSE_REIMBURSEMENT]
-Temporary Representative: [TEMPORARY_REPRESENTATIVE]
-Organizational Resolutions: [ORGANIZATIONAL_RESOLUTIONS]
-Incorporator Resignation: [INCORPORATOR_RESIGNATION]
-Record Maintenance: [RECORD_MAINTENANCE]
+## DIRECTORS
+The following persons were elected to serve as Directors until the first annual meeting of shareholders:
+[DIRECTORS_ELECTED]
 
-## CERTIFICATION
-I, [SECRETARY_NAME], do hereby certify that the foregoing is a true and correct record of the proceedings of the Organizational Meeting of the Incorporators of [CORPORATION_NAME] held on [MEETING_DATE].
+## OFFICERS
+The following persons were elected as officers of the Corporation:
+[OFFICERS_ELECTED]
 
-IN WITNESS WHEREOF, I have executed this Certificate as of [CERTIFICATION_DATE]
+## STOCK CERTIFICATES
+RESOLVED, that the form of stock certificate presented to this meeting is approved and adopted as the form of certificate to represent shares in the Corporation.
+
+## BANK ACCOUNTS
+RESOLVED, that the Corporation establish banking relationships with [BANK_NAME].
+The following officers are authorized to sign checks and conduct banking business:
+[AUTHORIZED_SIGNERS]
+
+## OTHER BUSINESS
+[OTHER_BUSINESS]
+
+## ADJOURNMENT
+There being no further business, the meeting was adjourned at [ADJOURNMENT_TIME].
 
 ___________________________
-[SECRETARY_NAME]
-Secretary
+[SECRETARY_NAME], Secretary
 
-## ATTACHMENTS
-[LIST_OF_ATTACHMENTS]`,
-      type: 'document',
-      version: '1.0.0',
-      state: 'published',
+[CORPORATE_SEAL]`,
       metadata: {
         sections: [
-          'Basic Information',
-          'Meeting Details',
-          'Corporate Status',
-          'Initial Directors',
-          'Corporate Governance',
-          'Shares and Stock',
-          'Additional Matters',
-          'Certification',
-          'Attachments'
+          'Meeting Information',
+          'Attendance',
+          'Corporate Formation',
+          'Governance',
+          'Banking',
+          'Additional Business'
         ]
       }
     }
   })
-  console.log('Created/Updated template:', 'Incorporators\' Organizational Meeting')
+  console.log('Created/Updated template: Incorporators\' Meeting')
 
-  // Create Incorporators' Organizational Meeting questionnaire
+  // Create Incorporators' Meeting questionnaire
   await prisma.questionnaire.upsert({
     where: { id: 'incorporators-meeting-questions' },
     update: {},
@@ -1355,226 +1339,15 @@ Secretary
             label: 'What is the exact legal name of the corporation?',
             type: 'text',
             required: true,
-            section: 'Basic Information',
+            section: 'Meeting Information',
             helpText: 'Enter the complete legal name of the corporation as registered',
             placeholder: 'e.g., Acme Corporation, Inc.'
-          },
-          {
-            label: 'Who is/are the incorporator(s)?',
-            type: 'textarea',
-            required: true,
-            section: 'Meeting Details',
-            helpText: 'List all incorporators with their full names',
-            placeholder: '1. John Smith\n2. Jane Doe'
-          },
-          {
-            label: 'What is the date, time, and location of the meeting?',
-            type: 'text',
-            required: true,
-            section: 'Meeting Details',
-            helpText: 'Enter the complete meeting details',
-            placeholder: 'e.g., January 1, 2024, 10:00 AM, Corporate Headquarters'
-          },
-          {
-            label: 'Has the Certificate of Incorporation been filed and accepted by the state?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Status',
-            helpText: 'Indicate if the Certificate has been filed and accepted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'What is the date of incorporation?',
-            type: 'date',
-            required: true,
-            section: 'Basic Information',
-            helpText: 'Enter the date when the corporation was incorporated'
-          },
-          {
-            label: 'Who will be appointed as the initial board of directors?',
-            type: 'textarea',
-            required: true,
-            section: 'Initial Directors',
-            helpText: 'List all initial directors with their full names',
-            placeholder: '1. John Smith\n2. Jane Doe\n3. Robert Johnson'
-          },
-          {
-            label: 'Will the incorporator(s) adopt initial bylaws?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if initial bylaws will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the corporate seal be adopted?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if a corporate seal will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the form of stock certificate be approved?',
-            type: 'select',
-            required: true,
-            section: 'Corporate Governance',
-            helpText: 'Indicate if a stock certificate form will be approved',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will any pre-incorporation agreements be ratified?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if pre-incorporation agreements will be ratified',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will any banking resolutions be adopted?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if banking resolutions will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the incorporator(s) authorize the reimbursement of incorporation expenses?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if incorporation expenses will be reimbursed',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Who will be designated to act on behalf of the corporation until directors are elected?',
-            type: 'text',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Enter the name of the temporary representative',
-            placeholder: 'e.g., John Smith'
-          },
-          {
-            label: 'Will any organizational resolutions be adopted?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if organizational resolutions will be adopted',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the incorporator(s) resign after completing their organizational duties?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if incorporators will resign',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Who will maintain the records of the incorporator actions?',
-            type: 'text',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Enter the name of the record keeper',
-            placeholder: 'e.g., Jane Doe'
-          },
-          {
-            label: 'Will the incorporator(s) authorize the initial issuance of shares?',
-            type: 'select',
-            required: true,
-            section: 'Shares and Stock',
-            helpText: 'Indicate if initial shares will be issued',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'What will be the consideration for the initial shares?',
-            type: 'textarea',
-            required: true,
-            section: 'Shares and Stock',
-            helpText: 'Describe the consideration for shares',
-            placeholder: 'e.g., Cash payment of $X, Services valued at $Y'
-          },
-          {
-            label: 'Will the incorporator(s) appoint officers?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if officers will be appointed',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
-          },
-          {
-            label: 'Will the incorporator(s) call for the first meeting of shareholders?',
-            type: 'select',
-            required: true,
-            section: 'Additional Matters',
-            helpText: 'Indicate if the first shareholders meeting will be called',
-            options: {
-              create: [
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
-              ]
-            }
           }
         ]
       }
     }
   })
-  console.log('Created/Updated questionnaire:', 'Incorporators\' Organizational Meeting Questionnaire')
+  console.log('Created/Updated questionnaire: Incorporators\' Meeting')
 
   await prisma.$disconnect()
 } 

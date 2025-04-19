@@ -33,21 +33,25 @@ async function recreateData() {
       {
         id: CATEGORIES.CORPORATE,
         name: 'Corporate Governance',
+        slug: 'corporate-governance',
         description: 'Board resolutions, bylaws, and corporate policies'
       },
       {
         id: CATEGORIES.EMPLOYMENT,
         name: 'Employment & HR',
+        slug: 'employment-hr',
         description: 'Employment contracts, offer letters, NDAs, and other HR documents'
       },
       {
         id: CATEGORIES.REAL_ESTATE,
         name: 'Real Estate',
+        slug: 'real-estate',
         description: 'Lease agreements, rental contracts, and property documents'
       },
       {
         id: CATEGORIES.BUSINESS_FORMATION,
         name: 'Business Formation',
+        slug: 'business-formation',
         description: 'LLC operating agreements, partnership agreements, and incorporation documents'
       }
     ]

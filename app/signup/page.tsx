@@ -1,13 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
-import type { Metadata } from "next"
-import { Scale } from "lucide-react"
+import { Scale, Loader2 } from "lucide-react"
 import SignupForm from "@/components/signup-form"
-
-export const metadata: Metadata = {
-  title: "Sign Up | LegalLawDocs.com",
-  description: "Create a new LegalLawDocs.com account",
-}
+import { Suspense } from "react"
 
 export default function SignupPage() {
   return (
@@ -42,7 +39,13 @@ export default function SignupPage() {
             <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
             <p className="text-sm text-muted-foreground">Enter your information to create your account</p>
           </div>
-          <SignupForm />
+          <Suspense fallback={
+            <div className="flex justify-center">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          }>
+            <SignupForm />
+          </Suspense>
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
