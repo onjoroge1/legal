@@ -253,6 +253,8 @@ model DocumentSignature {
   updatedAt  DateTime @updatedAt
   document   Document @relation(fields: [documentId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([documentId, userId])
 }
 
 model Category {
