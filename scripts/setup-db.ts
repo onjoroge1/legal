@@ -1,4 +1,3 @@
-import { PrismaClient } from '.prisma/client';
 import { execSync } from 'child_process';
 import * as dotenv from 'dotenv';
 
@@ -6,8 +5,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function setupDatabase() {
-  const prisma = new PrismaClient();
-  
   try {
     // Check if we're in production
     const isProduction = process.env.NODE_ENV === 'production';
@@ -28,8 +25,6 @@ async function setupDatabase() {
   } catch (error) {
     console.error('Error setting up database:', error);
     process.exit(1);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 

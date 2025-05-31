@@ -28,7 +28,7 @@
     "backup": "ts-node scripts/backup-data.ts",
     "restore": "ts-node scripts/restore-data.ts",
     "db:reset": "prisma migrate reset --force",
-    "vercel-build": "ts-node scripts/setup-db.ts && next build",
+    "vercel-build": "prisma generate && ts-node scripts/setup-db.ts && next build",
     "db:deploy": "ts-node scripts/deploy-db.ts"
   },
   "dependencies": {
