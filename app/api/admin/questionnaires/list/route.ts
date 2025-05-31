@@ -3,10 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-export async function GET(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function GET() {
   try {
     // Check authentication
     const session = await getServerSession(authOptions)
@@ -14,29 +11,16 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const params = await context.params
-    const { id } = params
-
-    // First, find the template by ID or code
-    const template = await prisma.documentTemplate.findFirst({
-      where: {
-        OR: [
-          { id },
-          { code: id }
-        ]
-      }
-    })
-
-    if (!template) {
-      return NextResponse.json({ error: 'Template not found' }, { status: 404 })
-    }
-
-    // Get questionnaires for the template using the actual template ID
+    // Get all questionnaires with their questions
     const questionnaires = await prisma.questionnaire.findMany({
-      where: {
-        templateId: template.id
-      },
       include: {
+        template: {
+          select: {
+            id: true,
+            name: true,
+            code: true
+          }
+        },
         questions: {
           include: {
             options: true,

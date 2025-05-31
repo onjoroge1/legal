@@ -100,7 +100,7 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "@prisma/client": "^6.6.0",
+    "@prisma/client": "^6.8.2",
     "@types/node": "^22.14.0",
     "@types/pdfkit": "^0.13.9",
     "@types/react": "^18.2.0",

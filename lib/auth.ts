@@ -20,7 +20,11 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 60 * 60, // 1 hour
+    updateAge: 15 * 60, // 15 minutes - session will be updated if it's older than this
+  },
+  jwt: {
+    maxAge: 60 * 60, // 1 hour
   },
   pages: {
     signIn: "/login",
@@ -92,20 +96,44 @@ export const authOptions: NextAuthOptions = {
           name: token.name as string,
           isAdmin: token.isAdmin as boolean,
         }
+        // Add expiration time to session
+        session.expires = new Date((token.exp as number) * 1000).toISOString()
       }
       console.log("[Auth] Session callback - session:", session)
       return session
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       console.log("[Auth] JWT callback - token:", token)
       console.log("[Auth] JWT callback - user:", user)
       console.log("[Auth] JWT callback - account:", account)
       
+      // If this is an initial sign in
+      if (account && user) {
+        const typedUser = user as { id: string; email: string; name: string; isAdmin: boolean }
+        return {
+          ...token,
+          id: typedUser.id,
+          email: typedUser.email,
+          name: typedUser.name,
+          isAdmin: typedUser.isAdmin,
+          exp: Math.floor(Date.now() / 1000) + (60 * 60), // 1 hour from now
+        }
+      }
+
+      // If the token is about to expire, refresh it
+      if (token.exp && typeof token.exp === 'number' && Date.now() / 1000 > token.exp - 300) { // 5 minutes before expiration
+        return {
+          ...token,
+          exp: Math.floor(Date.now() / 1000) + (60 * 60), // Extend by 1 hour
+        }
+      }
+
       const email = token.email
       if (typeof email !== 'string') {
         return token;
       }
 
+      // Always fetch the latest user data from the database
       const dbUser = await prisma.user.findFirst({
         where: {
           email,
@@ -119,17 +147,17 @@ export const authOptions: NextAuthOptions = {
       })
 
       if (!dbUser) {
-        if (user) {
-          token.id = user?.id
-        }
         return token
       }
 
+      // Always use the database user ID and data
       return {
+        ...token,
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         isAdmin: dbUser.isAdmin,
+        exp: (token.exp as number) || Math.floor(Date.now() / 1000) + (60 * 60), // 1 hour from now
       }
     },
     async redirect({ url, baseUrl }) {
