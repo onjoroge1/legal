@@ -28,7 +28,7 @@
     "backup": "ts-node scripts/backup-data.ts",
     "restore": "ts-node scripts/restore-data.ts",
     "db:reset": "prisma migrate reset --force",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "ts-node scripts/setup-db.ts && next build",
     "db:deploy": "ts-node scripts/deploy-db.ts"
   },
   "dependencies": {
@@ -105,6 +105,7 @@
     "@types/pdfkit": "^0.13.9",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "dotenv": "^16.5.0",
     "postcss": "^8",
     "prisma": "^6.6.0",
     "tailwindcss": "^3.4.17",
