@@ -20,7 +20,7 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60, // 1 hour
+    maxAge: 60 * 60, // 1 hour this is the max age of the session
     updateAge: 15 * 60, // 15 minutes - session will be updated if it's older than this
   },
   jwt: {

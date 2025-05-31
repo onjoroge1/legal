@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -106,8 +106,8 @@ model Document {
   deletedAt     DateTime?
   category      String?
   jurisdiction  String?
-  template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   user          User                   @relation(fields: [userId], references: [id])
+  template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
   collaborators DocumentCollaborator[]
   parties       DocumentParty[]
   signatures    DocumentSignature[]
@@ -123,8 +123,8 @@ model DocumentParty {
   userDocumentId String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  document       Document?     @relation(fields: [documentId], references: [id])
   userDocument   UserDocument? @relation(fields: [userDocumentId], references: [id])
+  document       Document?     @relation(fields: [documentId], references: [id])
 }
 
 model Questionnaire {
@@ -251,8 +251,8 @@ model DocumentSignature {
   userId     String
   signature  String
   signedAt   DateTime @default(now())
-  document   Document @relation(fields: [documentId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+  document   Document @relation(fields: [documentId], references: [id])
 
   @@unique([documentId, userId])
 }
