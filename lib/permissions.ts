@@ -51,10 +51,10 @@ export function getPermissionsForTier(tier: string): FeaturePermissions {
   switch (tier) {
     case "free":
       return {
-        // Document generation
-        canGenerateDocuments: false,
-        maxDocumentsPerMonth: 0,
-        canGenerateAdvancedDocuments: false,
+        // Document generation - Allow free users to generate (payment at checkout)
+        canGenerateDocuments: true,
+        maxDocumentsPerMonth: null, // No limit, but payment required at checkout
+        canGenerateAdvancedDocuments: true,
         
         // Templates
         canAccessBasicTemplates: true,
@@ -62,9 +62,9 @@ export function getPermissionsForTier(tier: string): FeaturePermissions {
         canAccessAllTemplates: false,
         
         // Document features
-        canDownloadPDF: false,
-        canDownloadDOCX: false,
-        canDownloadBoth: false,
+        canDownloadPDF: false, // Payment required for download
+        canDownloadDOCX: false, // Payment required for download
+        canDownloadBoth: false, // Payment required for download
         canPreviewDocuments: true,
         canUseWatermarkedPreview: true,
         
@@ -213,15 +213,17 @@ export async function canPerformAction(
   userEmail: string | undefined,
   action: "generate" | "download" | "preview" | "collaborate" | "customize" | "ai-review"
 ): Promise<boolean> {
+  // Allow generate and preview for everyone (including non-logged-in users)
+  // Payment will be required at checkout/download stage
+  if (action === "generate" || action === "preview") {
+    return true
+  }
+
   const permissions = await getUserPermissions(userEmail)
   
   switch (action) {
-    case "generate":
-      return permissions.canGenerateDocuments
     case "download":
       return permissions.canDownloadPDF || permissions.canDownloadDOCX
-    case "preview":
-      return permissions.canPreviewDocuments
     case "collaborate":
       return permissions.canCollaborate
     case "customize":

@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Mail, PenTool, Send, CheckCircle2 } from "lucide-react"
+import { Mail, PenTool, Send, CheckCircle2, Lock } from "lucide-react"
 import { toast } from "@/lib/safe-toast"
 
 interface DocumentSigningProps {
@@ -22,18 +24,26 @@ interface DocumentSigningProps {
   documentTitle: string
   onSignComplete?: () => void
   onSaveDocument?: () => Promise<string | null>
+  slug?: string
 }
 
 /**
  * DocumentSigning component
  * Handles document signing and sending for signature
+ * Only available for paid users - redirects to checkout for free users
  */
 export default function DocumentSigning({ 
   documentId, 
   documentTitle,
   onSignComplete,
-  onSaveDocument
+  onSaveDocument,
+  slug
 }: DocumentSigningProps) {
+  const router = useRouter()
+  const params = useParams()
+  const { data: session } = useSession()
+  const documentSlug = slug || (params?.slug as string)
+  
   const [signerEmail, setSignerEmail] = useState("")
   const [signerName, setSignerName] = useState("")
   const [message, setMessage] = useState("")
@@ -42,6 +52,43 @@ export default function DocumentSigning({
   const [signature, setSignature] = useState("")
   const [showSignDialog, setShowSignDialog] = useState(false)
   const [showSendDialog, setShowSendDialog] = useState(false)
+  const [hasSubscription, setHasSubscription] = useState(false)
+  const [isCheckingSubscription, setIsCheckingSubscription] = useState(true)
+
+  // Check subscription status
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!session?.user?.email) {
+        setIsCheckingSubscription(false)
+        return
+      }
+
+      try {
+        const response = await fetch("/api/user/subscription")
+        if (response.ok) {
+          const data = await response.json()
+          setHasSubscription(data.subscription?.isActive || false)
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error)
+      } finally {
+        setIsCheckingSubscription(false)
+      }
+    }
+
+    checkSubscription()
+  }, [session])
+
+  const handleRequiresPayment = () => {
+    toast.error("This feature requires a paid plan")
+    // If user is logged in, redirect to billing to upgrade
+    // If not logged in, redirect to checkout
+    if (session?.user?.email) {
+      router.push("/dashboard/billing")
+    } else {
+      router.push(`/documents/${documentSlug}/checkout`)
+    }
+  }
 
   const handleSendForSignature = async () => {
     if (!signerEmail || !signerName) {
@@ -146,14 +193,52 @@ export default function DocumentSigning({
     }
   }
 
+  // Show loading state while checking subscription
+  if (isCheckingSubscription && session?.user?.email) {
+    return (
+      <div className="flex flex-col sm:flex-row gap-3 mt-6">
+        <Button variant="outline" className="flex-1" disabled>
+          <PenTool className="mr-2 h-4 w-4" />
+          Loading...
+        </Button>
+        <Button className="flex-1" disabled>
+          <Send className="mr-2 h-4 w-4" />
+          Loading...
+        </Button>
+      </div>
+    )
+  }
+
+  // Only paid users (with subscription) can use signing features
+  // Free users and non-logged-in users need to pay first
+  const canUseSigning = hasSubscription === true
+
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       {/* Sign Document Button */}
       <Dialog open={showSignDialog} onOpenChange={setShowSignDialog}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="flex-1">
-            <PenTool className="mr-2 h-4 w-4" />
-            Sign Document
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={(e) => {
+              if (!canUseSigning) {
+                e.preventDefault()
+                handleRequiresPayment()
+              }
+            }}
+          >
+            {canUseSigning ? (
+              <>
+                <PenTool className="mr-2 h-4 w-4" />
+                Sign Document
+              </>
+            ) : (
+              <>
+                <Lock className="mr-2 h-4 w-4" />
+                Sign Document (Premium)
+              </>
+            )}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -193,9 +278,26 @@ export default function DocumentSigning({
       {/* Send for Signature Button */}
       <Dialog open={showSendDialog} onOpenChange={setShowSendDialog}>
         <DialogTrigger asChild>
-          <Button className="flex-1">
-            <Send className="mr-2 h-4 w-4" />
-            Send for Signature
+          <Button 
+            className="flex-1"
+            onClick={(e) => {
+              if (!canUseSigning) {
+                e.preventDefault()
+                handleRequiresPayment()
+              }
+            }}
+          >
+            {canUseSigning ? (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Send for Signature
+              </>
+            ) : (
+              <>
+                <Lock className="mr-2 h-4 w-4" />
+                Send for Signature (Premium)
+              </>
+            )}
           </Button>
         </DialogTrigger>
         <DialogContent>

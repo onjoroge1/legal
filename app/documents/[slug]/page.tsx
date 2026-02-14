@@ -24,6 +24,7 @@ import { getDocumentBySlug, documentTypes } from "@/lib/document-data"
 import { getSubscriptionFromSession } from "@/lib/subscription"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import type { Metadata } from "next"
 
 const statesCovered = [
   "California", "New York", "Texas", "Florida", "Illinois",
@@ -32,23 +33,14 @@ const statesCovered = [
   "All 50 States",
 ]
 
-const included = [
-  "Definition of Confidential Information",
-  "Obligations of Receiving Party",
-  "Term & Duration Clauses",
-  "Exclusions from Confidential Information",
-  "Return of Materials Provision",
-  "Remedies & Injunctive Relief",
-  "Non-Compete / Non-Solicitation (where legal)",
-  "Governing Law & Jurisdiction",
-  "Digital Signature Block",
-  "State-Specific Compliance Addendum",
-]
+import { getDocumentContent } from "@/lib/document-content"
+import { getDocumentDetailContent } from "@/lib/document-detail-content"
+import { getCanonicalUrl, getDocumentSeo } from "@/lib/document-seo"
 
 const reviews = [
-  { name: "Sarah Chen", role: "Startup Founder", rating: 5, text: "Generated a California NDA in under 5 minutes. My attorney reviewed it and confirmed it was fully compliant. Saved me $800 in legal fees." },
-  { name: "Marcus Johnson", role: "Business Consultant", rating: 5, text: "I use LegalLawDocs for all my client NDAs. The AI questions are spot-on and the documents are incredibly thorough." },
-  { name: "Emily Rodriguez", role: "Freelance Designer", rating: 5, text: "Finally, an affordable way to protect my creative work. The NDA covered everything I needed and more." },
+  { name: "Sarah Chen", role: "Startup Founder", rating: 5, text: "Generated a state-compliant agreement in under 5 minutes. My attorney reviewed it and confirmed it was solid. Saved me hundreds in legal fees." },
+  { name: "Marcus Johnson", role: "Business Consultant", rating: 5, text: "I use LegalLawDocs for client documents across multiple states. The questions are on point and the output is thorough." },
+  { name: "Emily Rodriguez", role: "Freelance Designer", rating: 5, text: "Finally, an affordable way to protect my work and relationships. The document covered everything I needed." },
 ]
 
 interface PageProps {
@@ -56,13 +48,74 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  // Exclude slugs that have dedicated pages
-  const excludedSlugs = ["llc_operating_agreement", "nda"]
+  const excludedSlugs: string[] = []
   return documentTypes
     .filter((doc) => !excludedSlugs.includes(doc.slug))
     .map((doc) => ({
       slug: doc.slug,
     }))
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const document = getDocumentBySlug(slug)
+  if (!document) {
+    return {}
+  }
+
+  const seo = getDocumentSeo(slug)
+  const canonical = getCanonicalUrl(slug)
+  const title =
+    seo?.title || `${document.title} - Create Online | LegalLawDocs.com`
+  const description =
+    seo?.description ||
+    `Create a ${document.title} online with state‑specific compliance, instant download, and secure storage.`
+  const ogTitle = seo?.ogTitle || title
+  const ogDescription = seo?.ogDescription || description
+  const ogImage = seo?.ogImage || "https://legallawdocs.com/images/hero-legal.jpg"
+  const ogImageAlt = seo?.ogImageAlt || `${document.title} - LegalLawDocs.com`
+
+  return {
+    title,
+    description,
+    keywords: seo?.keywords,
+    alternates: {
+      canonical,
+    },
+    authors: [{ name: "LegalLawDocs.com" }],
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    openGraph: {
+      type: "website",
+      url: canonical,
+      title: ogTitle,
+      description: ogDescription,
+      siteName: "LegalLawDocs.com",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: ogImageAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImage],
+    },
+  }
 }
 
 export default async function DocumentDetailPage({ params }: PageProps) {
@@ -77,8 +130,27 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const subscription = await getSubscriptionFromSession()
   const hasActiveSubscription = subscription?.isActive ?? false
 
+  // Get document-specific content
+  const docContent = getDocumentContent(slug)
+  const detailContent = getDocumentDetailContent(slug)
+
   const Icon = document.icon
   const isAccent = document.color === "accent"
+
+  const faqSchema = detailContent
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: detailContent.faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }
+    : null
 
   return (
     <div className="min-h-screen">
@@ -86,6 +158,13 @@ export default async function DocumentDetailPage({ params }: PageProps) {
       <Header />
 
       <main>
+        {faqSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          />
+        )}
+
         {/* Hero */}
         <section className="relative overflow-hidden border-b border-border/40 py-16 lg:py-24">
           <div className="pointer-events-none absolute inset-0 grid-pattern animate-grid-fade" />
@@ -121,8 +200,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 </h1>
 
                 <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                  {document.description}
-                  Generate a professional, legally binding document tailored to your specific needs.
+                  {docContent.description}
                   Our AI asks smart questions to customize every clause to your situation and
                   state requirements.
                 </p>
@@ -260,6 +338,172 @@ export default async function DocumentDetailPage({ params }: PageProps) {
           </div>
         </section>
 
+        {detailContent && (
+          <>
+            {/* Overview */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                      {document.title} Guide
+                    </p>
+                    <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                      {detailContent.overview.title}
+                    </h2>
+                    <p className="mt-4 text-muted-foreground leading-relaxed">
+                      {detailContent.overview.body}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+                      Why It Matters
+                    </p>
+                    <div className="mt-4 space-y-3">
+                      {detailContent.whyItMatters.map((item) => (
+                        <div key={item} className="flex items-start gap-2">
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 text-accent" />
+                          <span className="text-sm text-secondary-foreground">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Key Sections */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="mx-auto max-w-2xl text-center">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+                    Key Sections Explained
+                  </p>
+                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                    What Your {document.title} Should Cover
+                  </h2>
+                  <p className="mt-4 text-muted-foreground">
+                    These core sections make the document enforceable, clear, and easier to administer.
+                  </p>
+                </div>
+
+                <div className="mt-12 grid gap-6 md:grid-cols-2">
+                  {detailContent.keySections.map((section) => (
+                    <div key={section.title} className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                      <h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {section.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Process */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="mx-auto max-w-2xl text-center">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                    Step-by-Step
+                  </p>
+                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                    How to Create a Valid {document.title}
+                  </h2>
+                </div>
+                <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {detailContent.process.map((step, index) => (
+                    <div key={step.title} className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-sm font-semibold text-primary">
+                        {index + 1}
+                      </div>
+                      <h3 className="mt-4 text-lg font-semibold text-foreground">{step.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {step.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* State Considerations */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="mx-auto max-w-2xl text-center">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+                    State-Specific Considerations
+                  </p>
+                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                    Requirements That Vary by State
+                  </h2>
+                </div>
+                <div className="mt-12 grid gap-6 md:grid-cols-2">
+                  {detailContent.stateConsiderations.map((item) => (
+                    <div key={item.title} className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                      <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Mistakes to Avoid */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                      Common Mistakes
+                    </p>
+                    <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                      Avoid These Pitfalls
+                    </h2>
+                    <p className="mt-4 text-muted-foreground leading-relaxed">
+                      Most invalid wills fail due to avoidable mistakes. Use this checklist to reduce risk.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                    <div className="space-y-3">
+                      {detailContent.mistakesToAvoid.map((item) => (
+                        <div key={item} className="flex items-start gap-2">
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 text-accent" />
+                          <span className="text-sm text-secondary-foreground">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section className="border-b border-border/40 py-16 lg:py-24">
+              <div className="mx-auto max-w-4xl px-4 lg:px-8">
+                <div className="text-center">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+                    Frequently Asked Questions
+                  </p>
+                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
+                    {document.title} FAQs
+                  </h2>
+                </div>
+                <div className="mt-10 space-y-4">
+                  {detailContent.faq.map((item) => (
+                    <div key={item.question} className="rounded-2xl border border-border/50 bg-card/60 p-6">
+                      <h3 className="text-base font-semibold text-foreground">{item.question}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
         {/* What's Included */}
         <section className="border-b border-border/40 py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -274,7 +518,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
             </div>
 
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {included.map((item, i) => (
+              {docContent.included.map((item, i) => (
                 <div
                   key={item}
                   className="flex items-start gap-3 rounded-xl border border-border/40 bg-card/40 p-4 transition-colors hover:border-primary/20 hover:bg-card/60"
@@ -501,4 +745,3 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     </div>
   )
 }
-

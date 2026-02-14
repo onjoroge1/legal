@@ -51,3 +51,6 @@ npm list @stripe/react-stripe-js @stripe/stripe-js
 
 The billing page should now work with full Stripe functionality.
 
+
+
+

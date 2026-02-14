@@ -59,11 +59,8 @@ export default function RecentDocuments({ documents }: RecentDocumentsProps) {
       <CardContent>
         <div className="space-y-4">
           {documents.slice(0, 5).map((doc) => {
-            // Determine the link based on document status and metadata
-            const metadata = (doc as any).metadata || {}
-            const href = metadata.slug 
-              ? `/documents/${metadata.slug}/generate`
-              : `/dashboard/documents/${doc.id}`
+            // Always link to the document view page
+            const href = `/dashboard/documents/${doc.id}`
             
             return (
             <Link

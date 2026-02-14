@@ -4,51 +4,26 @@ import React from "react"
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, useParams } from "next/navigation"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import {
   Scale,
-  Send,
   FileText,
   Shield,
-  CheckCircle2,
-  Bot,
-  User,
   Loader2,
-  Sparkles,
   ArrowRight,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-data"
 import { useSession } from "next-auth/react"
-import { PermissionGate } from "@/components/permissions/permission-gate"
-import { useCanPerformAction } from "@/hooks/use-permissions"
-import NDAForm, { NDAFormData } from "@/components/documents/nda-form"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { getNDATemplate } from "@/lib/templates/nda-template"
 import DocumentPreview from "@/components/documents/document-preview"
 import DocumentSigning from "@/components/documents/document-signing"
 import { toast } from "@/lib/safe-toast"
-
-function getMessageText(message: { parts?: Array<{ type: string; text?: string }> }): string {
-  if (!message.parts || !Array.isArray(message.parts)) return ""
-  return message.parts
-    .filter((p): p is { type: "text"; text: string } => p.type === "text")
-    .map((p) => p.text)
-    .join("")
-}
-
-const progressSteps = [
-  { label: "Jurisdiction", key: "state" },
-  { label: "Document Type", key: "type" },
-  { label: "Parties", key: "parties" },
-  { label: "Relationship", key: "relationship" },
-  { label: "Details", key: "details" },
-  { label: "Terms", key: "terms" },
-  { label: "Clauses", key: "clauses" },
-  { label: "Review", key: "review" },
-]
+import DocumentForm from "@/components/documents/document-form"
+import { getIntentsForDocument, Intent } from "@/lib/intent-registry"
+import { getDocumentValidation } from "@/lib/document-validation"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { getStateWarnings } from "@/lib/state-warnings"
 
 export default function GeneratePage() {
   const router = useRouter()
@@ -57,26 +32,116 @@ export default function GeneratePage() {
   const document = getDocumentBySlug(slug)
   const { data: session } = useSession()
   const [hasSubscription, setHasSubscription] = useState(false)
-  const { allowed: canGenerate, isLoading: checkingPermissions } = useCanPerformAction("generate")
 
-  const [input, setInput] = useState("")
-  const [draftDocumentId, setDraftDocumentId] = useState<string | null>(null)
-  const [formData, setFormData] = useState<NDAFormData>({
-    state: "",
-    type: "unilateral",
-    disclosingParty: "",
-    receivingParty: "",
-    relationship: "",
-    confidentialInfo: "",
-    duration: "",
-    nonSolicitation: "no",
-    nonCompete: "no",
-    additional: "",
-  })
+  const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null)
+  const [intents, setIntents] = useState<Intent[]>([])
+  const [questions, setQuestions] = useState<any[]>([])
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(false)
+  const [questionError, setQuestionError] = useState<string | null>(null)
+  const [formData, setFormData] = useState<Record<string, any>>({})
   const [isFormValid, setIsFormValid] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isGenerating, setIsGenerating] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [draftDocumentId, setDraftDocumentId] = useState<string | null>(null)
+  const [documentPreview, setDocumentPreview] = useState<string>("")
+  const [stateWarnings, setStateWarnings] = useState<string[]>([])
+
+  // Load intents
+  useEffect(() => {
+    const loadIntents = async () => {
+      if (!slug) return
+
+      // First try from registry
+      const registryIntents = getIntentsForDocument(slug)
+      if (registryIntents.length > 0) {
+        setIntents(registryIntents)
+        return
+      }
+
+      // Then try from API
+      try {
+        const response = await fetch(`/api/templates/${slug}/intents`)
+        if (response.ok) {
+          const apiIntents = await response.json()
+          setIntents(apiIntents)
+        }
+      } catch (error) {
+        console.error("Error loading intents:", error)
+      }
+    }
+
+    loadIntents()
+  }, [slug])
+
+  // Load questions when intent is selected
+  useEffect(() => {
+    const loadQuestions = async () => {
+      if (!slug) return
+      setIsLoadingQuestions(true)
+      setQuestionError(null)
+
+      if (!slug || !selectedIntent) {
+        // If no intent needed, try to load default questions
+        if (!selectedIntent && intents.length === 0) {
+          try {
+            const response = await fetch(`/api/templates/${slug}/questionnaires`)
+            if (response.ok) {
+              const questionnaires = await response.json()
+              if (questionnaires.length > 0) {
+                const questions = questionnaires[0].questions || []
+                setQuestions(questions)
+              } else {
+                setQuestions([])
+                setQuestionError("No questionnaire configured for this document type. Run the seed script to create templates and questions.")
+              }
+            }
+          } catch (error) {
+            console.error("Error loading questions:", error)
+            setQuestionError("Failed to load questionnaire data.")
+          }
+          setIsLoadingQuestions(false)
+        }
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/templates/${slug}/questionnaires`)
+        if (response.ok) {
+          const questionnaires = await response.json()
+          // Find questionnaire matching intent
+          const matchingQuestionnaire = questionnaires.find(
+            (q: any) => q.metadata?.intent === selectedIntent.id || q.name === selectedIntent.name
+          ) || questionnaires[0]
+
+          if (matchingQuestionnaire) {
+            setQuestions(matchingQuestionnaire.questions || [])
+          } else {
+            setQuestions([])
+            setQuestionError("No questionnaire configured for this intent.")
+          }
+        }
+      } catch (error) {
+        console.error("Error loading questions:", error)
+        setQuestionError("Failed to load questionnaire data.")
+      }
+      setIsLoadingQuestions(false)
+    }
+
+    loadQuestions()
+  }, [slug, selectedIntent, intents.length])
+
+  // Custom validation by document type + intent
+  useEffect(() => {
+    if (!slug) return
+    const errors = getDocumentValidation(slug, formData, selectedIntent?.id)
+    setValidationErrors(errors)
+  }, [slug, formData, selectedIntent])
+
+  useEffect(() => {
+    if (!slug) return
+    const warnings = getStateWarnings(slug, formData.state, selectedIntent?.id)
+    setStateWarnings(warnings)
+  }, [slug, formData.state, selectedIntent])
 
   // Create draft document when user starts generation
   useEffect(() => {
@@ -84,15 +149,21 @@ export default function GeneratePage() {
       if (!session?.user?.email || !document) return
 
       try {
-        // Check if draft already exists for this document type
         const existingDraftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
         if (existingDraftResponse.ok) {
           const existingDraft = await existingDraftResponse.json()
           setDraftDocumentId(existingDraft.id)
+          // Load existing form data if available
+          if (existingDraft.metadata?.formData) {
+            setFormData(existingDraft.metadata.formData)
+          }
+          if (existingDraft.metadata?.intent) {
+            const intent = intents.find((i) => i.id === existingDraft.metadata.intent)
+            if (intent) setSelectedIntent(intent)
+          }
           return
         }
 
-        // Create new draft
         const response = await fetch("/api/documents/draft", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -105,6 +176,7 @@ export default function GeneratePage() {
             metadata: {
               source: "generate",
               documentType: document.title,
+              intent: selectedIntent?.id,
             },
           }),
         })
@@ -119,7 +191,30 @@ export default function GeneratePage() {
     }
 
     createDraft()
-  }, [session, document, slug])
+  }, [session, document, slug, selectedIntent, intents])
+
+  // Load cached form data for non-authenticated users
+  useEffect(() => {
+    if (typeof window === "undefined" || !slug) return
+    if (Object.keys(formData).length > 0) return
+
+    const stored = localStorage.getItem("document-data")
+    const storedSlug = localStorage.getItem("document-slug")
+    const storedIntent = localStorage.getItem("document-intent")
+
+    if (stored && storedSlug === slug) {
+      try {
+        const data = JSON.parse(stored)
+        setFormData(data)
+        if (storedIntent && intents.length > 0) {
+          const intent = intents.find((i) => i.id === storedIntent)
+          if (intent) setSelectedIntent(intent)
+        }
+      } catch (error) {
+        console.error("Error loading cached form data:", error)
+      }
+    }
+  }, [slug, intents, formData])
 
   // Check subscription status
   useEffect(() => {
@@ -138,44 +233,79 @@ export default function GeneratePage() {
     checkSubscription()
   }, [session])
 
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/nda-chat" }),
-  })
-
-  const isLoading = status === "streaming" || status === "submitted"
-
-  // Estimate progress based on message count
-  const assistantMessageCount = messages.filter((m) => m.role === "assistant").length
-  const estimatedStep = Math.min(assistantMessageCount, progressSteps.length)
-  const progressPercent = Math.round((estimatedStep / progressSteps.length) * 100)
-
-  // Check if document generation is complete
-  const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop()
-  const lastText = lastAssistantMessage ? getMessageText(lastAssistantMessage) : ""
-  const isComplete = lastText.includes("---NDA_COMPLETE---") || lastText.includes("---DOCUMENT_COMPLETE---")
-
-  // Auto-scroll to bottom
+  // Generate preview when form is valid
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
-  }, [messages, status])
+    const generatePreview = async () => {
+      if (!isFormValid || !slug) return
 
-  // Auto-send initial greeting
-  useEffect(() => {
-    if (messages.length === 0 && document) {
-      sendMessage({
-        text: `Hi, I want to generate a ${document.title}. Let's get started!`,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+      try {
+        const response = await fetch(`/api/documents/${slug}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            formData,
+            intent: selectedIntent?.id,
+          }),
+        })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || isLoading) return
-    sendMessage({ text: input })
-    setInput("")
+        if (response.ok) {
+          const data = await response.json()
+          setDocumentPreview(data.document)
+        }
+      } catch (error) {
+        console.error("Error generating preview:", error)
+      }
+    }
+
+    generatePreview()
+  }, [isFormValid, formData, slug, selectedIntent])
+
+  const handleIntentSelect = (intent: Intent) => {
+    setSelectedIntent(intent)
+    // Update draft with intent
+    if (draftDocumentId) {
+      fetch("/api/documents/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentId: draftDocumentId,
+          metadata: {
+            intent: intent.id,
+          },
+        }),
+      }).catch(console.error)
+    }
+  }
+
+  const handleFormChange = (data: Record<string, any>) => {
+    const newFormData = { ...formData, ...data }
+    setFormData(newFormData)
+
+    // Save to draft
+    if (draftDocumentId) {
+      fetch("/api/documents/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentId: draftDocumentId,
+          metadata: {
+            formData: newFormData,
+          },
+        }),
+      }).catch(console.error)
+    }
+
+    // Also save to sessionStorage/localStorage for non-authenticated users
+    sessionStorage.setItem("document-data", JSON.stringify(newFormData))
+    sessionStorage.setItem("document-slug", slug)
+    if (selectedIntent) {
+      sessionStorage.setItem("document-intent", selectedIntent.id)
+    }
+    localStorage.setItem("document-data", JSON.stringify(newFormData))
+    localStorage.setItem("document-slug", slug)
+    if (selectedIntent) {
+      localStorage.setItem("document-intent", selectedIntent.id)
+    }
   }
 
   const saveDocument = async (): Promise<string | null> => {
@@ -184,70 +314,69 @@ export default function GeneratePage() {
     }
 
     try {
-      // Generate document content
-      const documentContent = getNDATemplate({
-        contractDate: new Date().toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+      const response = await fetch(`/api/documents/${slug}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formData,
+          intent: selectedIntent?.id,
         }),
-        state: formData.state,
-        type: formData.type,
-        disclosingParty: formData.disclosingParty,
-        receivingParty: formData.receivingParty,
-        relationship: formData.relationship,
-        confidentialInfo: formData.confidentialInfo,
-        duration: formData.duration,
-        nonSolicitation: formData.nonSolicitation,
-        nonCompete: formData.nonCompete,
-        additional: formData.additional,
       })
 
-      // If draft exists, update it with content
+      if (!response.ok) {
+        throw new Error("Failed to generate document")
+      }
+
+      const data = await response.json()
+      const documentContent = data.document
+
+      // Update draft with content
       if (draftDocumentId) {
-        const response = await fetch("/api/documents", {
+        const updateResponse = await fetch("/api/documents", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: draftDocumentId,
             title: document.title,
-            type: document.type || "NDA",
+            type: document.type || document.title,
             category: document.category || "business",
             content: documentContent,
             status: "draft",
             metadata: {
               formData,
               slug,
+              intent: selectedIntent?.id,
             },
           }),
         })
 
-        if (response.ok) {
-          const data = await response.json()
-          return data.id || draftDocumentId
+        if (updateResponse.ok) {
+          const updateData = await updateResponse.json()
+          return updateData.id || draftDocumentId
         }
       } else {
         // Create new document
-        const response = await fetch("/api/documents", {
+        const createResponse = await fetch("/api/documents", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title: document.title,
-            type: document.type || "NDA",
+            type: document.type || document.title,
             category: document.category || "business",
             content: documentContent,
             status: "draft",
             metadata: {
               formData,
               slug,
+              intent: selectedIntent?.id,
             },
           }),
         })
 
-        if (response.ok) {
-          const data = await response.json()
-          setDraftDocumentId(data.id)
-          return data.id
+        if (createResponse.ok) {
+          const createData = await createResponse.json()
+          setDraftDocumentId(createData.id)
+          return createData.id
         }
       }
 
@@ -265,24 +394,18 @@ export default function GeneratePage() {
 
     setIsGenerating(true)
     try {
-      // Convert form data to API format
-      const ndaData = {
-        STATE: formData.state,
-        TYPE: formData.type,
-        DISCLOSING_PARTY: formData.disclosingParty,
-        RECEIVING_PARTY: formData.receivingParty,
-        RELATIONSHIP: formData.relationship,
-        CONFIDENTIAL_INFO: formData.confidentialInfo,
-        DURATION: formData.duration,
-        NON_SOLICITATION: formData.nonSolicitation,
-        NON_COMPETE: formData.nonCompete,
-        ADDITIONAL: formData.additional || "none",
+      // Store document data
+      sessionStorage.setItem("document-data", JSON.stringify(formData))
+      sessionStorage.setItem("document-slug", slug)
+      if (selectedIntent) {
+        sessionStorage.setItem("document-intent", selectedIntent.id)
+      }
+      localStorage.setItem("document-data", JSON.stringify(formData))
+      localStorage.setItem("document-slug", slug)
+      if (selectedIntent) {
+        localStorage.setItem("document-intent", selectedIntent.id)
       }
 
-      // Store document data
-      sessionStorage.setItem("document-data", JSON.stringify(ndaData))
-      sessionStorage.setItem("document-slug", slug)
-      
       // Update draft document with generation data if it exists
       if (draftDocumentId) {
         try {
@@ -292,9 +415,10 @@ export default function GeneratePage() {
             body: JSON.stringify({
               documentId: draftDocumentId,
               metadata: {
-                generationData: ndaData,
+                generationData: formData,
                 generationComplete: true,
                 completedAt: new Date().toISOString(),
+                intent: selectedIntent?.id,
               },
             }),
           })
@@ -302,14 +426,58 @@ export default function GeneratePage() {
           console.error("Error updating draft:", error)
         }
       }
-      
-      // If user has subscription, skip preview and go directly to download
-      if (hasSubscription) {
-        router.push(`/documents/${slug}/download`)
-      } else {
-        // Otherwise go to preview (watermarked)
-        router.push(`/documents/${slug}/preview`)
+
+      // If user has active subscription, save to dashboard and redirect to document view
+      if (hasSubscription && session?.user?.email) {
+        // Premium user: Save document and redirect to document view page
+        try {
+          const generateResponse = await fetch(`/api/documents/${slug}/generate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              formData,
+              intent: selectedIntent?.id,
+            }),
+          })
+
+          if (generateResponse.ok) {
+            const { document: documentContent } = await generateResponse.json()
+            
+            // Save to user's documents
+            const saveResponse = await fetch("/api/documents", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title: document.title,
+                type: document.type || document.title,
+                category: document.category || "business",
+                content: documentContent,
+                status: "completed",
+                metadata: {
+                  formData,
+                  slug,
+                  intent: selectedIntent?.id,
+                  generatedAt: new Date().toISOString(),
+                },
+              }),
+            })
+
+            if (saveResponse.ok) {
+              const savedDoc = await saveResponse.json()
+              // Redirect to document view page for better UX
+              router.push(`/dashboard/documents/${savedDoc.id}`)
+              return
+            }
+          }
+        } catch (error) {
+          console.error("Error saving document:", error)
+        }
       }
+
+      // For free users (logged in or not) and non-logged-in users:
+      // Go to preview (watermarked) - payment will be at checkout
+      // This ensures free users follow the same flow as non-logged-in users
+      router.push(`/documents/${slug}/preview`)
     } catch (error) {
       console.error("Error generating document:", error)
     } finally {
@@ -330,317 +498,189 @@ export default function GeneratePage() {
     )
   }
 
-  // Check permissions before rendering
-  if (checkingPermissions) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Checking permissions...</p>
-        </div>
-      </div>
-    )
-  }
+
+  // Auto-select first intent if available (skip intent selection UI)
+  useEffect(() => {
+    if (intents.length > 0 && !selectedIntent) {
+      // Auto-select the first intent silently
+      setSelectedIntent(intents[0])
+    }
+  }, [intents, selectedIntent])
 
   return (
-    <PermissionGate action="generate">
     <div className="flex h-screen flex-col">
       {/* Header */}
-      <header className="shrink-0 border-b border-border/40 bg-background/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/30 bg-primary/15">
-              <Scale className="h-4 w-4 text-primary" />
-            </div>
-            <span className="font-serif text-xl font-bold text-foreground">
-              Legal<span className="text-primary">Law</span>Docs
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 sm:flex">
-              <Shield className="h-4 w-4 text-accent" />
-              <span className="text-sm text-muted-foreground">{document.title} Generator</span>
+        <header className="shrink-0 border-b border-border/40 bg-background/70 backdrop-blur-xl">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/30 bg-primary/15">
+                <Scale className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-serif text-xl font-bold text-foreground">
+                Legal<span className="text-primary">Law</span>Docs
+              </span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <div className="hidden items-center gap-2 sm:flex">
+                <Shield className="h-4 w-4 text-accent" />
+                <span className="text-sm text-muted-foreground">{document.title} Generator</span>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Form */}
-        <aside className="hidden w-96 shrink-0 border-r border-border/40 bg-card/40 lg:block">
-          <ScrollArea className="h-full">
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <FileText className="h-5 w-5 text-primary" />
-                <h2 className="text-sm font-semibold text-foreground">Document Information</h2>
-              </div>
+        {/* Main content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Sidebar - Form */}
+          <aside className="hidden w-96 shrink-0 border-r border-border/40 bg-card/40 lg:block">
+            <ScrollArea className="h-full">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <FileText className="h-5 w-5 text-primary" />
+                  <h2 className="text-sm font-semibold text-foreground">Document Information</h2>
+                </div>
 
-              <NDAForm
-                formData={formData}
-                onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
-                onValidate={setIsFormValid}
-              />
-
-              <div className="mt-8 pt-6 border-t">
-                <Button
-                  onClick={handleGenerateDocument}
-                  disabled={!isFormValid || isGenerating}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      Generate Document
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-                {!isFormValid && (
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                    Please fill in all required fields
-                  </p>
-                )}
-              </div>
-            </div>
-          </ScrollArea>
-        </aside>
-
-        {/* Main Content Area */}
-        <div className="flex flex-1 flex-col">
-          {/* Preview/Info Area */}
-          <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-8">
-            <div className="mx-auto max-w-4xl">
-              <div className="rounded-2xl border border-border/40 bg-card/80 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-primary" />
-                    <h3 className="text-lg font-semibold">Document Preview</h3>
+                {selectedIntent && (
+                  <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                    <p className="text-xs text-muted-foreground mb-1">Selected Type</p>
+                    <p className="text-sm font-semibold text-foreground">{selectedIntent.name}</p>
                   </div>
-                  {isFormValid && (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      Ready to Generate
-                    </Badge>
+                )}
+
+                {questionError && (
+                  <Alert className="mb-4">
+                    <AlertDescription>{questionError}</AlertDescription>
+                  </Alert>
+                )}
+
+                {stateWarnings.length > 0 && (
+                  <Alert className="mb-4">
+                    <AlertDescription>
+                      <ul className="list-disc list-inside space-y-1">
+                        {stateWarnings.map((warning) => (
+                          <li key={warning}>{warning}</li>
+                        ))}
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {questions.length > 0 ? (
+                  <DocumentForm
+                    questions={questions}
+                    formData={formData}
+                    onChange={handleFormChange}
+                    onValidate={setIsFormValid}
+                    externalErrors={validationErrors}
+                  />
+                ) : slug === "nda" ? (
+                  // Fallback to NDA form for NDA documents if no questions in DB
+                  <div className="text-sm text-muted-foreground">
+                    <p>Loading form questions...</p>
+                    <p className="mt-2 text-xs">If questions don't load, please refresh the page.</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      {isLoadingQuestions ? "Loading form..." : "No form configured yet."}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      If this persists, the form may not be configured yet for this document type.
+                    </p>
+                  </div>
+                )}
+
+                <div className="mt-8 pt-6 border-t">
+                  <Button
+                    onClick={handleGenerateDocument}
+                    disabled={!isFormValid || isGenerating}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        Generate Document
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                  {!isFormValid && (
+                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                      Please fill in all required fields
+                    </p>
                   )}
                 </div>
-                
-                {isFormValid ? (
-                  <div className="space-y-4">
-                    <ScrollArea className="h-[calc(100vh-350px)]">
-                      <div className="bg-white shadow-xl rounded-lg p-8 md:p-12 max-w-4xl mx-auto border border-gray-200">
-                        <DocumentPreview 
-                          template={getNDATemplate({
-                            contractDate: new Date().toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            }),
-                            state: formData.state,
-                            type: formData.type,
-                            disclosingParty: formData.disclosingParty || "[Disclosing Party]",
-                            receivingParty: formData.receivingParty || "[Receiving Party]",
-                            relationship: formData.relationship || "[Relationship]",
-                            confidentialInfo: formData.confidentialInfo || "[Confidential Information]",
-                            duration: formData.duration || "[Duration]",
-                            nonSolicitation: formData.nonSolicitation,
-                            nonCompete: formData.nonCompete,
-                            additional: formData.additional,
-                          })}
-                        />
-                      </div>
-                    </ScrollArea>
-                    
-                    {/* Signing Actions */}
-                    <div className="bg-card/50 rounded-lg p-4 border border-border/40">
+              </div>
+            </ScrollArea>
+          </aside>
+
+          {/* Main Content Area */}
+          <div className="flex flex-1 flex-col">
+            {/* Preview/Info Area */}
+            <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-8">
+              <div className="mx-auto max-w-4xl">
+                <div className="rounded-2xl border border-border/40 bg-card/80 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Document Preview</h3>
+                    </div>
+                    {isFormValid && (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        Ready to Generate
+                      </Badge>
+                    )}
+                  </div>
+
+                  {isFormValid && documentPreview ? (
+                    <div className="space-y-4">
+                      <ScrollArea className="h-[calc(100vh-350px)]">
+                        <div className="bg-white shadow-xl rounded-lg p-8 md:p-12 max-w-4xl mx-auto border border-gray-200">
+                          <DocumentPreview template={documentPreview} />
+                        </div>
+                      </ScrollArea>
+
+                      {/* Signing Actions */}
+                      <div className="bg-card/50 rounded-lg p-4 border border-border/40">
                       <DocumentSigning
                         documentId={draftDocumentId || undefined}
                         documentTitle={document.title}
                         onSaveDocument={saveDocument}
                         onSignComplete={() => {
-                          // Refresh or update UI after signing
                           toast.success("Document signed successfully!")
                         }}
+                        slug={slug}
                       />
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                      Fill out all the required information in the form on the left. Once all fields are completed, 
-                      you'll see a preview of your customized Non-Disclosure Agreement here.
-                    </p>
-                    <div className="space-y-2 text-sm">
-                      <p className="font-medium">What you'll get:</p>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
-                        <li>State-specific legal compliance</li>
-                        <li>Professional formatting</li>
-                        <li>All required legal sections</li>
-                        <li>Customized clauses based on your needs</li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Chat area (hidden on desktop, shown on mobile as fallback) */}
-          <div className="lg:hidden mt-6">
-            <div className="border-b border-border/40 bg-card/30 px-4 py-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Document Progress</span>
-                <span className="font-semibold text-primary">{progressPercent}%</span>
-              </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-700"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
-            <div className="mx-auto max-w-2xl space-y-6">
-              {messages.map((message) => {
-                const text = getMessageText(message)
-                if (!text) return null
-                const isUser = message.role === "user"
-
-                // Don't show the initial auto-message from user visually
-                if (isUser && text.includes("I want to generate")) return null
-
-                // Don't show the raw completion data block
-                const displayText = text.includes("---NDA_COMPLETE---") || text.includes("---DOCUMENT_COMPLETE---")
-                  ? text.split("---")[0].trim()
-                  : text
-
-                if (!displayText) return null
-
-                return (
-                  <div key={message.id} className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
-                    <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                        isUser
-                          ? "border border-primary/20 bg-primary/10"
-                          : "border border-accent/20 bg-accent/10"
-                      }`}
-                    >
-                      {isUser ? (
-                        <User className="h-4 w-4 text-primary" />
-                      ) : (
-                        <Bot className="h-4 w-4 text-accent" />
-                      )}
-                    </div>
-                    <div
-                      className={`max-w-[80%] rounded-2xl px-5 py-3.5 ${
-                        isUser
-                          ? "bg-primary/10 text-foreground"
-                          : "border border-border/40 bg-card/80 text-foreground"
-                      }`}
-                    >
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{displayText}</p>
-                    </div>
-                  </div>
-                )
-              })}
-
-              {/* Typing indicator */}
-              {isLoading && (
-                <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
-                    <Bot className="h-4 w-4 text-accent" />
-                  </div>
-                  <div className="rounded-2xl border border-border/40 bg-card/80 px-5 py-3.5">
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "0ms" }} />
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "150ms" }} />
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Completion CTA */}
-              {isComplete && !isLoading && (
-                <div className="animate-slide-up rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10">
-                    <Sparkles className="h-7 w-7 text-accent" />
-                  </div>
-                  <h3 className="mt-4 font-serif text-xl font-bold text-foreground">
-                    All Information Gathered!
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    We have everything we need to generate your customized, legally compliant document.
-                  </p>
-                  <Button
-                    onClick={handleGenerateDocument}
-                    size="lg"
-                    className="mt-5 gap-2 shadow-lg shadow-primary/20"
-                  >
-                    Generate My {document.title.split(" ")[0]}
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-            </div>
-          </div>
-
-          {/* Chat Input (Mobile only - fallback) */}
-          {!isComplete && (
-            <div className="lg:hidden shrink-0 border-t border-border/40 bg-card/30 px-4 py-4">
-              <form onSubmit={handleSubmit} className="mx-auto flex max-w-2xl items-center gap-3">
-                <div className="relative flex-1">
-                  <input
-                    ref={inputRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type your answer..."
-                    disabled={isLoading}
-                    className="w-full rounded-xl border border-border/60 bg-secondary/30 px-4 py-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  size="icon"
-                  disabled={isLoading || !input.trim()}
-                  className="h-11 w-11 shrink-0 rounded-xl shadow-md shadow-primary/20"
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <Send className="h-4 w-4" />
+                    <div className="space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        Fill out all the required information in the form on the left. Once all fields are completed,
+                        you'll see a preview of your customized {document.title} here.
+                      </p>
+                      <div className="space-y-2 text-sm">
+                        <p className="font-medium">What you'll get:</p>
+                        <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
+                          <li>State-specific legal compliance</li>
+                          <li>Professional formatting</li>
+                          <li>All required legal sections</li>
+                          <li>Customized clauses based on your needs</li>
+                        </ul>
+                      </div>
+                    </div>
                   )}
-                  <span className="sr-only">Send message</span>
-                </Button>
-              </form>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-muted-foreground/60">
-                Your responses are encrypted and used solely for document generation.
-              </p>
-            </div>
-          )}
-          
-          {/* Desktop: Show message when form is complete */}
-          {isFormValid && (
-            <div className="hidden lg:block shrink-0 border-t border-border/40 bg-card/30 px-4 py-4">
-              <div className="mx-auto max-w-2xl text-center">
-                <p className="text-sm text-muted-foreground">
-                  All required information has been filled. Click "Generate Document" in the sidebar to create your NDA.
-                </p>
+                </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
-    </div>
-    </PermissionGate>
   )
 }
-
-

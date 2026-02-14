@@ -78,7 +78,7 @@ export async function trackSession(
   if (!prisma) return
 
   try {
-    const headersList = headers()
+    const headersList = await headers()
     const ua = userAgent || headersList.get("user-agent") || ""
     const clientIp = ip || headersList.get("x-forwarded-for")?.split(",")[0] || 
                      headersList.get("x-real-ip") || "unknown"
@@ -142,4 +142,7 @@ export async function trackSession(
     // Don't throw - session tracking shouldn't break the app
   }
 }
+
+
+
 

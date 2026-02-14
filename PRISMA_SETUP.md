@@ -242,3 +242,6 @@ After setup, verify everything works:
 - `lib/auth.ts` - NextAuth configuration (needs Prisma adapter uncommented)
 - `app/api/auth/[...nextauth]/route.ts` - NextAuth API route
 
+
+
+

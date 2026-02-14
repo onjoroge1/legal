@@ -22,7 +22,7 @@ export interface DocumentType {
 export const documentTypes: DocumentType[] = [
   {
     title: "Non-Disclosure Agreement",
-    slug: "non_disclosure_agreement",
+    slug: "nda",
     category: "business",
     icon: FileText,
     description: "Protect confidential information shared between parties.",
@@ -157,5 +157,8 @@ export const documentTypes: DocumentType[] = [
 export function getDocumentBySlug(slug: string): DocumentType | undefined {
   return documentTypes.find((doc) => doc.slug === slug)
 }
+
+
+
 
 

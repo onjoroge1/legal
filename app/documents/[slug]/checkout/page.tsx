@@ -22,7 +22,9 @@ import {
   Zap,
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-data"
-import { useSession } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { toast } from "@/lib/safe-toast"
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -38,10 +40,29 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     email: "",
     name: "",
+    password: "",
+    confirmPassword: "",
     cardNumber: "",
     expiry: "",
     cvc: "",
   })
+  const [emailExists, setEmailExists] = useState<boolean | null>(null)
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false)
+  const [accountError, setAccountError] = useState<string | null>(null)
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
+
+  // Pre-fill form for logged-in users
+  useEffect(() => {
+    if (session?.user?.email && !form.email) {
+      setForm(prev => ({
+        ...prev,
+        email: session.user.email || "",
+        name: session.user.name || "",
+      }))
+      // Mark email as existing since user is logged in
+      setEmailExists(true)
+    }
+  }, [session, form.email])
 
   // Check subscription status
   useEffect(() => {
@@ -78,6 +99,33 @@ export default function CheckoutPage() {
     }
   }, [document, router])
 
+  // Check if email exists when user enters email
+  useEffect(() => {
+    const checkEmail = async () => {
+      if (!form.email || !form.email.includes("@")) {
+        setEmailExists(null)
+        return
+      }
+
+      setIsCheckingEmail(true)
+      try {
+        const response = await fetch(`/api/auth/check-email?email=${encodeURIComponent(form.email)}`)
+        if (response.ok) {
+          const data = await response.json()
+          setEmailExists(data.exists)
+        }
+      } catch (error) {
+        console.error("Error checking email:", error)
+      } finally {
+        setIsCheckingEmail(false)
+      }
+    }
+
+    // Debounce email check
+    const timeoutId = setTimeout(checkEmail, 500)
+    return () => clearTimeout(timeoutId)
+  }, [form.email])
+
   if (isCheckingSubscription) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -89,22 +137,170 @@ export default function CheckoutPage() {
     )
   }
 
+  // Handle account creation or sign-in BEFORE payment
+  const handleAccountSetup = async () => {
+    setAccountError(null)
+    setIsCreatingAccount(true)
+
+    try {
+      if (emailExists === false) {
+        // New user - create account
+        if (!form.password || form.password.length < 6) {
+          setAccountError("Password must be at least 6 characters")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        if (form.password !== form.confirmPassword) {
+          setAccountError("Passwords do not match")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        const signupResponse = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+          }),
+        })
+
+        const signupResult = await signupResponse.json()
+
+        if (!signupResponse.ok) {
+          setAccountError(signupResult.error || "Failed to create account")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        // Sign in the newly created user
+        const signInResult = await signIn("credentials", {
+          email: form.email,
+          password: form.password,
+          redirect: false,
+        })
+
+        if (signInResult?.error) {
+          setAccountError("Account created but sign-in failed. Please try signing in manually.")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        return true
+      } else if (emailExists === true) {
+        // Existing user - sign in
+        if (!form.password) {
+          setAccountError("Password is required to sign in")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        const signInResult = await signIn("credentials", {
+          email: form.email,
+          password: form.password,
+          redirect: false,
+        })
+
+        if (signInResult?.error) {
+          setAccountError("Invalid email or password")
+          setIsCreatingAccount(false)
+          return false
+        }
+
+        return true
+      }
+
+      return false
+    } catch (error) {
+      console.error("Account setup error:", error)
+      setAccountError("An error occurred. Please try again.")
+      setIsCreatingAccount(false)
+      return false
+    } finally {
+      setIsCreatingAccount(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // If user is not logged in, set up account first
+    if (!session?.user?.email) {
+      // Validate required fields
+      if (!form.email || !form.name) {
+        setAccountError("Email and name are required")
+        return
+      }
+
+      if (emailExists === null) {
+        setAccountError("Please wait while we check your email...")
+        return
+      }
+
+      const accountSetupSuccess = await handleAccountSetup()
+      if (!accountSetupSuccess) {
+        return // Stop if account setup failed
+      }
+      
+      // Wait for session to update and refresh
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      window.location.reload() // Full reload to ensure session is updated
+      return
+    }
+
+    // If logged in but email doesn't match, use session email
+    const emailToUse = session.user.email || form.email
+    const nameToUse = session.user.name || form.name
+
     setIsProcessing(true)
     
-    // Store payment type
-    sessionStorage.setItem("payment-type", paymentType)
-    
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    
-    // After payment, redirect to download page or dashboard
-    if (paymentType === "subscription") {
-      router.push("/dashboard")
-    } else {
-      // For single purchase, redirect to download
-      router.push(`/documents/${slug}/download`)
+    try {
+      // Get document data from sessionStorage
+      const documentData = sessionStorage.getItem("document-data")
+      const documentIntent = sessionStorage.getItem("document-intent")
+      const formData = documentData ? JSON.parse(documentData) : {}
+      const intent = documentIntent || null
+
+      // Get document content if available (from preview)
+      const documentContent = sessionStorage.getItem("document-content") || null
+
+      // Complete checkout - save document (user is already signed in)
+      const response = await fetch("/api/checkout/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailToUse,
+          name: nameToUse,
+          slug,
+          paymentType,
+          formData,
+          intent,
+          documentContent,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to complete checkout")
+      }
+
+      // User is already signed in, redirect to dashboard
+      router.refresh() // Refresh to get updated session
+      if (paymentType === "subscription") {
+        router.push("/dashboard")
+      } else {
+        router.push("/dashboard/documents")
+      }
+    } catch (error) {
+      console.error("Checkout error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Failed to complete checkout"
+      setAccountError(errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setIsProcessing(false)
     }
   }
 
@@ -165,8 +361,18 @@ export default function CheckoutPage() {
                 Complete Your <span className="gradient-text">Purchase</span>
               </h1>
               <p className="mt-2 text-muted-foreground">
-                Choose your payment option below.
+                {session?.user?.email 
+                  ? `Signed in as ${session.user.email}. Choose your payment option below.`
+                  : "Choose your payment option below."}
               </p>
+              {session?.user?.email && (
+                <Alert className="mt-4">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <AlertDescription>
+                    You're signed in. Your document will be saved to your account automatically.
+                  </AlertDescription>
+                </Alert>
+              )}
 
               {/* Payment Type Selection */}
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -251,7 +457,8 @@ export default function CheckoutPage() {
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         required
-                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                        disabled={!!session?.user?.email}
+                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary disabled:opacity-50"
                       />
                     </div>
                     <div>
@@ -265,14 +472,74 @@ export default function CheckoutPage() {
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         required
-                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                        disabled={!!session?.user?.email}
+                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary disabled:opacity-50"
                       />
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {paymentType === "subscription"
-                          ? "We'll send your subscription details to this email."
-                          : "We'll send your completed document to this email."}
-                      </p>
+                      {session?.user?.email && (
+                        <p className="mt-1 text-xs text-primary">✓ Signed in as {session.user.email}</p>
+                      )}
+                      {!session?.user?.email && (
+                        <>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {paymentType === "subscription"
+                              ? "We'll send your subscription details to this email."
+                              : "We'll send your completed document to this email."}
+                          </p>
+                          {isCheckingEmail && (
+                            <p className="mt-1 text-xs text-primary">Checking account...</p>
+                          )}
+                          {emailExists === true && (
+                            <p className="mt-1 text-xs text-primary">✓ Account found. Please sign in below.</p>
+                          )}
+                          {emailExists === false && (
+                            <p className="mt-1 text-xs text-muted-foreground">New account. Create password below.</p>
+                          )}
+                        </>
+                      )}
                     </div>
+                    
+                    {/* Password fields - show if user is not logged in */}
+                    {!session?.user?.email && (
+                      <>
+                        <div>
+                          <label htmlFor="password" className="mb-1.5 block text-sm text-muted-foreground">
+                            {emailExists === true ? "Password (Sign In)" : "Create Password"}
+                            <span className="text-destructive"> *</span>
+                          </label>
+                          <Input
+                            id="password"
+                            type="password"
+                            placeholder={emailExists === true ? "Enter your password" : "Create a password (min 6 characters)"}
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            required
+                            className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                          />
+                        </div>
+                        {emailExists === false && (
+                          <div>
+                            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm text-muted-foreground">
+                              Confirm Password
+                              <span className="text-destructive"> *</span>
+                            </label>
+                            <Input
+                              id="confirmPassword"
+                              type="password"
+                              placeholder="Confirm your password"
+                              value={form.confirmPassword}
+                              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                              required
+                              className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                            />
+                          </div>
+                        )}
+                        {accountError && (
+                          <Alert variant="destructive">
+                            <AlertDescription>{accountError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -345,9 +612,14 @@ export default function CheckoutPage() {
                   type="submit"
                   size="lg"
                   className="w-full gap-2 shadow-lg shadow-primary/20"
-                  disabled={isProcessing}
+                  disabled={isProcessing || isCreatingAccount}
                 >
-                  {isProcessing ? (
+                  {isCreatingAccount ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {emailExists === true ? "Signing in..." : "Creating account..."}
+                    </>
+                  ) : isProcessing ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
                       Processing Payment...

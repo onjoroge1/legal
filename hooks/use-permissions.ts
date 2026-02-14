@@ -48,6 +48,15 @@ export function useCanPerformAction(action: "generate" | "download" | "preview" 
 
   useEffect(() => {
     const checkPermission = async () => {
+      // Allow generate and preview for everyone (including non-logged-in users)
+      // Payment will be required at checkout/download stage
+      if (action === "generate" || action === "preview") {
+        setAllowed(true)
+        setIsLoading(false)
+        return
+      }
+
+      // For other actions, check permissions
       if (!session?.user?.email) {
         setAllowed(false)
         setIsLoading(false)
@@ -73,4 +82,7 @@ export function useCanPerformAction(action: "generate" | "download" | "preview" 
 
   return { allowed, isLoading }
 }
+
+
+
 

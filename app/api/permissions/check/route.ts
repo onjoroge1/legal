@@ -10,18 +10,27 @@ import { getUserPermissions, canPerformAction, canAccessTemplate } from "@/lib/p
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
+    const { searchParams } = new URL(request.url)
+    const action = searchParams.get("action")
+    const templateType = searchParams.get("templateType") as "basic" | "advanced" | "all" | null
+    const permission = searchParams.get("permission")
 
+    // Allow generate and preview for everyone (including non-logged-in users)
+    // Payment will be required at checkout/download stage
+    if (action === "generate" || action === "preview") {
+      return NextResponse.json({
+        allowed: true,
+        permissions: session?.user?.email ? await getUserPermissions(session.user.email) : null,
+      })
+    }
+
+    // For other actions, require authentication
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       )
     }
-
-    const { searchParams } = new URL(request.url)
-    const action = searchParams.get("action")
-    const templateType = searchParams.get("templateType") as "basic" | "advanced" | "all" | null
-    const permission = searchParams.get("permission")
 
     // Get all permissions
     const permissions = await getUserPermissions(session.user.email)
@@ -68,4 +77,7 @@ export async function GET(request: Request) {
     )
   }
 }
+
+
+
 

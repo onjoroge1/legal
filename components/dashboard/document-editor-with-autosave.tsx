@@ -116,7 +116,7 @@ export default function DocumentEditorWithAutosave({
       if (onSave) {
         await onSave(content)
       } else {
-        const response = await fetch(`/api/documents/${documentId}`, {
+        const response = await fetch(`/api/documents/by-id/${documentId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content }),
@@ -189,4 +189,7 @@ export default function DocumentEditorWithAutosave({
     </Card>
   )
 }
+
+
+
 

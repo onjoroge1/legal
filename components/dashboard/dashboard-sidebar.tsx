@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import {
   LayoutDashboard,
@@ -30,6 +30,7 @@ const navigation = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const { data: session } = useSession()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [displayName, setDisplayName] = useState<string | null>(null)
@@ -77,7 +78,18 @@ export default function DashboardSidebar() {
   }, [session])
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/login" })
+    try {
+      await signOut({ 
+        callbackUrl: "/",
+        redirect: true 
+      })
+      // Fallback: manually redirect if signOut doesn't redirect
+      router.push("/")
+    } catch (error) {
+      console.error("Sign out error:", error)
+      // Ensure redirect even on error
+      router.push("/")
+    }
   }
 
   const SidebarContent = () => (

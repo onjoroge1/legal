@@ -50,7 +50,7 @@ export default function DocumentSignPage({ params }: DocumentSignPageProps) {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const response = await fetch(`/api/documents/${documentId}`)
+        const response = await fetch(`/api/documents/by-id/${documentId}`)
         if (!response.ok) {
           throw new Error('Failed to fetch document')
         }

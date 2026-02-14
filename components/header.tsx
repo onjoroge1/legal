@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -17,6 +18,7 @@ const navLinks = [
 ]
 
 export function Header() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const { data: session, status } = useSession()
   
@@ -69,7 +71,19 @@ export function Header() {
                   variant="ghost" 
                   size="sm" 
                   className="text-muted-foreground hover:text-foreground"
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={async () => {
+                    try {
+                      await signOut({ 
+                        callbackUrl: "/",
+                        redirect: true 
+                      })
+                      // Fallback: manually redirect if signOut doesn't redirect
+                      router.push("/")
+                    } catch (error) {
+                      console.error("Sign out error:", error)
+                      router.push("/")
+                    }
+                  }}
                 >
                   Sign Out
                 </Button>
@@ -139,9 +153,19 @@ export function Header() {
                     <Button 
                       variant="outline" 
                       className="w-full bg-transparent border-border/60"
-                      onClick={() => {
+                      onClick={async () => {
                         setOpen(false)
-                        signOut({ callbackUrl: "/" })
+                        try {
+                          await signOut({ 
+                            callbackUrl: "/",
+                            redirect: true 
+                          })
+                          // Fallback: manually redirect if signOut doesn't redirect
+                          router.push("/")
+                        } catch (error) {
+                          console.error("Sign out error:", error)
+                          router.push("/")
+                        }
                       }}
                     >
                       Sign Out

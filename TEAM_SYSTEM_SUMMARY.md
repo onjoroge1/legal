@@ -209,3 +209,6 @@ The team page is now fully functional with:
 - ✅ Email notifications
 - ✅ Invitation acceptance flow
 
+
+
+

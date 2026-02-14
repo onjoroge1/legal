@@ -286,3 +286,6 @@ LegalLawDocs.com is an AI-powered legal document generation platform that offers
 ### Database:
 - `prisma/schema.prisma` - User model with all settings fields
 
+
+
+

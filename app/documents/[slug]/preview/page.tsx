@@ -43,18 +43,31 @@ export default function PreviewPage() {
   // Check subscription status
   useEffect(() => {
     const checkSubscription = async () => {
-      if (!session?.user?.email) return
+      if (!session?.user?.email) {
+        // Non-logged-in users can view preview (will go to checkout)
+        setIsLoading(false)
+        return
+      }
 
       try {
         const response = await fetch("/api/user/subscription")
         const data = await response.json()
         if (data.subscription?.isActive) {
           setHasSubscription(true)
-          // If they have subscription, redirect to download
+          // Only premium users get redirected to download
+          // Free users stay on preview to go through checkout
           router.push(`/documents/${slug}/download`)
+        } else {
+          // Free users (logged in but no subscription) stay on preview
+          // They'll go through checkout like non-logged-in users
+          setHasSubscription(false)
         }
       } catch (error) {
         console.error("Error checking subscription:", error)
+        // On error, allow preview (free user flow)
+        setHasSubscription(false)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -82,35 +95,102 @@ export default function PreviewPage() {
     }, 1500)
 
     try {
-      const res = await fetch("/api/nda-generate", {
+      const intent = sessionStorage.getItem("document-intent") || null
+      const res = await fetch(`/api/documents/${slug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ndaData: data }),
+        body: JSON.stringify({ formData: data, intent }),
       })
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Failed to generate document" }))
+        throw new Error(errorData.error || "Failed to generate document")
+      }
+      
       const result = await res.json()
-      setDocumentText(result.document)
-    } catch {
-      setDocumentText("Error generating document. Please try again.")
+      if (result.document) {
+        setDocumentText(result.document)
+        // Store document content for checkout
+        sessionStorage.setItem("document-content", result.document)
+      } else {
+        throw new Error("No document content returned")
+      }
+    } catch (error) {
+      console.error("Document generation error:", error)
+      setDocumentText(error instanceof Error ? `Error: ${error.message}` : "Error generating document. Please try again.")
     } finally {
       clearInterval(stepInterval)
       setGenerationStep(4)
       setTimeout(() => setIsLoading(false), 500)
     }
-  }, [])
+  }, [slug])
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("document-data")
-    const storedSlug = sessionStorage.getItem("document-slug")
-    
-    if (stored && storedSlug === slug) {
-      const data = JSON.parse(stored)
-      setDocData(data)
-      generateDocument(data)
-    } else {
+    const loadDocumentData = async () => {
+      const stored = sessionStorage.getItem("document-data")
+      const storedSlug = sessionStorage.getItem("document-slug")
+      
+      if (stored && storedSlug === slug) {
+        const data = JSON.parse(stored)
+        setDocData(data)
+        generateDocument(data)
+        return
+      }
+
+      const localStored = localStorage.getItem("document-data")
+      const localStoredSlug = localStorage.getItem("document-slug")
+      if (localStored && localStoredSlug === slug) {
+        try {
+          const data = JSON.parse(localStored)
+          setDocData(data)
+          sessionStorage.setItem("document-data", JSON.stringify(data))
+          sessionStorage.setItem("document-slug", slug)
+          const localIntent = localStorage.getItem("document-intent")
+          if (localIntent) {
+            sessionStorage.setItem("document-intent", localIntent)
+          }
+          generateDocument(data)
+          return
+        } catch (error) {
+          console.error("Error loading cached data:", error)
+        }
+      }
+
+      if (session?.user?.email) {
+        try {
+          const draftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
+          if (draftResponse.ok) {
+            const draft = await draftResponse.json()
+            const metadata = draft.metadata || {}
+            const draftData = metadata.formData || metadata.generationData
+
+            if (draftData) {
+              setDocData(draftData)
+              sessionStorage.setItem("document-data", JSON.stringify(draftData))
+              sessionStorage.setItem("document-slug", slug)
+              if (metadata.intent) {
+                sessionStorage.setItem("document-intent", metadata.intent)
+              }
+              localStorage.setItem("document-data", JSON.stringify(draftData))
+              localStorage.setItem("document-slug", slug)
+              if (metadata.intent) {
+                localStorage.setItem("document-intent", metadata.intent)
+              }
+              generateDocument(draftData)
+              return
+            }
+          }
+        } catch (error) {
+          console.error("Error loading draft data:", error)
+        }
+      }
+
       // Redirect to generate if no data
       router.push(`/documents/${slug}/generate`)
     }
-  }, [slug, generateDocument, router])
+
+    loadDocumentData()
+  }, [slug, router, session, generateDocument])
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(documentText)
@@ -268,12 +348,19 @@ export default function PreviewPage() {
                   </div>
 
                   {/* Document content */}
-                  <div className="relative p-8 lg:p-12">
-                    <div className="prose prose-invert max-w-none">
-                      <pre className="whitespace-pre-wrap font-serif text-sm leading-[1.9] text-secondary-foreground">
-                        {documentText}
-                      </pre>
-                    </div>
+                  <div className="relative p-8 lg:p-12 bg-white">
+                    {documentText ? (
+                      <div className="prose prose-lg max-w-none">
+                        <div className="whitespace-pre-wrap font-serif text-sm leading-relaxed text-gray-900">
+                          {documentText}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">Generating document...</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Bottom bar */}
@@ -322,8 +409,8 @@ export default function PreviewPage() {
                     <div className="mt-5 space-y-3">
                       {[
                         { label: "Document Type", value: document.title, icon: FileText },
-                        { label: "Jurisdiction", value: docData.STATE || "California", icon: MapPin },
-                        { label: "Generated", value: "February 8, 2026", icon: Calendar },
+                        { label: "Jurisdiction", value: docData.STATE || docData.state || "California", icon: MapPin },
+                        { label: "Generated", value: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), icon: Calendar },
                       ].map((item) => (
                         <div key={item.label} className="rounded-lg border border-border/40 bg-secondary/30 p-3">
                           <div className="flex items-center gap-2">
@@ -375,5 +462,3 @@ export default function PreviewPage() {
     </div>
   )
 }
-
-

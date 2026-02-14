@@ -49,10 +49,54 @@ export default function DownloadPage() {
           if (stored) {
             const docData = JSON.parse(stored)
             await generateDocument(docData)
-          } else {
-            // Try to fetch from server
-            setIsLoading(false)
+            return
           }
+
+          const localStored = localStorage.getItem("document-data")
+          const localStoredSlug = localStorage.getItem("document-slug")
+          if (localStored && localStoredSlug === slug) {
+            try {
+              const docData = JSON.parse(localStored)
+              sessionStorage.setItem("document-data", JSON.stringify(docData))
+              sessionStorage.setItem("document-slug", slug)
+              const localIntent = localStorage.getItem("document-intent")
+              if (localIntent) {
+                sessionStorage.setItem("document-intent", localIntent)
+              }
+              await generateDocument(docData)
+              return
+            } catch (error) {
+              console.error("Error loading cached data:", error)
+            }
+          }
+
+          // Try to fetch from server (draft metadata)
+          try {
+            const draftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
+            if (draftResponse.ok) {
+              const draft = await draftResponse.json()
+              const metadata = draft.metadata || {}
+              const draftData = metadata.formData || metadata.generationData
+              if (draftData) {
+                sessionStorage.setItem("document-data", JSON.stringify(draftData))
+                sessionStorage.setItem("document-slug", slug)
+                if (metadata.intent) {
+                  sessionStorage.setItem("document-intent", metadata.intent)
+                }
+                localStorage.setItem("document-data", JSON.stringify(draftData))
+                localStorage.setItem("document-slug", slug)
+                if (metadata.intent) {
+                  localStorage.setItem("document-intent", metadata.intent)
+                }
+                await generateDocument(draftData)
+                return
+              }
+            }
+          } catch (error) {
+            console.error("Error loading draft data:", error)
+          }
+
+          setIsLoading(false)
         } else {
           router.push(`/documents/${slug}/checkout`)
         }
@@ -68,10 +112,11 @@ export default function DownloadPage() {
   const generateDocument = async (data: Record<string, string>) => {
     setIsLoading(true)
     try {
-      const res = await fetch("/api/nda-generate", {
+      const intent = sessionStorage.getItem("document-intent") || null
+      const res = await fetch(`/api/documents/${slug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ndaData: data }),
+        body: JSON.stringify({ formData: data, intent }),
       })
       const result = await res.json()
       setDocumentText(result.document)
@@ -273,4 +318,5 @@ export default function DownloadPage() {
     </div>
   )
 }
+
 

@@ -5,15 +5,10 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
-  FileText,
-  Building2,
-  Users,
-  Briefcase,
-  Home,
-  HandshakeIcon,
   ArrowRight,
   Sparkles,
 } from "lucide-react"
+import { documentTypes } from "@/lib/document-data"
 
 const categories = [
   { id: "all", label: "All Documents" },
@@ -23,81 +18,16 @@ const categories = [
   { id: "personal", label: "Personal" },
 ]
 
-const documents = [
-  {
-    title: "Non-Disclosure Agreement",
-    category: "business",
-    icon: FileText,
-    description: "Protect confidential information shared between parties.",
-    popular: true,
-    color: "primary" as const,
-    slug: "/documents/non_disclosure_agreement",
-  },
-  {
-    title: "LLC Operating Agreement",
-    category: "business",
-    icon: Building2,
-    description: "Define ownership structure and operating procedures for your LLC.",
-    popular: true,
-    color: "accent" as const,
-  },
-  {
-    title: "Employment Contract",
-    category: "employment",
-    icon: Briefcase,
-    description: "Comprehensive employment agreements with state-specific provisions.",
-    popular: false,
-    color: "primary" as const,
-  },
-  {
-    title: "Residential Lease Agreement",
-    category: "real-estate",
-    icon: Home,
-    description: "Legally binding lease agreements compliant with local tenant laws.",
-    popular: true,
-    color: "accent" as const,
-  },
-  {
-    title: "Independent Contractor Agreement",
-    category: "employment",
-    icon: Users,
-    description: "Define the terms of engagement with freelancers and contractors.",
-    popular: false,
-    color: "primary" as const,
-  },
-  {
-    title: "Partnership Agreement",
-    category: "business",
-    icon: HandshakeIcon,
-    description: "Establish clear terms for business partnerships and profit sharing.",
-    popular: false,
-    color: "accent" as const,
-  },
-  {
-    title: "Power of Attorney",
-    category: "personal",
-    icon: FileText,
-    description: "Authorize someone to act on your behalf in legal or financial matters.",
-    popular: true,
-    color: "primary" as const,
-  },
-  {
-    title: "Last Will & Testament",
-    category: "personal",
-    icon: FileText,
-    description: "Protect your legacy with a state-compliant will document.",
-    popular: false,
-    color: "accent" as const,
-  },
-  {
-    title: "Commercial Lease Agreement",
-    category: "real-estate",
-    icon: Building2,
-    description: "Professional commercial property lease with full legal protections.",
-    popular: false,
-    color: "primary" as const,
-  },
-]
+// Convert documentTypes to documents format with proper slugs
+const documents = documentTypes.map((doc) => ({
+  title: doc.title,
+  category: doc.category,
+  icon: doc.icon,
+  description: doc.description,
+  popular: doc.popular,
+  color: doc.color,
+  slug: `/documents/${doc.slug}`,
+}))
 
 export function DocumentsSection() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -148,13 +78,11 @@ export function DocumentsSection() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((doc) => {
             const isAccent = doc.color === "accent"
-            const hasSlug = "slug" in doc && doc.slug
-            const Wrapper = hasSlug ? Link : "div"
-            const wrapperProps = hasSlug ? { href: (doc as { slug: string }).slug } : {}
+            // All documents now have slugs from documentTypes
             return (
-              <Wrapper
+              <Link
                 key={doc.title}
-                {...(wrapperProps as Record<string, string>)}
+                href={doc.slug}
                 className="group flex cursor-pointer items-start gap-4 rounded-2xl border border-border/50 bg-card/60 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
                 <div
@@ -188,7 +116,7 @@ export function DocumentsSection() {
                   </p>
                 </div>
                 <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary group-hover:opacity-100" />
-              </Wrapper>
+              </Link>
             )
           })}
         </div>
