@@ -95,7 +95,7 @@ export default function AIAssistantPage() {
                   "This document has several critical issues that require immediate attention."}
               </p>
               <Button variant="outline" className="w-full" asChild>
-                <Link href={`/dashboard/ai-assistant/${doc.id}`}>
+                <Link href={`/dashboard/documents/${doc.id}`}>
                   View Analysis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

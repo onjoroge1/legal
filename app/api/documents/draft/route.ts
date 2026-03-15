@@ -8,8 +8,8 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
+} catch {
+  // Prisma not available
 }
 
 /**
@@ -47,13 +47,6 @@ export async function POST(request: Request) {
       metadata = {}
     } = body
 
-    if (!title || !type) {
-      return NextResponse.json(
-        { error: "Title and type are required" },
-        { status: 400 }
-      )
-    }
-
     // Get user
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
@@ -67,7 +60,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // If documentId provided, update existing draft
+    // If documentId provided, update existing draft (title/type optional)
     if (documentId) {
       const existingDoc = await prisma.userDocument.findFirst({
         where: {
@@ -83,29 +76,41 @@ export async function POST(request: Request) {
         )
       }
 
+      const updateData: Record<string, any> = {
+        metadata: {
+          ...(existingDoc.metadata as any),
+          ...metadata,
+          ...(slug ? { slug } : {}),
+          lastUpdated: new Date().toISOString(),
+        },
+        updatedAt: new Date(),
+      }
+
+      // Only update fields that were provided
+      if (title) updateData.title = title
+      if (type) updateData.type = type
+      if (category) updateData.category = category
+      if (jurisdiction) updateData.jurisdiction = jurisdiction
+      if (state) updateData.state = state
+      if (description) updateData.description = description
+
       const updated = await prisma.userDocument.update({
         where: { id: documentId },
-        data: {
-          title,
-          type,
-          category,
-          jurisdiction,
-          state,
-          description,
-          metadata: {
-            ...existingDoc.metadata,
-            ...metadata,
-            slug,
-            lastUpdated: new Date().toISOString(),
-          },
-          updatedAt: new Date(),
-        },
+        data: updateData,
       })
 
       return NextResponse.json({
         id: updated.id,
         message: "Draft updated successfully",
       })
+    }
+
+    // Title and type required for new drafts
+    if (!title || !type) {
+      return NextResponse.json(
+        { error: "Title and type are required" },
+        { status: 400 }
+      )
     }
 
     // Create new draft document

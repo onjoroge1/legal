@@ -32,9 +32,8 @@ export default function StripeProvider({ children }: StripeProviderProps) {
           Elements: stripeReact.Elements,
           stripePromise,
         })
-      } catch (error) {
+      } catch {
         // Stripe packages not installed - render children without wrapper
-        console.log("Stripe packages not installed. Run: npm install @stripe/react-stripe-js @stripe/stripe-js")
         setStripeElements(null)
       } finally {
         setIsLoading(false)

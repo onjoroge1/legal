@@ -17,11 +17,16 @@ function parseDate(value: unknown): Date | null {
 export function getDocumentValidation(
   slug: string,
   formData: Record<string, any>,
-  intentId?: string | null
+  intentId?: string | null,
+  visibleQuestionIds?: string[]
 ): ValidationErrors {
   const errors: ValidationErrors = {}
 
   if (!slug) return errors
+
+  // Helper: skip validation for hidden fields
+  const isVisible = (fieldId: string) =>
+    !visibleQuestionIds || visibleQuestionIds.includes(fieldId)
 
   switch (slug) {
     case "residential_lease_agreement": {
@@ -46,28 +51,27 @@ export function getDocumentValidation(
         errors.leaseEndDate = "End date must be after the start date"
       }
 
-      if (intentId === "multi_tenant" && !formData.numberOfTenants) {
+      if (intentId === "multi_tenant" && isVisible("numberOfTenants") && !formData.numberOfTenants) {
         errors.numberOfTenants = "Number of tenants is required for multi-tenant leases"
       }
       break
     }
     case "commercial_lease_agreement": {
-      const rent = parseNumber(formData.rentAmount)
-      if (formData.rentAmount && rent === null) {
-        errors.rentAmount = "Enter a valid numeric rent amount"
+      const rent = parseNumber(formData.monthlyBaseRent)
+      if (formData.monthlyBaseRent && rent === null) {
+        errors.monthlyBaseRent = "Enter a valid numeric rent amount"
       }
-      if (intentId === "net" && !formData.expenseResponsibilities) {
+      if (intentId === "net" && isVisible("expenseResponsibilities") && !formData.expenseResponsibilities) {
         errors.expenseResponsibilities = "Expense responsibilities are required for net leases"
       }
       break
     }
     case "employment_contract": {
-      const employmentType = String(formData.employmentType || "").toLowerCase()
-      if (employmentType === "fixed-term" && !formData.termLength) {
+      if (intentId === "fixed_term" && isVisible("termLength") && !formData.termLength) {
         errors.termLength = "Term length is required for fixed-term employment"
       }
-      if (intentId === "fixed_term" && !formData.termLength) {
-        errors.termLength = "Term length is required for fixed-term employment"
+      if (intentId === "contract_to_hire" && isVisible("conversionCriteria") && !formData.conversionCriteria) {
+        errors.conversionCriteria = "Conversion criteria is required for contract-to-hire"
       }
       break
     }
@@ -80,57 +84,64 @@ export function getDocumentValidation(
       if (formData.closingDate && !closing) {
         errors.closingDate = "Enter a valid closing date"
       }
-      if (intentId === "asset" && !formData.itemDescription) {
+      if (intentId === "asset" && isVisible("itemDescription") && !formData.itemDescription) {
         errors.itemDescription = "Item description is required for asset purchases"
       }
       break
     }
     case "independent_contractor_agreement": {
-      if (intentId === "hourly" && !formData.hourlyRate) {
+      if (intentId === "hourly" && isVisible("hourlyRate") && !formData.hourlyRate) {
         errors.hourlyRate = "Hourly rate is required for hourly contracts"
       }
       break
     }
     case "partnership_agreement": {
-      if (intentId === "unequal_split" && !formData.ownershipPercentages) {
+      if (intentId === "unequal_split" && isVisible("ownershipPercentages") && !formData.ownershipPercentages) {
         errors.ownershipPercentages = "Ownership percentages are required for unequal splits"
+      }
+      // Cross-field: buyout formula required when method is "formula"
+      if (isVisible("buyoutFormula") && formData.buyoutMethod === "formula" && !formData.buyoutFormula) {
+        errors.buyoutFormula = "Buyout formula description is required"
       }
       break
     }
     case "power_of_attorney": {
-      if (intentId === "limited" && !formData.limitations) {
-        errors.limitations = "Limitations are required for a limited power of attorney"
+      if (intentId === "limited" && isVisible("limitations") && !formData.limitations) {
+        errors.limitations = "Specific powers are required for a limited power of attorney"
+      }
+      if (intentId === "healthcare" && isVisible("healthcareScope") && !formData.healthcareScope) {
+        errors.healthcareScope = "Healthcare decision scope is required"
       }
       break
     }
     case "last_will_testament": {
-      if (intentId === "guardian" && !formData.guardianName) {
+      if (intentId === "guardian" && isVisible("guardianName") && formData.hasMinorChildren === "yes" && !formData.guardianName) {
         errors.guardianName = "Guardian name is required when adding guardianship"
       }
       break
     }
     case "service_agreement": {
-      if (intentId === "retainer" && !formData.retainerAmount) {
+      if (intentId === "retainer" && isVisible("retainerAmount") && !formData.retainerAmount) {
         errors.retainerAmount = "Retainer amount is required for retainer agreements"
       }
       break
     }
     case "non_compete_agreement": {
-      if (intentId === "contractor" && !formData.contractorRole) {
+      if (intentId === "contractor" && isVisible("contractorRole") && !formData.contractorRole) {
         errors.contractorRole = "Contractor role is required for contractor non-competes"
       }
       break
     }
     case "llc_operating_agreement": {
-      if (intentId === "manager_managed" && !formData.managerName) {
+      if (intentId === "manager_managed" && isVisible("managerName") && !formData.managerName) {
         errors.managerName = "Manager name is required for manager-managed LLCs"
       }
       break
     }
     case "nda": {
       const state = String(formData.state || "")
-      if (state === "California" && String(formData.nonCompete || "").toLowerCase() === "yes") {
-        errors.nonCompete = "Non-compete clauses are generally not enforceable in California"
+      if (state === "California" && formData.hasNonCompete === "yes") {
+        errors.hasNonCompete = "Non-compete clauses are generally not enforceable in California"
       }
       break
     }

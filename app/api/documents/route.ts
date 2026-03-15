@@ -8,9 +8,8 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
-  console.log("Prisma not available - documents will return mock data")
 }
 
 /**

@@ -1,10 +1,11 @@
 import { MetadataRoute } from 'next'
 import { documentTypes } from '@/lib/document-data'
+import { blogPosts } from '@/lib/blog-data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://legallawdocs.com'
-  
-  // Static pages - Core pages
+  const baseUrl = 'https://www.legallawdocs.com'
+
+  // Static pages - Core public pages only
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -15,26 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/documents`,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: 'weekly',
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#pricing`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
     },
   ]
 
@@ -46,15 +29,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }))
 
-  // Document generate pages - Important for user flow
-  const generatePages: MetadataRoute.Sitemap = documentTypes.map((doc) => ({
-    url: `${baseUrl}/documents/${doc.slug}/generate`,
+  // Informational / legal pages
+  const infoPages: MetadataRoute.Sitemap = [
+    { path: 'about', priority: 0.6 },
+    { path: 'contact', priority: 0.6 },
+    { path: 'privacy-policy', priority: 0.3 },
+    { path: 'terms-of-service', priority: 0.3 },
+    { path: 'cookie-policy', priority: 0.2 },
+    { path: 'dmca', priority: 0.2 },
+  ].map(({ path, priority }) => ({
+    url: `${baseUrl}/${path}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
+    changeFrequency: 'monthly' as const,
+    priority,
   }))
 
-  // Combine all pages
-  return [...staticPages, ...documentPages, ...generatePages]
-}
+  // Blog listing page
+  const blogListingPage: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+  ]
 
+  // Blog article pages
+  const blogArticlePages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  return [
+    ...staticPages,
+    ...documentPages,
+    ...infoPages,
+    ...blogListingPage,
+    ...blogArticlePages,
+  ]
+}

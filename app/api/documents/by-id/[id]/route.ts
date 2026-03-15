@@ -140,3 +140,66 @@ export async function PATCH(
   }
 }
 
+/**
+ * Soft-delete document
+ * DELETE /api/documents/by-id/[id]
+ */
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { id } = await params
+
+    // Get user
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true },
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      )
+    }
+
+    // Soft-delete document (set deletedAt)
+    const result = await prisma.userDocument.updateMany({
+      where: {
+        id,
+        userId: user.id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+        status: "deleted",
+      },
+    })
+
+    if (result.count === 0) {
+      return NextResponse.json(
+        { error: "Document not found" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({ success: true, message: "Document deleted successfully" })
+  } catch (error) {
+    console.error("Delete document error:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
+  }
+}
+

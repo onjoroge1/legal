@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import * as z from "zod"
+import { authRateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit"
 
 // Try to import Prisma - will be undefined if not set up yet
 let prisma: any
@@ -8,16 +9,14 @@ let bcrypt: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
-  console.log("Prisma not available - signup will work once database is configured")
 }
 
 try {
   bcrypt = require("bcryptjs")
-} catch (error) {
+} catch {
   // bcryptjs not installed yet
-  console.log("bcryptjs not available - install with: npm install bcryptjs")
 }
 
 const signupSchema = z.object({
@@ -34,6 +33,11 @@ const signupSchema = z.object({
  * Body: { name: string, email: string, password: string }
  */
 export async function POST(request: Request) {
+  // Rate limit: 10 requests per 15 minutes
+  const ip = getClientIp(request)
+  const limit = authRateLimit(ip)
+  if (!limit.success) return rateLimitResponse(limit.resetAt)
+
   try {
     const body = await request.json()
     const { name, email, password } = signupSchema.parse(body)

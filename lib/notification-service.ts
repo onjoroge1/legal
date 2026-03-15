@@ -25,7 +25,6 @@ export interface NotificationData {
  */
 export async function createNotification(data: NotificationData): Promise<void> {
   if (!prisma) {
-    console.warn("Prisma not available. Notification not created:", data.title)
     return
   }
 
@@ -42,9 +41,8 @@ export async function createNotification(data: NotificationData): Promise<void> 
         read: false,
       },
     })
-  } catch (error) {
+  } catch {
     // Notification model might not exist yet
-    console.warn("Notification model not found. Add it to Prisma schema:", error)
   }
 }
 

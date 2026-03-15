@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter, useParams, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Scale,
   Download,
@@ -14,90 +15,73 @@ import {
   FileDown,
   FileCode,
   Loader2,
+  PartyPopper,
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-data"
 import { useSession } from "next-auth/react"
+import { toast } from "@/lib/safe-toast"
 
 export default function DownloadPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const slug = params?.slug as string
   const document = getDocumentBySlug(slug)
-  const { data: session } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
 
   const [documentText, setDocumentText] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [hasAccess, setHasAccess] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [isSavingDocument, setIsSavingDocument] = useState(false)
+  const accessCheckDone = useRef(false)
+
+  const isPaymentReturn = searchParams?.get("payment") === "success"
 
   useEffect(() => {
-    // Check if user has access
-    const checkAccess = async () => {
+    if (accessCheckDone.current) return
+    if (sessionStatus === "loading") return
+
+    const checkAccessAndLoad = async () => {
+      accessCheckDone.current = true
+
       if (!session?.user?.email) {
         router.push(`/documents/${slug}`)
         return
       }
 
       try {
+        // If returning from Stripe payment, the webhook may not have fired yet.
+        // Give it a moment, then check access.
+        if (isPaymentReturn) {
+          // Brief delay to allow webhook processing
+          await new Promise(resolve => setTimeout(resolve, 2000))
+        }
+
         // Check subscription or purchase status
         const response = await fetch(`/api/user/document-access?slug=${slug}`)
         const data = await response.json()
-        
-        if (data.hasAccess) {
+
+        if (data.hasAccess || data.hasSubscription) {
           setHasAccess(true)
-          // Load document content
-          const stored = sessionStorage.getItem("document-data")
-          if (stored) {
-            const docData = JSON.parse(stored)
-            await generateDocument(docData)
-            return
+
+          if (isPaymentReturn) {
+            setPaymentSuccess(true)
+            // Save the document to user's account after successful payment
+            await saveDocumentToAccount()
           }
 
-          const localStored = localStorage.getItem("document-data")
-          const localStoredSlug = localStorage.getItem("document-slug")
-          if (localStored && localStoredSlug === slug) {
-            try {
-              const docData = JSON.parse(localStored)
-              sessionStorage.setItem("document-data", JSON.stringify(docData))
-              sessionStorage.setItem("document-slug", slug)
-              const localIntent = localStorage.getItem("document-intent")
-              if (localIntent) {
-                sessionStorage.setItem("document-intent", localIntent)
-              }
-              await generateDocument(docData)
-              return
-            } catch (error) {
-              console.error("Error loading cached data:", error)
-            }
-          }
-
-          // Try to fetch from server (draft metadata)
-          try {
-            const draftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
-            if (draftResponse.ok) {
-              const draft = await draftResponse.json()
-              const metadata = draft.metadata || {}
-              const draftData = metadata.formData || metadata.generationData
-              if (draftData) {
-                sessionStorage.setItem("document-data", JSON.stringify(draftData))
-                sessionStorage.setItem("document-slug", slug)
-                if (metadata.intent) {
-                  sessionStorage.setItem("document-intent", metadata.intent)
-                }
-                localStorage.setItem("document-data", JSON.stringify(draftData))
-                localStorage.setItem("document-slug", slug)
-                if (metadata.intent) {
-                  localStorage.setItem("document-intent", metadata.intent)
-                }
-                await generateDocument(draftData)
-                return
-              }
-            }
-          } catch (error) {
-            console.error("Error loading draft data:", error)
-          }
-
-          setIsLoading(false)
+          // Load document content from storage or generate it
+          await loadDocumentContent()
+        } else if (isPaymentReturn) {
+          // Payment just completed but webhook hasn't fired yet —
+          // trust the Stripe redirect and grant temporary access
+          setHasAccess(true)
+          setPaymentSuccess(true)
+          await saveDocumentToAccount()
+          await loadDocumentContent()
         } else {
+          // No access and not a payment return — redirect to checkout
           router.push(`/documents/${slug}/checkout`)
         }
       } catch (error) {
@@ -106,8 +90,83 @@ export default function DownloadPage() {
       }
     }
 
-    checkAccess()
-  }, [session, slug, router])
+    checkAccessAndLoad()
+  }, [session, sessionStatus, slug, router, isPaymentReturn])
+
+  const loadDocumentContent = async () => {
+    setIsLoading(true)
+
+    // Try sessionStorage first
+    const storedContent = sessionStorage.getItem("document-content")
+    if (storedContent) {
+      setDocumentText(storedContent)
+      setIsLoading(false)
+      return
+    }
+
+    // Try localStorage (persists across Stripe redirect)
+    const localContent = localStorage.getItem("document-content")
+    if (localContent) {
+      setDocumentText(localContent)
+      sessionStorage.setItem("document-content", localContent)
+      setIsLoading(false)
+      return
+    }
+
+    // Try to load form data and regenerate
+    const stored = sessionStorage.getItem("document-data")
+    if (stored) {
+      const docData = JSON.parse(stored)
+      await generateDocument(docData)
+      return
+    }
+
+    const localStored = localStorage.getItem("document-data")
+    const localStoredSlug = localStorage.getItem("document-slug")
+    if (localStored && localStoredSlug === slug) {
+      try {
+        const docData = JSON.parse(localStored)
+        sessionStorage.setItem("document-data", JSON.stringify(docData))
+        sessionStorage.setItem("document-slug", slug)
+        const localIntent = localStorage.getItem("document-intent")
+        if (localIntent) {
+          sessionStorage.setItem("document-intent", localIntent)
+        }
+        await generateDocument(docData)
+        return
+      } catch (error) {
+        console.error("Error loading cached data:", error)
+      }
+    }
+
+    // Try to fetch from server (draft metadata)
+    try {
+      const draftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
+      if (draftResponse.ok) {
+        const draft = await draftResponse.json()
+        const metadata = draft.metadata || {}
+        const draftData = metadata.formData || metadata.generationData
+        if (draftData) {
+          sessionStorage.setItem("document-data", JSON.stringify(draftData))
+          sessionStorage.setItem("document-slug", slug)
+          if (metadata.intent) {
+            sessionStorage.setItem("document-intent", metadata.intent)
+          }
+          localStorage.setItem("document-data", JSON.stringify(draftData))
+          localStorage.setItem("document-slug", slug)
+          if (metadata.intent) {
+            localStorage.setItem("document-intent", metadata.intent)
+          }
+          await generateDocument(draftData)
+          return
+        }
+      }
+    } catch (error) {
+      console.error("Error loading draft data:", error)
+    }
+
+    setIsLoading(false)
+  }
 
   const generateDocument = async (data: Record<string, string>) => {
     setIsLoading(true)
@@ -120,10 +179,52 @@ export default function DownloadPage() {
       })
       const result = await res.json()
       setDocumentText(result.document)
+      // Cache the generated content
+      sessionStorage.setItem("document-content", result.document)
+      localStorage.setItem("document-content", result.document)
     } catch {
       setDocumentText("Error generating document. Please try again.")
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const saveDocumentToAccount = async () => {
+    if (isSavingDocument) return
+    setIsSavingDocument(true)
+
+    try {
+      const documentData = localStorage.getItem("document-data") || sessionStorage.getItem("document-data")
+      const documentIntent = localStorage.getItem("document-intent") || sessionStorage.getItem("document-intent")
+      const documentContent = localStorage.getItem("document-content") || sessionStorage.getItem("document-content")
+      const formData = documentData ? JSON.parse(documentData) : {}
+
+      const response = await fetch("/api/checkout/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session?.user?.email,
+          name: session?.user?.name,
+          slug,
+          paymentType: searchParams?.get("tier") === "professional" ? "subscription" : "single",
+          formData,
+          intent: documentIntent || null,
+          documentContent: documentContent || null,
+        }),
+      })
+
+      if (response.ok) {
+        // Clean up Stripe-related URL params
+        const url = new URL(window.location.href)
+        url.searchParams.delete("payment")
+        url.searchParams.delete("session_id")
+        url.searchParams.delete("tier")
+        window.history.replaceState({}, "", url.toString())
+      }
+    } catch (error) {
+      console.error("Error saving document:", error)
+    } finally {
+      setIsSavingDocument(false)
     }
   }
 
@@ -143,16 +244,16 @@ export default function DownloadPage() {
 
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
+      const a = window.document.createElement("a")
       a.href = url
       a.download = `${document?.title.replace(/\s+/g, "_")}.${format}`
-      document.body.appendChild(a)
+      window.document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      window.document.body.removeChild(a)
     } catch (error) {
       console.error("Download error:", error)
-      alert("Failed to download document. Please try again.")
+      toast.error("Failed to download document. Please try again.")
     }
   }
 
@@ -174,7 +275,9 @@ export default function DownloadPage() {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">Checking access...</p>
+          <p className="mt-4 text-muted-foreground">
+            {isPaymentReturn ? "Confirming your payment..." : "Checking access..."}
+          </p>
         </div>
       </div>
     )
@@ -210,6 +313,16 @@ export default function DownloadPage() {
             Back to {document.title}
           </Link>
 
+          {/* Payment success banner */}
+          {paymentSuccess && (
+            <Alert className="mt-6 border-green-500/30 bg-green-500/10">
+              <PartyPopper className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-700">
+                Payment successful! Your document has been saved to your account.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="mt-8 text-center">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border border-green-500/20 bg-green-500/10">
               <CheckCircle2 className="h-10 w-10 text-green-500" />
@@ -238,8 +351,17 @@ export default function DownloadPage() {
                 className="mt-6 w-full gap-2"
                 disabled={isLoading || !documentText}
               >
-                <Download className="h-4 w-4" />
-                Download PDF
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Download PDF
+                  </>
+                )}
               </Button>
             </div>
 
@@ -258,8 +380,17 @@ export default function DownloadPage() {
                 className="mt-6 w-full gap-2"
                 disabled={isLoading || !documentText}
               >
-                <Download className="h-4 w-4" />
-                Download DOCX
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Download DOCX
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -285,7 +416,7 @@ export default function DownloadPage() {
 
           {/* Next Steps */}
           <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6">
-            <h3 className="font-semibold text-foreground">What's Next?</h3>
+            <h3 className="font-semibold text-foreground">What&apos;s Next?</h3>
             <div className="mt-4 space-y-3">
               {[
                 "Review your document carefully",
@@ -307,8 +438,8 @@ export default function DownloadPage() {
           {session && (
             <div className="mt-8 text-center">
               <Button variant="outline" asChild>
-                <Link href="/dashboard">
-                  Go to Dashboard
+                <Link href="/dashboard/documents">
+                  Go to My Documents
                 </Link>
               </Button>
             </div>
@@ -318,5 +449,3 @@ export default function DownloadPage() {
     </div>
   )
 }
-
-

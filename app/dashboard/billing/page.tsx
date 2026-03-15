@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -38,6 +39,18 @@ interface PaymentMethod {
 }
 
 export default function BillingPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <BillingPageContent />
+    </Suspense>
+  )
+}
+
+function BillingPageContent() {
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [billingHistory, setBillingHistory] = useState<BillingHistory[]>([])
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
@@ -45,6 +58,32 @@ export default function BillingPage() {
   const [isAddingPaymentMethod, setIsAddingPaymentMethod] = useState(false)
   const [stripeElements, setStripeElements] = useState<any>(null)
   const { toast } = useToast()
+  const searchParams = useSearchParams()
+
+  // Handle Stripe checkout redirect results
+  useEffect(() => {
+    const success = searchParams.get("success")
+    const canceled = searchParams.get("canceled")
+    const tier = searchParams.get("tier")
+
+    if (success === "true") {
+      toast({
+        title: "Payment Successful!",
+        description: tier
+          ? `You've been upgraded to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan. Welcome aboard!`
+          : "Your payment was processed successfully.",
+      })
+      // Clean up URL params
+      window.history.replaceState({}, "", "/dashboard/billing")
+    } else if (canceled === "true") {
+      toast({
+        title: "Checkout Cancelled",
+        description: "Your checkout was cancelled. No charges were made.",
+        variant: "destructive",
+      })
+      window.history.replaceState({}, "", "/dashboard/billing")
+    }
+  }, [searchParams, toast])
 
   // Dynamically load Stripe on client-side
   useEffect(() => {
@@ -63,9 +102,8 @@ export default function BillingPage() {
           Elements: stripeReact.Elements,
           stripePromise,
         })
-      } catch (error) {
+      } catch {
         // Stripe not installed - will show message in UI
-        console.log("Stripe packages not installed. Run: npm install @stripe/react-stripe-js @stripe/stripe-js")
       }
     }
 
@@ -174,19 +212,11 @@ export default function BillingPage() {
         throw new Error(data.error || "Failed to create checkout session")
       }
 
-      // If URL is provided, redirect to Stripe Checkout
-      // Otherwise, refresh billing data (for development mode)
-      if (data.url && data.url.startsWith("https://")) {
+      // Redirect to Stripe Checkout
+      if (data.url) {
         window.location.href = data.url
       } else {
-        // Development mode - just refresh the data
-        toast({
-          title: "Success",
-          description: `Successfully upgraded to ${tier} plan`,
-        })
-        await fetchBillingData()
-        // Reload page to show updated subscription
-        window.location.reload()
+        throw new Error("No checkout URL returned")
       }
     } catch (error) {
       console.error("Upgrade error:", error)

@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Download, Edit, Share2, PenTool, Send, ArrowLeft, Loader2, FileText } from "lucide-react"
+import { Download, Edit, Share2, PenTool, Send, ArrowLeft, Loader2, FileText, Trash2 } from "lucide-react"
 import { format } from "date-fns"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import DocumentSigning from "@/components/documents/document-signing"
@@ -79,11 +79,37 @@ export default function DocumentView() {
   }
 
   const handleEdit = () => {
-    // Navigate to edit page or open editor
+    // Navigate to edit page - try metadata slug first, then use the create page with document ID
     if (document?.metadata?.slug) {
       router.push(`/documents/${document.metadata.slug}/generate`)
-    } else {
-      toast.info("Edit functionality coming soon")
+    } else if (document?.id) {
+      // Open the create page in edit mode with the existing document
+      router.push(`/dashboard/create?editId=${document.id}`)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!document?.id) return
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document? This action cannot be undone."
+    )
+    if (!confirmed) return
+
+    try {
+      const response = await fetch(`/api/documents/by-id/${document.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete document")
+      }
+
+      toast.success("Document deleted successfully")
+      router.push("/dashboard/documents")
+    } catch (error) {
+      console.error("Delete error:", error)
+      toast.error("Failed to delete document")
     }
   }
 
@@ -209,6 +235,10 @@ export default function DocumentView() {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDelete} className="text-destructive hover:text-destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
               </Button>
             </div>
           </div>

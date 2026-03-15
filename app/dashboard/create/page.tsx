@@ -237,8 +237,6 @@ export default function CreateDocumentPage() {
   }
 
   const saveDocument = async () => {
-    console.log("[Document Save] Starting save process from:", window.location.pathname)
-    
     if (!generatedContent) {
       toast({
         title: "Error",
@@ -397,7 +395,6 @@ export default function CreateDocumentPage() {
             variant="outline" 
             className="gap-1"
             onClick={() => {
-              console.log("[Document Save] Save button clicked from UI")
               saveDocument()
             }}
             disabled={isSaving}
@@ -742,7 +739,6 @@ export default function CreateDocumentPage() {
               <Button variant="outline">Cancel</Button>
               <Button 
                 onClick={() => {
-                  console.log("[Document Save] Save button clicked from editor")
                   saveDocument()
                 }}
                 disabled={isSaving}

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Shield } from "lucide-react"
 
@@ -34,12 +35,16 @@ export function CtaSection() {
                 for professional, state-compliant legal documentation.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-                  Get Started Free
-                  <ArrowRight className="h-4 w-4" />
+                <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20" asChild>
+                  <Link href="/signup">
+                    Get Started Free
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
-                  Schedule a Demo
+                <Button variant="outline" size="lg" className="bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5" asChild>
+                  <Link href="/contact">
+                    Schedule a Demo
+                  </Link>
                 </Button>
               </div>
               <p className="mt-7 text-sm text-muted-foreground">

@@ -10,20 +10,20 @@ let qrcode: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
+} catch {
+  // Prisma not available
 }
 
 try {
   speakeasy = require("speakeasy")
-} catch (error) {
-  console.log("speakeasy not installed - run: npm install speakeasy")
+} catch {
+  // speakeasy not installed
 }
 
 try {
   qrcode = require("qrcode")
-} catch (error) {
-  console.log("qrcode not installed - run: npm install qrcode @types/qrcode")
+} catch {
+  // qrcode not installed
 }
 
 /**

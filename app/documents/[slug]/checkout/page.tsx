@@ -3,7 +3,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter, useParams, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +20,7 @@ import {
   Loader2,
   Crown,
   Zap,
+  ExternalLink,
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-data"
 import { useSession, signIn } from "next-auth/react"
@@ -29,12 +30,12 @@ import { toast } from "@/lib/safe-toast"
 export default function CheckoutPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const slug = params?.slug as string
   const document = getDocumentBySlug(slug)
-  const { data: session } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
 
   const [isProcessing, setIsProcessing] = useState(false)
-  const [hasSubscription, setHasSubscription] = useState(false)
   const [isCheckingSubscription, setIsCheckingSubscription] = useState(true)
   const [paymentType, setPaymentType] = useState<"single" | "subscription">("single")
   const [form, setForm] = useState({
@@ -42,14 +43,14 @@ export default function CheckoutPage() {
     name: "",
     password: "",
     confirmPassword: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
   })
   const [emailExists, setEmailExists] = useState<boolean | null>(null)
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [accountError, setAccountError] = useState<string | null>(null)
   const [isCreatingAccount, setIsCreatingAccount] = useState(false)
+
+  // Show canceled message from Stripe redirect
+  const canceled = searchParams?.get("canceled")
 
   // Pre-fill form for logged-in users
   useEffect(() => {
@@ -59,7 +60,6 @@ export default function CheckoutPage() {
         email: session.user.email || "",
         name: session.user.name || "",
       }))
-      // Mark email as existing since user is logged in
       setEmailExists(true)
     }
   }, [session, form.email])
@@ -67,6 +67,8 @@ export default function CheckoutPage() {
   // Check subscription status
   useEffect(() => {
     const checkSubscription = async () => {
+      if (sessionStatus === "loading") return
+
       if (!session?.user?.email) {
         setIsCheckingSubscription(false)
         return
@@ -75,11 +77,10 @@ export default function CheckoutPage() {
       try {
         const response = await fetch("/api/user/subscription")
         const data = await response.json()
-        
+
         if (data.subscription?.isActive) {
-          setHasSubscription(true)
-          // Redirect to generate page if they have subscription
-          router.push(`/documents/${slug}/generate`)
+          // Redirect — subscriber already has access
+          router.push(`/documents/${slug}/download`)
           return
         }
       } catch (error) {
@@ -90,17 +91,18 @@ export default function CheckoutPage() {
     }
 
     checkSubscription()
-  }, [session, slug, router])
+  }, [session, sessionStatus, slug, router])
 
   useEffect(() => {
-    // Redirect if document not found
     if (!document) {
       router.push("/documents")
     }
   }, [document, router])
 
-  // Check if email exists when user enters email
+  // Debounced email check for new users
   useEffect(() => {
+    if (session?.user?.email) return // Skip for logged-in users
+
     const checkEmail = async () => {
       if (!form.email || !form.email.includes("@")) {
         setEmailExists(null)
@@ -121,30 +123,29 @@ export default function CheckoutPage() {
       }
     }
 
-    // Debounce email check
     const timeoutId = setTimeout(checkEmail, 500)
     return () => clearTimeout(timeoutId)
-  }, [form.email])
+  }, [form.email, session?.user?.email])
 
-  if (isCheckingSubscription) {
+  if (isCheckingSubscription || sessionStatus === "loading") {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">Checking subscription status...</p>
+          <p className="mt-4 text-muted-foreground">Checking account status...</p>
         </div>
       </div>
     )
   }
 
-  // Handle account creation or sign-in BEFORE payment
-  const handleAccountSetup = async () => {
+  // Handle account creation or sign-in for unauthenticated users
+  const handleAccountSetup = async (): Promise<boolean> => {
     setAccountError(null)
     setIsCreatingAccount(true)
 
     try {
       if (emailExists === false) {
-        // New user - create account
+        // New user — create account
         if (!form.password || form.password.length < 6) {
           setAccountError("Password must be at least 6 characters")
           setIsCreatingAccount(false)
@@ -190,7 +191,7 @@ export default function CheckoutPage() {
 
         return true
       } else if (emailExists === true) {
-        // Existing user - sign in
+        // Existing user — sign in
         if (!form.password) {
           setAccountError("Password is required to sign in")
           setIsCreatingAccount(false)
@@ -216,19 +217,24 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error("Account setup error:", error)
       setAccountError("An error occurred. Please try again.")
-      setIsCreatingAccount(false)
       return false
     } finally {
       setIsCreatingAccount(false)
     }
   }
 
+  /**
+   * Main submit handler:
+   * 1. Ensure user is signed in (create account if needed)
+   * 2. Also persist document data in localStorage for after Stripe redirect
+   * 3. Call /api/payment/create-checkout to get Stripe Checkout URL
+   * 4. Redirect to Stripe's hosted checkout
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // If user is not logged in, set up account first
     if (!session?.user?.email) {
-      // Validate required fields
       if (!form.email || !form.name) {
         setAccountError("Email and name are required")
         return
@@ -240,81 +246,60 @@ export default function CheckoutPage() {
       }
 
       const accountSetupSuccess = await handleAccountSetup()
-      if (!accountSetupSuccess) {
-        return // Stop if account setup failed
-      }
-      
-      // Wait for session to update and refresh
+      if (!accountSetupSuccess) return
+
+      // Wait for session to update and then reload so we can create the checkout session
       await new Promise(resolve => setTimeout(resolve, 1000))
-      window.location.reload() // Full reload to ensure session is updated
+      window.location.reload()
       return
     }
 
-    // If logged in but email doesn't match, use session email
-    const emailToUse = session.user.email || form.email
-    const nameToUse = session.user.name || form.name
-
     setIsProcessing(true)
-    
+    setAccountError(null)
+
     try {
-      // Get document data from sessionStorage
+      // Persist document data in localStorage so it survives the Stripe redirect
       const documentData = sessionStorage.getItem("document-data")
       const documentIntent = sessionStorage.getItem("document-intent")
-      const formData = documentData ? JSON.parse(documentData) : {}
-      const intent = documentIntent || null
+      const documentContent = sessionStorage.getItem("document-content")
 
-      // Get document content if available (from preview)
-      const documentContent = sessionStorage.getItem("document-content") || null
+      if (documentData) localStorage.setItem("document-data", documentData)
+      if (documentIntent) localStorage.setItem("document-intent", documentIntent)
+      if (documentContent) localStorage.setItem("document-content", documentContent)
+      localStorage.setItem("document-slug", slug)
 
-      // Complete checkout - save document (user is already signed in)
-      const response = await fetch("/api/checkout/complete", {
+      // Map our payment type to Stripe tier
+      const tier = paymentType === "subscription" ? "professional" : "starter"
+
+      // Create Stripe Checkout Session
+      const response = await fetch("/api/payment/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: emailToUse,
-          name: nameToUse,
-          slug,
-          paymentType,
-          formData,
-          intent,
-          documentContent,
+          tier,
+          documentSlug: slug,
         }),
       })
 
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to complete checkout")
+        throw new Error(result.error || "Failed to create checkout session")
       }
 
-      // User is already signed in, redirect to dashboard
-      router.refresh() // Refresh to get updated session
-      if (paymentType === "subscription") {
-        router.push("/dashboard")
-      } else {
-        router.push("/dashboard/documents")
+      if (!result.url) {
+        throw new Error("No checkout URL returned")
       }
+
+      // Redirect to Stripe Checkout
+      window.location.href = result.url
     } catch (error) {
       console.error("Checkout error:", error)
-      const errorMessage = error instanceof Error ? error.message : "Failed to complete checkout"
+      const errorMessage = error instanceof Error ? error.message : "Failed to start checkout"
       setAccountError(errorMessage)
       toast.error(errorMessage)
-    } finally {
       setIsProcessing(false)
     }
-  }
-
-  const formatCardNumber = (value: string) => {
-    const cleaned = value.replace(/\D/g, "").slice(0, 16)
-    return cleaned.replace(/(\d{4})(?=\d)/g, "$1 ")
-  }
-
-  const formatExpiry = (value: string) => {
-    const cleaned = value.replace(/\D/g, "").slice(0, 4)
-    if (cleaned.length > 2) {
-      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`
-    }
-    return cleaned
   }
 
   if (!document) {
@@ -354,22 +339,30 @@ export default function CheckoutPage() {
             Back to Preview
           </Link>
 
+          {canceled && (
+            <Alert className="mt-6 border-amber-500/30 bg-amber-500/10">
+              <AlertDescription className="text-amber-600">
+                Payment was canceled. You can try again when you&apos;re ready.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:gap-14">
-            {/* Left - Payment form */}
+            {/* Left — Payment form */}
             <div className="flex-1">
               <h1 className="font-serif text-3xl font-bold text-foreground">
                 Complete Your <span className="gradient-text">Purchase</span>
               </h1>
               <p className="mt-2 text-muted-foreground">
-                {session?.user?.email 
-                  ? `Signed in as ${session.user.email}. Choose your payment option below.`
-                  : "Choose your payment option below."}
+                {session?.user?.email
+                  ? `Signed in as ${session.user.email}. Choose your plan below.`
+                  : "Create an account or sign in, then choose your plan."}
               </p>
               {session?.user?.email && (
                 <Alert className="mt-4">
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertDescription>
-                    You're signed in. Your document will be saved to your account automatically.
+                    You&apos;re signed in. Your document will be saved to your account after payment.
                   </AlertDescription>
                 </Alert>
               )}
@@ -438,174 +431,138 @@ export default function CheckoutPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                {/* Contact info */}
-                <div className="rounded-xl border border-border/50 bg-card/60 p-6">
-                  <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-foreground">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-xs font-bold text-primary">
-                      1
-                    </span>
-                    Contact Information
-                  </h2>
-                  <div className="mt-5 space-y-4">
-                    <div>
-                      <label htmlFor="name" className="mb-1.5 block text-sm text-muted-foreground">
-                        Full Name
-                      </label>
-                      <Input
-                        id="name"
-                        placeholder="John Smith"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        required
-                        disabled={!!session?.user?.email}
-                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary disabled:opacity-50"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="mb-1.5 block text-sm text-muted-foreground">
-                        Email Address
-                      </label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="john@example.com"
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        required
-                        disabled={!!session?.user?.email}
-                        className="border-border/60 bg-secondary/30 focus-visible:ring-primary disabled:opacity-50"
-                      />
-                      {session?.user?.email && (
-                        <p className="mt-1 text-xs text-primary">✓ Signed in as {session.user.email}</p>
-                      )}
-                      {!session?.user?.email && (
-                        <>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {paymentType === "subscription"
-                              ? "We'll send your subscription details to this email."
-                              : "We'll send your completed document to this email."}
-                          </p>
-                          {isCheckingEmail && (
-                            <p className="mt-1 text-xs text-primary">Checking account...</p>
-                          )}
-                          {emailExists === true && (
-                            <p className="mt-1 text-xs text-primary">✓ Account found. Please sign in below.</p>
-                          )}
-                          {emailExists === false && (
-                            <p className="mt-1 text-xs text-muted-foreground">New account. Create password below.</p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                    
-                    {/* Password fields - show if user is not logged in */}
-                    {!session?.user?.email && (
-                      <>
+                {/* Contact info — only for unauthenticated users */}
+                {!session?.user?.email && (
+                  <div className="rounded-xl border border-border/50 bg-card/60 p-6">
+                    <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-foreground">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-xs font-bold text-primary">
+                        1
+                      </span>
+                      Account Setup
+                    </h2>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Create an account or sign in to save your document and manage purchases.
+                    </p>
+                    <div className="mt-5 space-y-4">
+                      <div>
+                        <label htmlFor="name" className="mb-1.5 block text-sm text-muted-foreground">
+                          Full Name
+                        </label>
+                        <Input
+                          id="name"
+                          placeholder="John Smith"
+                          value={form.name}
+                          onChange={(e) => setForm({ ...form, name: e.target.value })}
+                          required
+                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="mb-1.5 block text-sm text-muted-foreground">
+                          Email Address
+                        </label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="john@example.com"
+                          value={form.email}
+                          onChange={(e) => setForm({ ...form, email: e.target.value })}
+                          required
+                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                        />
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          We&apos;ll send your receipt and document access to this email.
+                        </p>
+                        {isCheckingEmail && (
+                          <p className="mt-1 text-xs text-primary">Checking account...</p>
+                        )}
+                        {emailExists === true && (
+                          <p className="mt-1 text-xs text-primary">Account found. Please sign in below.</p>
+                        )}
+                        {emailExists === false && (
+                          <p className="mt-1 text-xs text-muted-foreground">New account will be created.</p>
+                        )}
+                      </div>
+
+                      {/* Password fields */}
+                      <div>
+                        <label htmlFor="password" className="mb-1.5 block text-sm text-muted-foreground">
+                          {emailExists === true ? "Password (Sign In)" : "Create Password"}
+                          <span className="text-destructive"> *</span>
+                        </label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder={emailExists === true ? "Enter your password" : "Create a password (min 6 characters)"}
+                          value={form.password}
+                          onChange={(e) => setForm({ ...form, password: e.target.value })}
+                          required
+                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
+                        />
+                      </div>
+                      {emailExists === false && (
                         <div>
-                          <label htmlFor="password" className="mb-1.5 block text-sm text-muted-foreground">
-                            {emailExists === true ? "Password (Sign In)" : "Create Password"}
+                          <label htmlFor="confirmPassword" className="mb-1.5 block text-sm text-muted-foreground">
+                            Confirm Password
                             <span className="text-destructive"> *</span>
                           </label>
                           <Input
-                            id="password"
+                            id="confirmPassword"
                             type="password"
-                            placeholder={emailExists === true ? "Enter your password" : "Create a password (min 6 characters)"}
-                            value={form.password}
-                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            placeholder="Confirm your password"
+                            value={form.confirmPassword}
+                            onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                             required
                             className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
                           />
                         </div>
-                        {emailExists === false && (
-                          <div>
-                            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm text-muted-foreground">
-                              Confirm Password
-                              <span className="text-destructive"> *</span>
-                            </label>
-                            <Input
-                              id="confirmPassword"
-                              type="password"
-                              placeholder="Confirm your password"
-                              value={form.confirmPassword}
-                              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                              required
-                              className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
-                            />
-                          </div>
-                        )}
-                        {accountError && (
-                          <Alert variant="destructive">
-                            <AlertDescription>{accountError}</AlertDescription>
-                          </Alert>
-                        )}
-                      </>
-                    )}
+                      )}
+                      {accountError && (
+                        <Alert variant="destructive">
+                          <AlertDescription>{accountError}</AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Payment info */}
+                {/* Payment info — Stripe Checkout redirect */}
                 <div className="rounded-xl border border-border/50 bg-card/60 p-6">
                   <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-foreground">
                     <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/15 text-xs font-bold text-accent">
-                      2
+                      {session?.user?.email ? "1" : "2"}
                     </span>
-                    Payment Details
+                    Payment
                   </h2>
-                  <div className="mt-5 space-y-4">
-                    <div>
-                      <label htmlFor="card" className="mb-1.5 block text-sm text-muted-foreground">
-                        Card Number
-                      </label>
-                      <div className="relative">
-                        <Input
-                          id="card"
-                          placeholder="4242 4242 4242 4242"
-                          value={form.cardNumber}
-                          onChange={(e) =>
-                            setForm({ ...form, cardNumber: formatCardNumber(e.target.value) })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 pl-10 focus-visible:ring-primary"
-                        />
-                        <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <div className="mt-4 rounded-lg border border-border/40 bg-secondary/20 p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#635BFF]/10">
+                        <CreditCard className="h-5 w-5 text-[#635BFF]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Secure Payment via Stripe</p>
+                        <p className="text-xs text-muted-foreground">
+                          You&apos;ll be redirected to Stripe&apos;s secure checkout to complete your payment.
+                        </p>
                       </div>
                     </div>
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <label htmlFor="expiry" className="mb-1.5 block text-sm text-muted-foreground">
-                          Expiry Date
-                        </label>
-                        <Input
-                          id="expiry"
-                          placeholder="MM/YY"
-                          value={form.expiry}
-                          onChange={(e) =>
-                            setForm({ ...form, expiry: formatExpiry(e.target.value) })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label htmlFor="cvc" className="mb-1.5 block text-sm text-muted-foreground">
-                          CVC
-                        </label>
-                        <Input
-                          id="cvc"
-                          placeholder="123"
-                          value={form.cvc}
-                          onChange={(e) =>
-                            setForm({
-                              ...form,
-                              cvc: e.target.value.replace(/\D/g, "").slice(0, 4),
-                            })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
-                        />
-                      </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {["Visa", "Mastercard", "Amex", "Apple Pay", "Google Pay"].map((method) => (
+                        <span
+                          key={method}
+                          className="rounded-md border border-border/40 bg-background/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                        >
+                          {method}
+                        </span>
+                      ))}
                     </div>
                   </div>
+
+                  {accountError && session?.user?.email && (
+                    <Alert variant="destructive" className="mt-4">
+                      <AlertDescription>{accountError}</AlertDescription>
+                    </Alert>
+                  )}
                 </div>
 
                 <Button
@@ -622,14 +579,21 @@ export default function CheckoutPage() {
                   ) : isProcessing ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Processing Payment...
+                      Redirecting to Stripe...
+                    </>
+                  ) : !session?.user?.email ? (
+                    <>
+                      <Lock className="h-4 w-4" />
+                      {emailExists === true
+                        ? "Sign In & Continue to Payment"
+                        : "Create Account & Continue to Payment"}
                     </>
                   ) : (
                     <>
-                      <Lock className="h-4 w-4" />
+                      <ExternalLink className="h-4 w-4" />
                       {paymentType === "subscription"
-                        ? `Subscribe for $${subscriptionPrice}.99/month & Get Started`
-                        : `Pay $${singlePrice}.99 & Download Document`}
+                        ? `Subscribe for $${subscriptionPrice}.99/month`
+                        : `Pay $${singlePrice}.99 — Proceed to Checkout`}
                     </>
                   )}
                 </Button>
@@ -642,7 +606,7 @@ export default function CheckoutPage() {
                   <span className="text-border">|</span>
                   <div className="flex items-center gap-1">
                     <Shield className="h-3 w-3" />
-                    PCI Compliant
+                    Stripe Secure
                   </div>
                   <span className="text-border">|</span>
                   <span>30-Day Money Back</span>
@@ -650,7 +614,7 @@ export default function CheckoutPage() {
               </form>
             </div>
 
-            {/* Right - Order summary */}
+            {/* Right — Order summary */}
             <div className="w-full shrink-0 lg:w-80">
               <div className="sticky top-24 space-y-5">
                 <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/80">
@@ -751,5 +715,3 @@ export default function CheckoutPage() {
     </div>
   )
 }
-
-

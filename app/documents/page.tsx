@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   ArrowRight,
+  FileText,
   Sparkles,
   Search,
 } from "lucide-react"
@@ -121,13 +122,13 @@ export default function DocumentsPage() {
               filtered.map((doc) => {
                 const isAccent = doc.color === "accent"
                 const hasSlug = doc.slug
-                const Wrapper = hasSlug ? Link : "div"
+                const Wrapper: React.ElementType = hasSlug ? Link : "div"
                 const wrapperProps = hasSlug ? { href: doc.slug } : {}
 
                 return (
                   <Wrapper
                     key={doc.title}
-                    {...(wrapperProps as Record<string, string>)}
+                    {...wrapperProps}
                     className="group flex cursor-pointer items-start gap-4 rounded-2xl border border-border/50 bg-card/60 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
                   >
                     <div

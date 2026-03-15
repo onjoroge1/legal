@@ -34,7 +34,6 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
-  console.log("[Dashboard] Component mounting")
   const { data: session, status } = useSession()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -42,35 +41,27 @@ export default function DashboardPage() {
   const router = useRouter()
 
   useEffect(() => {
-    console.log("[Dashboard] useEffect triggered with status:", status)
-    console.log("[Dashboard] Current session:", session)
-    
     let mounted = true
 
     const fetchDashboardData = async () => {
       try {
-        console.log("[Dashboard] Fetching dashboard data from /api/dashboard")
         const response = await fetch('/api/dashboard', {
           credentials: 'include', // Ensure cookies are sent with the request
           headers: {
             'Content-Type': 'application/json',
           },
         })
-        console.log("[Dashboard] Dashboard data response status:", response.status)
-        
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
           console.error("[Dashboard] Error response data:", errorData)
           
           if (response.status === 401) {
-            console.log("[Dashboard] Unauthorized, redirecting to login")
             router.replace('/login')
             return
           }
           throw new Error(errorData.message || 'Failed to fetch dashboard data')
         }
         const dashboardData = await response.json()
-        console.log("[Dashboard] Dashboard data received:", dashboardData)
         if (mounted) {
           setData(dashboardData)
         }
@@ -87,22 +78,15 @@ export default function DashboardPage() {
     }
 
     if (status === "authenticated") {
-      console.log("[Dashboard] Session authenticated, starting data fetch")
       fetchDashboardData()
     } else if (status === "unauthenticated") {
-      console.log("[Dashboard] Session unauthenticated, redirecting to login")
       router.replace('/login')
-    } else if (status === "loading") {
-      console.log("[Dashboard] Session status is loading")
     }
 
     return () => {
-      console.log("[Dashboard] Component unmounting")
       mounted = false
     }
   }, [router, status, session])
-
-  console.log("[Dashboard] Current render state:", { status, loading, error, hasSession: !!session?.user })
 
   if (status === "loading" || loading) {
     return (

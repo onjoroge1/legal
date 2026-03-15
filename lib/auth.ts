@@ -11,16 +11,14 @@ try {
   prisma = prismaModule.prisma
   const adapterModule = require("@next-auth/prisma-adapter")
   PrismaAdapter = adapterModule.PrismaAdapter
-} catch (error) {
+} catch {
   // Prisma not set up yet - will work once database is configured
-  console.log("Prisma adapter not available - auth will work once database is configured")
 }
 
 try {
   bcrypt = require("bcryptjs")
-} catch (error) {
+} catch {
   // bcryptjs not installed yet
-  console.log("bcryptjs not available - install with: npm install bcryptjs")
 }
 
 /**
@@ -147,7 +145,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        (session.user as any).id = token.id as string
         session.user.email = token.email as string
         session.user.name = token.name as string
         session.user.image = token.picture as string | undefined
@@ -156,7 +154,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-change-in-production",
+  secret: process.env.NEXTAUTH_SECRET,
   
   // Add error handling
   debug: process.env.NODE_ENV === "development",

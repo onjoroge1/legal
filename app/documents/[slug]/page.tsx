@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     `Create a ${document.title} online with state‑specific compliance, instant download, and secure storage.`
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
-  const ogImage = seo?.ogImage || "https://legallawdocs.com/images/hero-legal.jpg"
+  const ogImage = seo?.ogImage || "https://www.legallawdocs.com/og-image.png"
   const ogImageAlt = seo?.ogImageAlt || `${document.title} - LegalLawDocs.com`
 
   return {
@@ -137,6 +137,40 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const Icon = document.icon
   const isAccent = document.color === "accent"
 
+  // Build JSON-LD structured data
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.legallawdocs.com" },
+      { "@type": "ListItem", position: 2, name: "Documents", item: "https://www.legallawdocs.com/documents" },
+      { "@type": "ListItem", position: 3, name: document.title, item: `https://www.legallawdocs.com/documents/${slug}` },
+    ],
+  }
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: document.title,
+    description: docContent.description,
+    brand: { "@type": "Organization", name: "LegalLawDocs.com" },
+    offers: {
+      "@type": "Offer",
+      price: `${document.price}.99`,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: `https://www.legallawdocs.com/documents/${slug}`,
+      seller: { "@type": "Organization", name: "LegalLawDocs.com" },
+    },
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "5.0", reviewCount: "3", bestRating: "5", worstRating: "1" },
+    review: reviews.map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.name },
+      reviewRating: { "@type": "Rating", ratingValue: r.rating.toString(), bestRating: "5" },
+      reviewBody: r.text,
+    })),
+  }
+
   const faqSchema = detailContent
     ? {
         "@context": "https://schema.org",
@@ -144,26 +178,32 @@ export default async function DocumentDetailPage({ params }: PageProps) {
         mainEntity: detailContent.faq.map((item) => ({
           "@type": "Question",
           name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
         })),
       }
     : null
 
   return (
     <div className="min-h-screen">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       {/* Header */}
       <Header />
 
       <main>
-        {faqSchema && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-          />
-        )}
 
         {/* Hero */}
         <section className="relative overflow-hidden border-b border-border/40 py-16 lg:py-24">

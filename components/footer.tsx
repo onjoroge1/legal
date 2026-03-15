@@ -3,28 +3,28 @@ import { Scale } from "lucide-react"
 
 const footerLinks = {
   Product: [
-    { label: "Features", href: "#features" },
-    { label: "Documents", href: "#documents" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "API Access", href: "#" },
+    { label: "Features", href: "/#features" },
+    { label: "Documents", href: "/documents" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "API Access", href: "/contact" },
   ],
   Resources: [
-    { label: "Blog", href: "#" },
-    { label: "Legal Guides", href: "#" },
-    { label: "State Compliance", href: "#" },
-    { label: "Help Center", href: "#" },
+    { label: "Blog", href: "/blog" },
+    { label: "Legal Guides", href: "/documents" },
+    { label: "State Compliance", href: "/documents" },
+    { label: "Help Center", href: "/contact" },
   ],
   Company: [
-    { label: "About Us", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Contact", href: "#" },
-    { label: "Press", href: "#" },
+    { label: "About Us", href: "/about" },
+    { label: "Careers", href: "/contact" },
+    { label: "Contact", href: "/contact" },
+    { label: "Press", href: "/contact" },
   ],
   Legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Cookie Policy", href: "#" },
-    { label: "DMCA", href: "#" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms-of-service" },
+    { label: "Cookie Policy", href: "/cookie-policy" },
+    { label: "DMCA", href: "/dmca" },
   ],
 }
 

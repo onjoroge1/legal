@@ -1,59 +1,65 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export default function Loading() {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      {/* Header skeleton */}
       <div className="flex items-center justify-between">
         <div>
-          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-8 w-40" />
           <Skeleton className="h-4 w-64 mt-2" />
         </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-10 w-[200px]" />
-          <Skeleton className="h-10 w-10" />
-          <Skeleton className="h-10 w-32" />
-        </div>
+        <Skeleton className="h-10 w-32" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 pb-2">
-        <Skeleton className="h-8 w-[150px]" />
-        <Skeleton className="h-8 w-[150px]" />
-        <Skeleton className="h-8 w-[150px]" />
-      </div>
+      {/* Search bar and filters skeleton */}
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-[180px]" />
+              <Skeleton className="h-10 w-[180px]" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Table header skeleton */}
+          <div className="border rounded-md">
+            <div className="border-b px-4 py-3 flex gap-4">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-24" />
+            </div>
 
-      <div className="flex justify-between items-center">
-        <div className="flex">
-          <Skeleton className="h-10 w-[300px]" />
-        </div>
-        <Skeleton className="h-10 w-[100px]" />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array(6)
-          .fill(0)
-          .map((_, i) => (
-            <Card key={i} className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="flex items-start justify-between p-6">
-                  <div className="flex items-start gap-4">
-                    <Skeleton className="h-10 w-10 rounded-md" />
-                    <div>
-                      <Skeleton className="h-5 w-40 mb-2" />
-                      <Skeleton className="h-4 w-32" />
-                    </div>
+            {/* Table rows skeleton */}
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="border-b last:border-b-0 px-4 py-3 flex items-center gap-4"
+                >
+                  <div className="flex items-center gap-2 flex-1">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-48" />
                   </div>
-                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-24" />
                 </div>
-              </CardContent>
-              <div className="border-t p-3 flex justify-between">
-                <Skeleton className="h-6 w-24" />
-                <Skeleton className="h-6 w-16" />
-              </div>
-            </Card>
-          ))}
-      </div>
+              ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-

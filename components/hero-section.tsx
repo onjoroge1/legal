@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -18,15 +18,8 @@ import {
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden">
-      {/* Background image with overlay */}
+      {/* Background gradient overlay */}
       <div className="pointer-events-none absolute inset-0">
-        <Image
-          src="/images/hero-legal.jpg"
-          alt=""
-          fill
-          className="object-cover opacity-30"
-          priority
-        />
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
       </div>
 
@@ -63,12 +56,16 @@ export function HeroSection() {
           </p>
 
           <div className="animate-slide-up stagger-3 mt-12 flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-              Start Creating Documents
-              <ArrowRight className="h-4 w-4" />
+            <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20" asChild>
+              <Link href="/documents">
+                Start Creating Documents
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
-            <Button variant="outline" size="lg" className="gap-2 bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
-              View Document Library
+            <Button variant="outline" size="lg" className="gap-2 bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5" asChild>
+              <Link href="#documents">
+                View Document Library
+              </Link>
             </Button>
           </div>
 

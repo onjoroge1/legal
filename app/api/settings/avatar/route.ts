@@ -11,8 +11,8 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
+} catch {
+  // Prisma not available
 }
 
 /**

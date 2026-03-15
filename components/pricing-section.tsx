@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Sparkles } from "lucide-react"
@@ -16,6 +17,7 @@ const plans = [
       "Basic AI review",
     ],
     cta: "Get Started",
+    href: "/documents",
     popular: false,
   },
   {
@@ -32,6 +34,7 @@ const plans = [
       "Custom branding on documents",
     ],
     cta: "Start Free Trial",
+    href: "/signup",
     popular: true,
   },
   {
@@ -48,6 +51,7 @@ const plans = [
       "SLA & compliance reporting",
     ],
     cta: "Contact Sales",
+    href: "/contact",
     popular: false,
   },
 ]
@@ -131,8 +135,11 @@ export function PricingSection() {
                 className={`mt-8 w-full ${plan.popular ? "shadow-lg shadow-primary/20" : ""}`}
                 variant={plan.popular ? "default" : "outline"}
                 size="lg"
+                asChild
               >
-                {plan.cta}
+                <Link href={plan.href}>
+                  {plan.cta}
+                </Link>
               </Button>
             </div>
           ))}

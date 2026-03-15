@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Info } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California",
@@ -29,9 +28,12 @@ interface Question {
   type: string
   required: boolean
   section: string
+  sectionOrder?: number
   helpText?: string
   placeholder?: string
   options?: Array<{ value: string; label?: string }>
+  showWhen?: { field: string; value: string | string[] }
+  forIntents?: string[]
 }
 
 interface DocumentFormProps {
@@ -40,6 +42,106 @@ interface DocumentFormProps {
   onChange: (data: Record<string, any>) => void
   onValidate?: (isValid: boolean) => void
   externalErrors?: Record<string, string>
+  selectedIntent?: string | null
+  /** When set, only render questions for this specific section */
+  activeSection?: string
+}
+
+export interface SectionInfo {
+  name: string
+  order: number
+  questionCount: number
+  completedCount: number
+}
+
+/**
+ * Compute section metadata from questions, respecting visibility/intent rules.
+ */
+export function getSections(
+  questions: Question[],
+  formData: Record<string, any>,
+  selectedIntent?: string | null
+): SectionInfo[] {
+  // Filter by intent
+  const intentFiltered = questions.filter(
+    (q) => !q.forIntents || q.forIntents.length === 0 || (selectedIntent && q.forIntents.includes(selectedIntent))
+  )
+
+  // Filter by visibility
+  const visible = intentFiltered.filter((q) => isVisible(q, formData, intentFiltered))
+
+  // Group by section
+  const groups: Record<string, Question[]> = {}
+  for (const q of visible) {
+    const section = q.section || "General"
+    if (!groups[section]) groups[section] = []
+    groups[section].push(q)
+  }
+
+  return Object.entries(groups)
+    .map(([name, qs]) => ({
+      name,
+      order: Math.min(...qs.map((q) => q.sectionOrder ?? 0)),
+      questionCount: qs.length,
+      completedCount: qs.filter((q) => {
+        const val = formData[q.id]
+        return val !== undefined && val !== null && String(val).trim() !== ""
+      }).length,
+    }))
+    .sort((a, b) => a.order - b.order)
+}
+
+/**
+ * Check if a question's showWhen condition is met, recursively handling chains.
+ */
+function isVisible(
+  question: Question,
+  formData: Record<string, any>,
+  allQuestions: Question[]
+): boolean {
+  if (!question.showWhen) return true
+
+  const { field, value } = question.showWhen
+  const currentValue = formData[field]
+
+  // Check if the parent itself is visible
+  const parent = allQuestions.find((q) => q.id === field)
+  if (parent && !isVisible(parent, formData, allQuestions)) {
+    return false
+  }
+
+  // Handle "alternateAgentName" style where value is empty array (show when field has any value)
+  if (Array.isArray(value) && value.length === 0) {
+    return !!currentValue && String(currentValue).trim() !== ""
+  }
+
+  // Check value match
+  if (Array.isArray(value)) {
+    return value.includes(String(currentValue ?? ""))
+  }
+  return String(currentValue ?? "") === value
+}
+
+/**
+ * Recursively find all question IDs that depend on a given field
+ * and whose showWhen condition is no longer met.
+ */
+function findHiddenDependents(
+  changedFieldId: string,
+  newFormData: Record<string, any>,
+  allQuestions: Question[]
+): string[] {
+  const hidden: string[] = []
+  for (const q of allQuestions) {
+    if (q.showWhen?.field === changedFieldId) {
+      if (!isVisible(q, newFormData, allQuestions)) {
+        hidden.push(q.id)
+        // Recursively find grandchildren
+        hidden.push(...findHiddenDependents(q.id, newFormData, allQuestions))
+      }
+    }
+  }
+  return hidden
 }
 
 export default function DocumentForm({
@@ -48,51 +150,94 @@ export default function DocumentForm({
   onChange,
   onValidate,
   externalErrors = {},
+  selectedIntent,
+  activeSection,
 }: DocumentFormProps) {
-  const [requiredErrors, setRequiredErrors] = useState<Record<string, string>>({})
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set())
 
-  const validateRequired = (): Record<string, string> => {
-    const newErrors: Record<string, string> = {}
+  // Filter questions by intent, visibility, and optionally activeSection
+  const visibleQuestions = useMemo(() => {
+    // Step 1: Filter by intent
+    const intentFiltered = questions.filter(
+      (q) => !q.forIntents || q.forIntents.length === 0 || (selectedIntent && q.forIntents.includes(selectedIntent))
+    )
 
-    questions.forEach((question) => {
+    // Step 2: Filter by showWhen conditions
+    let visible = intentFiltered.filter((q) => isVisible(q, formData, intentFiltered))
+
+    // Step 3: Filter by active section if specified
+    if (activeSection) {
+      visible = visible.filter((q) => (q.section || "General") === activeSection)
+    }
+
+    return visible
+  }, [questions, formData, selectedIntent, activeSection])
+
+  // Validate only visible required questions
+  const validationErrors = useMemo(() => {
+    const errors: Record<string, string> = {}
+    for (const question of visibleQuestions) {
       if (question.required) {
         const value = formData[question.id]
         if (!value || (typeof value === "string" && value.trim() === "")) {
-          newErrors[question.id] = `${question.label} is required`
+          errors[question.id] = `${question.label} is required`
         }
       }
-    })
+    }
+    return errors
+  }, [visibleQuestions, formData])
 
-    setRequiredErrors(newErrors)
-    return newErrors
-  }
-
+  // Report validation state
   useEffect(() => {
-    const newRequiredErrors = validateRequired()
-    const hasRequiredErrors = Object.keys(newRequiredErrors).length > 0
+    const hasRequiredErrors = Object.keys(validationErrors).length > 0
     const hasExternalErrors = Object.keys(externalErrors || {}).length > 0
     onValidate?.(!hasRequiredErrors && !hasExternalErrors)
-  }, [formData, questions, externalErrors])
+  }, [validationErrors, externalErrors, onValidate])
 
-  const handleChange = (fieldId: string, value: any) => {
-    onChange({ [fieldId]: value })
-  }
+  const handleChange = useCallback((fieldId: string, value: any) => {
+    const updated: Record<string, any> = { [fieldId]: value }
 
-  const combinedErrors = { ...requiredErrors, ...externalErrors }
-
-  // Group questions by section
-  const questionsBySection = questions.reduce((acc, question) => {
-    const section = question.section || "General"
-    if (!acc[section]) {
-      acc[section] = []
+    // Find and clear hidden dependent fields
+    const tempFormData = { ...formData, [fieldId]: value }
+    const hiddenIds = findHiddenDependents(fieldId, tempFormData, questions)
+    for (const id of hiddenIds) {
+      updated[id] = undefined
     }
-    acc[section].push(question)
-    return acc
-  }, {} as Record<string, Question[]>)
+
+    setTouchedFields((prev) => new Set([...prev, fieldId]))
+    onChange(updated)
+  }, [formData, questions, onChange])
+
+  // Combine errors (only show for touched fields)
+  const displayErrors = useMemo(() => {
+    const combined: Record<string, string> = {}
+    for (const [key, msg] of Object.entries({ ...validationErrors, ...externalErrors })) {
+      if (touchedFields.has(key)) {
+        combined[key] = msg
+      }
+    }
+    return combined
+  }, [validationErrors, externalErrors, touchedFields])
+
+  // Group visible questions by section, sorted by sectionOrder
+  const sortedSections = useMemo(() => {
+    const groups: Record<string, Question[]> = {}
+    for (const q of visibleQuestions) {
+      const section = q.section || "General"
+      if (!groups[section]) groups[section] = []
+      groups[section].push(q)
+    }
+
+    return Object.entries(groups).sort(([, a], [, b]) => {
+      const orderA = Math.min(...a.map((q) => q.sectionOrder ?? 0))
+      const orderB = Math.min(...b.map((q) => q.sectionOrder ?? 0))
+      return orderA - orderB
+    })
+  }, [visibleQuestions])
 
   const renderField = (question: Question) => {
-    const value = formData[question.id] || ""
-    const hasError = !!combinedErrors[question.id]
+    const value = formData[question.id] ?? ""
+    const hasError = !!displayErrors[question.id]
 
     switch (question.type) {
       case "text":
@@ -142,7 +287,7 @@ export default function DocumentForm({
           <RadioGroup
             value={value}
             onValueChange={(val) => handleChange(question.id, val)}
-            className="flex gap-4"
+            className="flex gap-4 flex-wrap"
           >
             {question.options?.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
@@ -174,6 +319,44 @@ export default function DocumentForm({
           </Select>
         )
 
+      case "number":
+        return (
+          <Input
+            id={question.id}
+            type="number"
+            value={value}
+            onChange={(e) => handleChange(question.id, e.target.value)}
+            placeholder={question.placeholder}
+            className={hasError ? "border-destructive" : ""}
+          />
+        )
+
+      case "date":
+        return (
+          <Input
+            id={question.id}
+            type="date"
+            value={value}
+            onChange={(e) => handleChange(question.id, e.target.value)}
+            placeholder={question.placeholder}
+            className={hasError ? "border-destructive" : ""}
+          />
+        )
+
+      case "checkbox":
+        return (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id={question.id}
+              checked={!!formData[question.id]}
+              onCheckedChange={(checked) => handleChange(question.id, checked)}
+            />
+            <Label htmlFor={question.id} className="font-normal cursor-pointer">
+              {question.helpText || question.label}
+            </Label>
+          </div>
+        )
+
       default:
         return (
           <Input
@@ -189,22 +372,27 @@ export default function DocumentForm({
 
   return (
     <div className="space-y-6">
-      {Object.entries(questionsBySection).map(([section, sectionQuestions]) => (
+      {sortedSections.map(([section, sectionQuestions]) => (
         <div key={section} className="space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold mb-3">{section}</h3>
-          </div>
+          {/* Hide section header when wizard shows a single section */}
+          {!activeSection && (
+            <div>
+              <h3 className="text-sm font-semibold mb-3">{section}</h3>
+            </div>
+          )}
 
           {sectionQuestions.map((question) => (
             <div key={question.id} className="space-y-2">
-              <Label htmlFor={question.id}>
-                {question.label} {question.required && <span className="text-destructive">*</span>}
-              </Label>
-              {renderField(question)}
-              {combinedErrors[question.id] && (
-                <p className="text-xs text-destructive">{combinedErrors[question.id]}</p>
+              {question.type !== "checkbox" && (
+                <Label htmlFor={question.id}>
+                  {question.label} {question.required && <span className="text-destructive">*</span>}
+                </Label>
               )}
-              {question.helpText && !combinedErrors[question.id] && (
+              {renderField(question)}
+              {displayErrors[question.id] && (
+                <p className="text-xs text-destructive">{displayErrors[question.id]}</p>
+              )}
+              {question.helpText && !displayErrors[question.id] && question.type !== "checkbox" && (
                 <p className="text-xs text-muted-foreground">{question.helpText}</p>
               )}
             </div>

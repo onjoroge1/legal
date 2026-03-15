@@ -8,7 +8,7 @@ export interface DocumentSeo {
   keywords: string[]
 }
 
-const BASE_URL = "https://legallawdocs.com"
+const BASE_URL = "https://www.legallawdocs.com"
 const DEFAULT_IMAGE = `${BASE_URL}/images/hero-legal.jpg`
 
 const seoBySlug: Record<string, DocumentSeo> = {

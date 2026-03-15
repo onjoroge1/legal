@@ -83,6 +83,11 @@ export async function getUserSubscriptionInfo(userEmail?: string): Promise<Subsc
 
 /**
  * Check if user has access to a document (either via subscription or purchase)
+ *
+ * Access is granted if:
+ * 1. User has an active subscription (professional tier), OR
+ * 2. User has previously purchased/generated this document type
+ *    (stored in UserDocument with slug in metadata JSON)
  */
 export async function hasAccessToDocument(
   userEmail?: string,
@@ -95,20 +100,28 @@ export async function hasAccessToDocument(
     const hasSubscription = await isSubscriptionActive(userEmail)
     if (hasSubscription) return true
 
-    // Check if user has purchased this specific document
+    // Check if user has purchased this specific document type
+    // UserDocument doesn't have a slug column — the slug is stored
+    // inside the metadata JSON field as { slug: "nda" }
     const user = await prisma.user.findUnique({
       where: { email: userEmail },
       include: {
         userDocuments: {
           where: {
-            slug: documentSlug,
             deletedAt: null,
+            status: "completed",
           },
         },
       },
     })
 
-    return user?.userDocuments && user.userDocuments.length > 0
+    if (!user?.userDocuments || user.userDocuments.length === 0) return false
+
+    // Check if any completed document matches the slug via metadata
+    return user.userDocuments.some((doc: any) => {
+      const metadata = doc.metadata as Record<string, any> | null
+      return metadata?.slug === documentSlug
+    })
   } catch (error) {
     console.error("Error checking document access:", error)
     return false

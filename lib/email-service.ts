@@ -7,8 +7,8 @@ let resend: any
 try {
   Resend = require("resend")
   resend = new Resend(process.env.RESEND_API_KEY)
-} catch (error) {
-  console.log("Resend not installed or configured - run: npm install resend")
+} catch {
+  // Resend not installed or configured
 }
 
 interface EmailOptions {
@@ -23,7 +23,6 @@ interface EmailOptions {
  */
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   if (!resend) {
-    console.warn("Email service not configured. Email not sent:", options.subject)
     return false
   }
 

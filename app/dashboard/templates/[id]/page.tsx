@@ -12,11 +12,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { useSession } from "next-auth/react"
-import { useState, useCallback, use } from "react"
+import { useState, use } from "react"
 import { Progress } from "@/components/ui/progress"
-import { ArrowLeft, Loader2 } from "lucide-react"
+import { ArrowLeft, Loader2, FileDown, Save, Sparkles } from "lucide-react"
 import { TemplateField } from "@/types/template"
 import { useQuery } from '@tanstack/react-query'
+import { useToast } from "@/components/ui/use-toast"
 
 // Section order to ensure consistent sidebar ordering
 const sectionOrder = [
@@ -110,6 +111,10 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [currentSection, setCurrentSection] = useState<string>("")
   const [formProgress, setFormProgress] = useState(0)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [generatedContent, setGeneratedContent] = useState<string | null>(null)
+  const { toast } = useToast()
 
   // Fetch template details
   const { data: template, isLoading: isLoadingTemplate } = useQuery<Template>({
@@ -128,7 +133,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   const { data: templateFields = [], isLoading: isLoadingFields, error: templateError } = useQuery<ITemplateField[]>({
     queryKey: ['templateFields', id],
     queryFn: async () => {
-      console.log('Client - Debug - Fetching fields for template:', id)
       const response = await fetch(`/api/templates/${id}/fields`, {
         method: 'GET',
         headers: {
@@ -153,14 +157,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
         throw new Error('Invalid response format')
       }
 
-      console.log('Client - Debug - Received template fields:', {
-        count: data.length,
-        fields: data.map((f: ITemplateField) => ({
-          id: f.id,
-          section: f.section,
-          type: f.type
-        }))
-      })
       return data
     },
     retry: 1,
@@ -172,7 +168,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
   const { data: questionnaires = [], isLoading: isLoadingQuestionnaires } = useQuery<IQuestionnaire[]>({
     queryKey: ['questionnaires', id],
     queryFn: async () => {
-      console.log('Client - Debug - Fetching questionnaires for template:', id)
       const response = await fetch(`/api/templates/${id}/questionnaires`, {
         method: 'GET',
         headers: {
@@ -192,9 +187,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       }
 
       const data = await response.json()
-      console.log('Client - Debug - Received questionnaires:', {
-        count: data.length
-      })
       return data
     },
     retry: 1,
@@ -210,11 +202,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
       const sections = [...new Set(questionnaires[0].questions.map(q => q.section))]
       if (sections.length > 0) {
         setCurrentSection(sections[0])
-        console.log('Client - Debug - Setting initial section:', {
-          sections,
-          selectedSection: sections[0],
-          questionsCount: questionnaires[0].questions.length
-        })
       }
     } else if (templateFields.length > 0) {
       const firstSection = templateFields[0].section
@@ -259,23 +246,6 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
     ...sectionOrder.filter(section => templateFields.some(field => field.section === section))
   ])).filter(Boolean)
 
-  // Log the sections and fields
-  console.log('Client - Debug - Current state:', {
-    templateId: id,
-    sections: sortedSections,
-    questionnaires: questionnaires.length,
-    currentSection,
-    questions: questionnaires[0]?.questions?.map(q => ({
-      section: q.section,
-      label: q.label
-    })) || [],
-    fieldsBySection: Object.entries(fieldsBySection).map(([section, fields]) => ({
-      section,
-      fieldCount: fields.length,
-      fields: fields.map(f => f.id)
-    }))
-  })
-
   // Handle input changes
   const handleInputChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }))
@@ -286,6 +256,141 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
     const template = TEMPLATE_CATEGORIES.flatMap(category => category.templates)
       .find(template => template.id === id)
     return template?.name || "Document Form"
+  }
+
+  // Validate required fields are filled
+  const validateForm = (): boolean => {
+    const allRequired = questionnaires[0]?.questions.filter(q => q.required) || []
+    const missing = allRequired.filter(q => {
+      const val = formData[q.id]
+      return val === undefined || val === null || val === ""
+    })
+    if (missing.length > 0) {
+      toast({
+        title: "Required Fields Missing",
+        description: `Please fill in: ${missing.map(q => q.label).slice(0, 3).join(", ")}${missing.length > 3 ? ` and ${missing.length - 3} more` : ""}`,
+        variant: "destructive",
+      })
+      // Navigate to the section of the first missing field
+      const firstMissing = missing[0]
+      if (firstMissing) setCurrentSection(firstMissing.section)
+      return false
+    }
+    return true
+  }
+
+  // Generate document from the template using questionnaire answers
+  const handleGenerate = async () => {
+    if (!validateForm()) return
+
+    try {
+      setIsGenerating(true)
+      const response = await fetch(`/api/documents/${id}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formData,
+          intent: "standard",
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate document")
+      }
+
+      const content = data.document || data.content
+      if (!content) {
+        throw new Error("No content was generated")
+      }
+
+      setGeneratedContent(content)
+      toast({
+        title: "Document Generated",
+        description: "Your document has been generated. You can now save or download it.",
+      })
+    } catch (error) {
+      console.error("Generation error:", error)
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate document. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  // Save the generated document as a draft
+  const handleSaveDraft = async () => {
+    if (!generatedContent && !validateForm()) return
+
+    try {
+      setIsSaving(true)
+
+      // If no generated content yet, generate first
+      let content = generatedContent
+      if (!content) {
+        const genResponse = await fetch(`/api/documents/${id}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            formData,
+            intent: "standard",
+          }),
+        })
+        const genData = await genResponse.json()
+        if (!genResponse.ok) throw new Error(genData.error || "Failed to generate")
+        content = genData.document || genData.content
+        setGeneratedContent(content || null)
+      }
+
+      // Save the document
+      const response = await fetch("/api/documents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: template?.name || "Untitled Document",
+          type: template?.type || id,
+          category: template?.category?.name?.toLowerCase() || "business",
+          description: template?.description || "",
+          content,
+          status: "draft",
+          metadata: { formData, templateSlug: id },
+          parties: [],
+        }),
+      })
+
+      const data = await response.json()
+      if (!response.ok) {
+        if (response.status === 403 && data.redirectTo) {
+          toast({
+            title: "Subscription Limit",
+            description: data.error,
+            variant: "destructive",
+          })
+          router.push(data.redirectTo)
+          return
+        }
+        throw new Error(data.error || "Failed to save")
+      }
+
+      toast({
+        title: "Document Saved",
+        description: "Your document has been saved as a draft.",
+      })
+      router.push(`/dashboard/documents/${data.id}`)
+    } catch (error) {
+      console.error("Save error:", error)
+      toast({
+        title: "Save Failed",
+        description: error instanceof Error ? error.message : "Failed to save document.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   if (templateError) {
@@ -327,11 +432,19 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
           )}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => console.log('Saving...')}>
-            Save Draft
+          <Button variant="outline" onClick={handleSaveDraft} disabled={isSaving || isGenerating}>
+            {isSaving ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving...</>
+            ) : (
+              <><Save className="h-4 w-4 mr-2" />Save Draft</>
+            )}
           </Button>
-          <Button onClick={() => console.log('Generating...')}>
-            Generate Document
+          <Button onClick={handleGenerate} disabled={isGenerating || isSaving}>
+            {isGenerating ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Generating...</>
+            ) : (
+              <><Sparkles className="h-4 w-4 mr-2" />Generate Document</>
+            )}
           </Button>
         </div>
       </div>
@@ -447,6 +560,26 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                         ))}
                       </RadioGroup>
                     )}
+                    {question.type === "number" && (
+                      <Input
+                        id={question.id}
+                        type="number"
+                        placeholder={question.placeholder || ""}
+                        value={formData[question.id] || ""}
+                        onChange={(e) => handleInputChange(question.id, e.target.value)}
+                        required={question.required}
+                      />
+                    )}
+                    {question.type === "date" && (
+                      <Input
+                        id={question.id}
+                        type="date"
+                        placeholder={question.placeholder || ""}
+                        value={formData[question.id] || ""}
+                        onChange={(e) => handleInputChange(question.id, e.target.value)}
+                        required={question.required}
+                      />
+                    )}
                     {question.type === "checkbox" && (
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -463,6 +596,60 @@ export default function TemplatePage({ params }: { params: Promise<{ id: string 
                 ))}
             </CardContent>
           </Card>
+
+          {/* Generated Document Preview */}
+          {generatedContent && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Generated Document</span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSaveDraft}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? (
+                        <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving...</>
+                      ) : (
+                        <><Save className="h-4 w-4 mr-2" />Save to Dashboard</>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const blob = new Blob([generatedContent], { type: "text/plain" })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement("a")
+                        a.href = url
+                        a.download = `${template?.name || "document"}.txt`
+                        document.body.appendChild(a)
+                        a.click()
+                        document.body.removeChild(a)
+                        URL.revokeObjectURL(url)
+                      }}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  Review your generated document below
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-md p-6 bg-white min-h-[400px]">
+                  <div className="prose max-w-none">
+                    <div className="whitespace-pre-wrap font-serif text-sm leading-relaxed">
+                      {generatedContent}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

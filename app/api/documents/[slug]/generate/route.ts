@@ -3,6 +3,7 @@ import { openai } from "@ai-sdk/openai"
 import { prisma } from "@/lib/prisma"
 import { getDocumentBySlug } from "@/lib/document-data"
 import { getDocumentPrompt } from "@/lib/document-prompts"
+import { generateRateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit"
 
 export const maxDuration = 60
 
@@ -35,6 +36,14 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Rate limit: 5 requests per 10 minutes (skip for dry runs)
+  const isDryRunHeader = request.headers.get("x-dry-run") === "1"
+  if (!isDryRunHeader) {
+    const ip = getClientIp(request)
+    const limit = generateRateLimit(ip)
+    if (!limit.success) return rateLimitResponse(limit.resetAt)
+  }
+
   try {
     const { slug } = await params
     const { formData, intent } = await request.json()
@@ -97,7 +106,7 @@ export async function POST(
         return Response.json({ document: documentContent })
       }
 
-      const documentSpecificInstructions = getDocumentPrompt(slug, intent)
+      const documentSpecificInstructions = getDocumentPrompt(slug, intent, formData)
 
       // AI enhancement
       const enhanced = await generateText({
@@ -132,7 +141,7 @@ Output ONLY the enhanced document. No commentary before or after.`,
       })
     }
 
-    const documentSpecificInstructions = getDocumentPrompt(slug, intent)
+    const documentSpecificInstructions = getDocumentPrompt(slug, intent, formData)
 
     const result = await generateText({
       model: openai("gpt-4o-mini"),

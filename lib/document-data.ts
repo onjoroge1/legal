@@ -10,6 +10,7 @@ import {
 export interface DocumentType {
   title: string
   slug: string
+  type: string
   category: "business" | "real-estate" | "employment" | "personal"
   icon: typeof FileText
   description: string
@@ -23,6 +24,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Non-Disclosure Agreement",
     slug: "nda",
+    type: "Non-Disclosure Agreement",
     category: "business",
     icon: FileText,
     description: "Protect confidential information shared between parties.",
@@ -34,6 +36,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "LLC Operating Agreement",
     slug: "llc_operating_agreement",
+    type: "LLC Operating Agreement",
     category: "business",
     icon: Building2,
     description: "Define ownership structure and operating procedures for your LLC.",
@@ -45,6 +48,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Employment Contract",
     slug: "employment_contract",
+    type: "Employment Contract",
     category: "employment",
     icon: Briefcase,
     description: "Comprehensive employment agreements with state-specific provisions.",
@@ -56,6 +60,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Residential Lease Agreement",
     slug: "residential_lease_agreement",
+    type: "Residential Lease Agreement",
     category: "real-estate",
     icon: Home,
     description: "Legally binding lease agreements compliant with local tenant laws.",
@@ -67,6 +72,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Independent Contractor Agreement",
     slug: "independent_contractor_agreement",
+    type: "Independent Contractor Agreement",
     category: "employment",
     icon: Users,
     description: "Define the terms of engagement with freelancers and contractors.",
@@ -78,6 +84,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Partnership Agreement",
     slug: "partnership_agreement",
+    type: "Partnership Agreement",
     category: "business",
     icon: Handshake,
     description: "Establish clear terms for business partnerships and profit sharing.",
@@ -89,6 +96,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Power of Attorney",
     slug: "power_of_attorney",
+    type: "Power of Attorney",
     category: "personal",
     icon: FileText,
     description: "Authorize someone to act on your behalf in legal or financial matters.",
@@ -100,6 +108,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Last Will & Testament",
     slug: "last_will_testament",
+    type: "Last Will & Testament",
     category: "personal",
     icon: FileText,
     description: "Protect your legacy with a state-compliant will document.",
@@ -111,6 +120,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Commercial Lease Agreement",
     slug: "commercial_lease_agreement",
+    type: "Commercial Lease Agreement",
     category: "real-estate",
     icon: Building2,
     description: "Professional commercial property lease with full legal protections.",
@@ -122,6 +132,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Service Agreement",
     slug: "service_agreement",
+    type: "Service Agreement",
     category: "business",
     icon: FileText,
     description: "Define terms for professional services and deliverables.",
@@ -133,6 +144,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Purchase Agreement",
     slug: "purchase_agreement",
+    type: "Purchase Agreement",
     category: "business",
     icon: Handshake,
     description: "Legally binding purchase agreements for goods and services.",
@@ -144,6 +156,7 @@ export const documentTypes: DocumentType[] = [
   {
     title: "Non-Compete Agreement",
     slug: "non_compete_agreement",
+    type: "Non-Compete Agreement",
     category: "employment",
     icon: Briefcase,
     description: "Protect your business with enforceable non-compete clauses.",
