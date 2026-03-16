@@ -50,7 +50,7 @@ export default function PreviewPage() {
         const data = await response.json()
         if (data.subscription?.isActive) {
           setHasSubscription(true)
-          router.push(`/documents/${slug}/download`)
+          router.push(`/dashboard/documents`)
         } else {
           setHasSubscription(false)
         }

@@ -80,7 +80,7 @@ export default function CheckoutPage() {
 
         if (data.subscription?.isActive) {
           // Redirect — subscriber already has access
-          router.push(`/documents/${slug}/download`)
+          router.push(`/dashboard/documents`)
           return
         }
       } catch (error) {
@@ -248,8 +248,19 @@ export default function CheckoutPage() {
       const accountSetupSuccess = await handleAccountSetup()
       if (!accountSetupSuccess) return
 
-      // Wait for session to update and then reload so we can create the checkout session
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Check if the newly signed-in user has a subscription
+      try {
+        const subResponse = await fetch("/api/user/subscription")
+        const subData = await subResponse.json()
+        if (subData.subscription?.isActive) {
+          // Subscriber — skip checkout entirely
+          router.push("/dashboard/documents")
+          return
+        }
+      } catch (err) {
+        console.error("Error checking subscription after sign-in:", err)
+      }
+      // No subscription — reload to show payment form as authenticated user
       window.location.reload()
       return
     }
