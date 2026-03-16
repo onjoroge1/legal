@@ -7,16 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
   Scale,
-  Download,
   FileText,
   Shield,
   CheckCircle2,
   Lock,
-  Printer,
-  Copy,
-  Check,
   Loader2,
-  Sparkles,
   MapPin,
   Calendar,
   ArrowLeft,
@@ -25,6 +20,9 @@ import {
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-data"
 import { useSession } from "next-auth/react"
+import { parseDocumentSections, truncateDocument } from "@/lib/parse-document-sections"
+import type { ParsedDocument } from "@/lib/parse-document-sections"
+import StyledDocumentPreview from "@/components/documents/styled-document-preview"
 
 export default function PreviewPage() {
   const router = useRouter()
@@ -34,9 +32,8 @@ export default function PreviewPage() {
   const { data: session } = useSession()
 
   const [docData, setDocData] = useState<Record<string, string>>({})
-  const [documentText, setDocumentText] = useState("")
+  const [parsedDocument, setParsedDocument] = useState<ParsedDocument | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [copied, setCopied] = useState(false)
   const [generationStep, setGenerationStep] = useState(0)
   const [hasSubscription, setHasSubscription] = useState(false)
 
@@ -44,7 +41,6 @@ export default function PreviewPage() {
   useEffect(() => {
     const checkSubscription = async () => {
       if (!session?.user?.email) {
-        // Non-logged-in users can view preview (will go to checkout)
         setIsLoading(false)
         return
       }
@@ -54,17 +50,12 @@ export default function PreviewPage() {
         const data = await response.json()
         if (data.subscription?.isActive) {
           setHasSubscription(true)
-          // Only premium users get redirected to download
-          // Free users stay on preview to go through checkout
           router.push(`/documents/${slug}/download`)
         } else {
-          // Free users (logged in but no subscription) stay on preview
-          // They'll go through checkout like non-logged-in users
           setHasSubscription(false)
         }
       } catch (error) {
         console.error("Error checking subscription:", error)
-        // On error, allow preview (free user flow)
         setHasSubscription(false)
       } finally {
         setIsLoading(false)
@@ -86,7 +77,6 @@ export default function PreviewPage() {
     setIsLoading(true)
     setGenerationStep(0)
 
-    // Animate through steps
     const stepInterval = setInterval(() => {
       setGenerationStep((prev) => {
         if (prev < 4) return prev + 1
@@ -101,23 +91,33 @@ export default function PreviewPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: data, intent }),
       })
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: "Failed to generate document" }))
         throw new Error(errorData.error || "Failed to generate document")
       }
-      
+
       const result = await res.json()
       if (result.document) {
-        setDocumentText(result.document)
-        // Store document content for checkout
+        // Store FULL content in sessionStorage for checkout/download flow
         sessionStorage.setItem("document-content", result.document)
+
+        // Parse and TRUNCATE for display — never put full text in the DOM
+        const parsed = parseDocumentSections(result.document)
+        const truncated = truncateDocument(parsed, 3)
+        setParsedDocument(truncated)
       } else {
         throw new Error("No document content returned")
       }
     } catch (error) {
       console.error("Document generation error:", error)
-      setDocumentText(error instanceof Error ? `Error: ${error.message}` : "Error generating document. Please try again.")
+      // On error, create a minimal parsed doc with the error message
+      setParsedDocument({
+        title: "Error",
+        preamble: error instanceof Error ? error.message : "Error generating document. Please try again.",
+        sections: [],
+        signatureBlock: null,
+      })
     } finally {
       clearInterval(stepInterval)
       setGenerationStep(4)
@@ -129,7 +129,7 @@ export default function PreviewPage() {
     const loadDocumentData = async () => {
       const stored = sessionStorage.getItem("document-data")
       const storedSlug = sessionStorage.getItem("document-slug")
-      
+
       if (stored && storedSlug === slug) {
         const data = JSON.parse(stored)
         setDocData(data)
@@ -185,18 +185,11 @@ export default function PreviewPage() {
         }
       }
 
-      // Redirect to generate if no data
       router.push(`/documents/${slug}/generate`)
     }
 
     loadDocumentData()
   }, [slug, router, session, generateDocument])
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(documentText)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   const handleProceedToCheckout = () => {
     router.push(`/documents/${slug}/checkout`)
@@ -214,6 +207,12 @@ export default function PreviewPage() {
       </div>
     )
   }
+
+  const effectiveDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
 
   return (
     <div className="min-h-screen">
@@ -297,7 +296,7 @@ export default function PreviewPage() {
         </div>
       )}
 
-      {/* Document preview with watermark */}
+      {/* Document preview */}
       {!isLoading && (
         <main className="py-8 lg:py-12">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -312,14 +311,7 @@ export default function PreviewPage() {
             <div className="mt-6 flex flex-col gap-8 lg:flex-row">
               {/* Document */}
               <div className="flex-1">
-                <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/80 shadow-xl shadow-primary/5">
-                  {/* Watermark overlay */}
-                  <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-                    <div className="rotate-[-45deg] text-6xl font-bold text-amber-500/20 select-none">
-                      PREVIEW
-                    </div>
-                  </div>
-
+                <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/80 shadow-xl shadow-primary/5">
                   {/* Document toolbar */}
                   <div className="flex items-center justify-between border-b border-border/40 bg-secondary/40 px-5 py-3">
                     <div className="flex items-center gap-3">
@@ -347,17 +339,19 @@ export default function PreviewPage() {
                     </div>
                   </div>
 
-                  {/* Document content */}
-                  <div className="relative p-8 lg:p-12 bg-white">
-                    {documentText ? (
-                      <div className="prose prose-lg max-w-none">
-                        <div className="whitespace-pre-wrap font-serif text-sm leading-relaxed text-gray-900">
-                          {documentText}
-                        </div>
-                      </div>
+                  {/* Styled document content — truncated + watermarked + uncopyable */}
+                  <div className="relative bg-white">
+                    {parsedDocument ? (
+                      <StyledDocumentPreview
+                        parsedDocument={parsedDocument}
+                        documentTitle={document.title}
+                        state={docData.STATE || docData.state || docData.governingState || "California"}
+                        effectiveDate={effectiveDate}
+                        maxSections={3}
+                      />
                     ) : (
-                      <div className="text-center py-12">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                      <div className="py-12 text-center">
+                        <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-muted-foreground" />
                         <p className="text-sm text-muted-foreground">Generating document...</p>
                       </div>
                     )}
@@ -379,17 +373,20 @@ export default function PreviewPage() {
                 </div>
 
                 {/* CTA to checkout */}
-                <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
-                  <h3 className="font-serif text-xl font-bold text-foreground">
-                    Ready to Download Your Document?
+                <div className="relative -mt-4 z-30 rounded-2xl border-2 border-primary/30 bg-card p-8 text-center shadow-2xl shadow-primary/10">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
+                    <Lock className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="mt-4 font-serif text-xl font-bold text-foreground md:text-2xl">
+                    See Your Full Document
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Purchase to remove the watermark and get full access to your {document.title}
+                    Purchase to unlock all sections, remove watermarks, and download in PDF &amp; DOCX
                   </p>
                   <Button
                     onClick={handleProceedToCheckout}
                     size="lg"
-                    className="mt-4 gap-2 shadow-lg shadow-primary/20"
+                    className="mt-6 gap-2 px-8 shadow-lg shadow-primary/20"
                   >
                     Proceed to Checkout
                     <ArrowRight className="h-4 w-4" />
@@ -409,8 +406,8 @@ export default function PreviewPage() {
                     <div className="mt-5 space-y-3">
                       {[
                         { label: "Document Type", value: document.title, icon: FileText },
-                        { label: "Jurisdiction", value: docData.STATE || docData.state || "California", icon: MapPin },
-                        { label: "Generated", value: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), icon: Calendar },
+                        { label: "Jurisdiction", value: docData.STATE || docData.state || docData.governingState || "California", icon: MapPin },
+                        { label: "Generated", value: effectiveDate, icon: Calendar },
                       ].map((item) => (
                         <div key={item.label} className="rounded-lg border border-border/40 bg-secondary/30 p-3">
                           <div className="flex items-center gap-2">
@@ -430,8 +427,8 @@ export default function PreviewPage() {
                       Preview Mode
                     </h3>
                     <p className="mt-2 text-xs leading-relaxed text-amber-600/80">
-                      This is a watermarked preview. Complete your purchase to download the full document
-                      without watermarks in PDF and DOCX formats.
+                      This is a watermarked preview showing a portion of your document.
+                      Complete your purchase to download the full document without watermarks in PDF and DOCX formats.
                     </p>
                   </div>
 
