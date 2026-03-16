@@ -17,13 +17,10 @@ interface User {
 interface DashboardData {
   totalDocuments: number
   documentsCreated: number
-  storage: {
-    used: number
-    total: number
-  }
   subscription: {
     type: string
     status: string
+    endDate: string | null
   }
   recentDocuments: Array<{
     id: string
@@ -122,8 +119,7 @@ export default function DashboardPage() {
         <DashboardStats
           totalDocuments={data?.totalDocuments || 0}
           recentDocuments={data?.documentsCreated || 0}
-          storageUsed={data?.storage.used || 0}
-          subscription={data?.subscription || { type: "free", status: "inactive" }}
+          subscription={data?.subscription || { type: "free", status: "inactive", endDate: null }}
         />
         <div className="mt-6">
           <RecentDocuments documents={data?.recentDocuments || []} />

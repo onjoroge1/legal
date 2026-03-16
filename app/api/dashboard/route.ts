@@ -56,20 +56,26 @@ export async function GET(request: Request) {
           )
         }
 
-        // Calculate storage (placeholder - implement based on your needs)
-        const storageUsed = 0 // Calculate from documents
-        const storageLimit = user.subscriptionTier === "free" ? 100 : 1000 // MB
+        // Calculate documents created this month
+        const now = new Date()
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        const allDocs = [...user.documents, ...user.userDocuments]
+        const docsThisMonth = allDocs.filter(
+          (doc: any) => new Date(doc.createdAt) >= startOfMonth
+        ).length
+
+        // Check if subscription is actually active (status + not expired)
+        const isSubActive =
+          user.subscriptionStatus === "active" &&
+          (!user.subscriptionEndDate || new Date(user.subscriptionEndDate) > now)
 
         return NextResponse.json({
-          totalDocuments: user.documents.length + user.userDocuments.length,
-          documentsCreated: user.userDocuments.length,
-          storage: {
-            used: storageUsed,
-            total: storageLimit,
-          },
+          totalDocuments: allDocs.length,
+          documentsCreated: docsThisMonth,
           subscription: {
             type: user.subscriptionTier || "free",
-            status: user.subscriptionStatus || "inactive",
+            status: isSubActive ? "active" : (user.subscriptionStatus === "active" ? "expired" : (user.subscriptionStatus || "inactive")),
+            endDate: user.subscriptionEndDate || null,
           },
           recentDocuments: [
             ...user.documents.map((doc: any) => ({
@@ -102,13 +108,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       totalDocuments: 0,
       documentsCreated: 0,
-      storage: {
-        used: 0,
-        total: 100,
-      },
       subscription: {
         type: "free",
         status: "inactive",
+        endDate: null,
       },
       recentDocuments: [],
     })

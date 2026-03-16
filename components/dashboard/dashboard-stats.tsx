@@ -2,25 +2,49 @@
 
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Plus, HardDrive, Crown } from "lucide-react"
+import { FileText, Plus, Crown, CalendarClock, AlertTriangle } from "lucide-react"
 
 interface DashboardStatsProps {
   totalDocuments: number
   recentDocuments: number
-  storageUsed: number
   subscription: {
     type: string
     status: string
+    endDate: string | null
   }
 }
 
 export default function DashboardStats({
   totalDocuments,
   recentDocuments,
-  storageUsed,
   subscription,
 }: DashboardStatsProps) {
-  const storagePercentage = (storageUsed / 100) * 100 // Assuming 100GB total for now
+  const isActive = subscription.status === "active"
+  const isExpired = subscription.status === "expired"
+  const hasSub = subscription.type !== "free"
+
+  // Format renewal/expiry date
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return null
+    const date = new Date(dateStr)
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+  }
+
+  const endDateFormatted = formatDate(subscription.endDate)
+
+  // Determine subscription display
+  const getSubLabel = () => {
+    if (isActive && hasSub) return "Active subscription"
+    if (isExpired) return `Expired ${endDateFormatted || ""}`
+    if (hasSub && !isActive) return "Inactive"
+    return "No active subscription"
+  }
+
+  const getSubColor = () => {
+    if (isActive && hasSub) return "text-accent"
+    if (isExpired) return "text-amber-500"
+    return "text-muted-foreground"
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -39,37 +63,57 @@ export default function DashboardStats({
         </Card>
       </Link>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-          <HardDrive className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{storageUsed}%</div>
-          <p className="text-xs text-muted-foreground">
-            {storagePercentage.toFixed(1)} GB of 100 GB used
-          </p>
-        </CardContent>
-      </Card>
-
       <Link href="/dashboard/billing">
         <Card className="cursor-pointer transition-colors hover:bg-muted/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Subscription</CardTitle>
-            <Crown className={`h-4 w-4 ${subscription.status === "active" ? "text-accent" : "text-muted-foreground"}`} />
+            {isExpired ? (
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+            ) : (
+              <Crown className={`h-4 w-4 ${isActive && hasSub ? "text-accent" : "text-muted-foreground"}`} />
+            )}
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold capitalize ${subscription.status === "active" ? "text-accent" : ""}`}>
+            <div className={`text-2xl font-bold capitalize ${getSubColor()}`}>
               {subscription.type === "free" ? "Free" : subscription.type}
             </div>
-            <p className={`text-xs ${subscription.status === "active" ? "text-accent" : "text-muted-foreground"}`}>
-              {subscription.status === "active" ? "Active subscription" : "No active subscription"}
+            <p className={`text-xs ${getSubColor()}`}>
+              {getSubLabel()}
             </p>
           </CardContent>
         </Card>
       </Link>
 
-      <Link href="/dashboard/create">
+      <Link href="/dashboard/billing">
+        <Card className="cursor-pointer transition-colors hover:bg-muted/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {isActive && hasSub ? "Renewal Date" : "Plan"}
+            </CardTitle>
+            <CalendarClock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {isActive && hasSub && endDateFormatted ? (
+              <>
+                <div className="text-2xl font-bold text-foreground">{endDateFormatted}</div>
+                <p className="text-xs text-muted-foreground">Next billing date</p>
+              </>
+            ) : isExpired && endDateFormatted ? (
+              <>
+                <div className="text-2xl font-bold text-amber-500">{endDateFormatted}</div>
+                <p className="text-xs text-amber-500">Subscription expired</p>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-primary">Upgrade</div>
+                <p className="text-xs text-muted-foreground">Get unlimited documents</p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </Link>
+
+      <Link href="/documents">
         <Card className="cursor-pointer transition-colors hover:border-primary hover:bg-primary/5">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Quick Actions</CardTitle>
@@ -78,7 +122,7 @@ export default function DashboardStats({
           <CardContent>
             <div className="text-2xl font-bold text-primary">Create</div>
             <p className="text-xs text-muted-foreground">
-              New document or template
+              New document
             </p>
           </CardContent>
         </Card>
