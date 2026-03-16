@@ -128,7 +128,13 @@ Tasks:
 6. Maintain the structure and key content from the template
 7. Follow these document-specific instructions: ${documentSpecificInstructions}
 
-Output ONLY the enhanced document. No commentary before or after.`,
+FORMATTING RULES:
+- Output ONLY the document text as PLAIN TEXT. No markdown formatting whatsoever.
+- Do NOT use markdown syntax: no **, no ##, no \`\`\`, no ---, no bullet markers.
+- Use numbered sections like "1. DEFINITIONS" not "**1. Definitions**" or "### 1. Definitions".
+- Use ALL CAPS for section headings (e.g., "1. DEFINITIONS", "2. OBLIGATIONS").
+- Do NOT wrap output in code blocks or markdown fences.
+- No commentary before or after the document.`,
       })
 
       return Response.json({ document: enhanced.text })
@@ -161,7 +167,13 @@ REQUIREMENTS:
 - Use the current date: ${currentDate}
 - Follow these document-specific instructions: ${documentSpecificInstructions}
 
-Output ONLY the document text. No commentary before or after.`,
+FORMATTING RULES:
+- Output ONLY the document text as PLAIN TEXT. No markdown formatting whatsoever.
+- Do NOT use markdown syntax: no **, no ##, no \`\`\`, no ---, no bullet markers.
+- Use numbered sections like "1. DEFINITIONS" not "**1. Definitions**" or "### 1. Definitions".
+- Use ALL CAPS for section headings (e.g., "1. DEFINITIONS", "2. OBLIGATIONS").
+- Do NOT wrap output in code blocks or markdown fences.
+- No commentary before or after the document.`,
     })
 
     return Response.json({ document: result.text })
