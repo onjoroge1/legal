@@ -129,23 +129,15 @@ Output ONLY the document text. No commentary before or after.`,
       },
     })
 
-    // If subscription, update user's subscription
+    // If subscription, update user's subscription fields on the User model
     if (paymentType === "subscription") {
-      // Update or create subscription
-      await prisma.subscription.upsert({
-        where: { userId: user.id },
-        update: {
-          tier: "professional",
-          isActive: true,
-          currentPeriodStart: new Date(),
-          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-        },
-        create: {
-          userId: user.id,
-          tier: "professional",
-          isActive: true,
-          currentPeriodStart: new Date(),
-          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          subscriptionTier: "professional",
+          subscriptionStatus: "active",
+          subscriptionStartDate: new Date(),
+          subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
         },
       })
     }

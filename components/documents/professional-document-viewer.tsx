@@ -56,20 +56,22 @@ export default function ProfessionalDocumentViewer({
       // Document title (usually all caps, centered, at the top)
       if (
         !hasTitle &&
-        (trimmed.match(/^[A-Z\s]{10,}$/) ||
+        (trimmed.match(/^[A-Z\s&]{10,}$/) ||
           trimmed.includes('AGREEMENT') ||
           trimmed.includes('CONTRACT') ||
+          trimmed.includes('TESTAMENT') ||
           trimmed.includes('NDA') ||
           trimmed.includes('NON-DISCLOSURE'))
       ) {
         flushParagraph()
         hasTitle = true
+        // Skip rendering if title prop already covers this (avoid duplicate header)
+        if (title) return
         elements.push(
           <div key={`title-${index}`} className="mb-8 mt-4">
             <h1 className="text-2xl font-bold text-center mb-2 tracking-wide uppercase text-gray-900 font-serif">
               {trimmed}
             </h1>
-            {/* Document header with state and date */}
             {(metadata?.formData?.STATE || metadata?.formData?.state) && (
               <div className="text-center text-xs text-gray-600 mt-4 mb-6 font-serif">
                 <p className="uppercase tracking-wide">
@@ -80,6 +82,11 @@ export default function ProfessionalDocumentViewer({
             )}
           </div>
         )
+        return
+      }
+
+      // Skip duplicate state/date line if the outer header already shows it
+      if (title && /^STATE\s+OF\s+/i.test(trimmed) && /EFFECTIVE\s+DATE/i.test(trimmed)) {
         return
       }
 
