@@ -45,13 +45,11 @@ model User {
   twoFactorEnabled        Boolean                @default(false)
   twoFactorSecret         String?
   lastPasswordChange      DateTime?
+  jwtVersion              Int                    @default(0)
   activeSessions          String?
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
   accounts                Account[]
-  documents               Document[]
-  collaboratedDocs        DocumentCollaborator[]
-  signatures              DocumentSignature[]
   sessions                Session[]
   userDocuments           UserDocument[]
   blogPosts               BlogPost[]
@@ -95,41 +93,16 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Document {
-  id            String                 @id @default(cuid())
-  title         String
-  type          String
-  description   String?
-  status        String
-  content       String
-  state         String?
-  metadata      Json?
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-  userId        String
-  templateId    String?
-  deletedAt     DateTime?
-  category      String?
-  jurisdiction  String?
-  user          User                   @relation(fields: [userId], references: [id])
-  template      DocumentTemplate?      @relation(fields: [templateId], references: [id])
-  collaborators DocumentCollaborator[]
-  parties       DocumentParty[]
-  signatures    DocumentSignature[]
-}
-
 model DocumentParty {
   id             String        @id @default(cuid())
   name           String
   type           String
   address        String?
   email          String?
-  documentId     String?
   userDocumentId String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   userDocument   UserDocument? @relation(fields: [userDocumentId], references: [id])
-  document       Document?     @relation(fields: [documentId], references: [id])
 }
 
 model Questionnaire {
@@ -205,7 +178,6 @@ model DocumentTemplate {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   deletedAt      DateTime?
-  documents      Document[]
   category       Category        @relation(fields: [categoryId], references: [id])
   questionnaires Questionnaire[]
   fields         TemplateField[]
@@ -247,30 +219,6 @@ model FieldDependency {
   conditionValue   String
   createdAt        DateTime      @default(now())
   field            TemplateField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
-}
-
-model DocumentCollaborator {
-  id         String   @id @default(cuid())
-  documentId String
-  userId     String
-  role       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  metadata   Json?
-  document   Document @relation(fields: [documentId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-}
-
-model DocumentSignature {
-  id         String   @id @default(cuid())
-  documentId String
-  userId     String
-  signature  String
-  signedAt   DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
-  document   Document @relation(fields: [documentId], references: [id])
-
-  @@unique([documentId, userId])
 }
 
 model Category {

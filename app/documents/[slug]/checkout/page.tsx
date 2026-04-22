@@ -42,9 +42,6 @@ export default function CheckoutPage() {
     name: "",
     password: "",
     confirmPassword: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
   })
   const [emailExists, setEmailExists] = useState<boolean | null>(null)
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
@@ -225,96 +222,57 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // If user is not logged in, set up account first
+
+    // Step 1: Ensure the user has an account and is signed in
     if (!session?.user?.email) {
-      // Validate required fields
       if (!form.email || !form.name) {
         setAccountError("Email and name are required")
         return
       }
-
       if (emailExists === null) {
         setAccountError("Please wait while we check your email...")
         return
       }
-
       const accountSetupSuccess = await handleAccountSetup()
-      if (!accountSetupSuccess) {
-        return // Stop if account setup failed
-      }
-      
-      // Wait for session to update and refresh
+      if (!accountSetupSuccess) return
+      // Reload so the session cookie is picked up before we call the API
       await new Promise(resolve => setTimeout(resolve, 1000))
-      window.location.reload() // Full reload to ensure session is updated
+      window.location.reload()
       return
     }
 
-    // If logged in but email doesn't match, use session email
-    const emailToUse = session.user.email || form.email
-    const nameToUse = session.user.name || form.name
-
     setIsProcessing(true)
-    
-    try {
-      // Get document data from sessionStorage
-      const documentData = sessionStorage.getItem("document-data")
-      const documentIntent = sessionStorage.getItem("document-intent")
-      const formData = documentData ? JSON.parse(documentData) : {}
-      const intent = documentIntent || null
 
-      // Get document content if available (from preview)
+    try {
+      // Gather document data from sessionStorage
+      const formData = (() => {
+        try { return JSON.parse(sessionStorage.getItem("document-data") || "{}") } catch { return {} }
+      })()
+      const intent = sessionStorage.getItem("document-intent") || null
       const documentContent = sessionStorage.getItem("document-content") || null
 
-      // Complete checkout - save document (user is already signed in)
-      const response = await fetch("/api/checkout/complete", {
+      // Create a Stripe Checkout Session (saves doc as pending, returns Stripe URL)
+      const response = await fetch("/api/payment/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailToUse,
-          name: nameToUse,
-          slug,
-          paymentType,
-          formData,
-          intent,
-          documentContent,
-        }),
+        body: JSON.stringify({ paymentType, slug, formData, documentContent, intent }),
       })
 
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to complete checkout")
+        throw new Error(result.error || "Failed to create checkout session")
       }
 
-      // User is already signed in, redirect to dashboard
-      router.refresh() // Refresh to get updated session
-      if (paymentType === "subscription") {
-        router.push("/dashboard")
-      } else {
-        router.push("/dashboard/documents")
-      }
+      // Redirect to Stripe-hosted checkout
+      window.location.href = result.url
     } catch (error) {
       console.error("Checkout error:", error)
-      const errorMessage = error instanceof Error ? error.message : "Failed to complete checkout"
+      const errorMessage = error instanceof Error ? error.message : "Failed to start checkout"
       setAccountError(errorMessage)
       toast.error(errorMessage)
-    } finally {
       setIsProcessing(false)
     }
-  }
-
-  const formatCardNumber = (value: string) => {
-    const cleaned = value.replace(/\D/g, "").slice(0, 16)
-    return cleaned.replace(/(\d{4})(?=\d)/g, "$1 ")
-  }
-
-  const formatExpiry = (value: string) => {
-    const cleaned = value.replace(/\D/g, "").slice(0, 4)
-    if (cleaned.length > 2) {
-      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`
-    }
-    return cleaned
   }
 
   if (!document) {
@@ -543,67 +501,23 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Payment info */}
+                {/* Payment info — handled by Stripe */}
                 <div className="rounded-xl border border-border/50 bg-card/60 p-6">
                   <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-foreground">
                     <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/15 text-xs font-bold text-accent">
                       2
                     </span>
-                    Payment Details
+                    Secure Payment
                   </h2>
-                  <div className="mt-5 space-y-4">
+                  <div className="mt-5 flex items-start gap-3 rounded-lg border border-border/40 bg-secondary/20 p-4">
+                    <Shield className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
                     <div>
-                      <label htmlFor="card" className="mb-1.5 block text-sm text-muted-foreground">
-                        Card Number
-                      </label>
-                      <div className="relative">
-                        <Input
-                          id="card"
-                          placeholder="4242 4242 4242 4242"
-                          value={form.cardNumber}
-                          onChange={(e) =>
-                            setForm({ ...form, cardNumber: formatCardNumber(e.target.value) })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 pl-10 focus-visible:ring-primary"
-                        />
-                        <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                      </div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <label htmlFor="expiry" className="mb-1.5 block text-sm text-muted-foreground">
-                          Expiry Date
-                        </label>
-                        <Input
-                          id="expiry"
-                          placeholder="MM/YY"
-                          value={form.expiry}
-                          onChange={(e) =>
-                            setForm({ ...form, expiry: formatExpiry(e.target.value) })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label htmlFor="cvc" className="mb-1.5 block text-sm text-muted-foreground">
-                          CVC
-                        </label>
-                        <Input
-                          id="cvc"
-                          placeholder="123"
-                          value={form.cvc}
-                          onChange={(e) =>
-                            setForm({
-                              ...form,
-                              cvc: e.target.value.replace(/\D/g, "").slice(0, 4),
-                            })
-                          }
-                          required
-                          className="border-border/60 bg-secondary/30 focus-visible:ring-primary"
-                        />
-                      </div>
+                      <p className="text-sm font-medium text-foreground">
+                        You&apos;ll be taken to Stripe&apos;s secure checkout
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Your card details are entered on Stripe&apos;s PCI-compliant page. We never see your card number.
+                      </p>
                     </div>
                   </div>
                 </div>

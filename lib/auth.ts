@@ -123,8 +123,32 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email
         token.name = user.name
         token.picture = (user as any).image || token.picture
+        // Embed current jwt version so we can invalidate tokens on session revoke
+        if (prisma) {
+          try {
+            const dbUser = await prisma.user.findUnique({
+              where: { id: user.id },
+              select: { jwtVersion: true },
+            })
+            token.jwtVersion = dbUser?.jwtVersion ?? 0
+          } catch {}
+        }
       }
-      
+
+      // On every request, verify the token version hasn't been revoked
+      if (!user && prisma && token.id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { jwtVersion: true },
+          })
+          if (dbUser && dbUser.jwtVersion !== token.jwtVersion) {
+            // Version mismatch — session was revoked; return null to force sign-out
+            return null as any
+          }
+        } catch {}
+      }
+
       // Refresh user data from database on session update (e.g., after profile update)
       if (trigger === "update" && prisma && token.email) {
         try {
@@ -132,9 +156,8 @@ export const authOptions: NextAuthOptions = {
             where: { email: token.email as string },
             select: { name: true, firstName: true, lastName: true, image: true }
           })
-          
+
           if (dbUser) {
-            // Use name if available, otherwise combine firstName and lastName
             token.name = dbUser.name || [dbUser.firstName, dbUser.lastName].filter(Boolean).join(" ").trim() || token.name
             token.picture = dbUser.image || token.picture
           }
@@ -142,7 +165,7 @@ export const authOptions: NextAuthOptions = {
           console.error("Error refreshing user data in JWT:", error)
         }
       }
-      
+
       return token
     },
     async session({ session, token }) {

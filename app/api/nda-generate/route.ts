@@ -51,7 +51,7 @@ REQUIREMENTS:
   - Signature Block
 - Reference actual ${state} statutes where applicable
 - Make it professionally formatted and ready to sign
-- Use the current date: February 8, 2026
+- Use the current date: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
 
 Output ONLY the NDA document text. No commentary before or after.`,
   })

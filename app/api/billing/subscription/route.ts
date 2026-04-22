@@ -1,46 +1,20 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-
-// Try to import Prisma
-let prisma: any
-
-try {
-  const prismaModule = require("@/lib/prisma")
-  prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
-}
+import { prisma } from "@/lib/prisma"
+import { stripe } from "@/lib/stripe"
 
 /**
- * Get billing data (subscription, billing history, payment methods)
  * GET /api/billing/subscription
+ * Returns real subscription data, payment methods, and invoice history from Stripe.
  */
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions)
-
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!prisma) {
-      return NextResponse.json({
-        subscription: {
-          tier: "free",
-          status: "active",
-          startDate: null,
-          endDate: null,
-        },
-        billingHistory: [],
-        paymentMethods: [],
-      })
-    }
-
-    // Get user subscription
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: {
@@ -48,63 +22,56 @@ export async function GET(request: Request) {
         subscriptionStatus: true,
         subscriptionStartDate: true,
         subscriptionEndDate: true,
+        stripeCustomerId: true,
+        stripeSubscriptionId: true,
       },
     })
 
     const subscription = {
       tier: user?.subscriptionTier || "free",
-      status: user?.subscriptionStatus || "active",
+      status: user?.subscriptionStatus || "inactive",
       startDate: user?.subscriptionStartDate?.toISOString() || null,
       endDate: user?.subscriptionEndDate?.toISOString() || null,
+      isActive: user?.subscriptionStatus === "active",
     }
 
-    // Get billing history (mock for now - in production, this would come from Stripe or a transactions table)
-    const billingHistory: any[] = []
-    
-    // If user has an active subscription, add subscription payments
-    if (subscription.status === "active" && subscription.tier !== "free" && subscription.startDate) {
-      const startDate = new Date(subscription.startDate)
-      const now = new Date()
-      const monthsSinceStart = Math.floor(
-        (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
-      )
+    // Fetch real Stripe data if the user has a customer record
+    let billingHistory: object[] = []
+    let paymentMethods: object[] = []
 
-      for (let i = 0; i <= monthsSinceStart && i < 12; i++) {
-        const paymentDate = new Date(startDate)
-        paymentDate.setMonth(paymentDate.getMonth() + i)
-        
-        if (paymentDate <= now) {
-          billingHistory.push({
-            id: `sub-${i}`,
-            amount: subscription.tier === "professional" ? 49 : subscription.tier === "starter" ? 9 : 0,
-            status: "paid",
-            date: paymentDate.toISOString(),
-            description: `${subscription.tier.charAt(0).toUpperCase() + subscription.tier.slice(1)} Subscription - ${paymentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}`,
-          })
-        }
-      }
+    if (user?.stripeCustomerId) {
+      const [invoices, stripePaymentMethods] = await Promise.all([
+        stripe.invoices.list({ customer: user.stripeCustomerId, limit: 24 }),
+        stripe.paymentMethods.list({ customer: user.stripeCustomerId, type: "card" }),
+      ])
+
+      billingHistory = invoices.data.map((inv) => ({
+        id: inv.id,
+        amount: (inv.amount_paid || 0) / 100,
+        status: inv.status,
+        date: new Date((inv.created || 0) * 1000).toISOString(),
+        description: inv.lines?.data?.[0]?.description || "Invoice",
+        invoiceUrl: inv.hosted_invoice_url || null,
+        pdfUrl: inv.invoice_pdf || null,
+      }))
+
+      // Determine default payment method
+      const customer = await stripe.customers.retrieve(user.stripeCustomerId) as any
+      const defaultPmId = customer.invoice_settings?.default_payment_method
+
+      paymentMethods = stripePaymentMethods.data.map((pm) => ({
+        id: pm.id,
+        brand: pm.card?.brand || "card",
+        last4: pm.card?.last4 || "****",
+        expMonth: pm.card?.exp_month,
+        expYear: pm.card?.exp_year,
+        isDefault: pm.id === defaultPmId,
+      }))
     }
 
-    // Sort by date descending
-    billingHistory.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    // Get payment methods (mock for now - in production, this would come from Stripe)
-    const paymentMethods: any[] = []
-
-    return NextResponse.json({
-      subscription,
-      billingHistory,
-      paymentMethods,
-    })
+    return NextResponse.json({ subscription, billingHistory, paymentMethods })
   } catch (error) {
     console.error("Billing API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
-
-
-
-

@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { headers } from "next/headers"
-
-// Try to import Prisma
-let prisma: any
-
-try {
-  const prismaModule = require("@/lib/prisma")
-  prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
-}
+import { prisma } from "@/lib/prisma"
 
 /**
  * Get active sessions
@@ -28,95 +18,66 @@ export async function GET(request: Request) {
       )
     }
 
-    if (!prisma) {
-      return NextResponse.json(
-        { error: "Database not configured" },
-        { status: 503 }
-      )
-    }
-
-    // Get user's active sessions
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: { activeSessions: true },
     })
 
-    const activeSessions = typeof user?.activeSessions === 'string'
-      ? JSON.parse(user.activeSessions || '[]')
+    const activeSessions = typeof user?.activeSessions === "string"
+      ? JSON.parse(user.activeSessions || "[]")
       : user?.activeSessions || []
 
     return NextResponse.json({ sessions: activeSessions })
   } catch (error) {
     console.error("Get sessions error:", error)
-    return NextResponse.json(
-      { error: "Failed to get sessions" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to get sessions" }, { status: 500 })
   }
 }
 
 /**
- * Revoke a session
  * DELETE /api/settings/sessions
+ * Removes sessions from the tracking list and increments jwtVersion so all
+ * previously-issued JWTs for this user fail the version check and are rejected.
  */
 export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!prisma) {
-      return NextResponse.json(
-        { error: "Database not configured" },
-        { status: 503 }
-      )
-    }
+    const { sessionId, revokeAll } = await request.json()
 
-    const body = await request.json()
-    const { sessionId, revokeAll } = body
-
-    // Get user's active sessions
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { activeSessions: true },
+      select: { activeSessions: true, jwtVersion: true },
     })
 
-    let activeSessions = typeof user?.activeSessions === 'string'
-      ? JSON.parse(user.activeSessions || '[]')
+    let activeSessions = typeof user?.activeSessions === "string"
+      ? JSON.parse(user.activeSessions || "[]")
       : user?.activeSessions || []
 
     if (revokeAll) {
-      // Keep only current session
-      const currentSessionId = session.user.id // Use user ID as session identifier
-      activeSessions = activeSessions.filter((s: any) => s.id === currentSessionId)
+      activeSessions = []
     } else if (sessionId) {
-      // Remove specific session
       activeSessions = activeSessions.filter((s: any) => s.id !== sessionId)
     }
 
-    // Update user's active sessions
+    // Increment jwtVersion — any JWT carrying the old version will be rejected
     await prisma.user.update({
       where: { email: session.user.email },
-      data: { activeSessions: JSON.stringify(activeSessions) },
+      data: {
+        activeSessions: JSON.stringify(activeSessions),
+        jwtVersion: { increment: 1 },
+      },
     })
 
-    // Note: In a production system, you'd also invalidate the actual NextAuth session tokens
-    // This requires additional session management logic
-
     return NextResponse.json({
-      message: revokeAll ? "All other sessions revoked" : "Session revoked",
+      message: revokeAll ? "All sessions revoked" : "Session revoked",
     })
   } catch (error) {
     console.error("Revoke session error:", error)
-    return NextResponse.json(
-      { error: "Failed to revoke session" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to revoke session" }, { status: 500 })
   }
 }
 
