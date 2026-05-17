@@ -17,13 +17,14 @@ import {
   Download,
   Crown,
 } from "lucide-react"
-import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getDocumentPath } from "@/lib/document-catalog"
+import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getRelatedDocuments, getDocumentPath } from "@/lib/document-catalog"
 import { getCategoryMeta } from "@/lib/categories"
 import { getSubscriptionFromSession } from "@/lib/subscription"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Breadcrumb } from "@/components/seo/breadcrumb"
 import { LegalDisclaimer } from "@/components/seo/legal-disclaimer"
+import { SponsoredLegalServicesBlock } from "@/components/seo/sponsored-legal-services"
 import type { Metadata } from "next"
 
 import { getDocumentContent } from "@/lib/document-content"
@@ -123,13 +124,45 @@ export default async function DocumentDetailPage({ params }: PageProps) {
       }
     : null
 
-  const relatedDocs = getDocumentsByCategory(doc.category).filter((d) => d.slug !== slug).slice(0, 3)
+  const canonicalUrl = `https://legallawdocs.com/documents/${category}/${slug}`
+
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: `${doc.title} Generator`,
+    url: canonicalUrl,
+    applicationCategory: "LegalApplication",
+    operatingSystem: "Any",
+    offers: {
+      "@type": "Offer",
+      price: `${doc.price}.99`,
+      priceCurrency: "USD",
+    },
+    description: doc.longDescription,
+    provider: {
+      "@type": "Organization",
+      name: "LegalLawDocs.com",
+      url: "https://legallawdocs.com",
+    },
+  }
+
+  // Prefer cross-category related docs from catalog field; fall back to same-category
+  const relatedDocs = doc.relatedDocuments.length > 0
+    ? getRelatedDocuments(doc.relatedDocuments).slice(0, 3)
+    : getDocumentsByCategory(doc.category).filter((d) => d.slug !== slug).slice(0, 3)
 
   return (
     <div className="min-h-screen">
       <Header />
 
       <main>
+        {/* WebApplication schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+        />
+
+        {/* FAQPage schema */}
         {faqSchema && (
           <script
             type="application/ld+json"
@@ -519,6 +552,15 @@ export default async function DocumentDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Sponsored Legal Services */}
+        {doc.lawyerListingEnabled && (
+          <SponsoredLegalServicesBlock
+            documentTitle={doc.title}
+            practiceAreas={doc.practiceAreas}
+            monetizationTier={doc.monetizationTier}
+          />
+        )}
+
         {/* Related Documents */}
         {relatedDocs.length > 0 && (
           <section className="border-t border-border/40 py-16 lg:py-24">
@@ -529,7 +571,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   You Might Also <span className="gradient-text">Be Interested In</span>
                 </h2>
                 <p className="mt-4 text-muted-foreground">
-                  More {categoryMeta?.label || category} documents that might suit your needs.
+                  Related documents that work well alongside your {doc.title}.
                 </p>
               </div>
               <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

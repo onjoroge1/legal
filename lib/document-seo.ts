@@ -215,6 +215,274 @@ const seoBySlug: Record<string, DocumentSeo> = {
       "non compete generator",
     ],
   },
+
+  // ── Legal Letters ──────────────────────────────────────────────────────────
+  "demand-letter": {
+    title: "Demand Letter Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a professional demand letter online in minutes. Formally demand payment or action before filing a lawsuit. State-compliant with instant PDF download.",
+    ogTitle: "Demand Letter Generator",
+    ogDescription: "Draft a professional demand letter and establish your paper trail before litigation.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Demand Letter",
+    keywords: [
+      "demand letter",
+      "demand letter template",
+      "payment demand letter",
+      "legal demand letter",
+      "demand letter generator",
+      "debt demand letter",
+    ],
+  },
+  "cease-and-desist-letter": {
+    title: "Cease and Desist Letter Template | LegalLawDocs.com",
+    description:
+      "Create a cease and desist letter online. Stop copyright infringement, harassment, defamation, or contract violations with professionally worded legal language.",
+    ogTitle: "Cease and Desist Letter Generator",
+    ogDescription: "Stop harmful or infringing behavior with a professionally worded cease and desist letter.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Cease and Desist Letter",
+    keywords: [
+      "cease and desist letter",
+      "cease and desist template",
+      "copyright infringement letter",
+      "harassment cease and desist",
+      "trademark cease and desist",
+      "cease and desist generator",
+    ],
+  },
+  "notice-of-breach": {
+    title: "Notice of Breach of Contract Template | LegalLawDocs.com",
+    description:
+      "Create a notice of breach of contract online. Formally notify a party of their failure to perform and set a cure deadline before taking legal action.",
+    ogTitle: "Notice of Breach of Contract Generator",
+    ogDescription: "Document a contract breach with a formal notice and set a legal cure deadline.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Notice of Breach",
+    keywords: [
+      "notice of breach",
+      "breach of contract letter",
+      "contract default notice",
+      "breach notice template",
+      "cure notice contract",
+    ],
+  },
+  "complaint-letter": {
+    title: "Formal Complaint Letter Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a formal complaint letter online. Professionally communicate dissatisfaction and request a specific remedy from a business, agency, or individual.",
+    ogTitle: "Complaint Letter Generator",
+    ogDescription: "Write a clear, professional complaint letter that maximizes your chances of resolution.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Complaint Letter",
+    keywords: [
+      "complaint letter",
+      "formal complaint letter",
+      "consumer complaint letter",
+      "complaint template",
+      "business complaint letter",
+    ],
+  },
+  "final-notice-before-legal-action": {
+    title: "Final Notice Before Legal Action Template | LegalLawDocs.com",
+    description:
+      "Create a final notice before legal action online. Send a last formal warning before filing a lawsuit or claim, with clear deadline and consequences.",
+    ogTitle: "Final Notice Before Legal Action Generator",
+    ogDescription: "Send a compelling last warning before escalating to court or collections.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Final Notice Before Legal Action",
+    keywords: [
+      "final notice letter",
+      "pre-legal action notice",
+      "last chance letter",
+      "final demand letter",
+      "notice before lawsuit",
+    ],
+  },
+  "debt-settlement-letter": {
+    title: "Debt Settlement Letter Template | LegalLawDocs.com",
+    description:
+      "Create a debt settlement letter online. Propose or confirm a reduced payoff amount and protect yourself from future claims once the agreed sum is paid.",
+    ogTitle: "Debt Settlement Letter Generator",
+    ogDescription: "Negotiate a reduced debt payoff with a professionally drafted settlement letter.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Debt Settlement Letter",
+    keywords: [
+      "debt settlement letter",
+      "debt negotiation letter",
+      "settle debt letter",
+      "debt payoff letter",
+      "debt reduction letter",
+    ],
+  },
+  "landlord-notice-to-vacate": {
+    title: "Landlord Notice to Vacate Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a landlord notice to vacate online. State-compliant eviction notices with the correct notice period and mandatory statutory language for your jurisdiction.",
+    ogTitle: "Landlord Notice to Vacate Generator",
+    ogDescription: "Generate a state-compliant notice to vacate with correct statutory language.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Landlord Notice to Vacate",
+    keywords: [
+      "notice to vacate",
+      "eviction notice",
+      "landlord notice",
+      "tenant eviction letter",
+      "notice to quit",
+      "pay or quit notice",
+    ],
+  },
+
+  // ── Financial ──────────────────────────────────────────────────────────────
+  "promissory-note": {
+    title: "Promissory Note Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a promissory note online. Document a loan with a legally binding promise to repay, including principal, interest, payment schedule, and default provisions.",
+    ogTitle: "Promissory Note Generator",
+    ogDescription: "Document any loan with a legally binding promissory note and clear repayment terms.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Promissory Note",
+    keywords: [
+      "promissory note",
+      "promissory note template",
+      "loan note",
+      "ious legal document",
+      "promissory note generator",
+      "personal loan note",
+    ],
+  },
+  "loan-agreement": {
+    title: "Loan Agreement Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a personal or business loan agreement online. Define loan amount, interest rate, repayment schedule, collateral, and default terms with state compliance.",
+    ogTitle: "Loan Agreement Generator",
+    ogDescription: "Generate a comprehensive loan agreement with full repayment and default terms.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Loan Agreement",
+    keywords: [
+      "loan agreement",
+      "personal loan agreement",
+      "loan contract template",
+      "private loan agreement",
+      "lending agreement",
+    ],
+  },
+  "payment-plan-agreement": {
+    title: "Payment Plan Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a payment plan agreement online. Structure an installment payment schedule for a debt or purchase, with payment dates, amounts, and default terms.",
+    ogTitle: "Payment Plan Agreement Generator",
+    ogDescription: "Formalize an installment repayment schedule with a clear payment plan agreement.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Payment Plan Agreement",
+    keywords: [
+      "payment plan agreement",
+      "installment agreement",
+      "payment schedule template",
+      "debt payment plan",
+      "installment payment contract",
+    ],
+  },
+  "bill-of-sale": {
+    title: "Bill of Sale Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a bill of sale online. Transfer ownership of personal property — vehicles, equipment, goods — with a legally valid sales record and as-is clause.",
+    ogTitle: "Bill of Sale Generator",
+    ogDescription: "Transfer personal property ownership with a legally valid bill of sale.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Bill of Sale",
+    keywords: [
+      "bill of sale",
+      "bill of sale template",
+      "vehicle bill of sale",
+      "personal property bill of sale",
+      "bill of sale generator",
+    ],
+  },
+  "debt-settlement-agreement": {
+    title: "Debt Settlement Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a debt settlement agreement online. Formally settle a debt for less than the full amount owed with a binding contract that protects both parties from future claims.",
+    ogTitle: "Debt Settlement Agreement Generator",
+    ogDescription: "Settle a debt for a reduced sum and protect both parties with a binding agreement.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Debt Settlement Agreement",
+    keywords: [
+      "debt settlement agreement",
+      "settle debt contract",
+      "debt forgiveness agreement",
+      "debt payoff agreement",
+      "debt reduction contract",
+    ],
+  },
+
+  // ── Personal ───────────────────────────────────────────────────────────────
+  "affidavit": {
+    title: "Affidavit Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create an affidavit online. Draft a sworn written statement of facts for legal proceedings, government applications, or business transactions with notarization block.",
+    ogTitle: "Affidavit Generator",
+    ogDescription: "Draft a sworn affidavit with all required components: facts, oath, and notarization block.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Affidavit",
+    keywords: [
+      "affidavit",
+      "affidavit template",
+      "sworn statement",
+      "affidavit of fact",
+      "affidavit generator",
+      "notarized affidavit",
+    ],
+  },
+  "general-release-of-liability": {
+    title: "General Release of Liability Template | LegalLawDocs.com",
+    description:
+      "Create a general release of liability online. Waive future claims arising from a specific event or agreement with a legally binding liability waiver.",
+    ogTitle: "General Release of Liability Generator",
+    ogDescription: "Protect against future claims with a comprehensive liability release and waiver.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - General Release of Liability",
+    keywords: [
+      "release of liability",
+      "liability waiver",
+      "general release",
+      "hold harmless agreement",
+      "liability release form",
+      "waiver of claims",
+    ],
+  },
+  "vehicle-bill-of-sale": {
+    title: "Vehicle Bill of Sale Template — Create Online | LegalLawDocs.com",
+    description:
+      "Create a vehicle bill of sale online. State-compliant car, truck, and motorcycle sale records with VIN, odometer disclosure, and DMV-required fields.",
+    ogTitle: "Vehicle Bill of Sale Generator",
+    ogDescription: "Generate a DMV-ready vehicle bill of sale with odometer disclosure and VIN fields.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Vehicle Bill of Sale",
+    keywords: [
+      "vehicle bill of sale",
+      "car bill of sale",
+      "auto bill of sale",
+      "dmv bill of sale",
+      "motorcycle bill of sale",
+      "truck bill of sale",
+    ],
+  },
+  "personal-property-agreement": {
+    title: "Personal Property Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a personal property agreement online. Define ownership, use, or transfer terms for personal property — furniture, electronics, or valuables — between two parties.",
+    ogTitle: "Personal Property Agreement Generator",
+    ogDescription: "Document custody, sharing, or transfer of personal property with a clear agreement.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Personal Property Agreement",
+    keywords: [
+      "personal property agreement",
+      "property sharing agreement",
+      "personal property contract",
+      "property custody agreement",
+    ],
+  },
 }
 
 export function getDocumentSeo(slug: string): DocumentSeo | null {
