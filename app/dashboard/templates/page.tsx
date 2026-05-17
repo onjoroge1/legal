@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { TemplateActions } from "@/components/template-actions"
 import { Badge } from "@/components/ui/badge"
@@ -14,27 +14,29 @@ import {
   Crown,
   CheckCircle2,
 } from "lucide-react"
-import { documentTypes } from "@/lib/document-data"
+import { documentCatalog, getDocumentPath } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
 import { useQuery } from "@tanstack/react-query"
 
 const categories = [
   { id: "all", label: "All Documents" },
   { id: "business", label: "Business" },
-  { id: "real-estate", label: "Real Estate" },
   { id: "employment", label: "Employment" },
+  { id: "real-estate", label: "Real Estate" },
+  { id: "estate-planning", label: "Estate Planning" },
+  { id: "legal-letters", label: "Legal Letters" },
+  { id: "financial", label: "Financial" },
   { id: "personal", label: "Personal" },
 ]
 
-// Convert documentTypes to documents format for this page
-const documents = documentTypes.map((doc) => ({
+const documents = documentCatalog.map((doc) => ({
   title: doc.title,
   category: doc.category,
   icon: doc.icon,
   description: doc.description,
   popular: doc.popular,
   color: doc.color,
-  slug: `/documents/${doc.slug}`,
+  slug: getDocumentPath(doc),
 }))
 
 export default function TemplatesPage() {
@@ -209,7 +211,7 @@ export default function TemplatesPage() {
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {[
               "Unlimited document generation",
-              "All 12+ document templates",
+              "All 28 document templates",
               "Priority AI support",
             ].map((benefit) => (
               <div key={benefit} className="flex items-center justify-center gap-2">

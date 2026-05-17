@@ -6,7 +6,7 @@ import {
 } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { prisma } from "@/lib/prisma"
-import { getDocumentBySlug } from "@/lib/document-data"
+import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 
 export const maxDuration = 60
 
@@ -68,7 +68,7 @@ export async function POST(
     const { slug } = await params
     const { messages, intent } = await request.json()
 
-    const document = getDocumentBySlug(slug)
+    const document = getDocumentByLegacySlug(slug)
     if (!document) {
       return Response.json(
         { error: "Document not found" },

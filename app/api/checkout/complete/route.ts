@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
-import { getDocumentBySlug } from "@/lib/document-data"
+import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 
 /**
  * Complete checkout - Create account/login and save document
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         const { openai } = await import("@ai-sdk/openai")
         const { getDocumentPrompt } = await import("@/lib/document-prompts")
         
-        const document = getDocumentBySlug(slug)
+        const document = getDocumentByLegacySlug(slug)
         if (!document) {
           return NextResponse.json(
             { error: "Document not found" },
@@ -114,7 +114,7 @@ Output ONLY the document text. No commentary before or after.`,
       data: {
         userId: user.id,
         title: document?.title || slug,
-        type: document?.type || document?.title || slug,
+        type: document?.title || slug,
         category: document?.category || "business",
         content: documentContent || "",
         status: "completed",

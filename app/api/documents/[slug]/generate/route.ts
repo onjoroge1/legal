@@ -1,7 +1,7 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { prisma } from "@/lib/prisma"
-import { getDocumentBySlug } from "@/lib/document-data"
+import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 import { getDocumentPrompt } from "@/lib/document-prompts"
 
 export const maxDuration = 60
@@ -42,7 +42,7 @@ export async function POST(
       request.headers.get("x-dry-run") === "1" ||
       new URL(request.url).searchParams.get("dryRun") === "1"
 
-    const document = getDocumentBySlug(slug)
+    const document = getDocumentByLegacySlug(slug)
     if (!document) {
       return Response.json(
         { error: "Document not found" },

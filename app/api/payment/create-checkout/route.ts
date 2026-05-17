@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { stripe, PRICE_IDS } from "@/lib/stripe"
-import { getDocumentBySlug } from "@/lib/document-data"
+import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 
 /**
  * POST /api/payment/create-checkout
@@ -34,10 +34,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const docInfo = getDocumentBySlug(slug)
+    const docInfo = getDocumentByLegacySlug(slug)
     if (!docInfo) {
       return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
+
+    // Canonical document path for redirect URLs
+    const docPath = `/documents/${docInfo.category}/${docInfo.slug}`
 
     // Ensure a Stripe customer exists for this user
     let stripeCustomerId = user.stripeCustomerId
@@ -59,8 +62,8 @@ export async function POST(request: Request) {
       data: {
         userId: user.id,
         title: docInfo.title,
-        type: docInfo.type || docInfo.title,
-        category: docInfo.category || "business",
+        type: docInfo.title,
+        category: docInfo.category,
         content: documentContent || "",
         status: "pending_payment",
         metadata: {
@@ -84,7 +87,7 @@ export async function POST(request: Request) {
         mode: "subscription",
         line_items: [{ price: PRICE_IDS.professional, quantity: 1 }],
         success_url: `${appUrl}/dashboard/documents/${pendingDoc.id}?payment=success`,
-        cancel_url: `${appUrl}/documents/${slug}/checkout?cancelled=true`,
+        cancel_url: `${appUrl}${docPath}/checkout?cancelled=true`,
         metadata: {
           userId: user.id,
           documentId: pendingDoc.id,
@@ -114,7 +117,7 @@ export async function POST(request: Request) {
           },
         ],
         success_url: `${appUrl}/dashboard/documents/${pendingDoc.id}?payment=success`,
-        cancel_url: `${appUrl}/documents/${slug}/checkout?cancelled=true`,
+        cancel_url: `${appUrl}${docPath}/checkout?cancelled=true`,
         metadata: {
           userId: user.id,
           documentId: pendingDoc.id,
