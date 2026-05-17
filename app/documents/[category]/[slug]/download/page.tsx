@@ -15,105 +15,81 @@ import {
   FileCode,
   Loader2,
 } from "lucide-react"
-import { getDocumentBySlug } from "@/lib/document-data"
+import { getDocumentBySlug } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
 
 export default function DownloadPage() {
   const router = useRouter()
   const params = useParams()
+  const category = params?.category as string
   const slug = params?.slug as string
-  const document = getDocumentBySlug(slug)
+  const doc = getDocumentBySlug(slug)
   const { data: session } = useSession()
 
   const [documentText, setDocumentText] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [hasAccess, setHasAccess] = useState(false)
 
+  const legacySlug = doc?.legacySlug ?? slug
+
   useEffect(() => {
-    // Check if user has access
     const checkAccess = async () => {
       if (!session?.user?.email) {
-        router.push(`/documents/${slug}`)
+        router.push(`/documents/${category}/${slug}`)
         return
       }
-
       try {
-        // Check subscription or purchase status
-        const response = await fetch(`/api/user/document-access?slug=${slug}`)
-        const data = await response.json()
-        
+        const res = await fetch(`/api/user/document-access?slug=${legacySlug}`)
+        const data = await res.json()
         if (data.hasAccess) {
           setHasAccess(true)
-          // Load document content
           const stored = sessionStorage.getItem("document-data")
           if (stored) {
-            const docData = JSON.parse(stored)
-            await generateDocument(docData)
+            await generateDocument(JSON.parse(stored))
             return
           }
-
-          const localStored = localStorage.getItem("document-data")
-          const localStoredSlug = localStorage.getItem("document-slug")
-          if (localStored && localStoredSlug === slug) {
+          const local = localStorage.getItem("document-data")
+          const localSlug = localStorage.getItem("document-slug")
+          if (local && localSlug === legacySlug) {
             try {
-              const docData = JSON.parse(localStored)
-              sessionStorage.setItem("document-data", JSON.stringify(docData))
-              sessionStorage.setItem("document-slug", slug)
-              const localIntent = localStorage.getItem("document-intent")
-              if (localIntent) {
-                sessionStorage.setItem("document-intent", localIntent)
-              }
-              await generateDocument(docData)
+              const data = JSON.parse(local)
+              sessionStorage.setItem("document-data", JSON.stringify(data))
+              sessionStorage.setItem("document-slug", legacySlug)
+              const intent = localStorage.getItem("document-intent")
+              if (intent) sessionStorage.setItem("document-intent", intent)
+              await generateDocument(data)
               return
-            } catch (error) {
-              console.error("Error loading cached data:", error)
-            }
+            } catch {}
           }
-
-          // Try to fetch from server (draft metadata)
           try {
-            const draftResponse = await fetch(`/api/documents/draft?slug=${slug}`)
-            if (draftResponse.ok) {
-              const draft = await draftResponse.json()
-              const metadata = draft.metadata || {}
-              const draftData = metadata.formData || metadata.generationData
+            const draftRes = await fetch(`/api/documents/draft?slug=${legacySlug}`)
+            if (draftRes.ok) {
+              const draft = await draftRes.json()
+              const draftData = draft.metadata?.formData || draft.metadata?.generationData
               if (draftData) {
                 sessionStorage.setItem("document-data", JSON.stringify(draftData))
-                sessionStorage.setItem("document-slug", slug)
-                if (metadata.intent) {
-                  sessionStorage.setItem("document-intent", metadata.intent)
-                }
-                localStorage.setItem("document-data", JSON.stringify(draftData))
-                localStorage.setItem("document-slug", slug)
-                if (metadata.intent) {
-                  localStorage.setItem("document-intent", metadata.intent)
-                }
+                sessionStorage.setItem("document-slug", legacySlug)
                 await generateDocument(draftData)
                 return
               }
             }
-          } catch (error) {
-            console.error("Error loading draft data:", error)
-          }
-
+          } catch {}
           setIsLoading(false)
         } else {
-          router.push(`/documents/${slug}/checkout`)
+          router.push(`/documents/${category}/${slug}/checkout`)
         }
-      } catch (error) {
-        console.error("Error checking access:", error)
-        router.push(`/documents/${slug}`)
+      } catch {
+        router.push(`/documents/${category}/${slug}`)
       }
     }
-
     checkAccess()
-  }, [session, slug, router])
+  }, [session, slug, category, legacySlug, router])
 
   const generateDocument = async (data: Record<string, string>) => {
     setIsLoading(true)
     try {
       const intent = sessionStorage.getItem("document-intent") || null
-      const res = await fetch(`/api/documents/${slug}/generate`, {
+      const res = await fetch(`/api/documents/${legacySlug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: data, intent }),
@@ -128,42 +104,33 @@ export default function DownloadPage() {
   }
 
   const handleDownload = async (format: "pdf" | "docx") => {
-    if (!documentText) return
-
+    if (!documentText || !doc) return
     try {
-      const response = await fetch("/api/documents/download", {
+      const res = await fetch("/api/documents/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          documentText,
-          documentTitle: document?.title || "Document",
-          format,
-        }),
+        body: JSON.stringify({ documentText, documentTitle: doc.title, format }),
       })
-
-      const blob = await response.blob()
+      const blob = await res.blob()
       const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
+      const a = window.document.createElement("a")
       a.href = url
-      a.download = `${document?.title.replace(/\s+/g, "_")}.${format}`
-      document.body.appendChild(a)
+      a.download = `${doc.title.replace(/\s+/g, "_")}.${format}`
+      window.document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-    } catch (error) {
-      console.error("Download error:", error)
+      window.document.body.removeChild(a)
+    } catch {
       alert("Failed to download document. Please try again.")
     }
   }
 
-  if (!document) {
+  if (!doc) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold">Document not found</h1>
-          <Link href="/documents" className="mt-4 text-primary hover:underline">
-            Back to Documents
-          </Link>
+          <Link href="/documents" className="mt-4 text-primary hover:underline">Back to Documents</Link>
         </div>
       </div>
     )
@@ -182,7 +149,6 @@ export default function DownloadPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
@@ -194,8 +160,7 @@ export default function DownloadPage() {
             </span>
           </Link>
           <Badge variant="outline" className="border-green-500/30 bg-green-500/10 text-green-600">
-            <CheckCircle2 className="mr-1 h-3 w-3" />
-            Full Access
+            <CheckCircle2 className="mr-1 h-3 w-3" />Full Access
           </Badge>
         </div>
       </header>
@@ -203,11 +168,11 @@ export default function DownloadPage() {
       <main className="py-12 lg:py-20">
         <div className="mx-auto max-w-4xl px-4 lg:px-8">
           <Link
-            href={`/documents/${slug}`}
+            href={`/documents/${category}/${slug}`}
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Back to {document.title}
+            Back to {doc.title}
           </Link>
 
           <div className="mt-8 text-center">
@@ -218,11 +183,10 @@ export default function DownloadPage() {
               Your Document is Ready!
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Download your {document.title} in your preferred format
+              Download your {doc.title} in your preferred format
             </p>
           </div>
 
-          {/* Download Options */}
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             <div className="rounded-2xl border border-border/50 bg-card/80 p-8 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
@@ -232,14 +196,8 @@ export default function DownloadPage() {
               <p className="mt-2 text-sm text-muted-foreground">
                 Professional PDF document ready for printing and signing
               </p>
-              <Button
-                onClick={() => handleDownload("pdf")}
-                size="lg"
-                className="mt-6 w-full gap-2"
-                disabled={isLoading || !documentText}
-              >
-                <Download className="h-4 w-4" />
-                Download PDF
+              <Button onClick={() => handleDownload("pdf")} size="lg" className="mt-6 w-full gap-2" disabled={isLoading || !documentText}>
+                <Download className="h-4 w-4" />Download PDF
               </Button>
             </div>
 
@@ -251,20 +209,12 @@ export default function DownloadPage() {
               <p className="mt-2 text-sm text-muted-foreground">
                 Editable Word document for further customization
               </p>
-              <Button
-                onClick={() => handleDownload("docx")}
-                size="lg"
-                variant="outline"
-                className="mt-6 w-full gap-2"
-                disabled={isLoading || !documentText}
-              >
-                <Download className="h-4 w-4" />
-                Download DOCX
+              <Button onClick={() => handleDownload("docx")} size="lg" variant="outline" className="mt-6 w-full gap-2" disabled={isLoading || !documentText}>
+                <Download className="h-4 w-4" />Download DOCX
               </Button>
             </div>
           </div>
 
-          {/* Document Preview */}
           {documentText && (
             <div className="mt-12 rounded-2xl border border-border/50 bg-card/80 shadow-xl">
               <div className="border-b border-border/40 bg-secondary/40 px-6 py-4">
@@ -274,42 +224,29 @@ export default function DownloadPage() {
                 </div>
               </div>
               <div className="p-8">
-                <div className="prose prose-invert max-w-none">
-                  <pre className="whitespace-pre-wrap font-serif text-sm leading-[1.9] text-secondary-foreground">
-                    {documentText}
-                  </pre>
-                </div>
+                <pre className="whitespace-pre-wrap font-serif text-sm leading-[1.9] text-secondary-foreground">
+                  {documentText}
+                </pre>
               </div>
             </div>
           )}
 
-          {/* Next Steps */}
           <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6">
-            <h3 className="font-semibold text-foreground">What's Next?</h3>
+            <h3 className="font-semibold text-foreground">What&apos;s Next?</h3>
             <div className="mt-4 space-y-3">
-              {[
-                "Review your document carefully",
-                "Download in your preferred format",
-                "Share with parties for review",
-                "Sign digitally or print for physical signatures",
-              ].map((step, i) => (
+              {["Review your document carefully", "Download in your preferred format", "Share with parties for review", "Sign digitally or print for physical signatures"].map((step, i) => (
                 <div key={step} className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">
-                    {i + 1}
-                  </div>
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">{i + 1}</div>
                   <span className="text-sm text-secondary-foreground">{step}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Back to Dashboard */}
           {session && (
             <div className="mt-8 text-center">
               <Button variant="outline" asChild>
-                <Link href="/dashboard">
-                  Go to Dashboard
-                </Link>
+                <Link href="/dashboard">Go to Dashboard</Link>
               </Button>
             </div>
           )}
@@ -318,5 +255,3 @@ export default function DownloadPage() {
     </div>
   )
 }
-
-

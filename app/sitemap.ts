@@ -1,60 +1,41 @@
-import { MetadataRoute } from 'next'
-import { documentTypes } from '@/lib/document-data'
+import { MetadataRoute } from "next"
+import { documentCatalog } from "@/lib/document-catalog"
+import { categories } from "@/lib/categories"
+
+const BASE_URL = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://legallawdocs.com"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://legallawdocs.com'
-  
-  // Static pages - Core pages
+  // ── Core static pages ────────────────────────────────────────────────────
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/documents`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#pricing`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
+    { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+    { url: `${BASE_URL}/documents`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
+    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${BASE_URL}/privacy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${BASE_URL}/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
   ]
 
-  // Document detail pages - High priority for SEO
-  const documentPages: MetadataRoute.Sitemap = documentTypes.map((doc) => ({
-    url: `${baseUrl}/documents/${doc.slug}`,
+  // ── Category hub pages ────────────────────────────────────────────────────
+  const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
+    url: `${BASE_URL}/documents/${cat.id}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: "weekly" as const,
     priority: 0.9,
   }))
 
-  // Document generate pages - Important for user flow
-  const generatePages: MetadataRoute.Sitemap = documentTypes.map((doc) => ({
-    url: `${baseUrl}/documents/${doc.slug}/generate`,
+  // ── Document detail pages (canonical, indexable) ──────────────────────────
+  const documentPages: MetadataRoute.Sitemap = documentCatalog.map((doc) => ({
+    url: `${BASE_URL}/documents/${doc.category}/${doc.slug}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
   }))
 
-  // Combine all pages
-  return [...staticPages, ...documentPages, ...generatePages]
-}
+  // NOTE: generate, preview, checkout, and download pages are excluded.
+  // They are disallowed in robots.ts and should not be indexed.
 
+  return [...staticPages, ...categoryPages, ...documentPages]
+}
