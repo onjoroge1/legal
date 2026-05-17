@@ -47,7 +47,8 @@ export default function GeneratePage() {
   const [documentPreview, setDocumentPreview] = useState<string>("")
   const [stateWarnings, setStateWarnings] = useState<string[]>([])
 
-  // Use legacy slug for API calls (generate API still keyed on legacy slug)
+  // legacySlug: used for template/draft/document-access DB lookups (keyed by old underscore slug)
+  // category/slug: used for canonical generate + chat API calls
   const legacySlug = doc?.legacySlug ?? slug
 
   useEffect(() => {
@@ -176,7 +177,7 @@ export default function GeneratePage() {
     const genPreview = async () => {
       if (!isFormValid || !legacySlug) return
       try {
-        const res = await fetch(`/api/documents/${legacySlug}/generate`, {
+        const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ formData, intent: selectedIntent?.id }),
@@ -190,7 +191,7 @@ export default function GeneratePage() {
   const saveDocument = async (): Promise<string | null> => {
     if (!isFormValid || !doc) return null
     try {
-      const res = await fetch(`/api/documents/${legacySlug}/generate`, {
+      const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData, intent: selectedIntent?.id }),
@@ -254,7 +255,7 @@ export default function GeneratePage() {
       }
 
       if (hasSubscription && session?.user?.email) {
-        const genRes = await fetch(`/api/documents/${legacySlug}/generate`, {
+        const genRes = await fetch(`/api/documents/${category}/${slug}/generate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ formData, intent: selectedIntent?.id }),

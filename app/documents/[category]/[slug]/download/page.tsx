@@ -89,7 +89,7 @@ export default function DownloadPage() {
     setIsLoading(true)
     try {
       const intent = sessionStorage.getItem("document-intent") || null
-      const res = await fetch(`/api/documents/${legacySlug}/generate`, {
+      const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: data, intent }),

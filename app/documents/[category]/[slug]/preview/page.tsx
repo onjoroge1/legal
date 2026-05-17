@@ -35,7 +35,8 @@ export default function PreviewPage() {
   const [generationStep, setGenerationStep] = useState(0)
   const [hasSubscription, setHasSubscription] = useState(false)
 
-  // Use legacy slug for generate API
+  // legacySlug: used for draft/document-access DB lookups (keyed by old underscore slug)
+  // category/slug: used for canonical generate API call
   const legacySlug = doc?.legacySlug ?? slug
 
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function PreviewPage() {
     }, 1500)
     try {
       const intent = sessionStorage.getItem("document-intent") || null
-      const res = await fetch(`/api/documents/${legacySlug}/generate`, {
+      const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: data, intent }),

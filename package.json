@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-routes.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "check:routes": "node scripts/check-routes.mjs",
     "smoke": "node scripts/smoke-tests.mjs"
   },
   "prisma": {
