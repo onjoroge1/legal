@@ -3,7 +3,7 @@
 import React from "react"
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter, useParams, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Scale,
@@ -28,11 +28,15 @@ import { getStateWarnings } from "@/lib/state-warnings"
 export default function GeneratePage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const category = params?.category as string
   const slug = params?.slug as string
   const doc = getDocumentBySlug(slug)
   const { data: session } = useSession()
   const [hasSubscription, setHasSubscription] = useState(false)
+
+  // ?intent=<id> pre-selects a specific intent variant (from intent landing pages)
+  const preselectedIntentId = searchParams?.get("intent") ?? null
 
   const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null)
   const [intents, setIntents] = useState<Intent[]>([])
@@ -53,9 +57,17 @@ export default function GeneratePage() {
 
   useEffect(() => {
     if (intents.length > 0 && !selectedIntent) {
-      setSelectedIntent(intents[0])
+      // Pre-select via ?intent= query param (e.g. from intent landing pages)
+      if (preselectedIntentId) {
+        const match = intents.find(
+          (i) => i.id === preselectedIntentId || i.slug === preselectedIntentId
+        )
+        setSelectedIntent(match ?? intents[0])
+      } else {
+        setSelectedIntent(intents[0])
+      }
     }
-  }, [intents, selectedIntent])
+  }, [intents, selectedIntent, preselectedIntentId])
 
   useEffect(() => {
     const loadIntents = async () => {

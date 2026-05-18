@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next"
 import { documentCatalog } from "@/lib/document-catalog"
 import { categories } from "@/lib/categories"
+import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
 
 const BASE_URL = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://legallawdocs.com"
 
@@ -34,8 +35,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }))
 
+  // ── Intent subroute pages (indexable: true && tier === "subroute" only) ──────
+  const intentEntries = getAllIndexableSubrouteIntents()
+  const intentPages: MetadataRoute.Sitemap = intentEntries
+    .map(({ legacySlug, intent }) => {
+      const doc = documentCatalog.find((d) => d.legacySlug === legacySlug)
+      if (!doc) return null
+      return {
+        url: `${BASE_URL}/documents/${doc.category}/${doc.slug}/${intent.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: intent.priority === "high" ? 0.75 : 0.65,
+      }
+    })
+    .filter(Boolean) as MetadataRoute.Sitemap
+
   // NOTE: generate, preview, checkout, and download pages are excluded.
   // They are disallowed in robots.ts and should not be indexed.
 
-  return [...staticPages, ...categoryPages, ...documentPages]
+  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages]
 }

@@ -15,6 +15,8 @@
 export type IntentTier = "standalone" | "subroute" | "flow-only"
 export type IntentPriority = "high" | "medium" | "low"
 
+// ── Backward-compatible alias (generate page uses `Intent`) ───────────────────
+
 export interface DocumentIntent {
   /** Internal key used in API calls and DB — underscore format: at_will */
   id: string
@@ -48,6 +50,9 @@ export interface DocumentIntent {
   practiceAreas: string[]
   suggestedListingPrice?: number
 }
+
+/** @deprecated use DocumentIntent */
+export type Intent = DocumentIntent
 
 // ── NDA ───────────────────────────────────────────────────────────────────────
 
