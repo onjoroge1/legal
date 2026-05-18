@@ -639,6 +639,248 @@ const seoBySlug: Record<string, DocumentSeo> = {
       "nnn lease generator",
     ],
   },
+
+  // ── New catalog documents ─────────────────────────────────────────────────
+  "employee-non-disclosure-agreement": {
+    title: "Employee Non-Disclosure Agreement Template | LegalLawDocs.com",
+    description:
+      "Create an employee NDA online. Protect your trade secrets, client lists, and proprietary information when onboarding employees with a legally binding confidentiality agreement.",
+    ogTitle: "Employee NDA Generator — Protect Your Business Secrets",
+    ogDescription: "Generate a professional employee non-disclosure agreement with IP assignment and confidentiality obligations.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Employee Non-Disclosure Agreement",
+    keywords: [
+      "employee non-disclosure agreement",
+      "employee nda",
+      "employee confidentiality agreement",
+      "employee nda template",
+      "onboarding confidentiality agreement",
+    ],
+  },
+  "asset-purchase-agreement": {
+    title: "Asset Purchase Agreement Template | LegalLawDocs.com",
+    description:
+      "Create an asset purchase agreement online. Document the sale of business assets — equipment, inventory, IP, and goodwill — with a professionally structured, legally binding contract.",
+    ogTitle: "Asset Purchase Agreement Generator",
+    ogDescription: "Generate a professional asset purchase agreement with full schedules, representations, and liability protections.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Asset Purchase Agreement",
+    keywords: [
+      "asset purchase agreement",
+      "business asset sale agreement",
+      "asset acquisition agreement",
+      "asset purchase contract",
+      "buy business assets agreement",
+    ],
+  },
+  "master-service-agreement": {
+    title: "Master Service Agreement (MSA) Template | LegalLawDocs.com",
+    description:
+      "Create a master service agreement online. Set standard IP, confidentiality, liability, and payment terms for your ongoing client relationships — avoid renegotiating terms on every project.",
+    ogTitle: "Master Service Agreement Generator",
+    ogDescription: "Generate a professional MSA with IP ownership, liability caps, and SOW framework for ongoing client engagements.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Master Service Agreement",
+    keywords: [
+      "master service agreement",
+      "msa contract",
+      "master services agreement template",
+      "msa agreement",
+      "service framework agreement",
+    ],
+  },
+  "general-partnership-agreement": {
+    title: "General Partnership Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a general partnership agreement online. Document partner contributions, profit sharing, management rights, and dissolution procedures for your business partnership.",
+    ogTitle: "General Partnership Agreement Generator",
+    ogDescription: "Generate a professional general partnership agreement with capital contributions, profit sharing, and exit provisions.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - General Partnership Agreement",
+    keywords: [
+      "general partnership agreement",
+      "partnership agreement template",
+      "business partnership contract",
+      "general partnership contract",
+      "partnership agreement generator",
+    ],
+  },
+  "fixed-term-employment-contract": {
+    title: "Fixed-Term Employment Contract Template | LegalLawDocs.com",
+    description:
+      "Create a fixed-term employment contract online. Hire employees for a defined period with clear compensation, duties, termination rights, and renewal options.",
+    ogTitle: "Fixed-Term Employment Contract Generator",
+    ogDescription: "Generate a professional fixed-term employment contract with defined start/end dates, compensation, and termination provisions.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Fixed-Term Employment Contract",
+    keywords: [
+      "fixed term employment contract",
+      "temporary employment contract",
+      "term employment agreement",
+      "fixed term contract template",
+      "project based employment contract",
+    ],
+  },
+  "1099-contractor-agreement": {
+    title: "1099 Contractor Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a 1099 contractor agreement online. Engage independent contractors with clear scope, IP assignment, confidentiality, and status provisions to minimize misclassification risk.",
+    ogTitle: "1099 Contractor Agreement Generator",
+    ogDescription: "Generate a professional 1099 contractor agreement with IP assignment, confidentiality, and independent contractor status protections.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - 1099 Contractor Agreement",
+    keywords: [
+      "1099 contractor agreement",
+      "independent contractor agreement",
+      "contractor agreement template",
+      "freelance contractor contract",
+      "1099 contractor contract",
+    ],
+  },
+  "room-rental-agreement": {
+    title: "Room Rental Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a room rental agreement online. Document rent, shared space rules, utilities, and termination terms when renting a single room in a home or shared apartment.",
+    ogTitle: "Room Rental Agreement Generator",
+    ogDescription: "Generate a professional room rental agreement with house rules, shared space terms, and state-specific provisions.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Room Rental Agreement",
+    keywords: [
+      "room rental agreement",
+      "room lease agreement",
+      "room rental contract",
+      "room rental agreement template",
+      "single room lease",
+    ],
+  },
+  "sublease-agreement": {
+    title: "Sublease Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a sublease agreement online. Sublet your apartment or commercial space to a subtenant with a legally binding agreement that protects your obligations to the original landlord.",
+    ogTitle: "Sublease Agreement Generator",
+    ogDescription: "Generate a professional sublease agreement with landlord consent, original lease compliance, and subtenant obligations.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Sublease Agreement",
+    keywords: [
+      "sublease agreement",
+      "sublet agreement",
+      "subletting contract",
+      "sublease contract template",
+      "apartment sublease agreement",
+    ],
+  },
+  "living-will": {
+    title: "Living Will Template (Advance Directive) | LegalLawDocs.com",
+    description:
+      "Create a living will online. Document your medical treatment wishes — resuscitation, ventilation, artificial nutrition — so doctors and family know your preferences if you become incapacitated.",
+    ogTitle: "Living Will Generator — Advance Healthcare Directive",
+    ogDescription: "Generate a state-recognized living will with specific medical directives, HIPAA authorization, and notarization block.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Living Will",
+    keywords: [
+      "living will",
+      "advance directive",
+      "advance healthcare directive",
+      "living will template",
+      "directive to physicians",
+    ],
+  },
+  "simple-will": {
+    title: "Simple Will Template (Last Will and Testament) | LegalLawDocs.com",
+    description:
+      "Create a simple will online. Leave your assets to loved ones, appoint an executor, and name a guardian for minor children with a clear, professionally drafted last will and testament.",
+    ogTitle: "Simple Will Generator — Last Will and Testament",
+    ogDescription: "Generate a simple last will and testament with executor, beneficiaries, guardian designation, and state-required attestation.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Simple Will",
+    keywords: [
+      "simple will",
+      "simple last will and testament",
+      "basic will template",
+      "will generator",
+      "last will and testament template",
+    ],
+  },
+  "demand-letter-for-unpaid-invoice": {
+    title: "Demand Letter for Unpaid Invoice Template | LegalLawDocs.com",
+    description:
+      "Create a demand letter for an unpaid invoice online. Send a formal, professional payment demand with a final deadline and legal action warning to recover outstanding invoices.",
+    ogTitle: "Unpaid Invoice Demand Letter Generator",
+    ogDescription: "Generate a professional demand letter for unpaid invoices with invoice references, payment deadline, and legal action warning.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Demand Letter for Unpaid Invoice",
+    keywords: [
+      "demand letter for unpaid invoice",
+      "invoice demand letter",
+      "unpaid invoice letter",
+      "payment demand letter",
+      "overdue invoice demand letter",
+    ],
+  },
+  "small-claims-demand-letter": {
+    title: "Small Claims Demand Letter Template | LegalLawDocs.com",
+    description:
+      "Create a small claims demand letter online. Send a pre-litigation demand before filing in small claims court — required by many states as evidence of good-faith resolution effort.",
+    ogTitle: "Small Claims Demand Letter Generator",
+    ogDescription: "Generate a professional pre-litigation demand letter for small claims court with specific claim details and filing notice.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Small Claims Demand Letter",
+    keywords: [
+      "small claims demand letter",
+      "pre-litigation demand letter",
+      "small claims letter",
+      "small claims notice letter",
+      "small claims court demand",
+    ],
+  },
+  "secured-promissory-note": {
+    title: "Secured Promissory Note Template | LegalLawDocs.com",
+    description:
+      "Create a secured promissory note online. Document a collateral-backed loan with security interest grant, UCC provisions, and lender enforcement rights upon borrower default.",
+    ogTitle: "Secured Promissory Note Generator",
+    ogDescription: "Generate a professional secured promissory note with collateral description, security interest grant, and default enforcement rights.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Secured Promissory Note",
+    keywords: [
+      "secured promissory note",
+      "collateral promissory note",
+      "secured loan note",
+      "promissory note with collateral",
+      "secured note template",
+    ],
+  },
+  "personal-loan-agreement": {
+    title: "Personal Loan Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a personal loan agreement online. Formalize a loan between friends or family with clear repayment terms, interest provisions, and default remedies to protect your relationship and your money.",
+    ogTitle: "Personal Loan Agreement Generator",
+    ogDescription: "Generate a professional personal loan agreement with repayment schedule, interest provisions, and default terms for family or friend loans.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Personal Loan Agreement",
+    keywords: [
+      "personal loan agreement",
+      "family loan agreement",
+      "friend loan agreement",
+      "loan between friends",
+      "personal loan contract",
+    ],
+  },
+  "general-affidavit": {
+    title: "General Affidavit Template | LegalLawDocs.com",
+    description:
+      "Create a general affidavit online. Make a sworn statement of facts for legal, financial, or personal purposes with a notary-ready acknowledgment block and penalty of perjury clause.",
+    ogTitle: "General Affidavit Generator — Sworn Statement of Facts",
+    ogDescription: "Generate a professional general affidavit with numbered factual statements, oath clause, and notary public acknowledgment.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - General Affidavit",
+    keywords: [
+      "general affidavit",
+      "sworn statement",
+      "affidavit of fact",
+      "affidavit template",
+      "sworn affidavit",
+    ],
+  },
 }
 
 export function getDocumentSeo(slug: string): DocumentSeo | null {

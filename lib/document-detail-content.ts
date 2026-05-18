@@ -3973,6 +3973,699 @@ const tripleNetLeaseDetail: DocumentDetailContent = {
   ],
 }
 
+// ── New catalog documents ─────────────────────────────────────────────────────
+
+const employeeNdaDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is an Employee Non-Disclosure Agreement?",
+    body:
+      "An Employee NDA (confidentiality agreement) is signed by employees at onboarding to protect the company's trade secrets, client information, pricing, software, and proprietary processes. Unlike a general NDA, it is tailored to the employment relationship and typically survives the end of employment.",
+  },
+  whyItMatters: [
+    "Protects trade secrets and proprietary business information from departing employees.",
+    "Provides a legal remedy if a former employee leaks confidential information.",
+    "Strengthens IP ownership by pairing confidentiality with an assignment clause.",
+    "Deters competitors from using your employees to obtain insider knowledge.",
+    "Demonstrates to investors and partners that your IP is protected.",
+  ],
+  keySections: [
+    { title: "Definition of Confidential Information", description: "Broadly defines protected information including trade secrets, client lists, pricing, software source code, and business strategies." },
+    { title: "Confidentiality Obligations", description: "Requires the employee to keep all confidential information secret during and after the employment relationship." },
+    { title: "IP Assignment", description: "Assigns to the employer all inventions, works, and discoveries created during employment." },
+    { title: "Non-Disparagement", description: "Prohibits the employee from making harmful public statements about the company." },
+    { title: "Return of Materials", description: "Requires return of all company documents, devices, and confidential materials upon termination." },
+  ],
+  process: [
+    { title: "Present at Onboarding", description: "Have the employee sign before their first day or at the start of employment." },
+    { title: "Provide Copy to Employee", description: "Give the signed copy to the employee for their records." },
+    { title: "Store Securely", description: "Keep the executed agreement in the employee's personnel file." },
+    { title: "Review Annually", description: "Update the agreement if business operations or trade secrets change significantly." },
+  ],
+  stateConsiderations: [
+    { title: "California", description: "California limits confidentiality agreements — they cannot restrict lawful discussion of working conditions or wages. Consult counsel." },
+    { title: "Non-Compete Restrictions", description: "Do not include non-compete clauses in states where they are void (CA, ND, MN). Keep this agreement confidentiality-focused only." },
+    { title: "Trade Secret Laws", description: "Most states have adopted the Uniform Trade Secrets Act (UTSA) providing additional legal protection beyond the NDA itself." },
+  ],
+  mistakesToAvoid: [
+    "Signing after the employee starts work — consideration issues may arise.",
+    "Defining confidential information too narrowly and leaving key assets unprotected.",
+    "Including unenforceable non-compete clauses in states where they are banned.",
+    "Failing to include an IP assignment clause alongside the confidentiality obligation.",
+    "Not providing the employee a copy of the signed agreement.",
+  ],
+  faq: [
+    { question: "Can an employer require an existing employee to sign an NDA?", answer: "Yes, but additional consideration (a raise, bonus, or continued employment in at-will states) may be required to make it enforceable depending on the state." },
+    { question: "How long does an employee NDA last?", answer: "Confidentiality of trade secrets is typically indefinite. Other confidential information is often protected for 2–5 years post-employment." },
+    { question: "Does an employee NDA replace a non-compete agreement?", answer: "No. They serve different purposes. An NDA protects information; a non-compete restricts where the employee can work. Many employers use both." },
+    { question: "Is an employee NDA enforceable if the employee was not paid extra to sign it?", answer: "In most at-will states, employment itself is sufficient consideration at onboarding. Post-hire signing may require additional consideration." },
+  ],
+}
+
+const assetPurchaseAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is an Asset Purchase Agreement?",
+    body:
+      "An Asset Purchase Agreement governs the sale of specific business assets — equipment, inventory, intellectual property, customer lists, or goodwill — rather than the business entity itself. The buyer selects which assets to acquire and which liabilities (if any) to assume, making it a flexible alternative to a stock or entity purchase.",
+  },
+  whyItMatters: [
+    "Allows buyers to cherry-pick assets without assuming unwanted liabilities.",
+    "Requires IRS asset allocation (Form 8594) which affects tax treatment for both parties.",
+    "Provides representations and warranties protecting the buyer from undisclosed defects.",
+    "Includes clear title transfer for each asset category.",
+    "Governs post-closing obligations such as transition assistance and non-solicitation.",
+  ],
+  keySections: [
+    { title: "Asset Schedule", description: "Lists every asset being purchased with sufficient description to identify each item (equipment serial numbers, IP registrations, inventory counts)." },
+    { title: "Purchase Price & Allocation", description: "States the total consideration and allocates it among asset classes per IRS Form 8594 requirements." },
+    { title: "Assumed Liabilities", description: "Specifies which liabilities (if any) the buyer is taking on — all others remain with the seller." },
+    { title: "Representations & Warranties", description: "Seller confirms title, no hidden liens, accuracy of financials, and completeness of the asset list." },
+    { title: "Closing Conditions", description: "Sets out what must occur before the transaction closes — consents, approvals, and deliverables." },
+  ],
+  process: [
+    { title: "Negotiate Asset List", description: "Agree on exactly which assets are included and excluded before drafting." },
+    { title: "Conduct Due Diligence", description: "Verify title, lien searches, and condition of key assets." },
+    { title: "Draft & Negotiate Agreement", description: "Include all schedules, representations, and any escrow or holdback provisions." },
+    { title: "Close & Transfer", description: "Execute bills of sale, IP assignments, and any required third-party consents on closing day." },
+  ],
+  stateConsiderations: [
+    { title: "Bulk Sales Laws", description: "Some states require notice to creditors before a bulk asset sale. Check your state's bulk transfer requirements." },
+    { title: "Real Property", description: "If real estate is included, a separate deed and recording is required." },
+    { title: "Liquor & Professional Licenses", description: "Certain licenses cannot be transferred — the buyer must apply for new licenses." },
+  ],
+  mistakesToAvoid: [
+    "Failing to list every asset explicitly — assets not listed are NOT transferred.",
+    "Ignoring IRS Form 8594 allocation requirements — misallocation can trigger audits.",
+    "Assuming liabilities accidentally by including vague language.",
+    "Not searching for UCC liens and other encumbrances on assets before closing.",
+    "Omitting transition assistance provisions for customer and vendor relationships.",
+  ],
+  faq: [
+    { question: "What is the difference between an asset purchase and a stock purchase?", answer: "In an asset purchase, you buy specific assets and choose which liabilities to assume. In a stock purchase, you buy the entity itself and inherit all liabilities." },
+    { question: "Do I need to notify employees of an asset sale?", answer: "Generally no automatic notification is required, but the WARN Act applies to larger layoffs. Employment contracts must be reviewed for assignability." },
+    { question: "Is goodwill included in an asset purchase?", answer: "Goodwill can be included as a purchased asset and must be allocated a value in the IRS Form 8594 allocation." },
+    { question: "Can I buy a business's customer contracts in an asset purchase?", answer: "Only if the contracts are assignable. Many contracts require the other party's consent to assign — this must be obtained before closing." },
+  ],
+}
+
+const masterServiceAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Master Service Agreement (MSA)?",
+    body:
+      "A Master Service Agreement establishes the standard terms and conditions that govern an ongoing business relationship between a service provider and a client. Rather than renegotiating core legal terms for each project, the parties execute a single MSA and then issue project-specific Statements of Work (SOWs) referencing it.",
+  },
+  whyItMatters: [
+    "Eliminates the need to renegotiate standard terms for every new project.",
+    "Provides consistent liability, IP, and confidentiality protections across engagements.",
+    "Speeds up deal closure — parties only need to agree on project-specific SOW terms.",
+    "Creates a predictable legal framework that reduces disputes.",
+    "Signals professionalism to enterprise and institutional clients.",
+  ],
+  keySections: [
+    { title: "Services Framework", description: "Describes the general nature of services with individual SOWs defining project-specific scope, timelines, and deliverables." },
+    { title: "IP Ownership", description: "Defines who owns work product — whether it is a work-for-hire assigned to the client or licensed from the provider." },
+    { title: "Limitation of Liability", description: "Caps the provider's total liability, typically at fees paid in the prior 12 months." },
+    { title: "Indemnification", description: "Each party indemnifies the other for claims arising from their own acts or negligence." },
+    { title: "Term & Termination", description: "Sets the MSA duration (often 1–3 years, auto-renewing) and termination rights for convenience or cause." },
+  ],
+  process: [
+    { title: "Negotiate MSA Terms", description: "Agree on liability caps, IP ownership model, and payment terms before signing." },
+    { title: "Execute the MSA", description: "Both parties sign the MSA — this governs the relationship going forward." },
+    { title: "Issue SOWs Per Project", description: "For each new engagement, issue a Statement of Work referencing the MSA." },
+    { title: "Review Annually", description: "Review and renew or update the MSA at each anniversary." },
+  ],
+  stateConsiderations: [
+    { title: "Choice of Law", description: "MSAs often specify Delaware or New York law for predictable commercial interpretation." },
+    { title: "International Use", description: "For international clients, consider GDPR data processing addenda and dispute resolution in a neutral forum." },
+    { title: "Software & SaaS", description: "Tech companies often pair an MSA with a separate Terms of Service for software access rights." },
+  ],
+  mistakesToAvoid: [
+    "Allowing SOWs to contradict MSA terms without an explicit amendment clause.",
+    "Failing to specify who owns deliverables — IP ownership disputes are the most common MSA litigation.",
+    "Setting liability caps too low, leaving the provider exposed for large engagements.",
+    "Omitting a change-order process for scope creep.",
+    "Using the same MSA for both domestic and international clients without modification.",
+  ],
+  faq: [
+    { question: "What is the difference between an MSA and a service agreement?", answer: "A service agreement covers a single engagement. An MSA is an umbrella agreement governing multiple projects, with each project addressed in a SOW." },
+    { question: "Who typically drafts the MSA?", answer: "The service provider usually drafts the first version. Enterprise clients may insist on using their own paper." },
+    { question: "Can an MSA be terminated early?", answer: "Yes, typically with 30–90 days written notice. Active SOWs may continue to completion even after MSA termination, depending on the terms." },
+    { question: "Is an MSA the same as a framework agreement?", answer: "Essentially yes — framework agreement is the term more commonly used in the UK and Europe for the same concept." },
+  ],
+}
+
+const generalPartnershipAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a General Partnership Agreement?",
+    body:
+      "A General Partnership Agreement is a contract between two or more individuals who agree to operate a business together as general partners. All general partners share management authority, profits, losses, and personal liability for partnership debts. Without a written agreement, state default partnership laws govern the relationship.",
+  },
+  whyItMatters: [
+    "Prevents costly disputes by documenting each partner's rights and obligations from the start.",
+    "Overrides unfavorable state default rules on profit sharing and management authority.",
+    "Provides a clear process for partner exits, buyouts, and dissolution.",
+    "Protects minority partners by setting voting thresholds for major decisions.",
+    "Essential for opening business bank accounts and establishing business credit.",
+  ],
+  keySections: [
+    { title: "Capital Contributions", description: "Documents each partner's initial and future capital obligations and the process for additional contributions." },
+    { title: "Profit & Loss Allocation", description: "Sets how profits and losses are divided — equally by default but can be customized." },
+    { title: "Management Rights", description: "Defines each partner's authority to bind the partnership and make decisions." },
+    { title: "Partner Withdrawal & Buyout", description: "Establishes the process and valuation method when a partner exits the business." },
+    { title: "Dissolution", description: "Sets out the steps for winding up the partnership including asset distribution and creditor payment." },
+  ],
+  process: [
+    { title: "Agree on Business Structure", description: "Confirm all partners want a general partnership (vs. LLC) and agree on basic terms." },
+    { title: "Draft the Agreement", description: "Document capital contributions, profit splits, management rules, and exit provisions." },
+    { title: "Execute & Notarize", description: "All partners sign; consider notarization for added legal weight." },
+    { title: "Register If Required", description: "Some states require filing a partnership certificate with the state. Check your state's requirements." },
+  ],
+  stateConsiderations: [
+    { title: "Revised Uniform Partnership Act", description: "Most states have adopted RUPA which provides default rules when a written agreement is silent." },
+    { title: "State Filing Requirements", description: "Some states require a DBA (doing business as) filing or partnership certificate registration." },
+    { title: "Joint and Several Liability", description: "All general partners are personally liable for partnership debts — an LLC may provide better protection." },
+  ],
+  mistakesToAvoid: [
+    "Operating without a written agreement and relying on state default rules.",
+    "Not specifying how partner disputes will be resolved — consider a mediator clause.",
+    "Failing to include a right of first refusal when a partner wants to sell their interest.",
+    "Overlooking what happens if a partner dies, becomes incapacitated, or goes bankrupt.",
+    "Not including a non-compete provision during the partnership term.",
+  ],
+  faq: [
+    { question: "Do general partners have personal liability?", answer: "Yes. All general partners are personally liable for the debts and obligations of the partnership. An LLC provides liability protection that a general partnership does not." },
+    { question: "How is a general partnership different from an LLC?", answer: "A general partnership offers no liability protection. An LLC limits members' personal liability to their investment. Many partnerships convert to LLCs as the business grows." },
+    { question: "Do we need to register our general partnership?", answer: "Requirements vary by state. Some states require a partnership certificate or DBA filing. Check your state's Secretary of State requirements." },
+    { question: "Can a general partnership have more than two partners?", answer: "Yes, a general partnership can have any number of partners. The agreement should address voting thresholds as the partner count increases." },
+  ],
+}
+
+const fixedTermEmploymentDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Fixed-Term Employment Contract?",
+    body:
+      "A Fixed-Term Employment Contract is an employment agreement with a defined start and end date. Unlike at-will employment, the employer commits to employ the individual through the term and cannot terminate without cause (unless specified). Common uses include seasonal roles, project-based hires, maternity cover, and government or grant-funded positions.",
+  },
+  whyItMatters: [
+    "Provides certainty for both employer and employee about the duration of employment.",
+    "Allows employers to fill temporary needs without creating permanent headcount.",
+    "Protects employees from arbitrary termination before the contract term ends.",
+    "Defines clear compensation and benefits for a specific period.",
+    "Useful for grant-funded, project-based, or seasonal staffing needs.",
+  ],
+  keySections: [
+    { title: "Defined Start & End Date", description: "Clearly states the employment term with exact dates — the primary feature distinguishing this from at-will employment." },
+    { title: "Compensation & Benefits", description: "Documents salary or hourly rate, bonus eligibility, and benefits during the fixed term." },
+    { title: "Early Termination", description: "Defines what constitutes cause for early termination by either party and the consequences." },
+    { title: "Renewal or Extension", description: "States whether the contract automatically expires, is renewable, or converts to permanent employment at term end." },
+    { title: "IP & Confidentiality", description: "Includes standard IP assignment and confidentiality obligations that survive the contract term." },
+  ],
+  process: [
+    { title: "Define the Scope & Term", description: "Determine the exact start date, end date, role, and compensation before drafting." },
+    { title: "Draft the Contract", description: "Include all required fields — duties, pay, termination rights, and post-employment obligations." },
+    { title: "Execute Before Start Date", description: "Have the employee sign before they begin work to avoid consideration issues." },
+    { title: "Track the Term", description: "Set calendar reminders for renewal discussions well before the contract expires." },
+  ],
+  stateConsiderations: [
+    { title: "At-Will States", description: "In most U.S. states, employment is at-will by default. A fixed-term contract expressly overrides this presumption." },
+    { title: "Termination Damages", description: "If you terminate early without cause, the employee may be entitled to the remainder of the contract salary — be explicit about early termination rights." },
+    { title: "Benefits Continuation", description: "Some states require benefit continuation for the full contract term even if work ends early. Review state law." },
+  ],
+  mistakesToAvoid: [
+    "Including at-will language in a fixed-term contract — it creates contradictory terms.",
+    "Not specifying what constitutes 'cause' for early termination.",
+    "Failing to address what happens at expiration — automatic end vs. conversion to at-will.",
+    "Using a fixed-term contract to avoid providing benefits required for permanent employees.",
+    "Rolling over fixed-term contracts repeatedly — some states treat serial renewals as permanent employment.",
+  ],
+  faq: [
+    { question: "Can a fixed-term employee be terminated before the end date?", answer: "Yes, if the contract specifies grounds for early termination. Without cause provisions, the employer may owe the employee the remaining contract salary." },
+    { question: "Does a fixed-term contract automatically renew?", answer: "Only if the contract contains an auto-renewal clause. Without one, the contract expires on the end date and employment ends unless a new agreement is executed." },
+    { question: "Are fixed-term employees entitled to the same benefits as permanent employees?", answer: "Generally yes for statutory benefits. Discretionary benefits (bonuses, stock options) depend on the contract terms." },
+    { question: "What is the difference between a fixed-term contract and a probationary period?", answer: "A probationary period is a trial phase of otherwise permanent (at-will) employment. A fixed-term contract is a defined-duration arrangement that ends on a specified date." },
+  ],
+}
+
+const contractorAgreement1099Detail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a 1099 Contractor Agreement?",
+    body:
+      "A 1099 Contractor Agreement (independent contractor agreement) formalizes the working relationship between a business and a self-employed contractor. It establishes that the contractor is not an employee, defines the scope of services, payment terms, IP ownership, and confidentiality. Proper documentation reduces the risk of costly worker misclassification.",
+  },
+  whyItMatters: [
+    "Reduces the risk of IRS or state worker misclassification penalties.",
+    "Clearly assigns ownership of work product created by the contractor.",
+    "Protects confidential business information shared with the contractor.",
+    "Defines payment terms and invoicing to prevent billing disputes.",
+    "Creates a professional framework for the business relationship.",
+  ],
+  keySections: [
+    { title: "Independent Contractor Status", description: "Expressly states the contractor is not an employee and controls how they perform services." },
+    { title: "Scope of Services", description: "Describes the specific deliverables, milestones, and expected outputs." },
+    { title: "IP Work-for-Hire Assignment", description: "Assigns all work product to the client as a work made for hire or by assignment." },
+    { title: "No Tax Withholding", description: "States the client will not withhold taxes and the contractor is responsible for self-employment tax." },
+    { title: "Confidentiality", description: "Protects the client's proprietary information disclosed to the contractor." },
+  ],
+  process: [
+    { title: "Draft Before Work Begins", description: "Execute the agreement before the contractor starts any work to avoid retroactive classification issues." },
+    { title: "Collect W-9 Form", description: "Obtain a completed W-9 from the contractor for 1099 reporting purposes." },
+    { title: "Set Up Invoicing Process", description: "Agree on invoice cadence, format, and payment terms." },
+    { title: "Issue 1099-NEC at Year End", description: "If you pay $600 or more in a calendar year, issue a 1099-NEC by January 31 of the following year." },
+  ],
+  stateConsiderations: [
+    { title: "California AB5", description: "California uses the ABC test for worker classification — many workers classified as contractors elsewhere are employees under California law." },
+    { title: "Massachusetts & New Jersey", description: "Both states apply strict classification tests similar to California. Consult local counsel for contractors in these states." },
+    { title: "Non-Solicitation Limits", description: "Non-solicitation clauses are limited or void in some states (CA, ND, MN). Check state law before including them." },
+  ],
+  mistakesToAvoid: [
+    "Treating contractors like employees (fixed hours, required tools, single client) — behavior matters as much as the contract.",
+    "Forgetting to get IP assignment in writing — verbal work-for-hire claims are difficult to enforce.",
+    "Failing to issue 1099-NEC forms — IRS penalties apply.",
+    "Using the same agreement for both domestic and international contractors without modification.",
+    "Not specifying deliverables clearly — vague scope leads to payment disputes.",
+  ],
+  faq: [
+    { question: "What is the difference between a 1099 contractor and a W-2 employee?", answer: "A W-2 employee has taxes withheld, receives benefits, and the employer controls how they work. A 1099 contractor controls how they work, pays their own taxes, and typically does not receive benefits." },
+    { question: "Does a 1099 agreement protect me from misclassification claims?", answer: "The agreement helps, but courts look at the actual work relationship — not just what the contract says. Substance matters more than labels." },
+    { question: "Who owns the work product created by a contractor?", answer: "By default, the contractor owns their work product. A written work-for-hire or IP assignment clause is required to transfer ownership to the client." },
+    { question: "Do I need a 1099 agreement for every contractor?", answer: "Yes — any paid contractor relationship should be documented in writing, regardless of project size or duration." },
+  ],
+}
+
+const roomRentalAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Room Rental Agreement?",
+    body:
+      "A Room Rental Agreement documents the terms when a landlord or primary tenant rents a single room — rather than an entire unit — to a tenant. It covers rent, shared space access, house rules, utilities, and termination notice requirements. Because the landlord typically lives in or manages the same property, the rules are more detailed than a standard lease.",
+  },
+  whyItMatters: [
+    "Protects both parties with clear rules for shared spaces and house conduct.",
+    "Documents rent, security deposit, and utility responsibilities in writing.",
+    "Provides a legal framework for termination if house rules are violated.",
+    "Reduces conflict between housemates by setting expectations upfront.",
+    "Required by many local ordinances for short-term or room rental arrangements.",
+  ],
+  keySections: [
+    { title: "Room Description", description: "Identifies the specific room being rented and any storage areas included." },
+    { title: "Shared Space Rules", description: "Sets expectations for kitchen, bathroom, living room, and laundry use." },
+    { title: "Utility Allocation", description: "States how utilities (electricity, internet, gas, water) are divided or included in rent." },
+    { title: "House Rules", description: "Covers noise levels, overnight guests, smoking, pets, and cleaning responsibilities." },
+    { title: "Termination Notice", description: "Sets the notice period required by either party to end the arrangement, per state law." },
+  ],
+  process: [
+    { title: "Screen the Tenant", description: "Run a background check and verify income before offering the room." },
+    { title: "Walk Through the Property", description: "Document the room's condition and note any existing damage before move-in." },
+    { title: "Sign the Agreement", description: "Execute the agreement before the tenant moves in and collect the security deposit." },
+    { title: "Provide Required Disclosures", description: "Deliver any state or city required disclosures (lead paint, habitability notices)." },
+  ],
+  stateConsiderations: [
+    { title: "Security Deposit Limits", description: "Many states cap security deposits (e.g., 2 months rent in California) and require return within a set timeline." },
+    { title: "Owner-Occupied Exemptions", description: "Owner-occupied single-family rentals may be exempt from some rent control and eviction protections." },
+    { title: "Local Rental Licensing", description: "Many cities require a rental license or permit for room rentals — check local requirements." },
+  ],
+  mistakesToAvoid: [
+    "Not documenting the room's condition with photos before move-in.",
+    "Omitting house rules — disputes about cleanliness and noise are the most common issues.",
+    "Failing to specify how shared utility bills will be divided.",
+    "Not including a written notice requirement for termination — oral notice is hard to prove.",
+    "Charging a security deposit that exceeds state law limits.",
+  ],
+  faq: [
+    { question: "Is a room rental agreement legally binding?", answer: "Yes, a signed room rental agreement is a legally binding contract enforceable in court. It provides the legal basis for eviction if the tenant violates its terms." },
+    { question: "Can I evict a room renter?", answer: "Yes, but you must follow your state's eviction procedures even for room renters. The notice period and process depend on the reason for eviction." },
+    { question: "Does a room renter have rights against the primary tenant?", answer: "Yes. The subtenant-landlord relationship creates legal obligations even if the 'landlord' is a fellow tenant. The arrangement should be documented in writing." },
+    { question: "Do I need a separate lease and house rules document?", answer: "A single well-drafted room rental agreement can cover both. Alternatively, a brief agreement with a house rules addendum is also common." },
+  ],
+}
+
+const subleaseAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Sublease Agreement?",
+    body:
+      "A Sublease Agreement allows a current tenant (the sublessor) to rent their leased property — or a portion of it — to a new tenant (the sublessee) for a defined period. The sublessor remains responsible to the original landlord under the master lease. The sublessee's rights are limited by the terms of both the sublease and the original lease.",
+  },
+  whyItMatters: [
+    "Allows a tenant to offset rent costs when they cannot occupy the space.",
+    "Provides legal documentation for the sublease relationship.",
+    "Protects the sublessor who remains liable to the original landlord.",
+    "Defines the sublessee's obligations and house/unit rules.",
+    "Often required by the original lease — documents landlord's consent.",
+  ],
+  keySections: [
+    { title: "Landlord Consent", description: "References or attaches the original landlord's written consent to sublease." },
+    { title: "Original Lease Compliance", description: "Requires the sublessee to comply with all terms of the original lease." },
+    { title: "Sublease Rent & Security Deposit", description: "States the monthly rent and security deposit terms between sublessor and sublessee." },
+    { title: "Sublessor's Retained Liability", description: "Confirms the sublessor remains primarily liable to the original landlord." },
+    { title: "Term & Termination", description: "Defines the sublease period and termination rights if the sublessee defaults." },
+  ],
+  process: [
+    { title: "Obtain Landlord Permission", description: "Review your original lease for subletting clauses and get written permission from the landlord." },
+    { title: "Screen the Sublessee", description: "Run a background and credit check on prospective sublessees." },
+    { title: "Draft & Execute the Sublease", description: "Sign the sublease agreement before the sublessee takes occupancy." },
+    { title: "Provide Copies to All Parties", description: "Give copies to the sublessee and optionally to the original landlord." },
+  ],
+  stateConsiderations: [
+    { title: "Landlord Consent Requirements", description: "Many states require landlord consent before subleasing. Subleasing without permission may be grounds for eviction." },
+    { title: "Rent Control Protections", description: "In rent-controlled jurisdictions, sublessees may be entitled to the same rent control protections as primary tenants." },
+    { title: "Security Deposit Returns", description: "The sublessor must return the sublessee's deposit within the state-required timeline after the sublease ends." },
+  ],
+  mistakesToAvoid: [
+    "Subleasing without reading your original lease's subletting restrictions.",
+    "Failing to get written landlord consent when required.",
+    "Charging the sublessee more than the original lease rent (often prohibited in rent-controlled units).",
+    "Not documenting the property's condition before the sublessee moves in.",
+    "Assuming the sublessee's default automatically excuses your rent obligations to the original landlord.",
+  ],
+  faq: [
+    { question: "Can I sublease my apartment without my landlord's permission?", answer: "It depends on your lease. Most leases prohibit subleasing without written consent. Violating this can result in eviction." },
+    { question: "If the sublessee doesn't pay rent, do I still owe rent to the landlord?", answer: "Yes. The sublessor remains fully liable to the original landlord. You must pay your rent regardless of whether the sublessee pays you." },
+    { question: "Can I charge more rent to my sublessee than I pay to the landlord?", answer: "In most cases yes, unless you're in a rent-controlled jurisdiction. Check your local rent control laws." },
+    { question: "What happens to the sublease if the original lease ends?", answer: "If the master lease terminates, the sublease typically terminates as well. The sublessee has no right to occupy beyond the master lease term." },
+  ],
+}
+
+const livingWillDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Living Will?",
+    body:
+      "A Living Will (also called an advance directive or directive to physicians) is a legal document that records your preferences for medical treatment if you become unable to communicate. It guides doctors and family members regarding life-sustaining treatments, resuscitation, and end-of-life care so your wishes are respected even when you cannot speak for yourself.",
+  },
+  whyItMatters: [
+    "Ensures your medical treatment wishes are followed if you become incapacitated.",
+    "Relieves family members from having to make difficult healthcare decisions under duress.",
+    "Prevents unwanted life-sustaining treatments that conflict with your values.",
+    "Reduces family conflict by documenting your wishes clearly.",
+    "Legally recognized in all 50 states — hospitals must honor valid directives.",
+  ],
+  keySections: [
+    { title: "Resuscitation Preferences", description: "States whether you want CPR attempted if your heart or breathing stops." },
+    { title: "Mechanical Ventilation", description: "Documents your wishes regarding breathing machines if you cannot breathe independently." },
+    { title: "Artificial Nutrition & Hydration", description: "Specifies whether tube feeding and IV fluids should be used to prolong life." },
+    { title: "Comfort Care Instructions", description: "Requests palliative care, pain management, and comfort measures even if curative treatment is declined." },
+    { title: "Organ & Tissue Donation", description: "States your preference for organ, tissue, and body donation." },
+  ],
+  process: [
+    { title: "Reflect on Your Wishes", description: "Consider your values and what quality of life means to you before completing the form." },
+    { title: "Complete the Document", description: "Fill out all sections clearly and specifically — vague language leads to uncertainty." },
+    { title: "Sign with Witnesses", description: "Sign in front of the state-required number of witnesses (typically two) who are not beneficiaries or healthcare providers." },
+    { title: "Distribute Copies", description: "Give copies to your doctor, healthcare agent, hospital records, and family members." },
+  ],
+  stateConsiderations: [
+    { title: "State-Specific Forms", description: "Many states have statutory forms that are automatically recognized. Using the state form ensures immediate hospital acceptance." },
+    { title: "Witness Requirements", description: "Most states require two witnesses. Restrictions on who can witness vary — often excluding family members and healthcare providers." },
+    { title: "Notarization", description: "Some states (e.g., Louisiana, Alabama) require notarization in addition to witnesses." },
+  ],
+  mistakesToAvoid: [
+    "Being vague — specify exactly what treatments you do and do not want.",
+    "Not updating after a serious diagnosis — your wishes may change.",
+    "Keeping the document in a place no one can find in an emergency.",
+    "Having a family member witness the document (prohibited in many states).",
+    "Confusing a living will with a healthcare power of attorney — they serve different purposes.",
+  ],
+  faq: [
+    { question: "Is a living will the same as a healthcare power of attorney?", answer: "No. A living will states your treatment preferences. A healthcare power of attorney (medical POA) appoints someone to make decisions for you. Many people execute both." },
+    { question: "Can I change my living will?", answer: "Yes. You can revoke or update a living will at any time while you have capacity. Notify your doctor and family of any changes." },
+    { question: "Will doctors follow my living will?", answer: "Yes, legally recognized living wills must be honored. However, they are only effective when you cannot communicate your wishes directly." },
+    { question: "Does a living will expire?", answer: "Generally no — a properly executed living will remains valid indefinitely. Some states suggest periodic review and re-signing every 5–7 years." },
+  ],
+}
+
+const simpleWillDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Simple Will?",
+    body:
+      "A Simple Will (simple last will and testament) is a streamlined estate planning document for individuals with uncomplicated estates. It appoints an executor to administer your estate, names beneficiaries for your assets, designates guardians for minor children, and provides instructions for paying debts. It is the foundation of any estate plan.",
+  },
+  whyItMatters: [
+    "Ensures your assets go to the people you choose rather than state intestacy laws.",
+    "Designates a guardian for minor children — critical for parents.",
+    "Appoints a trusted executor to administer your estate.",
+    "Avoids delays and costs of dying intestate (without a will).",
+    "Provides peace of mind that your wishes will be honored.",
+  ],
+  keySections: [
+    { title: "Executor Appointment", description: "Names a trusted person (and an alternate) to manage your estate, pay debts, and distribute assets." },
+    { title: "Specific Bequests", description: "Leaves specific assets (a house, car, jewelry, savings account) to named individuals." },
+    { title: "Residuary Clause", description: "Distributes all remaining property not specifically mentioned to a residuary beneficiary." },
+    { title: "Guardian Designation", description: "Names a guardian (and alternate) for minor children — one of the most important decisions in any will." },
+    { title: "Attestation & Witnesses", description: "State-required witness signatures that make the will legally valid." },
+  ],
+  process: [
+    { title: "Inventory Your Assets", description: "List all significant assets and decide who should receive each one." },
+    { title: "Choose Your Executor & Guardian", description: "Select trusted individuals and confirm they are willing to serve." },
+    { title: "Draft the Will", description: "Include all required provisions and use clear, unambiguous language for each distribution." },
+    { title: "Execute with Witnesses", description: "Sign in front of the required number of witnesses (typically 2) who are not beneficiaries." },
+    { title: "Store Safely", description: "Keep the original in a fireproof safe or with your attorney and tell your executor where it is." },
+  ],
+  stateConsiderations: [
+    { title: "Witness Requirements", description: "Most states require two adult witnesses who are not beneficiaries. Louisiana has different formality requirements." },
+    { title: "Holographic Wills", description: "Some states accept handwritten wills without witnesses but simple typed wills with witnesses are more reliable." },
+    { title: "Community Property States", description: "In community property states (CA, TX, AZ, NV, etc.), you can only bequeath your half of marital property." },
+  ],
+  mistakesToAvoid: [
+    "Not updating the will after major life events (marriage, divorce, birth of children, death of beneficiaries).",
+    "Naming beneficiaries with incomplete or incorrect legal names.",
+    "Having a beneficiary serve as a witness — this can void their gift.",
+    "Not naming alternate beneficiaries in case the primary predeceases you.",
+    "Keeping the will in a safe deposit box that requires probate court approval to open.",
+  ],
+  faq: [
+    { question: "Does a will avoid probate?", answer: "No. A will must go through probate court to be administered. Trusts, joint tenancy, and beneficiary designations avoid probate." },
+    { question: "Do I need a lawyer to write a will?", answer: "Not legally required, but an attorney ensures the will meets all state formalities and is less likely to be contested." },
+    { question: "Can I write my own will?", answer: "Yes, in most states. A simple typed and witnessed will is legally valid. Online tools and templates can assist — but complex estates should use an attorney." },
+    { question: "What happens if I die without a will?", answer: "Your estate passes under your state's intestacy laws — typically to a spouse, then children, then other relatives — regardless of your wishes." },
+  ],
+}
+
+const demandLetterInvoiceDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Demand Letter for Unpaid Invoice?",
+    body:
+      "A Demand Letter for Unpaid Invoice is a formal written notice sent to a client or customer who has failed to pay an invoice. It states the amount owed, references the invoice, sets a final payment deadline, and warns of legal consequences if payment is not received. It is often the last step before filing a lawsuit or sending the debt to collections.",
+  },
+  whyItMatters: [
+    "Often prompts immediate payment without the cost and time of a lawsuit.",
+    "Creates a formal record of the payment demand for court proceedings.",
+    "Required by some states as evidence of pre-litigation notice.",
+    "Demonstrates professionalism and seriousness to the non-paying party.",
+    "May entitle the sender to attorney's fees in some jurisdictions.",
+  ],
+  keySections: [
+    { title: "Invoice Reference", description: "Identifies the specific invoice(s) by number, date, and amount." },
+    { title: "Amount Owed", description: "States the exact amount outstanding, including any late fees or interest." },
+    { title: "Payment Deadline", description: "Sets a firm final deadline — typically 10–14 days from the date of the letter." },
+    { title: "Payment Instructions", description: "Provides specific instructions for how and where to send payment." },
+    { title: "Legal Action Warning", description: "States clearly that failure to pay will result in legal action — small claims, civil suit, or collections." },
+  ],
+  process: [
+    { title: "Gather Documentation", description: "Compile the original invoice, contract, prior payment reminders, and any communications." },
+    { title: "Draft the Letter", description: "Be specific about amounts, dates, and consequences — vagueness undermines effectiveness." },
+    { title: "Send via Certified Mail", description: "Send by certified mail with return receipt for proof of delivery." },
+    { title: "Follow Up", description: "If no payment or response within the deadline, proceed to small claims court or hire a collection agency." },
+  ],
+  stateConsiderations: [
+    { title: "Attorney's Fees Clauses", description: "Many states and contracts allow recovery of attorney's fees for the prevailing party in payment disputes." },
+    { title: "Statute of Limitations", description: "Written contract claims are typically 4–6 years depending on the state. Do not delay past the deadline." },
+    { title: "Small Claims Limits", description: "Small claims court limits vary by state ($2,500–$25,000). A demand letter is often required before filing." },
+  ],
+  mistakesToAvoid: [
+    "Being vague about the amount — specify the exact invoice total, late fees, and interest.",
+    "Setting an unrealistically short deadline (less than 7 days) which may be ignored.",
+    "Threatening criminal action for civil non-payment — stick to civil remedies.",
+    "Sending by email only — certified mail provides documented proof of receipt.",
+    "Not following up if the deadline passes without payment or response.",
+  ],
+  faq: [
+    { question: "Does a demand letter guarantee payment?", answer: "No, but it significantly increases the likelihood of payment. Studies show most small business payment disputes are resolved after a formal demand letter." },
+    { question: "Can I write a demand letter myself?", answer: "Yes. A well-written, specific demand letter from the creditor themselves is often just as effective as one from an attorney." },
+    { question: "What if the client ignores the demand letter?", answer: "File in small claims court if the amount is within the limit, hire a collections agency, or consult an attorney about a civil lawsuit." },
+    { question: "Can I add interest and late fees to the demand?", answer: "Yes, if your contract or invoice includes late fee and interest provisions. State the per-day or monthly rate clearly." },
+  ],
+}
+
+const smallClaimsDemandLetterDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Small Claims Demand Letter?",
+    body:
+      "A Small Claims Demand Letter is a formal written notice sent before initiating a small claims court case. Many states require or strongly recommend this pre-litigation notice as evidence that the plaintiff made a good-faith attempt to resolve the dispute before filing. It states the claim, amount demanded, resolution deadline, and notice of intent to file.",
+  },
+  whyItMatters: [
+    "Required by many states as evidence of pre-litigation good-faith effort.",
+    "Often resolves the dispute without the need for a court appearance.",
+    "Demonstrates to the court that you attempted resolution before filing.",
+    "Creates a paper trail documenting the dispute timeline.",
+    "Inexpensive and quick to prepare — no attorney required.",
+  ],
+  keySections: [
+    { title: "Dispute Description", description: "A concise, factual description of what happened and why you are owed money." },
+    { title: "Dollar Amount Claimed", description: "States the exact amount demanded including any applicable damages or fees." },
+    { title: "Resolution Deadline", description: "Gives the respondent a clear deadline to pay or respond — typically 10–14 days." },
+    { title: "Small Claims Court Notice", description: "Explicitly states the specific court where you will file if the demand is not met." },
+    { title: "No Further Notice Statement", description: "Advises the respondent that no additional notice will be given before filing." },
+  ],
+  process: [
+    { title: "Research Your State's Small Claims Limit", description: "Confirm your claim falls within your state's small claims court dollar limit before drafting." },
+    { title: "Draft the Letter", description: "Be factual and specific — include dates, amounts, and the basis of your claim." },
+    { title: "Send Certified Mail", description: "Send by certified mail with return receipt to prove the respondent received it." },
+    { title: "File if Unanswered", description: "If no payment or resolution by the deadline, file your claim at the small claims court." },
+  ],
+  stateConsiderations: [
+    { title: "Filing Limits by State", description: "Small claims limits range from $2,500 (Kentucky) to $25,000 (Tennessee). Verify your state's current limit." },
+    { title: "Mandatory Demand Requirement", description: "Some states (e.g., Texas, California) require or strongly encourage a pre-filing demand. Bring evidence of this demand to court." },
+    { title: "Businesses vs. Individuals", description: "Some states have different limits for businesses suing vs. individuals suing. Check your state's rules." },
+  ],
+  mistakesToAvoid: [
+    "Demanding an amount that exceeds your state's small claims limit — you will need to file in a higher court.",
+    "Being overly emotional — stick to facts, dates, and dollar amounts.",
+    "Not referencing any prior communications about the dispute.",
+    "Sending by email only — certified mail provides proof of receipt for the court.",
+    "Threatening jail or criminal charges — small claims is a civil venue.",
+  ],
+  faq: [
+    { question: "Is a small claims demand letter legally required?", answer: "Requirements vary by state. Some states require it; others strongly recommend it. Bringing it to court demonstrates good faith." },
+    { question: "How long should I give the respondent to respond?", answer: "10–14 days is standard. Longer for larger amounts; shorter if the matter is time-sensitive." },
+    { question: "Can I sue for more than the small claims limit?", answer: "You can waive the excess and limit your claim to the small claims limit, or file in a higher court. You cannot split one claim into multiple small claims filings." },
+    { question: "Do I need an attorney for small claims court?", answer: "No — attorneys are often not permitted in small claims court. The process is designed for individuals to represent themselves." },
+  ],
+}
+
+const securedPromissoryNoteDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Secured Promissory Note?",
+    body:
+      "A Secured Promissory Note is a written promise to repay a loan backed by specific collateral. If the borrower defaults, the lender has the legal right to seize and sell the collateral to recover the debt. This gives lenders significantly more protection than an unsecured note and often results in lower interest rates for borrowers.",
+  },
+  whyItMatters: [
+    "Gives the lender priority rights to collateral in case of borrower default.",
+    "Reduces the lender's risk compared to unsecured lending.",
+    "Often results in more favorable interest rates for the borrower.",
+    "Provides a clear legal remedy without a lengthy lawsuit.",
+    "Required for most asset-backed private lending arrangements.",
+  ],
+  keySections: [
+    { title: "Collateral Description", description: "Identifies the specific collateral securing the note — property address, vehicle VIN, equipment serial number." },
+    { title: "Security Interest Grant", description: "Grants the lender a security interest in the collateral under UCC Article 9 (personal property) or state foreclosure law (real estate)." },
+    { title: "Principal & Interest", description: "States the loan amount, interest rate, payment schedule, and maturity date." },
+    { title: "Default & Cure", description: "Defines what constitutes a default and any cure period before the lender can enforce." },
+    { title: "Lender's Enforcement Rights", description: "Describes the lender's right to repossess, sell, or foreclose on collateral after default." },
+  ],
+  process: [
+    { title: "Agree on Terms", description: "Negotiate principal, interest rate, repayment schedule, and collateral." },
+    { title: "Draft the Note", description: "Include all required fields — collateral description, security interest grant, and default provisions." },
+    { title: "Perfect the Security Interest", description: "File a UCC-1 financing statement (personal property) or mortgage/deed of trust (real estate) to perfect the lender's priority." },
+    { title: "Execute & Disburse", description: "Both parties sign the note before the lender transfers funds." },
+  ],
+  stateConsiderations: [
+    { title: "UCC Filing", description: "For personal property collateral, file a UCC-1 financing statement in the state where the borrower is located." },
+    { title: "Real Estate", description: "For real property collateral, a mortgage or deed of trust must be recorded with the county recorder's office." },
+    { title: "Usury Laws", description: "States set maximum interest rate limits. Exceeding usury limits may void the interest provision." },
+  ],
+  mistakesToAvoid: [
+    "Failing to perfect the security interest — an unperfected interest may be subordinate to other creditors.",
+    "Describing collateral too vaguely — a precise description is essential for enforceability.",
+    "Charging interest above your state's usury limit.",
+    "Not including a cure period for default — courts often require reasonable notice before enforcement.",
+    "Confusing a promissory note with a mortgage — real property requires a separate security instrument.",
+  ],
+  faq: [
+    { question: "What is the difference between a secured and unsecured promissory note?", answer: "A secured note is backed by collateral the lender can seize if the borrower defaults. An unsecured note has no collateral — the lender must sue to recover." },
+    { question: "Do I need to file anything to secure the collateral?", answer: "Yes. For personal property, file a UCC-1 financing statement. For real estate, record a mortgage or deed of trust." },
+    { question: "Can I use a vehicle as collateral for a promissory note?", answer: "Yes. Include the VIN, make, model, and year. Some states require a lien notation on the vehicle title." },
+    { question: "What happens to the collateral if the borrower pays in full?", answer: "The lender must release the security interest (file a UCC-3 termination or release the mortgage) and remove any lien notation from the title." },
+  ],
+}
+
+const personalLoanAgreementDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Personal Loan Agreement?",
+    body:
+      "A Personal Loan Agreement formalizes a loan between two individuals — friends, family members, or acquaintances. It documents the loan amount, repayment schedule, interest rate (if any), and consequences of default. A written agreement protects both the lender and borrower and prevents the memory differences and misunderstandings that destroy personal relationships.",
+  },
+  whyItMatters: [
+    "Prevents misunderstandings about repayment terms between friends and family.",
+    "Creates a legally enforceable record of the loan.",
+    "Establishes whether the transaction is a loan or a gift for tax purposes.",
+    "Protects the lender's estate by documenting a debt owed.",
+    "Demonstrates good faith by both parties regarding repayment intent.",
+  ],
+  keySections: [
+    { title: "Loan Amount & Disbursement", description: "States the amount lent and how and when the money was or will be transferred." },
+    { title: "Interest Rate", description: "Specifies the interest rate or explicitly states that the loan is interest-free. IRS rules (AFR) apply to interest-free family loans over $10,000." },
+    { title: "Repayment Schedule", description: "Documents the payment amounts, due dates, and method of payment." },
+    { title: "Default Provisions", description: "States what constitutes a default and what the lender can do to collect." },
+    { title: "Death of Lender", description: "Clarifies whether the debt must be repaid to the lender's estate or is forgiven upon the lender's death." },
+  ],
+  process: [
+    { title: "Agree on Terms", description: "Discuss and agree on the amount, interest (if any), and repayment schedule before drafting." },
+    { title: "Draft the Agreement", description: "Document all terms clearly — ambiguity causes disputes later." },
+    { title: "Sign & Keep Copies", description: "Both parties sign; each keeps a copy. Consider having signatures witnessed." },
+    { title: "Transfer Funds", description: "Transfer the loan amount by check or bank transfer to create a paper trail." },
+  ],
+  stateConsiderations: [
+    { title: "IRS Applicable Federal Rate (AFR)", description: "Family loans over $10,000 with below-market interest may have imputed interest for tax purposes. Consider charging at least the AFR." },
+    { title: "Statute of Limitations", description: "The time to sue on a written loan agreement varies by state (3–10 years). Document everything promptly." },
+    { title: "Usury Limits", description: "Even personal loans are subject to state usury laws. Verify your state's maximum interest rate." },
+  ],
+  mistakesToAvoid: [
+    "Making the loan without any written documentation — even a short email confirmation is better than nothing.",
+    "Being vague about the repayment schedule — specify exact dates and amounts.",
+    "Ignoring IRS rules on interest-free loans to family members over $10,000.",
+    "Not tracking payments — keep records of every payment received.",
+    "Lending more than you can afford to lose — even with a written agreement, collection is not guaranteed.",
+  ],
+  faq: [
+    { question: "Do I need to charge interest on a family loan?", answer: "No, but for loans over $10,000 the IRS may impute interest at the Applicable Federal Rate (AFR) even if you charge nothing. Consider charging at least the AFR to avoid tax complications." },
+    { question: "Is a personal loan agreement legally enforceable?", answer: "Yes. A signed personal loan agreement is a legally binding contract. The lender can sue in court to collect if the borrower defaults." },
+    { question: "What if the borrower cannot pay back the loan?", answer: "You can negotiate a new repayment plan, forgive the debt (which may be treated as a taxable gift), or pursue collection through the courts." },
+    { question: "Should I notarize a personal loan agreement?", answer: "Not required in most states but recommended for larger amounts. Notarization helps establish the document's authenticity." },
+  ],
+}
+
+const generalAffidavitDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a General Affidavit?",
+    body:
+      "A General Affidavit is a written statement of facts made under oath and signed before a notary public. The affiant (the person making the statement) swears or affirms that the facts stated are true. Affidavits are used in a wide variety of legal, financial, administrative, and personal contexts as a sworn substitute for live testimony.",
+  },
+  whyItMatters: [
+    "Provides a legally admissible sworn statement for courts and agencies.",
+    "Substitutes for in-person testimony when the affiant cannot appear.",
+    "Establishes facts in the official record with the weight of an oath.",
+    "Required for many government, legal, and financial processes.",
+    "False statements in an affidavit constitute perjury — a serious crime.",
+  ],
+  keySections: [
+    { title: "Affiant Identification", description: "Identifies the person making the sworn statement — full legal name, address, and state." },
+    { title: "Factual Statements", description: "Numbered paragraphs containing specific, personal-knowledge facts stated in first person." },
+    { title: "Oath or Affirmation Clause", description: "States that the affiant swears or affirms the truth of the statements under penalty of perjury." },
+    { title: "Signature Block", description: "Signed by the affiant in the presence of the notary public." },
+    { title: "Notary Acknowledgment", description: "Completed by a licensed notary public who witnesses the signature and administers the oath." },
+  ],
+  process: [
+    { title: "Identify the Purpose", description: "Determine what facts need to be sworn to and for which proceeding or institution." },
+    { title: "Draft the Factual Statements", description: "Write clear, numbered paragraphs of facts within your personal knowledge — no legal conclusions." },
+    { title: "Appear Before a Notary", description: "Do not sign until you are in front of a notary public who will administer the oath." },
+    { title: "Submit to the Recipient", description: "Deliver the executed affidavit to the court, agency, or institution that requested it." },
+  ],
+  stateConsiderations: [
+    { title: "Notary Requirements", description: "All states require a licensed notary public to witness the signing and administer the oath." },
+    { title: "Caption & Jurisdiction", description: "If the affidavit is for a court proceeding, include the exact case caption (court, case number, parties)." },
+    { title: "Unsworn Declaration", description: "Federal courts and some state courts accept unsworn declarations under 28 U.S.C. § 1746 without a notary — check the specific requirement." },
+  ],
+  mistakesToAvoid: [
+    "Including legal conclusions or opinions — affidavits should contain only facts within the affiant's personal knowledge.",
+    "Signing the affidavit before appearing before the notary.",
+    "Making statements about things you do not personally know — qualify uncertain facts with 'I believe' or use a different format.",
+    "Using vague language — courts require clear, specific, first-person factual statements.",
+    "Submitting a false affidavit — perjury charges can result in criminal prosecution.",
+  ],
+  faq: [
+    { question: "What is the difference between an affidavit and a declaration?", answer: "An affidavit is sworn before a notary public. A declaration is an unsworn statement that can be used in some federal courts under 28 U.S.C. § 1746 without a notary." },
+    { question: "Can anyone write an affidavit?", answer: "Yes, any competent adult can execute an affidavit. The statements must be within the affiant's personal knowledge and sworn before a notary." },
+    { question: "Can I use an affidavit instead of testifying in court?", answer: "Only if the court permits it. Courts generally prefer live testimony so the witness can be cross-examined. Check with the court or your attorney." },
+    { question: "How do I find a notary public?", answer: "Notaries are available at banks, UPS stores, libraries, and law offices. Many states allow remote online notarization (RON) via video call." },
+  ],
+}
+
 const detailContentBySlug: Record<string, DocumentDetailContent> = {
   nda: ndaDetail,
   llc_operating_agreement: llcDetail,
@@ -4012,6 +4705,22 @@ const detailContentBySlug: Record<string, DocumentDetailContent> = {
   month_to_month_lease: monthToMonthLeaseDetail,
   at_will_employment_contract: atWillEmploymentDetail,
   triple_net_lease: tripleNetLeaseDetail,
+  // ── New catalog documents ─────────────────────────────────────────────────
+  employee_nda: employeeNdaDetail,
+  asset_purchase_agreement: assetPurchaseAgreementDetail,
+  master_service_agreement: masterServiceAgreementDetail,
+  general_partnership_agreement: generalPartnershipAgreementDetail,
+  fixed_term_employment_contract: fixedTermEmploymentDetail,
+  "1099_contractor_agreement": contractorAgreement1099Detail,
+  room_rental_agreement: roomRentalAgreementDetail,
+  sublease_agreement: subleaseAgreementDetail,
+  living_will: livingWillDetail,
+  simple_will: simpleWillDetail,
+  demand_letter_unpaid_invoice: demandLetterInvoiceDetail,
+  small_claims_demand_letter: smallClaimsDemandLetterDetail,
+  secured_promissory_note: securedPromissoryNoteDetail,
+  personal_loan_agreement: personalLoanAgreementDetail,
+  general_affidavit: generalAffidavitDetail,
 }
 
 export function getDocumentDetailContent(slug: string): DocumentDetailContent | null {
