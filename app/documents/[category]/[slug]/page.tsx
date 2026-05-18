@@ -31,6 +31,12 @@ import type { Metadata } from "next"
 import { getDocumentContent } from "@/lib/document-content"
 import { getDocumentDetailContent } from "@/lib/document-detail-content"
 import { getDocumentSeo, getCanonicalUrlByParts } from "@/lib/document-seo"
+import {
+  parseStatePageSlug,
+  getStatePageData,
+  getStatePageStaticParams,
+  getSiblingStatePages,
+} from "@/lib/state-pages"
 
 const statesCovered = [
   "California", "New York", "Texas", "Florida", "Illinois",
@@ -50,16 +56,47 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return documentCatalog.map((doc) => ({
+  const docParams = documentCatalog.map((doc) => ({
     category: doc.category,
     slug: doc.slug,
   }))
+  const stateParams = getStatePageStaticParams()
+  return [...docParams, ...stateParams]
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category, slug } = await params
   const doc = getDocumentBySlug(slug)
-  if (!doc || doc.category !== category) return {}
+
+  if (!doc || doc.category !== category) {
+    // Check if this is a state-specific page
+    const parsed = parseStatePageSlug(slug)
+    if (parsed && parsed.doc.category === category) {
+      const stateData = getStatePageData(parsed.stateSlug, parsed.docSlug)
+      if (stateData) {
+        const canonical = `https://legallawdocs.com/documents/${category}/${slug}`
+        return {
+          title: stateData.seoTitle,
+          description: stateData.metaDescription,
+          alternates: { canonical },
+          authors: [{ name: "LegalLawDocs.com" }],
+          robots: {
+            index: true,
+            follow: true,
+            googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+          },
+          openGraph: {
+            type: "website",
+            url: canonical,
+            title: stateData.seoTitle,
+            description: stateData.metaDescription,
+            siteName: "LegalLawDocs.com",
+          },
+        }
+      }
+    }
+    return {}
+  }
 
   const seo = getDocumentSeo(slug)
   const canonical = getCanonicalUrlByParts(category, slug)
@@ -98,10 +135,259 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const { category, slug } = await params
   const doc = getDocumentBySlug(slug)
 
+  // ── State page branch ─────────────────────────────────────────────────────
   if (!doc || doc.category !== category) {
-    notFound()
+    const parsed = parseStatePageSlug(slug)
+    if (!parsed || parsed.doc.category !== category) {
+      notFound()
+    }
+
+    const stateData = getStatePageData(parsed.stateSlug, parsed.docSlug)
+    if (!stateData) notFound()
+
+    const siblings = getSiblingStatePages(parsed.docSlug, parsed.stateSlug)
+    const { state, doc: stateDoc, pageTitle, notes } = stateData
+    const generateUrl = `/documents/${category}/${slug}/generate`
+    const parentDocUrl = `/documents/${stateDoc.category}/${stateDoc.slug}`
+
+    const stateFaqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: notes.faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    }
+
+    return (
+      <div className="min-h-screen">
+        <Header />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(stateFaqSchema) }}
+        />
+
+        {/* Breadcrumb */}
+        <div className="border-b border-border/30 bg-secondary/20">
+          <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">
+            <Breadcrumb
+              items={[
+                { label: "Documents", href: "/documents" },
+                { label: stateDoc.category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), href: `/documents/${stateDoc.category}` },
+                { label: stateDoc.title, href: parentDocUrl },
+                { label: `${state.name} Form` },
+              ]}
+            />
+          </div>
+        </div>
+
+        <main>
+          {/* Hero */}
+          <section className="relative overflow-hidden border-b border-border/40 py-16 lg:py-20">
+            <div className="pointer-events-none absolute inset-0 grid-pattern animate-grid-fade" />
+            <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+                <div>
+                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary">
+                    <MapPin className="h-3.5 w-3.5" />
+                    <span>{state.name} State Form</span>
+                  </div>
+                  <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+                    {pageTitle}
+                  </h1>
+                  <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                    Generate a {stateDoc.title.toLowerCase()} tailored to {state.name} law. Our AI incorporates {state.abbr}-specific statutory requirements, disclosure obligations, and legal standards into every document.
+                  </p>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <Button size="lg" className="gap-2" asChild>
+                      <Link href={generateUrl}>
+                        <Sparkles className="h-4 w-4" />
+                        Generate {state.abbr} {stateDoc.title}
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link href={parentDocUrl}>View all {stateDoc.title} types</Link>
+                    </Button>
+                  </div>
+                  <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{state.name} law compliant</div>
+                    <div className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" />Ready in minutes</div>
+                    <div className="flex items-center gap-1.5"><Download className="h-4 w-4 text-primary" />PDF & DOCX</div>
+                  </div>
+                </div>
+
+                {/* Price card */}
+                <div className="relative lg:pl-8">
+                  <div className="rounded-2xl border border-border/60 bg-card/80 p-8 shadow-xl backdrop-blur-sm">
+                    <div className="text-center">
+                      <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">State-Specific Document</div>
+                      <div className="text-5xl font-bold text-foreground">$7<span className="text-2xl text-muted-foreground">.99</span></div>
+                      <p className="mt-2 text-sm text-muted-foreground">One-time · instant download</p>
+                    </div>
+                    <ul className="mt-6 space-y-3">
+                      {[
+                        `${state.name} statutory requirements`,
+                        "AI-powered Q&A generation",
+                        "Instant PDF & DOCX",
+                        "Attorney-reviewed framework",
+                        "30-day re-download access",
+                      ].map((feature) => (
+                        <li key={feature} className="flex items-center gap-2.5 text-sm">
+                          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className="mt-6 w-full gap-2" size="lg" asChild>
+                      <Link href={generateUrl}>
+                        <Zap className="h-4 w-4" />
+                        Start Now
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* State Law Requirements */}
+          <section className="border-b border-border/40 bg-secondary/20 py-16">
+            <div className="mx-auto max-w-5xl px-4 lg:px-8">
+              <h2 className="font-serif text-3xl font-bold text-foreground">
+                {state.name} Legal Requirements
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Key {state.abbr} statutes and obligations that apply to your {stateDoc.title.toLowerCase()}.
+              </p>
+
+              <div className="mt-8 grid gap-6 lg:grid-cols-2">
+                {/* Requirements */}
+                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold text-foreground">Requirements</h3>
+                  </div>
+                  <ul className="space-y-3">
+                    {notes.requirements.map((req, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        {req}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Restrictions */}
+                <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Shield className="h-5 w-5 text-destructive" />
+                    <h3 className="font-semibold text-foreground">Restrictions & Limits</h3>
+                  </div>
+                  <ul className="space-y-3">
+                    {notes.restrictions.map((restriction, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-destructive" />
+                        {restriction}
+                      </li>
+                    ))}
+                  </ul>
+                  {notes.noticeRequirements && (
+                    <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
+                      <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Notice Requirements</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{notes.noticeRequirements}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="border-b border-border/40 py-16">
+            <div className="mx-auto max-w-3xl px-4 lg:px-8">
+              <h2 className="font-serif text-3xl font-bold text-foreground">
+                {state.name} {stateDoc.title} FAQ
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Common questions about {stateDoc.title.toLowerCase()}s under {state.name} law.
+              </p>
+              <div className="mt-8 space-y-4">
+                {notes.faq.map((item, i) => (
+                  <details key={i} className="group rounded-xl border border-border/60 bg-card/60 p-5 open:border-primary/30">
+                    <summary className="flex cursor-pointer items-start justify-between gap-4 font-medium text-foreground list-none">
+                      <span>{item.question}</span>
+                      <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
+                    </summary>
+                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Generate CTA */}
+          <section className="border-b border-border/40 bg-primary/5 py-16">
+            <div className="mx-auto max-w-2xl px-4 text-center lg:px-8">
+              <h2 className="font-serif text-3xl font-bold text-foreground">
+                Ready to Create Your {state.name} {stateDoc.title}?
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Our AI generates a {state.abbr}-compliant {stateDoc.title.toLowerCase()} in minutes — incorporating the statutory requirements above into every clause.
+              </p>
+              <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <Button size="lg" className="gap-2" asChild>
+                  <Link href={generateUrl}>
+                    <Sparkles className="h-4 w-4" />
+                    Generate {state.abbr} {stateDoc.title}
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href={parentDocUrl}>
+                    View all {stateDoc.title} options
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          {/* Sibling state pages */}
+          {siblings.length > 0 && (
+            <section className="py-16">
+              <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                <h2 className="font-serif text-2xl font-bold text-foreground">
+                  {stateDoc.title} by State
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Laws vary significantly by state. Find the right form for your location.
+                </p>
+                <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {siblings.map((sibling) => (
+                    <Link
+                      key={sibling.stateSlug}
+                      href={sibling.url}
+                      className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                    >
+                      <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                      {sibling.stateName}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          <LegalDisclaimer />
+        </main>
+
+        <Footer />
+      </div>
+    )
   }
 
+  // ── Standard document page ────────────────────────────────────────────────
   const subscription = await getSubscriptionFromSession()
   const hasActiveSubscription = subscription?.isActive ?? false
 

@@ -2,6 +2,7 @@ import { MetadataRoute } from "next"
 import { documentCatalog } from "@/lib/document-catalog"
 import { categories } from "@/lib/categories"
 import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
+import { getStatePageStaticParams } from "@/lib/state-pages"
 
 const BASE_URL = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://legallawdocs.com"
 
@@ -50,8 +51,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
     .filter(Boolean) as MetadataRoute.Sitemap
 
+  // ── State-specific document pages (Sprint 6) ─────────────────────────────
+  const stateParams = getStatePageStaticParams()
+  const statePages: MetadataRoute.Sitemap = stateParams.map(({ category, slug }) => ({
+    url: `${BASE_URL}/documents/${category}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.78,
+  }))
+
   // NOTE: generate, preview, checkout, and download pages are excluded.
   // They are disallowed in robots.ts and should not be indexed.
 
-  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages]
+  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages]
 }
