@@ -8,7 +8,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react"
-import { documentTypes } from "@/lib/document-data"
+import { documentCatalog } from "@/lib/document-catalog"
 
 const categories = [
   { id: "all", label: "All Documents" },
@@ -18,15 +18,15 @@ const categories = [
   { id: "personal", label: "Personal" },
 ]
 
-// Convert documentTypes to documents format with proper slugs
-const documents = documentTypes.map((doc) => ({
+// Build documents list from catalog with proper page paths
+const documents = documentCatalog.map((doc) => ({
   title: doc.title,
   category: doc.category,
   icon: doc.icon,
   description: doc.description,
   popular: doc.popular,
   color: doc.color,
-  slug: `/documents/${doc.slug}`,
+  slug: `/documents/${doc.category}/${doc.slug}`,
 }))
 
 export function DocumentsSection() {
