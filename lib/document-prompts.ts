@@ -152,6 +152,52 @@ Specify the state where the vehicle will be registered and include any state-spe
 Include both parties' names, detailed description of the property (item, brand, model, condition, approximate value), the nature of the arrangement (custody, shared use, loan, or transfer), duration, responsibilities for maintenance or damage, and terms for return or resolution.
 Include a dispute resolution clause and what happens if one party fails to comply. ${intentText}`.trim()
 
+    // ── Tier 1 Standalone Intent Documents ────────────────────────────────────
+    case "mutual-non-disclosure-agreement":
+      return `
+This is a MUTUAL (bilateral) NDA — both parties have confidentiality obligations. Include mutual definitions of confidential information, mutual obligations of confidentiality and limited use, exclusions (public domain, independent development, legal compulsion), term and duration, return or destruction of materials, remedies including injunctive relief, and governing law.
+Make clear in the recitals that BOTH parties are disclosing and receiving confidential information. Include a signature block for both authorized representatives. ${intentText}`.trim()
+
+    case "unilateral-non-disclosure-agreement":
+      return `
+This is a UNILATERAL (one-way) NDA — only the receiving party has confidentiality obligations. Identify the disclosing party and the receiving party clearly. Include definition of confidential information, one-directional confidentiality obligation on the receiving party only, permitted use limited to the stated purpose, exclusions, term and duration, return or destruction of materials, and remedies.
+The disclosing party retains freedom to use its own information as it chooses. Include signature block for both parties. ${intentText}`.trim()
+
+    case "single-member-llc-operating-agreement":
+      return `
+This is for a SINGLE-MEMBER LLC with one owner (100% interest). Include the sole member's name and address, LLC name, state of formation, registered agent, effective date of the agreement, initial capital contribution, tax treatment election (default disregarded entity or S-Corp/C-Corp election), management authority (sole member manages), distribution provisions, indemnification of the member, dissolution procedures, and a statement that the member's personal assets are separate from LLC assets.
+Ensure the document clearly states it is a single-member operating agreement. ${intentText}`.trim()
+
+    case "multi-member-llc-operating-agreement":
+      return `
+This is for a MULTI-MEMBER LLC with two or more owners. Include a membership table listing all members, ownership percentages, and initial capital contributions, whether the LLC is member-managed or manager-managed, voting thresholds for ordinary decisions (majority) and major decisions (supermajority), profit/loss allocation (default pro-rata unless specified otherwise), distribution provisions, restrictions on transfer of membership interests and right of first refusal, admission of new members, member withdrawal and buyout procedures, dissolution and winding-up provisions, and tax treatment.
+Include a deadlock resolution mechanism if members hold equal interests. ${intentText}`.trim()
+
+    case "durable-power-of-attorney":
+      return `
+Include the principal's and agent's full legal names and addresses. Include the statutory durability clause for the applicable state (the power survives incapacity). List all financial powers being granted: banking, investment management, real estate, business operations, tax filing, and any 'hot powers' (gifting, amending trusts, changing beneficiary designations) only if expressly authorized.
+Include a successor agent designation, specify whether effective immediately or 'springing' upon incapacity, and include the notarization and witness block required by the state. Make clear this is a financial DPOA — not a healthcare power. ${intentText}`.trim()
+
+    case "medical-power-of-attorney":
+      return `
+Include the principal's and healthcare agent's full legal names and contact information. Include the scope of healthcare decision-making authority, a HIPAA authorization clause granting the agent access to protected health information, specific instructions on life-sustaining treatment, resuscitation preferences, artificial nutrition/hydration, and organ donation preferences.
+Name a successor healthcare agent. Include any limitations on the agent's authority. Add the state-required statutory language and the correct witness or notarization block. Clearly distinguish this from a financial power of attorney. ${intentText}`.trim()
+
+    case "month-to-month-lease-agreement":
+      return `
+Include landlord and tenant names and contact information, full rental property address and unit, monthly rent amount, due date, and grace period, accepted payment methods, security deposit amount and state-required return timeline, notice period required to terminate (confirm state law — most states require 30 days minimum), rent increase notice requirement, tenant and landlord maintenance responsibilities, pet and smoking policy, entry notice requirements, and any state-required disclosures.
+Emphasize the month-to-month (periodic tenancy) nature of the agreement and the notice requirements for termination by either party. ${intentText}`.trim()
+
+    case "at-will-employment-contract":
+      return `
+Include a clear, prominent at-will employment statement that either party may terminate the relationship at any time for any lawful reason. Include job title, duties, and reporting structure, start date, work location (in-person, remote, or hybrid), compensation (salary or hourly rate), pay frequency, bonus eligibility, benefits summary, PTO and leave policy, confidentiality obligations, IP assignment clause, any non-compete or non-solicitation provisions (note state law limitations), termination procedures, and an integration clause.
+Do NOT include language guaranteeing continued employment or implying a fixed term. ${intentText}`.trim()
+
+    case "triple-net-lease-agreement":
+      return `
+This is a TRIPLE NET (NNN) commercial lease. Include landlord and tenant identification, full property address and description, permitted use clause, lease term and commencement date, base rent and annual escalation schedule (CPI or fixed percentage), tenant's NNN obligations (property taxes, building insurance, and maintenance including HVAC, plumbing, electrical), monthly estimated NNN payment, annual CAM reconciliation process, landlord's responsibilities (if any — typically roof, structure, and foundation in modified NNN leases), tenant improvement allowance, assignment and subletting rights, renewal options and process, default and remedies, and required insurance types and minimums.
+Be explicit about which expenses are included in and excluded from the tenant's NNN obligations. ${intentText}`.trim()
+
     default:
       return `Ensure the document includes all standard sections for this document type. ${intentText}`.trim()
   }
@@ -192,6 +238,16 @@ function normaliseSlug(slug: string): string {
     general_release_of_liability: "general-release-of-liability",
     vehicle_bill_of_sale: "vehicle-bill-of-sale",
     personal_property_agreement: "personal-property-agreement",
+    // ── Tier 1 Standalone Intent Documents ───────────────────────────────
+    mutual_nda: "mutual-non-disclosure-agreement",
+    unilateral_nda: "unilateral-non-disclosure-agreement",
+    single_member_llc: "single-member-llc-operating-agreement",
+    multi_member_llc: "multi-member-llc-operating-agreement",
+    durable_power_of_attorney: "durable-power-of-attorney",
+    medical_power_of_attorney: "medical-power-of-attorney",
+    month_to_month_lease: "month-to-month-lease-agreement",
+    at_will_employment_contract: "at-will-employment-contract",
+    triple_net_lease: "triple-net-lease-agreement",
   }
   return legacyMap[slug] ?? slug
 }

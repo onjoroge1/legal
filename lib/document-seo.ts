@@ -483,6 +483,162 @@ const seoBySlug: Record<string, DocumentSeo> = {
       "property custody agreement",
     ],
   },
+
+  // ── Tier 1 Standalone Intent Documents ────────────────────────────────────
+  "mutual-non-disclosure-agreement": {
+    title: "Mutual Non-Disclosure Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a mutual NDA online in minutes. Protect confidential information shared in both directions with a state-compliant bilateral non-disclosure agreement and instant PDF download.",
+    ogTitle: "Mutual NDA Generator — Bilateral Non-Disclosure Agreement",
+    ogDescription: "Build a mutual NDA that protects both parties' confidential information with state-specific compliance.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Mutual Non-Disclosure Agreement",
+    keywords: [
+      "mutual nda",
+      "mutual non-disclosure agreement",
+      "bilateral nda",
+      "two-way nda",
+      "mutual confidentiality agreement",
+      "mutual nda template",
+      "create mutual nda",
+    ],
+  },
+  "unilateral-non-disclosure-agreement": {
+    title: "Unilateral Non-Disclosure Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a one-way NDA online. Protect confidential information you share with vendors, employees, or partners with a state-compliant unilateral non-disclosure agreement.",
+    ogTitle: "Unilateral NDA Generator — One-Way Non-Disclosure Agreement",
+    ogDescription: "Generate a one-way NDA that protects information you disclose with enforceable confidentiality obligations.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Unilateral Non-Disclosure Agreement",
+    keywords: [
+      "unilateral nda",
+      "one-way nda",
+      "unilateral non-disclosure agreement",
+      "one-sided nda",
+      "unilateral confidentiality agreement",
+      "unilateral nda template",
+    ],
+  },
+  "single-member-llc-operating-agreement": {
+    title: "Single-Member LLC Operating Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a single-member LLC operating agreement online. Establish your one-owner LLC's management rules, distributions, and liability protections with state-specific compliance and instant download.",
+    ogTitle: "Single-Member LLC Operating Agreement Generator",
+    ogDescription: "Generate a compliant single-member LLC operating agreement to protect your liability shield and satisfy banking requirements.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Single-Member LLC Operating Agreement",
+    keywords: [
+      "single member llc operating agreement",
+      "single member llc",
+      "sole member llc",
+      "smllc operating agreement",
+      "one member llc agreement",
+      "single member llc template",
+    ],
+  },
+  "multi-member-llc-operating-agreement": {
+    title: "Multi-Member LLC Operating Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a multi-member LLC operating agreement online. Define ownership splits, voting rights, profit distributions, and member exit procedures with state-compliant terms and instant download.",
+    ogTitle: "Multi-Member LLC Operating Agreement Generator",
+    ogDescription: "Generate a comprehensive multi-member LLC operating agreement with custom ownership splits and management structure.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Multi-Member LLC Operating Agreement",
+    keywords: [
+      "multi member llc operating agreement",
+      "multi-member llc",
+      "multiple member llc",
+      "llc partnership agreement",
+      "member managed llc agreement",
+      "multi member llc template",
+    ],
+  },
+  "durable-power-of-attorney": {
+    title: "Durable Power of Attorney Form — Create Online | LegalLawDocs.com",
+    description:
+      "Create a durable power of attorney online. Grant an agent authority that survives incapacity with state-specific durability language, notarization requirements, and instant download.",
+    ogTitle: "Durable Power of Attorney Generator",
+    ogDescription: "Generate a durable POA that remains effective if you become incapacitated — tailored to your state's requirements.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Durable Power of Attorney",
+    keywords: [
+      "durable power of attorney",
+      "durable poa",
+      "financial power of attorney",
+      "durable power of attorney form",
+      "durable poa template",
+      "durable power of attorney generator",
+    ],
+  },
+  "medical-power-of-attorney": {
+    title: "Medical Power of Attorney Form — Create Online | LegalLawDocs.com",
+    description:
+      "Create a medical power of attorney online. Designate a healthcare agent with state-specific statutory language, HIPAA authorization, and correct witness or notarization requirements.",
+    ogTitle: "Medical Power of Attorney Generator",
+    ogDescription: "Generate a medical POA that gives your agent clear healthcare decision authority with full state compliance.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Medical Power of Attorney",
+    keywords: [
+      "medical power of attorney",
+      "healthcare power of attorney",
+      "healthcare proxy",
+      "medical poa",
+      "health care directive",
+      "medical poa form",
+    ],
+  },
+  "month-to-month-lease-agreement": {
+    title: "Month-to-Month Lease Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a month-to-month lease agreement online. Flexible rental contracts that renew monthly with your state's required notice periods, rent increase rules, and mandatory disclosures.",
+    ogTitle: "Month-to-Month Lease Agreement Generator",
+    ogDescription: "Generate a compliant month-to-month rental agreement with flexible terms and state-required notice provisions.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Month-to-Month Lease Agreement",
+    keywords: [
+      "month to month lease",
+      "month-to-month rental agreement",
+      "month to month lease agreement",
+      "rolling lease agreement",
+      "flexible lease template",
+      "month to month lease generator",
+    ],
+  },
+  "at-will-employment-contract": {
+    title: "At-Will Employment Contract Template | LegalLawDocs.com",
+    description:
+      "Create an at-will employment contract online. Formalize the employment relationship with clear compensation, benefits, and policy terms while preserving at-will status. State-compliant with instant download.",
+    ogTitle: "At-Will Employment Contract Generator",
+    ogDescription: "Generate an at-will employment contract with clear compensation and policy terms tailored to your state's labor laws.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - At-Will Employment Contract",
+    keywords: [
+      "at will employment contract",
+      "at-will employment agreement",
+      "at will employment letter",
+      "at will job offer letter",
+      "at will contract template",
+      "at will employment contract generator",
+    ],
+  },
+  "triple-net-lease-agreement": {
+    title: "Triple Net (NNN) Lease Agreement Template | LegalLawDocs.com",
+    description:
+      "Create a triple net lease agreement online. Structure NNN commercial leases where tenants pay base rent plus property taxes, insurance, and maintenance with professional, enforceable terms.",
+    ogTitle: "Triple Net Lease Agreement Generator",
+    ogDescription: "Generate a professional NNN lease agreement with full CAM, tax, and insurance pass-through provisions.",
+    ogImage: DEFAULT_IMAGE,
+    ogImageAlt: "LegalLawDocs.com - Triple Net Lease Agreement",
+    keywords: [
+      "triple net lease",
+      "nnn lease",
+      "triple net lease agreement",
+      "nnn lease template",
+      "triple net commercial lease",
+      "nnn lease generator",
+    ],
+  },
 }
 
 export function getDocumentSeo(slug: string): DocumentSeo | null {

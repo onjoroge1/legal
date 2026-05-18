@@ -3077,6 +3077,902 @@ const personalPropertyAgreementDetail: DocumentDetailContent = {
   ],
 }
 
+const mutualNdaDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Mutual Non-Disclosure Agreement?",
+    body:
+      "A Mutual Non-Disclosure Agreement (mutual NDA or bilateral NDA) binds both parties to confidentiality obligations simultaneously. Unlike a one-way NDA, each party agrees to protect the other's sensitive information. Mutual NDAs are the standard choice for negotiations, joint ventures, and partnerships where both sides share proprietary data, trade secrets, or business strategies.",
+  },
+  whyItMatters: [
+    "Ensures both parties' confidential information is equally protected.",
+    "Sets the legal foundation for open negotiations and due-diligence discussions.",
+    "Creates enforceable remedies — including injunctive relief — if either party breaches.",
+    "Signals professionalism and good faith before a business relationship begins.",
+    "Reduces the risk of misappropriated trade secrets or competitive intelligence.",
+  ],
+  keySections: [
+    {
+      title: "Mutual Confidentiality Obligations",
+      description: "Binds both parties to keep the other's information confidential and limits how it may be used.",
+    },
+    {
+      title: "Definition of Confidential Information",
+      description: "Specifies what categories of information are protected — written, oral, digital, or marked as confidential.",
+    },
+    {
+      title: "Exclusions",
+      description: "Carves out information that is already public, independently developed, or lawfully obtained from a third party.",
+    },
+    {
+      title: "Term and Duration",
+      description: "Sets how long confidentiality obligations last after the agreement ends.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Identify Both Parties",
+      description: "List the full legal names and addresses of both disclosing/receiving parties.",
+    },
+    {
+      title: "Step 2: Define the Purpose",
+      description: "State the specific business relationship or transaction triggering the NDA.",
+    },
+    {
+      title: "Step 3: Specify Confidential Information",
+      description: "Describe the categories of information each party will share.",
+    },
+    {
+      title: "Step 4: Set the Term",
+      description: "Choose a confidentiality period appropriate to the sensitivity of the information (typically 2–5 years).",
+    },
+    {
+      title: "Step 5: Execute with Both Signatures",
+      description: "Both authorized representatives sign and each party retains a copy.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "Trade Secret Statutes",
+      description: "All states have adopted trade secret laws based on the Uniform Trade Secrets Act or the federal Defend Trade Secrets Act — your NDA's definitions should align with these.",
+    },
+    {
+      title: "Non-Compete Carve-Outs",
+      description: "If the NDA includes non-solicitation or non-compete clauses, state law governs enforceability (e.g., California bans most non-competes).",
+    },
+    {
+      title: "Duration Limits",
+      description: "Some states disfavor indefinite or unreasonably long confidentiality terms; keep the term proportional to the sensitivity of the information.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Making confidentiality obligations asymmetric in a document labeled 'mutual.'",
+    "Defining confidential information so broadly that exclusions are swallowed.",
+    "Omitting the specific purpose — overly broad NDAs are harder to enforce.",
+    "Forgetting to get signatures from authorized representatives (not just employees).",
+    "Setting an indefinite term without a review mechanism.",
+  ],
+  faq: [
+    {
+      question: "When should I use a mutual NDA instead of a one-way NDA?",
+      answer: "Use a mutual NDA whenever both parties will be sharing sensitive information — such as in merger discussions, joint ventures, or co-development agreements. Use a one-way NDA when only one party is disclosing.",
+    },
+    {
+      question: "Can a mutual NDA include a non-compete clause?",
+      answer: "Yes, but enforceability depends on your state. California, for example, bans most non-compete clauses. A non-solicitation clause is generally more enforceable across states.",
+    },
+    {
+      question: "How long should a mutual NDA last?",
+      answer: "Most mutual NDAs last 2–5 years from the date of signing or from the date information is disclosed. The right term depends on how long the information remains competitively sensitive.",
+    },
+    {
+      question: "Does a mutual NDA need to be notarized?",
+      answer: "Not typically. Mutual NDAs are enforceable with authorized signatures alone. Notarization is not required but can add formality.",
+    },
+    {
+      question: "What remedies are available if the mutual NDA is breached?",
+      answer: "Remedies include monetary damages for losses caused by the breach and injunctive relief to immediately stop further disclosure. Courts often grant injunctions in NDA cases because damages can be hard to quantify.",
+    },
+  ],
+}
+
+const unilateralNdaDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Unilateral Non-Disclosure Agreement?",
+    body:
+      "A Unilateral Non-Disclosure Agreement (one-way NDA) creates confidentiality obligations only for the receiving party. The disclosing party shares proprietary information — trade secrets, business plans, financial data — while the recipient is legally bound to keep it confidential and use it only for the agreed purpose. This is the most common NDA structure for vendor relationships, pre-employment screening, and investor presentations.",
+  },
+  whyItMatters: [
+    "Protects sensitive information you share with vendors, candidates, or investors.",
+    "Creates a legally enforceable obligation on the receiving party only.",
+    "Provides clear remedies if the recipient discloses or misuses your information.",
+    "Keeps the agreement simple when only one side is sharing sensitive data.",
+    "Demonstrates professionalism and seriousness before sharing proprietary information.",
+  ],
+  keySections: [
+    {
+      title: "One-Way Confidentiality Obligation",
+      description: "Only the receiving party is bound — the disclosing party retains freedom to share information as needed.",
+    },
+    {
+      title: "Definition of Confidential Information",
+      description: "Specifies what information the receiving party must protect.",
+    },
+    {
+      title: "Permitted Use",
+      description: "Limits how the recipient may use the information to the specific stated purpose.",
+    },
+    {
+      title: "Return or Destruction",
+      description: "Requires the recipient to return or destroy materials at the end of the engagement.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Identify the Parties",
+      description: "Name the disclosing party and the receiving party with full legal names.",
+    },
+    {
+      title: "Step 2: Define the Purpose",
+      description: "State the specific reason the information is being shared.",
+    },
+    {
+      title: "Step 3: Describe the Information",
+      description: "Be specific about what categories of information are protected.",
+    },
+    {
+      title: "Step 4: Set the Term",
+      description: "Choose a confidentiality period appropriate to the sensitivity (typically 1–3 years).",
+    },
+    {
+      title: "Step 5: Execute",
+      description: "Both parties sign; the receiving party's signature is the key enforcement element.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "Trade Secret Overlap",
+      description: "Information that qualifies as a trade secret may be protected even without an NDA under the Defend Trade Secrets Act. An NDA provides additional, clearer contractual remedies.",
+    },
+    {
+      title: "Employee NDAs",
+      description: "Some states (e.g., California) restrict what employers can require employees to keep confidential. Employee-focused NDAs must be carefully drafted.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Using mutual NDA language in a one-way NDA — this creates unintended obligations on the disclosing party.",
+    "Defining confidential information so vaguely that it is unenforceable.",
+    "Failing to specify the permitted use — courts scrutinize NDAs that restrict recipients without clear purpose.",
+    "Not requiring the recipient's signature before sharing information.",
+    "Omitting a return-or-destroy clause.",
+  ],
+  faq: [
+    {
+      question: "What is the difference between a unilateral and mutual NDA?",
+      answer: "A unilateral NDA binds only the receiving party. A mutual NDA binds both parties. Use unilateral when only you are sharing sensitive information.",
+    },
+    {
+      question: "Can I use a unilateral NDA for an employee?",
+      answer: "Yes. Employer-to-employee NDAs are typically unilateral. However, state law may limit what can be covered — particularly in California, which restricts many employment-related confidentiality agreements.",
+    },
+    {
+      question: "Do I need an NDA before a pitch or investor meeting?",
+      answer: "It depends. Many investors refuse to sign NDAs before initial pitches. For detailed technical disclosures or post-term sheet due diligence, a unilateral NDA is appropriate.",
+    },
+    {
+      question: "How long is a unilateral NDA enforceable?",
+      answer: "Typically 1–5 years. The appropriate term depends on how long the information retains competitive value. Trade secrets can sometimes be protected longer.",
+    },
+    {
+      question: "Is a unilateral NDA enforceable in court?",
+      answer: "Yes, if it is properly drafted, signed, and supported by consideration. Courts generally enforce clear, specific NDAs where the receiving party received something of value.",
+    },
+  ],
+}
+
+const singleMemberLlcDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Single-Member LLC Operating Agreement?",
+    body:
+      "A Single-Member LLC Operating Agreement is the governing document for a limited liability company with exactly one owner. While many states do not legally require it, this document is essential for maintaining the liability shield between you and your business, satisfying bank and lender requirements, and establishing tax treatment elections. Without one, your LLC may be treated as a sole proprietorship or subjected to state default rules.",
+  },
+  whyItMatters: [
+    "Reinforces the legal separation between you and your LLC — protecting personal assets.",
+    "Required by most banks to open a business account.",
+    "Establishes whether your LLC is taxed as a sole proprietor, S-Corp, or C-Corp.",
+    "Documents management authority and operational procedures.",
+    "Protects you if the LLC structure is challenged in court.",
+  ],
+  keySections: [
+    {
+      title: "Member and Ownership",
+      description: "Confirms the single member's identity and 100% ownership interest.",
+    },
+    {
+      title: "Capital Contributions",
+      description: "Documents the initial capital invested by the member.",
+    },
+    {
+      title: "Management and Authority",
+      description: "Grants full management authority to the sole member.",
+    },
+    {
+      title: "Distributions and Tax Treatment",
+      description: "Sets distribution rules and records any tax election.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Confirm LLC Formation",
+      description: "Ensure your Articles of Organization are filed with the state before executing the operating agreement.",
+    },
+    {
+      title: "Step 2: Document Your Information",
+      description: "Provide your legal name, address, LLC name, and state of formation.",
+    },
+    {
+      title: "Step 3: Record Capital Contribution",
+      description: "State the amount and date of your initial capital investment.",
+    },
+    {
+      title: "Step 4: Set Tax Treatment",
+      description: "Elect how the LLC will be treated for federal tax purposes (disregarded entity is default for single-member LLCs).",
+    },
+    {
+      title: "Step 5: Sign and Store",
+      description: "Sign the agreement and keep a copy with your LLC's formation documents.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "States That Require an Operating Agreement",
+      description: "California, New York, Missouri, Maine, and Delaware require LLCs to have an operating agreement. Even where not required, it is strongly advisable.",
+    },
+    {
+      title: "Default State Rules",
+      description: "Without an operating agreement, your LLC's governance is controlled by your state's default LLC statute — which may not reflect your intentions.",
+    },
+    {
+      title: "Annual Report Requirements",
+      description: "Most states require LLCs to file annual or biennial reports to maintain active status. Your operating agreement does not replace this requirement.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Skipping the operating agreement because you are the only member.",
+    "Failing to update the operating agreement when the business changes significantly.",
+    "Commingling personal and business funds — this undermines your liability shield regardless of the operating agreement.",
+    "Not specifying successor provisions for what happens to the LLC if you become incapacitated or die.",
+    "Using a multi-member template that creates obligations that don't apply.",
+  ],
+  faq: [
+    {
+      question: "Does a single-member LLC need an operating agreement?",
+      answer: "Legally, most states do not require one, but practically every bank, lender, and investor will ask for it. It also protects your liability shield and documents your tax elections.",
+    },
+    {
+      question: "How is a single-member LLC taxed?",
+      answer: "By default, a single-member LLC is treated as a 'disregarded entity' — income and losses are reported on Schedule C of your personal tax return. You can elect S-Corp or C-Corp treatment by filing with the IRS.",
+    },
+    {
+      question: "Can I convert my single-member LLC to a multi-member LLC later?",
+      answer: "Yes. You would amend your operating agreement, file any required state paperwork, and issue membership interests to the new members. This should be done with legal guidance.",
+    },
+    {
+      question: "Do I need to notarize the operating agreement?",
+      answer: "Most states do not require notarization of an operating agreement. Your signature is sufficient. However, some states may require it to record real property transactions through the LLC.",
+    },
+    {
+      question: "What happens if I don't have an operating agreement?",
+      answer: "Your LLC will be governed by your state's default LLC statute. This can lead to unexpected outcomes regarding distributions, management, and dissolution.",
+    },
+  ],
+}
+
+const multiMemberLlcDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Multi-Member LLC Operating Agreement?",
+    body:
+      "A Multi-Member LLC Operating Agreement governs an LLC with two or more members. It is the foundational document defining each member's ownership percentage, capital contributions, voting rights, profit distributions, and what happens when a member wants to exit or transfer their interest. Unlike a partnership agreement or corporate bylaws, an LLC operating agreement offers maximum flexibility in structuring the relationship.",
+  },
+  whyItMatters: [
+    "Defines each member's ownership stake and capital contribution.",
+    "Prevents disputes by establishing voting, management, and distribution rules in advance.",
+    "Controls who can become a member and how interests are transferred.",
+    "Provides a buyout mechanism when a member leaves.",
+    "Protects all members from unexpected personal liability.",
+  ],
+  keySections: [
+    {
+      title: "Members and Ownership Table",
+      description: "Lists all members with ownership percentages and initial capital contributions.",
+    },
+    {
+      title: "Management Structure",
+      description: "Determines whether the LLC is member-managed or manager-managed.",
+    },
+    {
+      title: "Voting Rights",
+      description: "Sets voting thresholds for ordinary and major business decisions.",
+    },
+    {
+      title: "Transfer Restrictions",
+      description: "Limits who can acquire membership interests and grants rights of first refusal.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Confirm All Members",
+      description: "Collect legal names, addresses, and ownership percentages of all members.",
+    },
+    {
+      title: "Step 2: Choose Management Style",
+      description: "Decide whether day-to-day management will be handled by all members or a designated manager.",
+    },
+    {
+      title: "Step 3: Set Voting Rules",
+      description: "Define what percentage of membership interests are needed to approve ordinary vs. extraordinary decisions.",
+    },
+    {
+      title: "Step 4: Define Exit Provisions",
+      description: "Agree on how a departing member's interest will be valued and purchased.",
+    },
+    {
+      title: "Step 5: Execute and Distribute",
+      description: "All members sign the agreement and each retains a copy.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "State Mandatory Provisions",
+      description: "Some states have mandatory operating agreement provisions that cannot be waived — review your state's LLC act before finalizing.",
+    },
+    {
+      title: "Tax Classification",
+      description: "A multi-member LLC is treated as a partnership for federal tax purposes by default. Members must file Schedule K-1 and may elect S-Corp treatment.",
+    },
+    {
+      title: "Transfer and Assignment Rules",
+      description: "Many states distinguish between transferring economic rights (allowed) and transferring full membership (requiring all members' consent). Make sure your agreement addresses this clearly.",
+    },
+    {
+      title: "Deadlock Resolution",
+      description: "When members hold equal ownership, deadlocks are a real risk. Consider appointing a tiebreaker manager or including a buy-sell (shotgun) clause.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Failing to specify voting thresholds for major decisions like adding members, taking on debt, or dissolving the LLC.",
+    "Not including a buyout or right-of-first-refusal clause when a member exits.",
+    "Leaving profit distribution rules ambiguous — specify whether distributions are pro-rata or discretionary.",
+    "Using a single-member template for a multi-member LLC.",
+    "Forgetting to update the agreement when membership interests change.",
+    "Not addressing what happens if a member dies, becomes incapacitated, or files for bankruptcy.",
+  ],
+  faq: [
+    {
+      question: "Do all members need to sign the operating agreement?",
+      answer: "Yes. All members should sign the operating agreement to make it binding. A member who does not sign is not bound by its terms.",
+    },
+    {
+      question: "Can one member be removed from the LLC?",
+      answer: "This depends on the operating agreement and state law. A well-drafted agreement will specify the grounds and process for involuntary removal — typically requiring a supermajority vote.",
+    },
+    {
+      question: "How are profits distributed in a multi-member LLC?",
+      answer: "By default, profits are distributed proportionally to ownership percentage. The operating agreement can change this to reflect different economic arrangements.",
+    },
+    {
+      question: "What is the difference between a member-managed and manager-managed LLC?",
+      answer: "In a member-managed LLC, all members have authority to bind the company. In a manager-managed LLC, only designated managers (who may or may not be members) have management authority.",
+    },
+    {
+      question: "What is a buy-sell agreement and should my LLC have one?",
+      answer: "A buy-sell agreement sets the terms under which a departing member's interest must be sold. It is strongly recommended for any multi-member LLC to prevent deadlock and forced dissolution.",
+    },
+  ],
+}
+
+const durablePoaDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Durable Power of Attorney?",
+    body:
+      "A Durable Power of Attorney (DPOA) grants a trusted agent the authority to manage your financial, legal, and property affairs — and unlike a standard POA, this authority remains effective even if you become mentally incapacitated. The 'durable' feature is critical for elder-care planning: without it, a general POA automatically terminates when you lose capacity, leaving your family unable to manage your affairs without going to court.",
+  },
+  whyItMatters: [
+    "Remains effective if you become mentally incapacitated due to illness, accident, or cognitive decline.",
+    "Allows your agent to manage finances, pay bills, file taxes, and handle real estate without court intervention.",
+    "Avoids the expensive and time-consuming court process of establishing a guardianship or conservatorship.",
+    "Gives you control over who manages your affairs rather than leaving it to a court-appointed guardian.",
+    "Provides peace of mind for both you and your family in the event of a medical emergency.",
+  ],
+  keySections: [
+    {
+      title: "Durability Clause",
+      description: "The statutory language declaring that the POA survives the principal's incapacity — without this, the POA terminates when incapacity occurs.",
+    },
+    {
+      title: "Scope of Financial Powers",
+      description: "Enumerates the specific financial and legal actions the agent is authorized to take, from banking to real estate transactions.",
+    },
+    {
+      title: "Successor Agent",
+      description: "Names an alternate agent if the primary agent is unable or unwilling to serve.",
+    },
+    {
+      title: "Effective Date",
+      description: "Specifies whether the DPOA is immediately effective or 'springing' — only taking effect upon a physician's certification of incapacity.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Choose Your Agent",
+      description: "Select a trusted person — spouse, adult child, or close friend — with the financial literacy and integrity to manage your affairs.",
+    },
+    {
+      title: "Step 2: Define the Scope",
+      description: "Decide which financial powers to grant: banking, real estate, investments, tax filing, and/or gifting.",
+    },
+    {
+      title: "Step 3: Select Effective Date",
+      description: "Choose between immediate effectiveness or a 'springing' DPOA triggered by incapacity.",
+    },
+    {
+      title: "Step 4: Execute Properly",
+      description: "Sign before a notary and the required number of witnesses as specified by your state's law.",
+    },
+    {
+      title: "Step 5: Distribute Copies",
+      description: "Provide your agent and relevant institutions (banks, title companies) with certified copies.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "Statutory Short Form",
+      description: "Many states (New York, California, Illinois, etc.) have a statutory short-form DPOA that financial institutions are required to honor. Using the exact statutory language is critical in these states.",
+    },
+    {
+      title: "Witness and Notarization Requirements",
+      description: "Most states require notarization and one or two witnesses. Some states prohibit the agent from serving as a witness.",
+    },
+    {
+      title: "Hot Powers",
+      description: "Certain powers (making gifts, amending trusts, changing beneficiary designations) require express authorization in many states — they are not included by default.",
+    },
+    {
+      title: "Gifting Limits",
+      description: "Some states limit the agent's gifting authority to the annual IRS gift-tax exclusion unless the principal expressly authorizes larger gifts.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Using a general POA (non-durable) when you need protection against incapacity.",
+    "Failing to include the required statutory durability language.",
+    "Granting powers too broadly without understanding the agent's obligations.",
+    "Not naming a successor agent in case your primary agent is unavailable.",
+    "Failing to properly execute the document (missing notarization or required witnesses).",
+    "Not updating the DPOA after major life changes such as divorce or the death of the named agent.",
+  ],
+  faq: [
+    {
+      question: "What is the difference between a durable and a general power of attorney?",
+      answer: "A general power of attorney automatically terminates if you become incapacitated. A durable power of attorney continues in force during incapacity — which is its key purpose.",
+    },
+    {
+      question: "Can I revoke a durable power of attorney?",
+      answer: "Yes. As long as you are mentally competent, you can revoke a DPOA at any time by executing a written revocation and notifying your agent and any institutions relying on it.",
+    },
+    {
+      question: "What is a 'springing' durable power of attorney?",
+      answer: "A springing DPOA only takes effect upon the occurrence of a specified event — typically a physician's written certification that you lack capacity. This limits the agent's authority until it is needed.",
+    },
+    {
+      question: "Does a DPOA give my agent control over healthcare decisions?",
+      answer: "Not unless you specify it. For healthcare decisions, you need a separate Medical Power of Attorney (or Healthcare Proxy). A DPOA typically covers financial and property matters.",
+    },
+    {
+      question: "Do I need a lawyer to create a durable power of attorney?",
+      answer: "You are not legally required to use a lawyer, but the document must precisely follow your state's statutory requirements. An improperly executed DPOA may be rejected by banks or courts.",
+    },
+  ],
+}
+
+const medicalPoaDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Medical Power of Attorney?",
+    body:
+      "A Medical Power of Attorney (MPOA) — also called a Healthcare Proxy or Healthcare Power of Attorney — designates a trusted person (your healthcare agent) to make medical decisions on your behalf if you become unable to do so. It is one of the most important estate-planning documents you can have, ensuring your healthcare preferences are honored by someone you trust rather than left to medical staff, default hospital policies, or a court-appointed guardian.",
+  },
+  whyItMatters: [
+    "Ensures your medical decisions are made by someone who knows your values and wishes.",
+    "Avoids conflict among family members about medical treatment choices.",
+    "Allows your agent to access your medical records and communicate with providers under HIPAA.",
+    "Prevents costly and slow court proceedings to appoint a healthcare guardian.",
+    "Can specify your wishes regarding life-sustaining treatment, resuscitation, and organ donation.",
+  ],
+  keySections: [
+    {
+      title: "Agent Designation",
+      description: "Names the person authorized to make healthcare decisions and any successor agent.",
+    },
+    {
+      title: "Scope of Authority",
+      description: "Defines what medical decisions the agent can make, including treatment refusals and end-of-life care.",
+    },
+    {
+      title: "HIPAA Authorization",
+      description: "Grants the agent access to your protected health information so they can communicate effectively with providers.",
+    },
+    {
+      title: "Principal's Preferences",
+      description: "Documents your specific wishes regarding life-sustaining treatment, resuscitation, and organ donation.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Choose Your Healthcare Agent",
+      description: "Select someone who knows your values and can advocate firmly on your behalf under pressure.",
+    },
+    {
+      title: "Step 2: Define the Scope",
+      description: "Specify any limitations on your agent's authority or specific treatment preferences.",
+    },
+    {
+      title: "Step 3: Include HIPAA Authorization",
+      description: "Authorize your agent to access and discuss your medical records with providers.",
+    },
+    {
+      title: "Step 4: Sign Before Witnesses",
+      description: "Execute the document with the witnesses or notarization required by your state.",
+    },
+    {
+      title: "Step 5: Distribute to Providers",
+      description: "Give copies to your healthcare agent, primary care physician, hospital, and any specialists.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "State Statutory Forms",
+      description: "Many states provide a statutory healthcare proxy form. Using the state's form or language ensures hospitals and providers will honor it without question.",
+    },
+    {
+      title: "Witness Restrictions",
+      description: "Most states prohibit your healthcare agent, heirs, or treating physician from serving as a witness to the MPOA.",
+    },
+    {
+      title: "Mental Health Treatment",
+      description: "Some states have separate documents or specific requirements for authorizing mental health treatment decisions. A general MPOA may not cover psychiatric hospitalization.",
+    },
+    {
+      title: "Integration with Living Will",
+      description: "An MPOA works best alongside a living will (advance directive), which provides specific instructions your agent can reference. Many states combine both into a single advance healthcare directive.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Naming a healthcare agent without discussing your wishes with them in detail.",
+    "Forgetting to name a successor agent in case your primary agent is unavailable.",
+    "Failing to execute with the correct witnesses or notarization.",
+    "Not providing copies to your primary care physician and hospital.",
+    "Assuming a general durable power of attorney covers healthcare decisions — it typically does not.",
+    "Not updating the document after major life events such as divorce, the death of your named agent, or a significant change in your health wishes.",
+  ],
+  faq: [
+    {
+      question: "What is the difference between a medical power of attorney and a living will?",
+      answer: "A medical POA designates a person to make decisions. A living will (advance directive) provides written instructions about specific treatments. Both are recommended — the agent can use the living will as guidance.",
+    },
+    {
+      question: "Who should I choose as my healthcare agent?",
+      answer: "Choose someone you trust deeply who can advocate firmly, understands your values, is available in an emergency, and can handle emotional medical situations. Geographic proximity can be important.",
+    },
+    {
+      question: "Can my doctor refuse to follow my agent's instructions?",
+      answer: "A provider can decline to follow instructions that violate their professional ethics, but they must allow transfer to another provider. Clear documentation reduces these conflicts significantly.",
+    },
+    {
+      question: "Does a medical power of attorney expire?",
+      answer: "Most MPOAs do not have an automatic expiration date. They remain effective until revoked or until you regain capacity. Some states add expiration provisions; review your state's law.",
+    },
+    {
+      question: "Can I revoke a medical power of attorney?",
+      answer: "Yes. You can revoke an MPOA at any time while you have mental capacity by notifying your agent and any healthcare providers who have a copy on file.",
+    },
+  ],
+}
+
+const monthToMonthLeaseDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Month-to-Month Lease Agreement?",
+    body:
+      "A Month-to-Month Lease Agreement (also called a periodic tenancy) is a rental contract that automatically renews each month until either the landlord or tenant provides proper written notice to terminate. Unlike a fixed-term lease, it offers maximum flexibility for both parties — the tenant can move with shorter notice, and the landlord can adjust terms or reclaim the property more easily. However, this flexibility comes with less stability than an annual lease.",
+  },
+  whyItMatters: [
+    "Provides flexibility for tenants who cannot commit to a full-year lease.",
+    "Allows landlords to adjust rent or reclaim the property with proper notice.",
+    "Documents all rental terms clearly to prevent disputes.",
+    "Ensures compliance with state notice period requirements.",
+    "Protects both parties with enforceable terms for security deposits and maintenance.",
+  ],
+  keySections: [
+    {
+      title: "Notice to Terminate",
+      description: "Specifies the number of days' written notice required to end the tenancy — typically 30 days in most states, but ranging from 7 to 90 days depending on jurisdiction.",
+    },
+    {
+      title: "Rent and Increases",
+      description: "Sets the monthly rent amount, due date, and the required notice for any rent increases.",
+    },
+    {
+      title: "Security Deposit",
+      description: "Documents deposit amount, permitted deductions, and the state-mandated return timeline.",
+    },
+    {
+      title: "Tenant and Landlord Responsibilities",
+      description: "Defines maintenance, repair, and habitability obligations for each party.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Set Rental Terms",
+      description: "Agree on rent amount, due date, acceptable payment methods, and late fee policy.",
+    },
+    {
+      title: "Step 2: Define Notice Requirements",
+      description: "Specify how many days' notice each party must give to terminate the tenancy — ensure compliance with state law.",
+    },
+    {
+      title: "Step 3: Document Deposit Terms",
+      description: "Record the deposit amount, conditions for deductions, and the timeline for return.",
+    },
+    {
+      title: "Step 4: Add Policies",
+      description: "Include rules on pets, smoking, guests, and alterations.",
+    },
+    {
+      title: "Step 5: Sign and Conduct Move-In Inspection",
+      description: "Both parties sign, conduct and document a move-in inspection, and each retains a copy.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "Notice Period Requirements",
+      description: "Notice requirements vary widely — California requires 30 days' notice (60 days if the tenant has lived there over a year), while other states require as little as 7 days. Confirm your state's rule.",
+    },
+    {
+      title: "Rent Increase Notice",
+      description: "Many states require 30–90 days' advance notice before a rent increase on a month-to-month tenancy. Some localities have rent control ordinances that limit the amount of increases.",
+    },
+    {
+      title: "Security Deposit Limits",
+      description: "Most states cap security deposits at 1–2 months' rent and require return within 14–30 days of move-out with an itemized deduction statement.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Using notice periods shorter than your state's legal minimum.",
+    "Failing to document the property's condition at move-in.",
+    "Not including late fee provisions and grace periods.",
+    "Ignoring local rent control ordinances that apply to month-to-month tenancies.",
+    "Failing to provide state-required disclosures (lead paint, bedbug history, etc.).",
+    "Allowing oral rent increases instead of providing proper written notice.",
+  ],
+  faq: [
+    {
+      question: "How much notice does a landlord need to give to end a month-to-month lease?",
+      answer: "It depends on your state. Most states require 30 days. California requires 60 days if the tenant has lived there more than one year. Always check your local law.",
+    },
+    {
+      question: "Can a landlord raise rent on a month-to-month lease?",
+      answer: "Yes, but most states require advance written notice — typically 30–60 days. Rent control areas may limit the amount of any increase.",
+    },
+    {
+      question: "Is a month-to-month lease better than a fixed-term lease?",
+      answer: "It depends on your situation. Month-to-month offers flexibility but less stability. Fixed-term leases lock in rent and terms but penalize early termination.",
+    },
+    {
+      question: "Can a tenant leave without notice on a month-to-month lease?",
+      answer: "No. Tenants are legally required to give the notice period specified in the lease (and at minimum, the notice required by state law). Leaving without notice can result in liability for unpaid rent.",
+    },
+    {
+      question: "Do month-to-month leases need to be in writing?",
+      answer: "In most states, a lease for less than one year can be oral. However, a written lease is always strongly advisable — it documents all terms and prevents he-said/she-said disputes.",
+    },
+  ],
+}
+
+const atWillEmploymentDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is an At-Will Employment Contract?",
+    body:
+      "An At-Will Employment Contract formalizes the employment relationship in the default employment arrangement in most U.S. states: either the employer or the employee may end the relationship at any time, for any lawful reason, without advance notice. While at-will employment does not require a written contract, documenting compensation, job duties, and company policies in writing protects both parties and reduces the risk of disputes about what was agreed.",
+  },
+  whyItMatters: [
+    "Documents compensation, benefits, and job duties to prevent disputes.",
+    "Explicitly preserves the at-will nature of the relationship, preventing implied contract claims.",
+    "Sets expectations for confidentiality, IP assignment, and non-compete terms.",
+    "Provides a professional onboarding document that employees sign.",
+    "Reduces exposure to wrongful termination claims based on implied employment contracts.",
+  ],
+  keySections: [
+    {
+      title: "At-Will Statement",
+      description: "Explicitly states that employment is at-will and may be terminated by either party at any time for any lawful reason.",
+    },
+    {
+      title: "Compensation and Benefits",
+      description: "Documents salary, pay frequency, bonus eligibility, and benefit entitlements.",
+    },
+    {
+      title: "Job Duties and Reporting",
+      description: "Describes the role, responsibilities, and organizational reporting structure.",
+    },
+    {
+      title: "Confidentiality and IP Assignment",
+      description: "Requires the employee to keep company information confidential and assigns intellectual property created during employment to the employer.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Define the Role",
+      description: "Describe the position title, duties, reporting structure, and work location.",
+    },
+    {
+      title: "Step 2: Set Compensation",
+      description: "Document salary, pay period, bonus structure, and any equity or commission arrangements.",
+    },
+    {
+      title: "Step 3: Include Key Policies",
+      description: "Cover confidentiality, IP assignment, acceptable use of company property, and any non-compete or non-solicitation obligations.",
+    },
+    {
+      title: "Step 4: Add At-Will Disclaimer",
+      description: "Ensure the contract explicitly states the at-will nature and that no promises of continued employment are being made.",
+    },
+    {
+      title: "Step 5: Execute Before Start Date",
+      description: "Have the employee sign before or on their first day. Provide a copy for their records.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "At-Will Exceptions",
+      description: "All states recognize the at-will doctrine, but exceptions exist — including public policy exceptions (you can't fire someone for jury duty), implied contract exceptions (be careful with handbook language), and good-faith covenant exceptions recognized in some states.",
+    },
+    {
+      title: "Non-Compete Enforceability",
+      description: "Many states significantly restrict or ban employee non-compete agreements. California effectively bans them. Review your state's law before including a non-compete.",
+    },
+    {
+      title: "Wage and Hour Compliance",
+      description: "Ensure the contract complies with state minimum wage laws, overtime requirements, and meal/rest break rules. These cannot be waived by contract.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Using language that implies a guarantee of continued employment (e.g., 'permanent position').",
+    "Including an unenforceable non-compete that undermines the rest of the contract.",
+    "Failing to get the signed contract before the employee starts — this weakens its enforceability.",
+    "Using a fixed-term employment contract template when the intent is at-will employment.",
+    "Not specifying compensation clearly — vague compensation terms lead to disputes.",
+    "Neglecting to include an integration clause stating that the written contract is the entire agreement.",
+  ],
+  faq: [
+    {
+      question: "Do I need a written contract for at-will employees?",
+      answer: "Not legally, but it is strongly advisable. A written at-will contract documents compensation, policies, and IP rights — and prevents the employee from claiming an implied fixed-term contract based on verbal representations.",
+    },
+    {
+      question: "Can an at-will employee be fired for any reason?",
+      answer: "For any lawful reason. Unlawful reasons include discrimination (race, sex, religion, disability), retaliation (for whistleblowing, taking protected leave), or violating public policy. Employment at-will does not override federal and state labor laws.",
+    },
+    {
+      question: "How is an at-will contract different from a fixed-term employment contract?",
+      answer: "A fixed-term contract runs for a set period and can only be terminated early for cause (or with a buyout). An at-will contract has no fixed term — either party can end it at any time.",
+    },
+    {
+      question: "If I have an at-will contract, am I owed notice before termination?",
+      answer: "No, unless the contract specifies a notice period. However, the federal WARN Act requires 60 days' notice for mass layoffs. Some state laws add additional notice requirements.",
+    },
+    {
+      question: "Can a non-compete be included in an at-will contract?",
+      answer: "Yes, but enforceability varies by state. The at-will nature of the agreement does not automatically invalidate non-compete clauses, but state law limits on scope, duration, and geographic reach still apply.",
+    },
+  ],
+}
+
+const tripleNetLeaseDetail: DocumentDetailContent = {
+  overview: {
+    title: "What Is a Triple Net (NNN) Lease Agreement?",
+    body:
+      "A Triple Net (NNN) Lease Agreement is a commercial lease structure in which the tenant pays base rent plus three additional 'nets': property taxes, building insurance, and maintenance costs. This is the dominant lease structure for free-standing retail properties, bank branches, fast-food restaurants, and single-tenant commercial buildings. NNN leases transfer most ownership-related costs to the tenant, providing landlords with a predictable, largely passive income stream.",
+  },
+  whyItMatters: [
+    "Provides landlords with predictable net income by shifting property expenses to the tenant.",
+    "Eliminates landlord responsibility for most day-to-day maintenance and operating costs.",
+    "Gives tenants more control over their occupancy costs and property condition.",
+    "Creates a long-term, stable leasing relationship appropriate for anchor tenants.",
+    "Is the standard lease structure for investment-grade commercial real estate.",
+  ],
+  keySections: [
+    {
+      title: "Base Rent and Escalation",
+      description: "Sets the fixed base rent and annual escalation schedule (typically CPI-based or fixed percentage increases).",
+    },
+    {
+      title: "Tenant NNN Obligations",
+      description: "Defines the tenant's responsibility for property taxes, building insurance, and maintenance — the three 'nets.'",
+    },
+    {
+      title: "CAM Reconciliation",
+      description: "Establishes the process for estimating, billing, and reconciling common area maintenance charges annually.",
+    },
+    {
+      title: "Landlord's Expense Cap",
+      description: "May limit tenant liability for certain capital expenditures or roof/structure repairs that remain the landlord's responsibility in modified NNN leases.",
+    },
+  ],
+  process: [
+    {
+      title: "Step 1: Define the Premises",
+      description: "Describe the leased space precisely, including any exclusive use provisions and permitted-use restrictions.",
+    },
+    {
+      title: "Step 2: Set Rent and Escalation",
+      description: "Agree on base rent, annual escalation method, and any rent abatement periods for build-out.",
+    },
+    {
+      title: "Step 3: Allocate NNN Expenses",
+      description: "Specify exactly which costs the tenant will bear — taxes, insurance, maintenance — and any caps or exclusions.",
+    },
+    {
+      title: "Step 4: Document CAM Procedures",
+      description: "Establish how operating expenses will be estimated, billed monthly, and reconciled annually.",
+    },
+    {
+      title: "Step 5: Include Renewal Options",
+      description: "Specify renewal option terms, rent at renewal, and the process for exercising the option.",
+    },
+  ],
+  stateConsiderations: [
+    {
+      title: "Property Tax Proration",
+      description: "How property taxes are calculated and passed through varies by state and county. Some jurisdictions reassess property on sale, which can significantly increase tenant NNN costs after a sale.",
+    },
+    {
+      title: "Assignment and Subletting",
+      description: "State law and local custom affect how freely NNN tenants can assign or sublease. For franchise tenants, franchisor consent may also be required.",
+    },
+    {
+      title: "Environmental Liability",
+      description: "NNN leases often address environmental indemnification. State environmental laws affect who bears remediation costs for existing or discovered contamination.",
+    },
+  ],
+  mistakesToAvoid: [
+    "Failing to define exactly which expenses are included in the NNN obligation — ambiguity leads to disputes.",
+    "Not capping tenant liability for large capital expenditures like roof replacement or structural repairs.",
+    "Omitting an annual CAM reconciliation process and audit rights for the tenant.",
+    "Not specifying rent during option periods — avoid leaving renewal rent to 'fair market value' without a floor and ceiling.",
+    "Failing to address property reassessment risk after a sale.",
+    "Not requiring the tenant to provide certificates of insurance before occupancy.",
+  ],
+  faq: [
+    {
+      question: "What does 'triple net' mean?",
+      answer: "The three 'nets' are property taxes, building insurance, and maintenance. The tenant pays these in addition to base rent, leaving the landlord with a 'net' income stream largely free of operating costs.",
+    },
+    {
+      question: "How is a triple net lease different from a gross lease?",
+      answer: "In a gross lease, the landlord pays operating expenses and the tenant pays one all-inclusive rent. In an NNN lease, the tenant pays base rent plus actual operating expenses.",
+    },
+    {
+      question: "What is a 'modified' or 'double net' lease?",
+      answer: "A double net (NN) lease has the tenant paying taxes and insurance but not maintenance. A modified gross lease may pass through certain expenses but not others. NNN (triple net) is the most common for single-tenant retail.",
+    },
+    {
+      question: "Who is responsible for major repairs in a NNN lease?",
+      answer: "It depends on the lease. True NNN leases make the tenant responsible for everything including structural repairs. Many NNN leases carve out roof, structure, and foundation as landlord responsibilities.",
+    },
+    {
+      question: "How long are triple net leases typically?",
+      answer: "NNN leases are typically long-term: 10–25 years for investment-grade tenants (fast food, banks, drug stores). Longer terms provide more stable income and higher property valuations.",
+    },
+  ],
+}
+
 const detailContentBySlug: Record<string, DocumentDetailContent> = {
   nda: ndaDetail,
   llc_operating_agreement: llcDetail,
@@ -3106,6 +4002,16 @@ const detailContentBySlug: Record<string, DocumentDetailContent> = {
   general_release_of_liability: generalReleaseDetail,
   vehicle_bill_of_sale: vehicleBillOfSaleDetail,
   personal_property_agreement: personalPropertyAgreementDetail,
+  // ── Tier 1 Standalone Intent Documents ────────────────────────────────────
+  mutual_nda: mutualNdaDetail,
+  unilateral_nda: unilateralNdaDetail,
+  single_member_llc: singleMemberLlcDetail,
+  multi_member_llc: multiMemberLlcDetail,
+  durable_power_of_attorney: durablePoaDetail,
+  medical_power_of_attorney: medicalPoaDetail,
+  month_to_month_lease: monthToMonthLeaseDetail,
+  at_will_employment_contract: atWillEmploymentDetail,
+  triple_net_lease: tripleNetLeaseDetail,
 }
 
 export function getDocumentDetailContent(slug: string): DocumentDetailContent | null {
