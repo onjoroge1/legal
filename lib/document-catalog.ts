@@ -62,6 +62,12 @@ export interface CatalogDocument {
   monetizationTier: MonetizationTier
   /** Suggested monthly listing price (USD) for lawyer advertisers */
   suggestedListingPrice: number
+  /**
+   * If this document is a standalone intent variant of another document,
+   * set this to the parent document's slug (e.g. "non-disclosure-agreement").
+   * Used to group variants on the parent page and for cross-linking.
+   */
+  parentSlug?: string
 }
 
 export const documentCatalog: CatalogDocument[] = [
@@ -241,6 +247,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "high-value",
     suggestedListingPrice: 249,
+    parentSlug: "non-disclosure-agreement",
   },
   {
     title: "Unilateral Non-Disclosure Agreement",
@@ -269,6 +276,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "high-value",
     suggestedListingPrice: 199,
+    parentSlug: "non-disclosure-agreement",
   },
   {
     title: "Single-Member LLC Operating Agreement",
@@ -298,6 +306,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "high-value",
     suggestedListingPrice: 299,
+    parentSlug: "llc-operating-agreement",
   },
   {
     title: "Multi-Member LLC Operating Agreement",
@@ -326,6 +335,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "premium",
     suggestedListingPrice: 349,
+    parentSlug: "llc-operating-agreement",
   },
 
   // ── EMPLOYMENT ────────────────────────────────────────────────────────────
@@ -357,6 +367,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "high-value",
     suggestedListingPrice: 249,
+    parentSlug: "employment-contract",
   },
   {
     title: "Employment Contract",
@@ -533,6 +544,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "premium",
     suggestedListingPrice: 349,
+    parentSlug: "residential-lease-agreement",
   },
   {
     title: "Triple Net Lease Agreement",
@@ -561,6 +573,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "premium",
     suggestedListingPrice: 349,
+    parentSlug: "commercial-lease-agreement",
   },
 
   // ── ESTATE PLANNING ───────────────────────────────────────────────────────
@@ -649,6 +662,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "premium",
     suggestedListingPrice: 399,
+    parentSlug: "power-of-attorney",
   },
   {
     title: "Medical Power of Attorney",
@@ -677,6 +691,7 @@ export const documentCatalog: CatalogDocument[] = [
     lawyerListingEnabled: true,
     monetizationTier: "premium",
     suggestedListingPrice: 399,
+    parentSlug: "power-of-attorney",
   },
 
   // ── LEGAL LETTERS ─────────────────────────────────────────────────────────
@@ -1187,4 +1202,12 @@ export function getDocumentPath(doc: CatalogDocument): string {
 /** Canonical absolute URL */
 export function getDocumentCanonicalUrl(doc: CatalogDocument): string {
   return `https://legallawdocs.com/documents/${doc.category}/${doc.slug}`
+}
+
+/**
+ * Returns all catalog documents whose parentSlug matches the given slug.
+ * Used to render "standalone intent variant" links on a parent document page.
+ */
+export function getVariantDocuments(parentSlug: string): CatalogDocument[] {
+  return documentCatalog.filter((d) => d.parentSlug === parentSlug)
 }

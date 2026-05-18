@@ -17,7 +17,8 @@ import {
   Download,
   Crown,
 } from "lucide-react"
-import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getRelatedDocuments, getDocumentPath } from "@/lib/document-catalog"
+import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getRelatedDocuments, getDocumentPath, getVariantDocuments } from "@/lib/document-catalog"
+import { getIntentsForDocument } from "@/lib/intent-registry"
 import { getCategoryMeta } from "@/lib/categories"
 import { getSubscriptionFromSession } from "@/lib/subscription"
 import { Header } from "@/components/header"
@@ -150,6 +151,14 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const relatedDocs = doc.relatedDocuments.length > 0
     ? getRelatedDocuments(doc.relatedDocuments).slice(0, 3)
     : getDocumentsByCategory(doc.category).filter((d) => d.slug !== slug).slice(0, 3)
+
+  // Variant links: standalone intent catalog entries that are children of this doc
+  const variantDocs = getVariantDocuments(slug)
+
+  // Subroute intent pages: registry intents with indexable subroute tier
+  const subrouteIntents = getIntentsForDocument(slug).filter(
+    (i) => i.tier === "subroute" && i.indexable
+  )
 
   return (
     <div className="min-h-screen">
@@ -431,6 +440,79 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               </div>
             </section>
           </>
+        )}
+
+        {/* ── Looking for a specific type? (variants + subroute intents) ── */}
+        {(variantDocs.length > 0 || subrouteIntents.length > 0) && (
+          <section className="border-b border-border/40 bg-secondary/20 py-14 lg:py-20">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mb-8">
+                <h2 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                  Looking for a Specific Type?
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Choose a variant tailored to your situation — each generates a purpose-built document.
+                </p>
+              </div>
+
+              {/* Standalone intent catalog variants */}
+              {variantDocs.length > 0 && (
+                <div className="mb-6">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    Popular Variants
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {variantDocs.map((variant) => {
+                      const VariantIcon = variant.icon
+                      return (
+                        <Link
+                          key={variant.slug}
+                          href={getDocumentPath(variant)}
+                          className="group flex items-start gap-3 rounded-xl border border-border/50 bg-card/60 p-4 transition-all hover:border-primary/40 hover:shadow-md"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
+                            <VariantIcon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-foreground group-hover:text-primary leading-snug">
+                              {variant.title}
+                            </p>
+                            <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                              {variant.description}
+                            </p>
+                          </div>
+                          <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Subroute intent pages */}
+              {subrouteIntents.length > 0 && (
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    Situation-Specific
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {subrouteIntents.map((intent) => (
+                      <Link
+                        key={intent.id}
+                        href={`/documents/${category}/${slug}/${intent.slug}`}
+                        className="group flex items-center justify-between rounded-xl border border-border/50 bg-card/60 px-4 py-3 transition-all hover:border-accent/40 hover:shadow-sm"
+                      >
+                        <span className="text-sm font-medium text-foreground group-hover:text-accent">
+                          {intent.name}
+                        </span>
+                        <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-accent" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
         )}
 
         {/* What's Included */}
