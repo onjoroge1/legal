@@ -1116,7 +1116,7 @@ export const documentCatalog: CatalogDocument[] = [
     title: "Vehicle Bill of Sale",
     slug: "vehicle-bill-of-sale",
     legacySlug: "vehicle_bill_of_sale",
-    category: "personal",
+    category: "financial",
     icon: Car,
     description: "Transfer ownership of a vehicle with a legally valid sales record.",
     longDescription:

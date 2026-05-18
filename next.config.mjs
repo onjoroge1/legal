@@ -43,7 +43,22 @@ const nextConfig = {
       })),
     ])
 
-    return generated
+    // ── Canonical category moves (301 permanent) ─────────────────────────────
+    const categoryMoves = [
+      // vehicle-bill-of-sale: personal → financial (SEO canonical move)
+      {
+        source: "/documents/personal/vehicle-bill-of-sale",
+        destination: "/documents/financial/vehicle-bill-of-sale",
+        permanent: true,
+      },
+      {
+        source: "/documents/personal/vehicle-bill-of-sale/:sub*",
+        destination: "/documents/financial/vehicle-bill-of-sale/:sub*",
+        permanent: true,
+      },
+    ]
+
+    return [...generated, ...categoryMoves]
   },
 }
 
