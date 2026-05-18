@@ -49,6 +49,19 @@ export interface DocumentIntent {
   // ── Monetization ─────────────────────────────────────────────────────────
   practiceAreas: string[]
   suggestedListingPrice?: number
+  // ── Extended page content (drives 2,500-word minimum per page) ────────────
+  bodyContent?: {
+    /** 4 paragraphs (~175 words each) — comprehensive guide unique to this intent */
+    overview: string[]
+    /** 5 numbered steps explaining the creation process (~70 words each) */
+    howItWorks: { step: string; description: string }[]
+    /** 4 legal considerations specific to this variant (~85 words each) */
+    legalConsiderations: { title: string; body: string }[]
+    /** 5 common mistakes and how to avoid them (~70 words each) */
+    commonMistakes: { mistake: string; fix: string }[]
+    /** 4 additional FAQs beyond the base faq array (~90 words each) */
+    extendedFaq: { question: string; answer: string }[]
+  }
 }
 
 /** @deprecated use DocumentIntent */

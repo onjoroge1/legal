@@ -17,6 +17,10 @@ import {
   Zap,
   Shield,
   ChevronRight,
+  AlertTriangle,
+  BookOpen,
+  Scale,
+  ListChecks,
 } from "lucide-react"
 import {
   documentCatalog,
@@ -30,6 +34,7 @@ import {
   getIntentsForDocument,
   type DocumentIntent,
 } from "@/lib/intent-registry"
+import { getIntentBodyContent } from "@/lib/intent-body-content"
 import { getCategoryMeta } from "@/lib/categories"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -125,6 +130,10 @@ export default async function IntentPage({ params }: PageProps) {
   const generatePath = `/documents/${category}/${slug}/generate?intent=${intent.id}`
   const parentPath = `/documents/${category}/${slug}`
   const canonicalUrl = `${BASE_URL}/documents/${category}/${slug}/${intentSlug}`
+
+  // Body content (extended 2,500-word content unique to this intent)
+  const bodyContentKey = `${slug.replace(/-/g, "_")}_${intent.id}`
+  const bodyContent = getIntentBodyContent(bodyContentKey)
 
   // Sibling intents (excluding this one)
   const siblingIntents = getIntentsForDocument(slug).filter(
@@ -354,6 +363,124 @@ export default async function IntentPage({ params }: PageProps) {
           </div>
         </section>
 
+        {/* ── Complete Guide (bodyContent.overview) ────────────────────────── */}
+        {bodyContent?.overview && bodyContent!.overview.length > 0 && (
+          <section className="border-b border-border/40 bg-secondary/20 py-14 lg:py-20">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl">
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                    Complete Guide: {intent.h1}
+                  </h2>
+                </div>
+                <div className="space-y-5">
+                  {bodyContent!.overview.map((para, i) => (
+                    <p key={i} className="text-base leading-relaxed text-secondary-foreground">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── How It Works ─────────────────────────────────────────────────── */}
+        {bodyContent?.howItWorks && bodyContent!.howItWorks.length > 0 && (
+          <section className="border-b border-border/40 py-14 lg:py-20">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl">
+                <div className="mb-8 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-accent/20 bg-accent/10">
+                    <ListChecks className="h-5 w-5 text-accent" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                    How to Create a {intent.name}: Step-by-Step
+                  </h2>
+                </div>
+                <ol className="space-y-6">
+                  {bodyContent!.howItWorks.map((item, i) => (
+                    <li key={i} className="flex gap-5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                        {i + 1}
+                      </div>
+                      <div className="flex-1 pt-1">
+                        <h3 className="font-semibold text-foreground">{item.step}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-secondary-foreground">
+                          {item.description}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── Legal Considerations ─────────────────────────────────────────── */}
+        {bodyContent?.legalConsiderations && bodyContent!.legalConsiderations.length > 0 && (
+          <section className="border-b border-border/40 bg-secondary/20 py-14 lg:py-20">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl">
+                <div className="mb-8 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
+                    <Scale className="h-5 w-5 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                    Key Legal Considerations
+                  </h2>
+                </div>
+                <div className="space-y-5">
+                  {bodyContent!.legalConsiderations.map((item, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card/60 p-5">
+                      <h3 className="font-semibold text-foreground">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-secondary-foreground">
+                        {item.body}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── Common Mistakes ──────────────────────────────────────────────── */}
+        {bodyContent?.commonMistakes && bodyContent!.commonMistakes.length > 0 && (
+          <section className="border-b border-border/40 py-14 lg:py-20">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl">
+                <div className="mb-8 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10">
+                    <AlertTriangle className="h-5 w-5 text-red-500" />
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                    Common Mistakes to Avoid
+                  </h2>
+                </div>
+                <div className="space-y-4">
+                  {bodyContent!.commonMistakes.map((item, i) => (
+                    <div key={i} className="overflow-hidden rounded-xl border border-border/50">
+                      <div className="flex items-start gap-3 bg-red-500/5 px-5 py-3.5">
+                        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                        <p className="text-sm font-semibold text-foreground">{item.mistake}</p>
+                      </div>
+                      <div className="flex items-start gap-3 bg-green-500/5 px-5 py-3.5">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                        <p className="text-sm leading-relaxed text-secondary-foreground">{item.fix}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ── Sibling Intents ───────────────────────────────────────────────── */}
         {siblingIntents.length > 0 && (
           <section className="border-b border-border/40 bg-secondary/20 py-14 lg:py-20">
@@ -410,7 +537,7 @@ export default async function IntentPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+        {/* ── FAQ (base + extended) ────────────────────────────────────────── */}
         <section className="border-b border-border/40 py-14 lg:py-20">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <div className="mx-auto max-w-3xl">
@@ -421,7 +548,10 @@ export default async function IntentPage({ params }: PageProps) {
                 Common questions about the {intent.name}.
               </p>
               <Accordion type="single" collapsible className="mt-8 w-full space-y-2">
-                {intent.faq.map((item, idx) => (
+                {[
+                  ...intent.faq,
+                  ...(bodyContent?.extendedFaq ?? []),
+                ].map((item, idx) => (
                   <AccordionItem
                     key={idx}
                     value={`faq-${idx}`}
