@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, Star, Crown } from "lucide-react"
+import { ArrowRight, Sparkles, Star, Crown, CheckCircle2, AlertTriangle, BookOpen, HelpCircle, BarChart3 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Breadcrumb } from "@/components/seo/breadcrumb"
@@ -14,6 +14,7 @@ import {
   getDocumentPath,
   type CategoryId,
 } from "@/lib/document-catalog"
+import { getCategoryBodyContent } from "@/lib/category-body-content"
 import { getSubscriptionFromSession } from "@/lib/subscription"
 import type { Metadata } from "next"
 
@@ -62,6 +63,7 @@ export default async function CategoryHubPage({ params }: PageProps) {
   const docs = getDocumentsByCategory(category as CategoryId)
   const subscription = await getSubscriptionFromSession()
   const hasActiveSubscription = subscription?.isActive ?? false
+  const bodyContent = getCategoryBodyContent(category)
 
   // Related categories (exclude current)
   const relatedCategories = categories.filter((c) => c.id !== category).slice(0, 3)
@@ -194,6 +196,123 @@ export default async function CategoryHubPage({ params }: PageProps) {
             )}
           </div>
         </section>
+
+        {/* ── Rich body content ─────────────────────────────────────────────── */}
+        {bodyContent && (
+          <>
+            {/* Intro */}
+            <section className="py-16 lg:py-20 bg-muted/20 border-t border-border/30">
+              <div className="mx-auto max-w-4xl px-4 lg:px-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-primary">Overview</span>
+                </div>
+                <div className="space-y-5">
+                  {bodyContent.intro.map((para, i) => (
+                    <p key={i} className="text-base leading-relaxed text-muted-foreground">{para}</p>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Trust stats */}
+            <section className="py-12 border-t border-border/30">
+              <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  {bodyContent.trustStats.map((s, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card p-6 text-center">
+                      <div className="text-2xl font-bold text-primary mb-2">{s.stat}</div>
+                      <p className="text-sm text-muted-foreground">{s.context}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* When you need these documents */}
+            <section className="py-16 border-t border-border/30">
+              <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                <div className="flex items-center gap-2 mb-8">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-primary">Common Situations</span>
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-8">When You Need {meta.heading}</h2>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {bodyContent.whenYouNeed.map((item, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card p-5">
+                      <div className="font-semibold text-foreground mb-2">{item.situation}</div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Document guide */}
+            {bodyContent.documentGuide.length > 0 && (
+              <section className="py-16 bg-muted/20 border-t border-border/30">
+                <div className="mx-auto max-w-4xl px-4 lg:px-8">
+                  <div className="flex items-center gap-2 mb-8">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-semibold uppercase tracking-widest text-primary">Which Document Do You Need?</span>
+                  </div>
+                  <h2 className="font-serif text-2xl font-bold text-foreground mb-8">Choosing the Right Document</h2>
+                  <div className="space-y-4">
+                    {bodyContent.documentGuide.map((item, i) => (
+                      <div key={i} className="flex gap-4 rounded-xl border border-border/50 bg-card p-5">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                          {i + 1}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-foreground">{item.docName}</div>
+                          <p className="mt-1 text-sm text-muted-foreground">{item.useWhen}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Legal considerations */}
+            <section className="py-16 border-t border-border/30">
+              <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                <div className="flex items-center gap-2 mb-8">
+                  <AlertTriangle className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-primary">Legal Considerations</span>
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-8">Key Legal Requirements</h2>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {bodyContent.legalConsiderations.map((item, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card p-6">
+                      <h3 className="font-semibold text-foreground mb-3">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section className="py-16 bg-muted/20 border-t border-border/30">
+              <div className="mx-auto max-w-3xl px-4 lg:px-8">
+                <div className="flex items-center gap-2 mb-8">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold uppercase tracking-widest text-primary">FAQ</span>
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-8">Frequently Asked Questions</h2>
+                <div className="space-y-4">
+                  {bodyContent.faq.map((item, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card p-6">
+                      <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
 
         {/* Legal Disclaimer */}
         <div className="border-t border-border/30 bg-secondary/20 py-8">
