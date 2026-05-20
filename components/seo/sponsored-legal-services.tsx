@@ -81,7 +81,7 @@ export function SponsoredLegalServicesBlock({
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/contact">
+                <Link href={`/lawyers?practiceArea=${practiceAreas[0] ?? ""}`}>
                   <Button className="gap-2">
                     Find a {primaryArea} Lawyer <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -107,7 +107,7 @@ export function SponsoredLegalServicesBlock({
                 </p>
                 <Link href="/contact?type=lawyer-listing" className="mt-5 block">
                   <Button variant="outline" className="w-full gap-2 border-primary/30 text-primary hover:bg-primary/5">
-                    List Your Practice <ArrowRight className="h-4 w-4" />
+                    Get Listed on LegalLawDocs <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <p className="mt-3 text-xs text-muted-foreground">

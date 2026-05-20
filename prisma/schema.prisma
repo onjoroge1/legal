@@ -350,3 +350,32 @@ model TeamInvitation {
   @@index([token])
   @@index([status])
 }
+
+model LawyerListing {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  email           String   @unique
+  phone           String?
+  tagline         String?  // short 1-liner shown on cards
+  bio             String   // full bio shown on profile page
+  firmName        String?
+  photoUrl        String?
+  websiteUrl      String?
+  city            String?
+  stateAbbr       String?  // primary licensed state e.g. "CA"
+  practiceAreas   String[] // e.g. ["business-contracts","employment-law"]
+  licensedStates  String[] // all states where licensed e.g. ["CA","NY","TX"]
+  yearsExperience Int?
+  featured        Boolean  @default(false)  // paid featured placement
+  verified        Boolean  @default(false)  // admin verified license
+  active          Boolean  @default(true)   // visible on directory
+  tier            String   @default("basic") // "basic" | "featured" | "premium"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([active])
+  @@index([stateAbbr])
+  @@index([featured])
+  @@index([tier])
+}
