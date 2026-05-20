@@ -3,6 +3,7 @@ import { documentCatalog } from "@/lib/document-catalog"
 import { categories } from "@/lib/categories"
 import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
 import { getStatePageStaticParams } from "@/lib/state-pages"
+import { getInternationalPageStaticParams } from "@/lib/international-pages"
 
 // Always use the canonical production domain — never a Vercel preview URL.
 // NEXTAUTH_URL and NEXT_PUBLIC_APP_URL are deployment-specific; the sitemap must
@@ -64,8 +65,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.78,
   }))
 
+  // ── International document pages ─────────────────────────────────────────
+  const intlParams = getInternationalPageStaticParams()
+  const intlPages: MetadataRoute.Sitemap = intlParams.map(({ category, slug }) => ({
+    url: `${BASE_URL}/documents/${category}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }))
+
   // NOTE: generate, preview, checkout, and download pages are excluded.
   // They are disallowed in robots.ts and should not be indexed.
 
-  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages]
+  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages, ...intlPages]
 }

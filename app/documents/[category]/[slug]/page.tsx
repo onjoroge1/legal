@@ -16,6 +16,7 @@ import {
   Users,
   Download,
   Crown,
+  Globe,
 } from "lucide-react"
 import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getRelatedDocuments, getDocumentPath, getVariantDocuments } from "@/lib/document-catalog"
 import { getIntentsForDocument } from "@/lib/intent-registry"
@@ -37,6 +38,12 @@ import {
   getStatePageStaticParams,
   getSiblingStatePages,
 } from "@/lib/state-pages"
+import {
+  parseInternationalPageSlug,
+  getInternationalPageData,
+  getInternationalPageStaticParams,
+  getSiblingCountryPages,
+} from "@/lib/international-pages"
 
 const statesCovered = [
   "California", "New York", "Texas", "Florida", "Illinois",
@@ -61,7 +68,8 @@ export async function generateStaticParams() {
     slug: doc.slug,
   }))
   const stateParams = getStatePageStaticParams()
-  return [...docParams, ...stateParams]
+  const intlParams = getInternationalPageStaticParams()
+  return [...docParams, ...stateParams, ...intlParams]
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -90,6 +98,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             url: canonical,
             title: stateData.seoTitle,
             description: stateData.metaDescription,
+            siteName: "LegalLawDocs.com",
+          },
+        }
+      }
+    }
+    // Check if this is an international page
+    const parsedIntl = parseInternationalPageSlug(slug)
+    if (parsedIntl && parsedIntl.doc.category === category) {
+      const intlData = getInternationalPageData(parsedIntl.countrySlug, parsedIntl.docSlug)
+      if (intlData) {
+        const canonical = `https://legallawdocs.com/documents/${category}/${slug}`
+        return {
+          title: intlData.seoTitle,
+          description: intlData.metaDescription,
+          alternates: { canonical },
+          authors: [{ name: "LegalLawDocs.com" }],
+          robots: {
+            index: true,
+            follow: true,
+            googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+          },
+          openGraph: {
+            type: "website",
+            url: canonical,
+            title: intlData.seoTitle,
+            description: intlData.metaDescription,
             siteName: "LegalLawDocs.com",
           },
         }
@@ -138,8 +172,239 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   // ── State page branch ─────────────────────────────────────────────────────
   if (!doc || doc.category !== category) {
     const parsed = parseStatePageSlug(slug)
+
+    // ── International page branch ─────────────────────────────────────────
     if (!parsed || parsed.doc.category !== category) {
-      notFound()
+      const parsedIntl = parseInternationalPageSlug(slug)
+      if (!parsedIntl || parsedIntl.doc.category !== category) {
+        notFound()
+      }
+
+      const intlData = getInternationalPageData(parsedIntl.countrySlug, parsedIntl.docSlug)
+      if (!intlData) notFound()
+
+      const siblings = getSiblingCountryPages(parsedIntl.docSlug, parsedIntl.countrySlug)
+      const { country, doc: intlDoc, pageTitle, notes } = intlData
+      const generateUrl = `/documents/${category}/${slug}/generate`
+      const parentDocUrl = `/documents/${intlDoc.category}/${intlDoc.slug}`
+
+      const intlFaqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: notes.faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }
+
+      return (
+        <div className="min-h-screen">
+          <Header />
+
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(intlFaqSchema) }}
+          />
+
+          {/* Breadcrumb */}
+          <div className="border-b border-border/30 bg-secondary/20">
+            <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">
+              <Breadcrumb
+                items={[
+                  { label: "Documents", href: "/documents" },
+                  { label: intlDoc.category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), href: `/documents/${intlDoc.category}` },
+                  { label: intlDoc.title, href: parentDocUrl },
+                  { label: `${country.name} Form` },
+                ]}
+              />
+            </div>
+          </div>
+
+          <main>
+            {/* Hero */}
+            <section className="relative overflow-hidden border-b border-border/40 py-16 lg:py-20">
+              <div className="pointer-events-none absolute inset-0 grid-pattern animate-grid-fade" />
+              <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+                  <div>
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary">
+                      <Globe className="h-3.5 w-3.5" />
+                      <span>{country.flag} {country.name} Form</span>
+                    </div>
+                    <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+                      {pageTitle}
+                    </h1>
+                    <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                      Generate a {intlDoc.title.toLowerCase()} tailored to {country.name} law. Our AI incorporates {country.name}-specific legal requirements and compliance standards into every document.
+                    </p>
+                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                      <Button asChild size="lg">
+                        <Link href={generateUrl}>
+                          Generate {country.name} {intlDoc.title}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <Button variant="outline" size="lg" asChild>
+                        <Link href={parentDocUrl}>View all {intlDoc.title} types</Link>
+                      </Button>
+                    </div>
+                    <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{country.name} law compliant</div>
+                      <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />Instant PDF & DOCX</div>
+                      <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{country.legalSystem}</div>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-border/50 bg-card/60 p-8">
+                    <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">International Document</div>
+                    <h2 className="font-serif text-xl font-bold text-foreground">{pageTitle}</h2>
+                    <div className="mt-4 space-y-2">
+                      {[
+                        `${country.name} legal requirements`,
+                        `${country.legalSystem}`,
+                        "Customised to your situation",
+                        "Instant download",
+                      ].map((item) => (
+                        <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <Button asChild className="mt-6 w-full" size="lg">
+                      <Link href={generateUrl}>
+                        Generate Document
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Legal Requirements */}
+            <section className="py-16 lg:py-20">
+              <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                <div className="mb-10">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">Legal Requirements</p>
+                  <h2 className="mt-2 font-serif text-3xl font-bold text-foreground">
+                    {country.name} Legal Requirements
+                  </h2>
+                  <p className="mt-3 text-muted-foreground">
+                    Key {country.name} statutes and obligations that apply to your {intlDoc.title.toLowerCase()}.
+                  </p>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {notes.requirements.map((req, i) => (
+                    <div key={i} className="flex gap-3 rounded-xl border border-border/50 bg-card/60 p-4">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      <p className="text-sm text-secondary-foreground">{req}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {notes.restrictions.length > 0 && (
+                  <div className="mt-10">
+                    <h3 className="font-semibold text-foreground mb-4">Restrictions & Key Considerations</h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {notes.restrictions.map((r, i) => (
+                        <div key={i} className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-50/50 dark:bg-amber-950/20 p-4">
+                          <Shield className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+                          <p className="text-sm text-secondary-foreground">{r}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {notes.noticeRequirements && (
+                  <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                    <p className="text-sm font-semibold text-primary mb-1">Notice Requirements</p>
+                    <p className="text-sm text-secondary-foreground">{notes.noticeRequirements}</p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section className="border-t border-border/40 bg-secondary/20 py-16 lg:py-20">
+              <div className="mx-auto max-w-3xl px-4 lg:px-8">
+                <div className="mb-10">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">FAQ</p>
+                  <h2 className="mt-2 font-serif text-3xl font-bold text-foreground">
+                    {country.name} {intlDoc.title} FAQ
+                  </h2>
+                  <p className="mt-3 text-muted-foreground">
+                    Common questions about {intlDoc.title.toLowerCase()}s under {country.name} law.
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  {notes.faq.map((item, i) => (
+                    <div key={i} className="rounded-xl border border-border/50 bg-card/60 p-6">
+                      <h3 className="font-semibold text-foreground">{item.question}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* CTA */}
+            <section className="py-16">
+              <div className="mx-auto max-w-3xl px-4 lg:px-8 text-center">
+                <h2 className="font-serif text-3xl font-bold text-foreground">
+                  Ready to Create Your {country.name} {intlDoc.title}?
+                </h2>
+                <p className="mt-4 text-muted-foreground">
+                  Our AI generates a {country.name}-compliant {intlDoc.title.toLowerCase()} in minutes — incorporating the legal requirements above into every clause.
+                </p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                  <Button asChild size="lg">
+                    <Link href={generateUrl}>
+                      Generate {country.name} {intlDoc.title}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild>
+                    <Link href={parentDocUrl}>View all {intlDoc.title} options</Link>
+                  </Button>
+                </div>
+              </div>
+            </section>
+
+            {/* Sibling country pages */}
+            {siblings.length > 0 && (
+              <section className="border-t border-border/40 py-16">
+                <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                  <h2 className="font-serif text-2xl font-bold text-foreground">
+                    {intlDoc.title} by Country
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Laws vary significantly by country. Find the right form for your jurisdiction.
+                  </p>
+                  <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+                    {siblings.map((sibling) => (
+                      <Link
+                        key={sibling.countrySlug}
+                        href={sibling.url}
+                        className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                      >
+                        <span>{sibling.flag}</span>
+                        {sibling.countryName}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            <LegalDisclaimer />
+          </main>
+
+          <Footer />
+        </div>
+      )
     }
 
     const stateData = getStatePageData(parsed.stateSlug, parsed.docSlug)
