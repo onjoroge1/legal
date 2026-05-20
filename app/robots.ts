@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next"
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://legallawdocs.com"
+  const baseUrl = process.env.NEXT_PUBLIC_CANONICAL_URL ?? "https://www.legallawdocs.com"
 
   return {
     rules: [

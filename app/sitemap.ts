@@ -4,7 +4,10 @@ import { categories } from "@/lib/categories"
 import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
 import { getStatePageStaticParams } from "@/lib/state-pages"
 
-const BASE_URL = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://legallawdocs.com"
+// Always use the canonical production domain — never a Vercel preview URL.
+// NEXTAUTH_URL and NEXT_PUBLIC_APP_URL are deployment-specific; the sitemap must
+// reference the canonical domain so Google doesn't index preview URLs.
+const BASE_URL = process.env.NEXT_PUBLIC_CANONICAL_URL ?? "https://www.legallawdocs.com"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ── Core static pages ────────────────────────────────────────────────────
