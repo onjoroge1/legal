@@ -442,7 +442,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   const variantDocs = getVariantDocuments(slug)
 
   // Subroute intent pages: registry intents with indexable subroute tier
-  const subrouteIntents = getIntentsForDocument(slug).filter(
+  const subrouteIntents = getIntentsForDocument(doc.legacySlug).filter(
     (i) => i.tier === "subroute" && i.indexable
   )
 
