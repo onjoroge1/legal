@@ -55,6 +55,189 @@ export const COUNTRIES: Country[] = [
 
 export const INTL_LAUNCH_SLUGS = ["uk", "canada", "australia", "india"]
 
+// ── Country-specific document names ──────────────────────────────────────────
+//
+// Documents are often known by entirely different names outside the US.
+// UK tenants sign an "Assured Shorthold Tenancy," not a "Residential Lease Agreement."
+// Indian businesses file a "Legal Notice," not a "Demand Letter."
+// These local names drive H1, SEO title, and in-page copy.
+
+export interface LocalDocName {
+  localName: string       // Primary local name: "Assured Shorthold Tenancy Agreement"
+  alternateNames?: string[] // Other terms used: ["AST", "Tenancy Agreement"]
+}
+
+export const COUNTRY_DOC_LOCAL_NAMES: Record<string, Record<string, LocalDocName>> = {
+  uk: {
+    "residential-lease-agreement": {
+      localName: "Assured Shorthold Tenancy Agreement",
+      alternateNames: ["AST", "Tenancy Agreement", "Residential Tenancy Agreement"],
+    },
+    "llc-operating-agreement": {
+      localName: "Shareholders' Agreement",
+      alternateNames: ["Articles of Association", "Company Constitution"],
+    },
+    "employment-contract": {
+      localName: "Contract of Employment",
+      alternateNames: ["Statement of Particulars", "Employment Agreement"],
+    },
+    "power-of-attorney": {
+      localName: "Lasting Power of Attorney",
+      alternateNames: ["LPA", "Enduring Power of Attorney"],
+    },
+    "last-will-and-testament": {
+      localName: "Last Will and Testament",
+      alternateNames: ["Will", "Testament"],
+    },
+    "non-compete-agreement": {
+      localName: "Restrictive Covenant Agreement",
+      alternateNames: ["Post-Termination Restrictions", "Non-Compete Clause"],
+    },
+    "independent-contractor-agreement": {
+      localName: "Consultancy Agreement",
+      alternateNames: ["Contract for Services", "Freelance Agreement"],
+    },
+    "commercial-lease-agreement": {
+      localName: "Commercial Lease Agreement",
+      alternateNames: ["Business Lease", "Commercial Tenancy Agreement"],
+    },
+    "promissory-note": {
+      localName: "Promissory Note",
+      alternateNames: ["Loan Note", "IOU"],
+    },
+    "demand-letter": {
+      localName: "Letter Before Action",
+      alternateNames: ["Letter Before Claim", "LBA", "LBC", "Pre-Action Letter"],
+    },
+  },
+  canada: {
+    "residential-lease-agreement": {
+      localName: "Residential Tenancy Agreement",
+      alternateNames: ["Standard Form of Lease", "Rental Agreement"],
+    },
+    "llc-operating-agreement": {
+      localName: "Shareholders' Agreement",
+      alternateNames: ["Corporation Unanimous Shareholders Agreement", "USA"],
+    },
+    "employment-contract": {
+      localName: "Employment Agreement",
+      alternateNames: ["Offer Letter", "Employment Contract"],
+    },
+    "power-of-attorney": {
+      localName: "Continuing Power of Attorney",
+      alternateNames: ["Enduring Power of Attorney", "CPOA"],
+    },
+    "last-will-and-testament": {
+      localName: "Last Will and Testament",
+      alternateNames: ["Will", "Holographic Will", "Notarial Will"],
+    },
+    "non-compete-agreement": {
+      localName: "Non-Competition Agreement",
+      alternateNames: ["Restrictive Covenant", "Non-Compete Clause"],
+    },
+    "independent-contractor-agreement": {
+      localName: "Independent Contractor Agreement",
+      alternateNames: ["Consulting Agreement", "Service Agreement"],
+    },
+    "commercial-lease-agreement": {
+      localName: "Commercial Tenancy Agreement",
+      alternateNames: ["Business Lease", "Commercial Lease"],
+    },
+    "promissory-note": {
+      localName: "Promissory Note",
+      alternateNames: ["Loan Agreement", "Note Payable"],
+    },
+    "demand-letter": {
+      localName: "Demand Letter",
+      alternateNames: ["Notice of Claim", "Formal Demand"],
+    },
+  },
+  australia: {
+    "residential-lease-agreement": {
+      localName: "Residential Tenancy Agreement",
+      alternateNames: ["Lease Agreement", "Rental Agreement", "Tenancy Agreement"],
+    },
+    "llc-operating-agreement": {
+      localName: "Shareholders' Agreement",
+      alternateNames: ["Company Constitution", "Pty Ltd Agreement"],
+    },
+    "employment-contract": {
+      localName: "Employment Agreement",
+      alternateNames: ["Contract of Employment", "Offer of Employment"],
+    },
+    "power-of-attorney": {
+      localName: "Enduring Power of Attorney",
+      alternateNames: ["EPA", "General Power of Attorney"],
+    },
+    "last-will-and-testament": {
+      localName: "Last Will and Testament",
+      alternateNames: ["Will", "Testamentary Document"],
+    },
+    "non-compete-agreement": {
+      localName: "Restraint of Trade Agreement",
+      alternateNames: ["Non-Compete Clause", "Post-Employment Restraint"],
+    },
+    "independent-contractor-agreement": {
+      localName: "Services Agreement",
+      alternateNames: ["Contractor Agreement", "Consultancy Agreement"],
+    },
+    "commercial-lease-agreement": {
+      localName: "Commercial Lease Agreement",
+      alternateNames: ["Commercial Tenancy Agreement", "Retail Lease", "Office Lease"],
+    },
+    "promissory-note": {
+      localName: "Promissory Note",
+      alternateNames: ["Loan Note", "Demand Note"],
+    },
+    "demand-letter": {
+      localName: "Letter of Demand",
+      alternateNames: ["Calderbank Letter", "Pre-Litigation Notice", "Formal Demand"],
+    },
+  },
+  india: {
+    "residential-lease-agreement": {
+      localName: "Rental Agreement",
+      alternateNames: ["Leave and Licence Agreement", "Lease Deed", "Tenancy Agreement"],
+    },
+    "llc-operating-agreement": {
+      localName: "LLP Agreement",
+      alternateNames: ["Shareholders' Agreement", "Partnership Deed"],
+    },
+    "employment-contract": {
+      localName: "Appointment Letter",
+      alternateNames: ["Employment Agreement", "Offer Letter", "Service Agreement"],
+    },
+    "power-of-attorney": {
+      localName: "Power of Attorney",
+      alternateNames: ["General Power of Attorney (GPA)", "Special Power of Attorney (SPA)"],
+    },
+    "last-will-and-testament": {
+      localName: "Will and Testament",
+      alternateNames: ["Will", "Vasiyatnama", "Testamentary Document"],
+    },
+    "non-compete-agreement": {
+      localName: "Non-Compete Clause",
+      alternateNames: ["Restrictive Covenant", "Restraint of Trade Clause"],
+    },
+    "independent-contractor-agreement": {
+      localName: "Consultancy Agreement",
+      alternateNames: ["Contract for Services", "Freelance Agreement"],
+    },
+    "commercial-lease-agreement": {
+      localName: "Lease Deed",
+      alternateNames: ["Commercial Lease Agreement", "Rent Deed", "Commercial Rent Agreement"],
+    },
+    "promissory-note": {
+      localName: "Promissory Note",
+      alternateNames: ["PN", "Hundi"],
+    },
+    "demand-letter": {
+      localName: "Legal Notice",
+      alternateNames: ["Demand Notice", "Notice Before Action", "Section 80 Notice"],
+    },
+  },
+}
+
 // ── International-eligible documents ─────────────────────────────────────────
 
 export interface IntlEligibleDoc {
@@ -1631,6 +1814,9 @@ function getGenericIntlNotes(countryName: string, docTitle: string, legalSystem:
 /**
  * Get all page data for a country × doc page.
  * Returns null if the country is not in the launch batch.
+ *
+ * pageTitle and SEO use the LOCAL document name (e.g. "Assured Shorthold Tenancy Agreement")
+ * rather than the US catalog name ("Residential Lease Agreement").
  */
 export function getInternationalPageData(countrySlug: string, docSlug: string) {
   const country = COUNTRIES.find((c) => c.slug === countrySlug)
@@ -1642,14 +1828,20 @@ export function getInternationalPageData(countrySlug: string, docSlug: string) {
   const countryNotes = INTL_DOC_NOTES[countrySlug]?.[docSlug]
   const notes = countryNotes ?? getGenericIntlNotes(country.name, doc.title, country.legalSystem)
 
-  const docDisplayTitle = doc.intlTitle.replace("{Country}", country.name)
-  const pageTitle = docDisplayTitle
-  const seoTitle = `${country.name} ${doc.title} Template | LegalLawDocs.com`
-  const metaDescription = `Create a ${country.name} ${doc.title.toLowerCase()} online. AI-generated and tailored to ${country.legalSystem}. Instant PDF & DOCX download.`
+  // Prefer local name; fall back to the catalog title
+  const localNameEntry = COUNTRY_DOC_LOCAL_NAMES[countrySlug]?.[docSlug]
+  const localName = localNameEntry?.localName ?? doc.title
+  const alternateNames = localNameEntry?.alternateNames ?? []
+
+  const pageTitle = `${country.name} ${localName}`
+  const seoTitle = `${country.name} ${localName} | LegalLawDocs.com`
+  const metaDescription = `Create a ${localName.toLowerCase()} for ${country.name} online. AI-generated and tailored to ${country.legalSystem}. Instant PDF & DOCX download. Also known as: ${[doc.title, ...alternateNames].join(", ")}.`
 
   return {
     country,
     doc,
+    localName,
+    alternateNames,
     pageTitle,
     seoTitle,
     metaDescription,

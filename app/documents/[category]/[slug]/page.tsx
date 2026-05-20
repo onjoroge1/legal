@@ -184,9 +184,13 @@ export default async function DocumentDetailPage({ params }: PageProps) {
       if (!intlData) notFound()
 
       const siblings = getSiblingCountryPages(parsedIntl.docSlug, parsedIntl.countrySlug)
-      const { country, doc: intlDoc, pageTitle, notes } = intlData
+      const { country, doc: intlDoc, pageTitle, localName, alternateNames, notes } = intlData
       const generateUrl = `/documents/${category}/${slug}/generate`
       const parentDocUrl = `/documents/${intlDoc.category}/${intlDoc.slug}`
+      // Alias terms that differ from the US catalog name — shown as "Also known as" chip
+      const aliasTerms = [intlDoc.title, ...alternateNames].filter(
+        (t) => t.toLowerCase() !== localName.toLowerCase()
+      )
 
       const intlFaqSchema = {
         "@context": "https://schema.org",
@@ -236,18 +240,25 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground md:text-5xl">
                       {pageTitle}
                     </h1>
-                    <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                      Generate a {intlDoc.title.toLowerCase()} tailored to {country.name} law. Our AI incorporates {country.name}-specific legal requirements and compliance standards into every document.
+                    {/* "Also known as" chip — shows US/alternate names so searchers recognize the doc */}
+                    {aliasTerms.length > 0 && (
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        Also known as:{" "}
+                        <span className="font-medium text-foreground">{aliasTerms.join(" · ")}</span>
+                      </p>
+                    )}
+                    <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+                      Generate a {localName.toLowerCase()} tailored to {country.name} law. Our AI incorporates {country.name}-specific statutory requirements, disclosure obligations, and legal standards into every clause.
                     </p>
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                       <Button asChild size="lg">
                         <Link href={generateUrl}>
-                          Generate {country.name} {intlDoc.title}
+                          Generate {country.flag} {localName}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>
                       <Button variant="outline" size="lg" asChild>
-                        <Link href={parentDocUrl}>View all {intlDoc.title} types</Link>
+                        <Link href={parentDocUrl}>View all {intlDoc.title} options</Link>
                       </Button>
                     </div>
                     <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -257,14 +268,17 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     </div>
                   </div>
                   <div className="rounded-2xl border border-border/50 bg-card/60 p-8">
-                    <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">International Document</div>
-                    <h2 className="font-serif text-xl font-bold text-foreground">{pageTitle}</h2>
+                    <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">{country.flag} {country.name} Document</div>
+                    <h2 className="font-serif text-xl font-bold text-foreground">{localName}</h2>
+                    {aliasTerms.length > 0 && (
+                      <p className="mt-1 text-xs text-muted-foreground">Also called: {aliasTerms.slice(0, 2).join(", ")}</p>
+                    )}
                     <div className="mt-4 space-y-2">
                       {[
-                        `${country.name} legal requirements`,
+                        `Compliant with ${country.name} law`,
                         `${country.legalSystem}`,
                         "Customised to your situation",
-                        "Instant download",
+                        "Instant PDF & DOCX download",
                       ].map((item) => (
                         <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
                           <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
@@ -274,7 +288,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     </div>
                     <Button asChild className="mt-6 w-full" size="lg">
                       <Link href={generateUrl}>
-                        Generate Document
+                        Generate {localName}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
@@ -292,7 +306,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     {country.name} Legal Requirements
                   </h2>
                   <p className="mt-3 text-muted-foreground">
-                    Key {country.name} statutes and obligations that apply to your {intlDoc.title.toLowerCase()}.
+                    Key {country.name} statutes and obligations that apply to your {localName.toLowerCase()}.
                   </p>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -333,10 +347,10 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 <div className="mb-10">
                   <p className="text-sm font-semibold uppercase tracking-widest text-primary">FAQ</p>
                   <h2 className="mt-2 font-serif text-3xl font-bold text-foreground">
-                    {country.name} {intlDoc.title} FAQ
+                    {country.name} {localName} FAQ
                   </h2>
                   <p className="mt-3 text-muted-foreground">
-                    Common questions about {intlDoc.title.toLowerCase()}s under {country.name} law.
+                    Common questions about the {localName.toLowerCase()} under {country.name} law.
                   </p>
                 </div>
                 <div className="space-y-6">
@@ -354,15 +368,15 @@ export default async function DocumentDetailPage({ params }: PageProps) {
             <section className="py-16">
               <div className="mx-auto max-w-3xl px-4 lg:px-8 text-center">
                 <h2 className="font-serif text-3xl font-bold text-foreground">
-                  Ready to Create Your {country.name} {intlDoc.title}?
+                  Ready to Create Your {country.name} {localName}?
                 </h2>
                 <p className="mt-4 text-muted-foreground">
-                  Our AI generates a {country.name}-compliant {intlDoc.title.toLowerCase()} in minutes — incorporating the legal requirements above into every clause.
+                  Our AI generates a {country.name}-compliant {localName.toLowerCase()} in minutes — incorporating the statutory requirements above into every clause.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <Button asChild size="lg">
                     <Link href={generateUrl}>
-                      Generate {country.name} {intlDoc.title}
+                      Generate {country.flag} {localName}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
