@@ -69,7 +69,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const doc = getDocumentBySlug(slug)
   if (!doc || doc.category !== category) return {}
 
-  const intent = getIntentForDocument(slug, intentSlug)
+  // Use doc.legacySlug — the INTENT_REGISTRY is keyed by legacySlug, not url-slug
+  const intent = getIntentForDocument(doc.legacySlug, intentSlug)
   if (!intent) return {}
 
   const canonical = `${BASE_URL}/documents/${category}/${slug}/${intentSlug}`
@@ -123,7 +124,8 @@ export default async function IntentPage({ params }: PageProps) {
   const doc = getDocumentBySlug(slug)
   if (!doc || doc.category !== category) notFound()
 
-  const intent = getIntentForDocument(slug, intentSlug)
+  // Use doc.legacySlug — the INTENT_REGISTRY is keyed by legacySlug, not url-slug
+  const intent = getIntentForDocument(doc.legacySlug, intentSlug)
   if (!intent) notFound()
 
   const categoryMeta = getCategoryMeta(doc.category)
@@ -132,11 +134,13 @@ export default async function IntentPage({ params }: PageProps) {
   const canonicalUrl = `${BASE_URL}/documents/${category}/${slug}/${intentSlug}`
 
   // Body content (extended 2,500-word content unique to this intent)
-  const bodyContentKey = `${slug.replace(/-/g, "_")}_${intent.id}`
+  // Use doc.legacySlug so the key matches the batch-file keys exactly
+  // (e.g. "last_will_testament_simple", not "last_will_and_testament_simple")
+  const bodyContentKey = `${doc.legacySlug}_${intent.id}`
   const bodyContent = getIntentBodyContent(bodyContentKey)
 
-  // Sibling intents (excluding this one)
-  const siblingIntents = getIntentsForDocument(slug).filter(
+  // Sibling intents (excluding this one) — keyed by legacySlug
+  const siblingIntents = getIntentsForDocument(doc.legacySlug).filter(
     (i) => i.slug !== intentSlug && i.tier !== "flow-only"
   )
 

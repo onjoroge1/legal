@@ -5685,7 +5685,11 @@ export const INTENT_REGISTRY: Record<string, DocumentIntent[]> = {
 export function getIntentsForDocument(slug: string): DocumentIntent[] {
   // Normalise hyphenated to underscore for legacy key lookup
   const key = slug.replace(/-/g, "_")
-  return INTENT_REGISTRY[key] || INTENT_REGISTRY[slug] || []
+  if (INTENT_REGISTRY[key]) return INTENT_REGISTRY[key]
+  if (INTENT_REGISTRY[slug]) return INTENT_REGISTRY[slug]
+  // Some legacy keys drop connector words — e.g. "last_will_and_testament" → "last_will_testament"
+  const stripped = key.replace(/_and_/g, "_").replace(/_or_/g, "_").replace(/_of_/g, "_")
+  return INTENT_REGISTRY[stripped] || []
 }
 
 /** Single intent by ID for a document */
