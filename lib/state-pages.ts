@@ -39,6 +39,37 @@ export const US_STATES: USState[] = [
   { name: "Nevada",         slug: "nevada",        abbr: "NV", region: "West" },
   { name: "Minnesota",      slug: "minnesota",     abbr: "MN", region: "Midwest" },
   { name: "Wisconsin",      slug: "wisconsin",     abbr: "WI", region: "Midwest" },
+  // Batch 3–8 (remaining 30 states)
+  { name: "Alabama",        slug: "alabama",        abbr: "AL", region: "South" },
+  { name: "Alaska",         slug: "alaska",         abbr: "AK", region: "West" },
+  { name: "Arkansas",       slug: "arkansas",       abbr: "AR", region: "South" },
+  { name: "Connecticut",    slug: "connecticut",    abbr: "CT", region: "Northeast" },
+  { name: "Delaware",       slug: "delaware",       abbr: "DE", region: "Northeast" },
+  { name: "Hawaii",         slug: "hawaii",         abbr: "HI", region: "West" },
+  { name: "Idaho",          slug: "idaho",          abbr: "ID", region: "West" },
+  { name: "Indiana",        slug: "indiana",        abbr: "IN", region: "Midwest" },
+  { name: "Iowa",           slug: "iowa",           abbr: "IA", region: "Midwest" },
+  { name: "Kansas",         slug: "kansas",         abbr: "KS", region: "Midwest" },
+  { name: "Kentucky",       slug: "kentucky",       abbr: "KY", region: "South" },
+  { name: "Louisiana",      slug: "louisiana",      abbr: "LA", region: "South" },
+  { name: "Maine",          slug: "maine",          abbr: "ME", region: "Northeast" },
+  { name: "Maryland",       slug: "maryland",       abbr: "MD", region: "Northeast" },
+  { name: "Mississippi",    slug: "mississippi",    abbr: "MS", region: "South" },
+  { name: "Missouri",       slug: "missouri",       abbr: "MO", region: "Midwest" },
+  { name: "Montana",        slug: "montana",        abbr: "MT", region: "West" },
+  { name: "Nebraska",       slug: "nebraska",       abbr: "NE", region: "Midwest" },
+  { name: "New Hampshire",  slug: "new-hampshire",  abbr: "NH", region: "Northeast" },
+  { name: "New Mexico",     slug: "new-mexico",     abbr: "NM", region: "West" },
+  { name: "North Dakota",   slug: "north-dakota",   abbr: "ND", region: "Midwest" },
+  { name: "Oklahoma",       slug: "oklahoma",       abbr: "OK", region: "South" },
+  { name: "Oregon",         slug: "oregon",         abbr: "OR", region: "West" },
+  { name: "Rhode Island",   slug: "rhode-island",   abbr: "RI", region: "Northeast" },
+  { name: "South Carolina", slug: "south-carolina", abbr: "SC", region: "South" },
+  { name: "South Dakota",   slug: "south-dakota",   abbr: "SD", region: "Midwest" },
+  { name: "Utah",           slug: "utah",           abbr: "UT", region: "West" },
+  { name: "Vermont",        slug: "vermont",        abbr: "VT", region: "Northeast" },
+  { name: "West Virginia",  slug: "west-virginia",  abbr: "WV", region: "South" },
+  { name: "Wyoming",        slug: "wyoming",        abbr: "WY", region: "West" },
 ]
 
 /** States included in the Sprint 6 launch batch */
@@ -49,6 +80,13 @@ export const SPRINT6_STATE_SLUGS = [
   // Batch 2
   "arizona", "colorado", "north-carolina", "virginia", "new-jersey",
   "massachusetts", "tennessee", "nevada", "minnesota", "wisconsin",
+  // Batch 3–8
+  "alabama", "alaska", "arkansas", "connecticut", "delaware",
+  "hawaii", "idaho", "indiana", "iowa", "kansas",
+  "kentucky", "louisiana", "maine", "maryland", "mississippi",
+  "missouri", "montana", "nebraska", "new-hampshire", "new-mexico",
+  "north-dakota", "oklahoma", "oregon", "rhode-island", "south-carolina",
+  "south-dakota", "utah", "vermont", "west-virginia", "wyoming",
 ]
 
 // ── State-eligible documents ───────────────────────────────────────────────────
@@ -6745,6 +6783,5747 @@ export const STATE_DOC_NOTES: Record<string, Record<string, {
         {
           question: "What should a Wisconsin demand letter for a security deposit include?",
           answer: "State the move-out date, the deposit amount, and the failure to return it within 21 days as required by Wis. Stat. § 704.28. Note that Wisconsin allows tenants to recover double the wrongfully withheld deposit amount plus attorney's fees. Demand return of the full deposit within a specific number of days and reference the double damages remedy.",
+        },
+      ],
+    },
+  },
+
+  // ── Alabama ───────────────────────────────────────────────────────────────
+  alabama: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Alabama Uniform Residential Landlord and Tenant Act (Ala. Code §35-9A)",
+        "Security deposit: maximum 1 month's rent; must be returned within 60 days of termination",
+        "Landlord must provide written notice of any deductions from the security deposit",
+        "Written lease required for tenancies exceeding 1 year",
+        "Landlord must maintain premises in habitable condition under §35-9A-204",
+      ],
+      restrictions: [
+        "Landlord may not retaliate against tenant for reporting code violations (§35-9A-407)",
+        "Self-help eviction (changing locks, removing doors) is prohibited — formal eviction required",
+        "Late fees must be specified in the lease; no statutory cap but must be reasonable",
+      ],
+      noticeRequirements: "30 days' written notice to terminate a month-to-month tenancy. 7 days' notice for nonpayment of rent before eviction filing.",
+      faq: [
+        { question: "What is the security deposit limit in Alabama?", answer: "Alabama law caps the security deposit at one month's rent. The landlord must return it within 60 days of the lease ending, with an itemized statement of any deductions. Failure to return within 60 days can result in the landlord forfeiting the right to retain any portion." },
+        { question: "Can a landlord enter without notice in Alabama?", answer: "No. Under §35-9A-303, landlords must give at least 2 days' notice before entering for non-emergency repairs or inspections. Emergency entry is permitted without notice to protect the property or tenant safety." },
+        { question: "What are the eviction rules in Alabama?", answer: "Alabama landlords must serve proper written notice (7 days for nonpayment, 30 days for lease violations) before filing an unlawful detainer action in district court. Self-help evictions are illegal." },
+        { question: "Is Alabama a landlord-friendly or tenant-friendly state?", answer: "Alabama is generally considered landlord-friendly. It has fewer tenant protections than many states — for example, no mandatory interest on security deposits, no rent control, and relatively short eviction timelines once notice is properly served." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Alabama Business and Nonprofit Entities Code (Ala. Code §10A-5A), effective 2015",
+        "Operating agreement may be oral, written, or implied — written is strongly recommended",
+        "Annual report due to the Secretary of State by April 15; $50 filing fee",
+        "Registered agent with Alabama street address required",
+        "Members must be listed in the certificate of formation filed with the SOS",
+      ],
+      restrictions: [
+        "Alabama does not recognize series LLCs — each business unit requires a separate LLC",
+        "Professional LLCs (attorneys, physicians) must meet additional licensing requirements",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.'",
+      ],
+      faq: [
+        { question: "Is an operating agreement required for Alabama LLCs?", answer: "Alabama law does not require LLCs to adopt an operating agreement, but without one the default rules under §10A-5A apply. A written operating agreement is essential to establish custom rules for management, profit sharing, and member exits." },
+        { question: "What is Alabama's annual LLC fee?", answer: "Alabama LLCs must file an Annual Report with a $50 fee by April 15 each year with the Secretary of State. Failure to file can result in administrative dissolution of the LLC." },
+        { question: "Can one person form an LLC in Alabama?", answer: "Yes. Alabama permits single-member LLCs. They are treated as disregarded entities for federal tax purposes by default and provide the same liability protection as multi-member LLCs." },
+        { question: "Are series LLCs allowed in Alabama?", answer: "No. Alabama does not recognize the series LLC structure. Businesses requiring liability separation between units should form separate LLCs or explore holding company structures." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Alabama is a strict at-will employment state — either party may terminate at any time for any lawful reason",
+        "Alabama follows federal minimum wage of $7.25/hour — no state minimum wage law",
+        "Right-to-Work state under Ala. Code §25-7-30; union membership cannot be required as a condition of employment",
+        "Employers with 20+ employees must comply with Alabama Age Discrimination in Employment Act",
+        "Written contracts should include: job title, compensation, duties, termination procedures, and confidentiality obligations",
+      ],
+      restrictions: [
+        "Non-compete agreements governed by Ala. Code §8-1-190 (2015 reform) — reasonable restrictions enforceable",
+        "Discrimination prohibited under Alabama Equal Pay Act and federal Title VII, ADA, ADEA",
+        "Non-solicitation of employees and customers permitted if reasonable in scope and duration",
+      ],
+      noticeRequirements: "No statutory notice requirement for at-will termination. Contractual notice periods are enforceable if clearly stated.",
+      faq: [
+        { question: "Is Alabama an at-will employment state?", answer: "Yes. Alabama is a strong at-will employment state with limited exceptions (public policy, implied contracts). Employers may terminate employees for any reason not prohibited by law, and employees may resign at any time." },
+        { question: "Does Alabama have a state minimum wage?", answer: "No. Alabama does not have its own minimum wage law, so the federal minimum of $7.25/hour applies. Several Alabama cities have attempted to set higher local minimums, but the state preempted local minimum wage laws in 2016." },
+        { question: "Are non-compete agreements enforceable in Alabama?", answer: "Yes. Alabama's 2015 reform (§8-1-190) makes reasonable non-competes enforceable. Courts consider the nature of the business, geographic scope, and duration. Alabama law permits blue-penciling to reduce overly broad restrictions rather than voiding them entirely." },
+        { question: "What is Alabama's Right-to-Work law?", answer: "Under §25-7-30, employees in Alabama cannot be required to join or pay dues to a union as a condition of employment. This applies to both public and private sector employees." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Alabama Uniform Power of Attorney Act (Ala. Code §26-1A), effective 2012",
+        "Must be signed by the principal (or directed by the principal) and acknowledged before a notary",
+        "A durable POA must expressly state that it survives the principal's incapacity",
+        "Health care decisions require a separate Health Care Proxy or Advance Directive under §22-8A",
+        "Agent must act in principal's best interest and keep records of all transactions",
+      ],
+      restrictions: [
+        "An agent may not make gifts from principal's property unless expressly authorized in the POA",
+        "An agent cannot create or amend the principal's will",
+        "POA is automatically revoked upon death of the principal",
+        "Courts can remove an agent who breaches fiduciary duties under §26-1A-116",
+      ],
+      faq: [
+        { question: "Does an Alabama POA need to be notarized?", answer: "Yes. Under §26-1A-105, a power of attorney must be signed and acknowledged before a notary public to be valid. Some financial institutions also require witnesses in addition to notarization." },
+        { question: "What is a durable power of attorney in Alabama?", answer: "A durable POA (§26-1A-104) remains valid even if the principal becomes incapacitated. It must explicitly state language such as 'This power of attorney shall not be affected by the subsequent disability or incapacity of the principal.' Without this, the POA terminates upon incapacity." },
+        { question: "Can the same POA cover health care decisions in Alabama?", answer: "No. Alabama requires a separate Health Care Proxy or Advance Directive for health-related decisions. The financial/property POA under §26-1A and the Health Care Proxy under §22-8A are distinct documents." },
+        { question: "How do I revoke a power of attorney in Alabama?", answer: "A principal with capacity may revoke a POA at any time by signing a written revocation and notifying the agent and any third parties relying on the POA. Recording the revocation is advisable if the POA was used for real estate transactions." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Alabama Probate Code (Ala. Code §43-8)",
+        "Must be in writing, signed by the testator (or at testator's direction), and witnessed by two competent witnesses",
+        "Witnesses must sign in the presence of the testator; they should not be beneficiaries",
+        "Testator must be at least 18 years old and of sound mind",
+        "Holographic wills (entirely handwritten and signed) are valid in Alabama without witnesses",
+        "Probate required for most estates — filed in the Probate Court of the county where decedent resided",
+      ],
+      restrictions: [
+        "Surviving spouse may elect the 'elective share' (one-third of augmented estate) instead of taking under the will",
+        "Pretermitted (omitted) children born after the will is executed may claim an intestate share",
+        "A will may not disinherit a spouse entirely — the elective share protects against complete disinheritance",
+      ],
+      faq: [
+        { question: "Are holographic wills valid in Alabama?", answer: "Yes. Alabama recognizes holographic wills under §43-8-136. The will must be entirely written and signed in the testator's own handwriting. No witnesses are required, but holographic wills are more susceptible to challenges regarding authenticity." },
+        { question: "What happens if I die without a will in Alabama?", answer: "Your estate passes under Alabama's intestate succession laws (§43-8-40 et seq.). Your spouse and children receive priority shares. If you have no spouse or children, assets pass to parents, then siblings, and then more distant relatives. Unmarried partners have no intestate rights." },
+        { question: "Does Alabama require probate?", answer: "Most Alabama estates require probate if the decedent owned assets titled solely in their name. Small estates under $25,000 may qualify for a simplified summary distribution process. Assets with named beneficiaries (life insurance, retirement accounts) and joint tenancy property pass outside probate." },
+        { question: "Can a witness to my Alabama will be a beneficiary?", answer: "A witness who is also a beneficiary does not invalidate the will, but their gift may be voided under §43-8-134 unless there are at least two other disinterested witnesses. To be safe, always use witnesses who are not named in the will." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by Ala. Code §8-1-190 through §8-1-196 (2015 Restrictive Covenant Reform Act)",
+        "Courts presume reasonableness if the agreement protects: trade secrets, confidential business information, customer relationships, goodwill, or specialized training",
+        "Agreement must be in writing and signed by the employee",
+        "Blue-penciling is expressly permitted — courts may modify overbroad restrictions rather than void them",
+        "Specific provisions for professionals, executives, and business sale non-competes",
+      ],
+      restrictions: [
+        "Geographic scope must be reasonable — Alabama courts look at where the employee actually worked or had customer contact",
+        "Duration: 2 years is presumptively reasonable for employment non-competes; up to 5 years for business sale agreements",
+        "Cannot prevent an employee from using general skills and knowledge acquired during employment",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Alabama?", answer: "Yes. Alabama's 2015 reform significantly strengthened enforceability. Courts presume non-competes are reasonable if they protect legitimate business interests. Alabama permits blue-penciling, meaning judges can modify — not just void — restrictions that go too far." },
+        { question: "How long can an Alabama non-compete last?", answer: "Up to 2 years for employment-based non-competes (presumptively reasonable). For agreements tied to the sale of a business, up to 5 years is presumptively reasonable. Courts may enforce longer periods if justified by the circumstances." },
+        { question: "What business interests justify a non-compete in Alabama?", answer: "§8-1-190 lists protectable interests: trade secrets, confidential business information, customer relationships and goodwill, specialized training provided by the employer, and protecting the employer from unfair competition using employer-developed assets." },
+        { question: "Can an Alabama court rewrite a non-compete that is too broad?", answer: "Yes. Alabama expressly allows courts to 'blue-pencil' — reduce the geographic scope, shorten the duration, or narrow the prohibited activities to make a non-compete enforceable. This is more employer-friendly than states that simply void overbroad restrictions." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Alabama uses a multi-factor common law test for worker classification; no single-factor ABC test",
+        "Key factors: degree of control, ownership of tools, opportunity for profit/loss, permanency of relationship, skill required",
+        "Contractors must obtain their own business licenses and comply with Alabama tax obligations",
+        "Contractors are generally not covered by Alabama workers' compensation — verify coverage for your industry",
+        "IRS Form 1099-NEC required for payments of $600 or more per year",
+      ],
+      restrictions: [
+        "Misclassifying employees as contractors exposes employers to back taxes, penalties, and workers' comp liability",
+        "Alabama Department of Labor may reclassify workers who are economically dependent on a single employer",
+        "Construction industry: Alabama law imposes specific contractor licensing requirements (ALCLB)",
+      ],
+      faq: [
+        { question: "How does Alabama determine if a worker is an employee or contractor?", answer: "Alabama uses a multi-factor common law test examining: who controls the work, who owns tools and equipment, the worker's opportunity for profit or loss, whether the relationship is permanent, and the skill required. No single factor is decisive." },
+        { question: "Do independent contractors need a business license in Alabama?", answer: "Many Alabama municipalities require business licenses for contractors operating within their jurisdiction. State contractor licenses are required for certain trades (electrical, plumbing, HVAC, general contracting over $50,000). Contractors should verify requirements for their specific field and location." },
+        { question: "Are independent contractors entitled to workers' compensation in Alabama?", answer: "Generally no. True independent contractors are not covered by Alabama's Workers' Compensation Act. However, if a contractor is later reclassified as an employee, the hiring company may face significant liability for workplace injuries." },
+        { question: "What should an Alabama independent contractor agreement include?", answer: "At minimum: scope of work and deliverables, payment terms and schedule, independent contractor status language, intellectual property ownership, confidentiality obligations, termination provisions, and applicable law (Alabama). A right-of-substitution clause strengthens the independent contractor classification." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Alabama commercial leases are governed by common law and the Alabama Code — no dedicated commercial landlord-tenant Act",
+        "Leases over 1 year must be in writing to be enforceable under the Statute of Frauds (§8-9-2)",
+        "Leases for more than 20 years must be recorded in the county Probate Court to be enforceable against third parties",
+        "Net, gross, and modified-gross lease structures are all common — specify clearly which expenses tenant bears",
+        "A written letter of intent or term sheet is advisable before drafting the full lease",
+      ],
+      restrictions: [
+        "No statutory security deposit cap or return deadline for commercial leases — governed entirely by contract",
+        "No automatic right of renewal — option to renew must be expressly stated and timely exercised",
+        "Assignment and subletting require express landlord consent unless the lease provides otherwise",
+        "Alabama landlords can distrain (seize) tenant property for unpaid rent under common law",
+      ],
+      faq: [
+        { question: "Does Alabama require commercial leases to be in writing?", answer: "Yes, for any term exceeding one year. Alabama's Statute of Frauds (§8-9-2) requires leases of more than one year to be in writing and signed by the party to be charged. Verbal leases for over one year are unenforceable." },
+        { question: "What taxes apply to Alabama commercial leases?", answer: "Alabama imposes a sales tax on commercial rent — the state rate is 4%, with additional county and municipal taxes typically ranging from 1–6%. Landlords registered for sales tax must collect and remit rent-related tax. This makes Alabama unusual among states in taxing commercial rent." },
+        { question: "Can a commercial landlord in Alabama lock out a tenant for nonpayment?", answer: "Alabama common law gives commercial landlords broader self-help remedies than residential landlords, but actual lock-out without a proper lease provision and adequate notice creates legal risk. A well-drafted lease should specify landlord remedies for default, including re-entry rights and procedures." },
+        { question: "How are commercial lease disputes resolved in Alabama?", answer: "Most disputes are resolved through the circuit courts. Many leases also include mediation or arbitration clauses. Alabama courts will enforce lease terms as written, making precise drafting of default, cure, and termination provisions critical." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by the Alabama Uniform Commercial Code (UCC) Article 3 (§7-3-101 et seq.)",
+        "Must contain: unconditional promise to pay, fixed amount of money, payable to identified person or bearer, signed by maker",
+        "Interest rate should be clearly stated — Alabama's legal rate of interest is 6% per annum absent a written agreement",
+        "Maximum contractual interest rate: 8% per annum under Alabama's usury law (§8-8-1) for non-commercial loans; higher rates permitted for commercial transactions",
+        "Alabama allows parties to waive presentment and notice of dishonor in the note",
+      ],
+      restrictions: [
+        "Usury: consumer loans above the legal maximum rate are unenforceable as to the excess interest",
+        "Statute of limitations: 6 years from the date the cause of action accrues (§6-2-34)",
+        "A note secured by real estate must comply with Alabama mortgage recording requirements",
+      ],
+      faq: [
+        { question: "What is the maximum interest rate on a promissory note in Alabama?", answer: "For consumer loans, Alabama's general usury ceiling is 8% per annum. However, parties to commercial transactions may contract for higher rates without violating usury law. Federally chartered banks are also not bound by state usury limits." },
+        { question: "How long do I have to collect on a promissory note in Alabama?", answer: "The statute of limitations for written contracts, including promissory notes, is 6 years from the date of default under §6-2-34. After 6 years, the debt is time-barred and cannot be enforced through the courts." },
+        { question: "Does a promissory note need to be notarized in Alabama?", answer: "Notarization is not required for a promissory note to be legally valid and enforceable. However, notarization or witness signatures add evidentiary weight and are recommended for large amounts. Notes secured by real property require notarization for recording purposes." },
+        { question: "Can I use a promissory note for a business loan in Alabama?", answer: "Yes. Alabama promissory notes are widely used for business financing. Commercial notes are not subject to the consumer usury cap and can specify higher interest rates, compound interest, late fees, and attorney's fees clauses — all of which are enforceable if clearly stated." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Alabama statute mandates a pre-suit demand letter for most civil claims",
+        "Exception: claims against licensed professionals may require notice under Alabama's professional liability statutes",
+        "Clearly state: the factual basis of the claim, the specific amount demanded, and a deadline for response (typically 10–30 days)",
+        "For consumer debt collection, the Fair Debt Collection Practices Act (federal) requires specific disclosures",
+        "A written demand letter creates a record establishing the date of notice and the debtor's failure to pay",
+      ],
+      restrictions: [
+        "Threatening criminal prosecution solely to collect a civil debt may constitute extortion under Alabama law",
+        "Misrepresenting legal rights or consequences violates the FDCPA and Alabama Deceptive Trade Practices Act",
+        "Statute of limitations: 6 years for written contracts, 6 years for open accounts, 2 years for personal injury — demand letters do not toll the statute",
+      ],
+      faq: [
+        { question: "Is a demand letter required before suing in Alabama?", answer: "Not for most claims. Alabama does not require a pre-suit demand letter for general civil actions. However, sending one is standard practice, demonstrates good faith, may trigger settlement, and establishes the date your claim was communicated to the debtor." },
+        { question: "How long should I give someone to respond to a demand letter in Alabama?", answer: "Between 10 and 30 days is standard. For straightforward debt collection, 10–14 days is common. For complex commercial disputes, 30 days allows time for the other party to consult counsel and respond meaningfully. Always state the deadline clearly in the letter." },
+        { question: "Can I recover attorney's fees in an Alabama demand letter?", answer: "Only if a contract clause or specific statute authorizes it. Alabama follows the American Rule — each party pays their own attorney's fees unless a contract or statute provides otherwise. Include an attorney's fees clause in future contracts to preserve this remedy." },
+        { question: "What should I do if the debtor ignores my Alabama demand letter?", answer: "File suit in the appropriate court. Alabama small claims court (district court) handles claims up to $6,000. Circuit court handles larger amounts. If the debt is undisputed, consider seeking a default judgment. Keep the demand letter as evidence of your pre-suit notice." },
+      ],
+    },
+  },
+
+  // ── Alaska ────────────────────────────────────────────────────────────────
+  alaska: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Alaska Landlord and Tenant Act (AS 34.03)",
+        "Security deposit: maximum 2 months' rent for unfurnished units; must be returned within 14 days of termination (30 days if tenant disputes deductions)",
+        "Landlord must provide written inventory of the premises' condition at move-in",
+        "Written lease required for tenancies exceeding 1 year",
+        "Landlord must maintain premises in compliance with applicable housing codes (AS 34.03.100)",
+      ],
+      restrictions: [
+        "Self-help eviction is prohibited — landlord must use court process",
+        "Landlord may not discriminate based on marital status, changes in marital status, pregnancy, or parenthood (state additions to federal protected classes)",
+        "Late fees must be expressly stated in the lease and must be reasonable",
+        "Landlord may not retaliate against tenants for reporting code violations or exercising legal rights",
+      ],
+      noticeRequirements: "30 days' written notice to terminate a month-to-month tenancy. 7 days' notice for nonpayment of rent.",
+      faq: [
+        { question: "How long does an Alaska landlord have to return the security deposit?", answer: "Under AS 34.03.070, the landlord must return the deposit within 14 days after the tenancy ends. If the tenant disputes deductions, the deadline extends to 30 days. Failure to return within the deadline forfeits the landlord's right to any deduction." },
+        { question: "What is the maximum security deposit in Alaska?", answer: "Alaska caps security deposits at 2 months' rent for unfurnished units. If the unit is furnished, there is no separate cap for the furnishings deposit, but total deposits must be reasonable." },
+        { question: "Can Alaska landlords prohibit pets?", answer: "Yes. Alaska has no state law requiring landlords to allow pets. Landlords may prohibit pets or charge additional pet deposits. However, service animals and emotional support animals are covered under the Fair Housing Act and must be accommodated with reasonable modifications." },
+        { question: "What protected classes apply to Alaska rentals?", answer: "Alaska's Human Rights Act adds marital status, changes in marital status, pregnancy, parenthood, and physical or mental disability to the federal protected classes (race, color, national origin, sex, religion, familial status). Discrimination based on any of these in rental is unlawful." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Alaska Revised Limited Liability Company Act (AS 10.50)",
+        "Biennial report required — due by January 2 of even-numbered years; $100 filing fee",
+        "Registered agent with an Alaska physical address required",
+        "Operating agreement may be oral or written; written is strongly recommended",
+        "Alaska recognized series LLCs as of 2017 (AS 10.50.990)",
+      ],
+      restrictions: [
+        "LLC name must be distinguishable from existing entity names on record with the Division of Corporations",
+        "Professional LLCs require additional state licensing; Alaska Bar Association approval required for legal services LLCs",
+        "Members' liability is limited to their capital contributions absent fraud or other statutory exceptions",
+      ],
+      faq: [
+        { question: "Does Alaska recognize series LLCs?", answer: "Yes. Alaska enacted series LLC legislation in 2017 (AS 10.50.990), allowing a single LLC to establish separate series with distinct assets and liabilities. Each series can have different members, managers, and purposes, making Alaska attractive for real estate portfolio structures." },
+        { question: "What is the Alaska LLC biennial report requirement?", answer: "All Alaska LLCs must file a biennial report with the Division of Corporations by January 2 of even-numbered years. The filing fee is $100. Failure to file can result in administrative dissolution. New LLCs formed in odd-numbered years file their first report in the next even-numbered year." },
+        { question: "How is an Alaska LLC taxed?", answer: "Alaska has no state income tax on individuals or LLCs. At the federal level, single-member LLCs are disregarded entities and multi-member LLCs are taxed as partnerships by default, though either may elect corporate taxation. Alaska's lack of state income tax makes it attractive for LLCs." },
+        { question: "Does Alaska require an operating agreement?", answer: "Alaska law does not mandate a written operating agreement. If none exists, the default rules of AS 10.50 apply. A written agreement is essential for establishing custom governance, profit-sharing, member exit procedures, and preventing disputes." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Alaska is an at-will employment state — employment may be terminated by either party at any time",
+        "Alaska minimum wage: $11.73/hour (2024) — higher than federal minimum",
+        "Alaska does not have a right-to-work law — union security agreements are permitted",
+        "Overtime required for hours over 8 per day or 40 per week under AS 23.10.060",
+        "Paid leave: no state-mandated paid sick leave, but many municipalities (Anchorage) have local rules",
+      ],
+      restrictions: [
+        "Alaska Human Rights Law prohibits discrimination based on race, religion, color, national origin, age, sex, marital status, pregnancy, parenthood, or physical/mental disability",
+        "Employment contracts that limit at-will termination must be clearly and expressly stated",
+        "Alaska Supreme Court recognizes implied contract exceptions to at-will employment based on employee handbooks",
+      ],
+      noticeRequirements: "No statutory notice for at-will termination. Contractual notice periods are enforceable if specified.",
+      faq: [
+        { question: "What is Alaska's minimum wage?", answer: "Alaska's minimum wage is $11.73/hour as of 2024, automatically adjusted annually by the Consumer Price Index. It applies to all employees working in Alaska, regardless of the employer's state of incorporation." },
+        { question: "Does Alaska have daily overtime?", answer: "Yes — Alaska requires overtime (1.5× regular rate) for hours worked over 8 in a day or 40 in a week, whichever produces more overtime. This daily overtime requirement is more protective than federal law, which only requires weekly overtime." },
+        { question: "Are employee handbooks binding contracts in Alaska?", answer: "They can be. The Alaska Supreme Court has held that specific promises in employee handbooks (e.g., 'employees will only be terminated for cause') can create implied employment contracts limiting at-will termination. Employers should include clear disclaimers stating the handbook is not a contract." },
+        { question: "What are Alaska's protected classes for employment?", answer: "Alaska's Human Rights Law protects: race, religion, color, national origin, age (40+), sex, marital/parental status, pregnancy, physical/mental disability, and genetic information. Alaska also provides some protections for off-duty lawful activities." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by AS 13.26.338–13.26.353 (Alaska Uniform Durable Power of Attorney Act)",
+        "Must be signed by the principal and acknowledged before a notary public",
+        "A durable POA must include language stating it survives the principal's incapacity",
+        "Healthcare decisions require a separate Health Care Directive under AS 13.52",
+        "The agent must act in good faith and within the authority granted in the POA",
+      ],
+      restrictions: [
+        "An agent may not make gifts from principal's estate unless expressly authorized",
+        "A POA terminates automatically upon the death of the principal",
+        "Financial institutions may require their own internal POA forms in addition to the statutory form",
+        "An agent who abuses authority can be removed and held liable for damages under AS 13.26.344",
+      ],
+      faq: [
+        { question: "Does an Alaska POA need to be witnessed as well as notarized?", answer: "Alaska requires acknowledgment before a notary public. While witnesses are not statutorily required for a standard financial POA, some financial institutions and real estate transactions may require witnesses in addition to notarization for additional security." },
+        { question: "What is a durable power of attorney in Alaska?", answer: "A durable POA remains effective even if the principal becomes mentally incapacitated. The document must explicitly state this intent using language such as 'This power of attorney shall not be affected by subsequent disability or incapacity.' A non-durable POA terminates automatically upon incapacity." },
+        { question: "Can one POA cover both financial and health decisions in Alaska?", answer: "No. Alaska requires a separate Health Care Directive (AS 13.52) for medical decisions. A financial POA covers property, banking, and business matters. Comprehensive planning requires both documents." },
+        { question: "How do I revoke a power of attorney in Alaska?", answer: "A principal who retains legal capacity may revoke a POA at any time by delivering written notice of revocation to the agent and any institutions relying on the POA. The revocation should be notarized and, if the POA was recorded, a revocation should also be recorded." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Alaska Uniform Probate Code (AS 13.12)",
+        "Must be signed by the testator and witnessed by two persons who sign within a reasonable time after witnessing",
+        "Witnesses must be competent adults — beneficiaries should not witness to avoid challenges",
+        "Testator must be 18 or older (or legally married/emancipated) and of sound mind",
+        "Holographic wills are valid in Alaska if entirely in the testator's handwriting and signed",
+        "Self-proving affidavit before a notary eliminates need for witness testimony during probate",
+      ],
+      restrictions: [
+        "Surviving spouse may elect a one-third share of the augmented estate if not adequately provided for in the will",
+        "Pretermitted children (born after the will) may claim an intestate share",
+        "Alaska imposes no state inheritance or estate tax",
+      ],
+      faq: [
+        { question: "Does Alaska have an estate tax?", answer: "No. Alaska does not impose a state estate tax or inheritance tax. The federal estate tax applies to estates exceeding the federal exemption ($13.61 million per individual in 2024). Alaska's lack of state estate tax makes it attractive for estate planning." },
+        { question: "What is a self-proving will in Alaska?", answer: "A self-proving will includes a notarized affidavit from the testator and witnesses affirming the will's proper execution. During probate, a self-proving will does not require witnesses to testify, simplifying and speeding up the process under AS 13.12.132." },
+        { question: "Are holographic wills valid in Alaska?", answer: "Yes. AS 13.12.502 recognizes holographic wills that are signed and the material portions are in the testator's handwriting. No witnesses are required. However, holographic wills may face greater scrutiny and are generally not recommended over formally witnessed wills." },
+        { question: "What unique estate planning tools does Alaska offer?", answer: "Alaska is one of the few states that allows self-settled Domestic Asset Protection Trusts (DAPTs), which let the grantor be a discretionary beneficiary while still protecting assets from future creditors. This makes Alaska highly attractive for advanced estate and asset protection planning." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "No specific Alaska statute governs non-compete agreements — enforceability is determined by common law",
+        "Courts apply a reasonableness test: protectable interest, reasonable scope, reasonable duration, and geographic limits",
+        "The agreement must be ancillary to a lawful contract (employment, sale of business)",
+        "Courts are more willing to enforce non-solicitation clauses than outright non-compete provisions",
+        "Consideration at the time of signing is required — continued employment alone may not suffice for mid-employment additions",
+      ],
+      restrictions: [
+        "Alaska courts narrowly construe restrictions that deprive individuals of their livelihood",
+        "Overly broad geographic scope or duration may result in the court voiding the entire clause (Alaska does not consistently blue-pencil)",
+        "Cannot prevent a former employee from using general skills learned on the job",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Alaska?", answer: "Alaska has no statute specifically addressing non-competes. Courts enforce them under common law if they are reasonable in scope, duration, and geographic reach, and protect a legitimate business interest such as trade secrets or customer relationships. Courts tend to scrutinize broad restrictions carefully." },
+        { question: "How long can an Alaska non-compete last?", answer: "Alaska courts have not set a bright-line maximum. Restrictions of 1–2 years have been upheld for employees with significant customer relationships or access to trade secrets. Longer periods face greater skepticism. The appropriateness of the duration depends heavily on the specific facts." },
+        { question: "Does Alaska blue-pencil non-compete agreements?", answer: "Alaska courts have not consistently adopted the blue-pencil doctrine. Unlike Alabama, Alaska courts may void an unreasonable non-compete entirely rather than modify it. This makes careful drafting essential — overly broad restrictions risk complete unenforceability." },
+        { question: "What consideration is required for an Alaska non-compete?", answer: "The non-compete must be part of an initial employment offer or supported by independent consideration (e.g., a bonus, promotion, or equity grant) if added after employment begins. Simply continuing employment has been questioned as adequate consideration in Alaska, though outcomes vary by circumstances." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Alaska applies a multi-factor common law test for worker classification; no statewide ABC test",
+        "Key factors: behavioral control (how work is done), financial control (business aspects), and type of relationship",
+        "Alaska contractors must register with the Department of Labor if employing workers",
+        "Contractors must obtain business licenses and applicable trade licenses (general contractors: >$10,000 projects)",
+        "Federal and state tax obligations: contractors pay self-employment tax and quarterly estimated taxes",
+      ],
+      restrictions: [
+        "Alaska Department of Labor may audit worker classifications for unemployment insurance compliance",
+        "Workers misclassified as contractors may be entitled to back wages, benefits, and overtime",
+        "Construction contractors must be licensed under Alaska Contractors Registration Act (AS 08.18) for projects over $10,000",
+      ],
+      faq: [
+        { question: "Do contractors need a license in Alaska?", answer: "General contractors and specialty contractors must register with the Alaska Department of Commerce for projects with a total value over $10,000. Licensing requirements vary by trade (electrical, plumbing, mechanical). Operating without required licenses can invalidate contracts and create penalties." },
+        { question: "How does Alaska tax independent contractors?", answer: "Alaska has no state income tax, making it highly favorable for contractors. However, contractors still owe federal self-employment tax (15.3% on net earnings), quarterly estimated federal income tax, and must register for any applicable municipal business licenses (Anchorage, Fairbanks, etc.)." },
+        { question: "What is the risk of misclassifying workers in Alaska?", answer: "Employers who misclassify workers face liability for back wages, unemployment insurance contributions, workers' compensation premiums, and any applicable benefits. The Alaska Department of Labor may assess penalties and interest on unpaid contributions going back several years." },
+        { question: "What should an Alaska contractor agreement include?", answer: "Scope of services, deliverables and milestones, payment terms, intellectual property ownership (contractor vs. client), confidentiality, independent contractor status language, right to substitute workers, and governing law (Alaska). Specify that the contractor provides their own tools and bears their own business expenses." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Alaska commercial leases are governed primarily by common law and contract principles",
+        "Written leases for terms over 1 year are required under Alaska's Statute of Frauds (AS 09.25.010)",
+        "Leases affecting real property should be recorded with the Alaska District Recorder's Office to protect against third-party claims",
+        "Commercial tenants typically bear all or a proportionate share of operating expenses in triple-net leases",
+        "Personal guarantees commonly required from principals of small businesses and startups",
+      ],
+      restrictions: [
+        "No Alaska statute limits commercial security deposits — amount is negotiated and governed by the lease",
+        "No automatic renewal rights for commercial tenants — renewal options must be expressly negotiated",
+        "Alaska's remoteness creates unique lease provisions: force majeure clauses should account for weather-related closures and supply chain delays specific to Alaska",
+      ],
+      faq: [
+        { question: "Are there unique considerations for Alaska commercial leases?", answer: "Yes. Alaska's remoteness and extreme climate create unique lease considerations: force majeure clauses should specifically address severe weather, permafrost issues for foundation integrity, seasonal access restrictions, and supply chain disruptions. Utility costs in Alaska are significantly higher than the national average and must be carefully allocated." },
+        { question: "What taxes apply to Alaska commercial rent?", answer: "Alaska has no state sales tax, making it one of the few states where commercial rent is not subject to state-level sales tax. However, some Alaska municipalities (Juneau, Sitka, Ketchikan) impose local sales taxes that may apply to commercial rent. Always verify local tax requirements." },
+        { question: "How are commercial lease disputes handled in Alaska?", answer: "Commercial lease disputes are litigated in Alaska Superior Court. Under Alaska Civil Rule 82, the prevailing party is generally entitled to attorney's fees (a percentage based on what was won). This unique feature makes Alaska litigation riskier and increases the incentive to settle commercial lease disputes." },
+        { question: "What is Alaska's attorney's fees rule and how does it affect leases?", answer: "Alaska Civil Rule 82 requires courts to award attorney's fees to the prevailing party in most civil cases — a significant departure from the American Rule. Lease disputes should include clear provisions addressing fee-shifting. This rule increases the stakes of commercial lease litigation significantly." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Alaska UCC Article 3 (AS 45.03) for negotiable instruments",
+        "Must include: unconditional promise to pay, specific sum, identified payee, and maker's signature",
+        "Alaska's legal interest rate is 10.5% per annum absent a written agreement (AS 45.45.010)",
+        "Parties may contract for any rate of interest in writing for commercial loans — no usury cap for commercial notes",
+        "Consumer credit transactions may be subject to the Alaska Consumer Protection Act and Truth in Lending Act",
+      ],
+      restrictions: [
+        "Statute of limitations: 3 years from the date of default for contract claims under AS 09.10.053",
+        "Alaska Rule 82 (attorney's fees to prevailing party) applies to note enforcement actions in court",
+        "Forfeiture provisions that impose excessive penalties may be challenged as unconscionable",
+      ],
+      faq: [
+        { question: "What is the legal interest rate in Alaska?", answer: "If no interest rate is specified in writing, Alaska law imposes a legal rate of 10.5% per annum (AS 45.45.010). For written commercial agreements, parties may contract for any rate. Consumer loan rates may be subject to additional federal regulations." },
+        { question: "How long do I have to enforce a promissory note in Alaska?", answer: "Alaska's statute of limitations for contract claims is 3 years from the date the cause of action accrues (AS 09.10.053). For a demand note, the 3-year period generally starts when demand is made or when the note is executed if no demand is made." },
+        { question: "Does Alaska have usury limits on promissory notes?", answer: "Alaska does not impose a usury cap on commercial loan transactions where the rate is agreed in writing. Consumer loans have different protections under state and federal law. The 10.5% legal rate only applies when no rate is specified in the agreement." },
+        { question: "Should I record a real estate-secured promissory note in Alaska?", answer: "The note itself does not need to be recorded, but the accompanying mortgage or deed of trust securing real property must be recorded with the Alaska District Recorder's Office to establish priority against other creditors and give public notice of the lien." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Alaska statute requires a pre-suit demand letter for most civil claims",
+        "Exception: Alaska Civil Rule 82 makes attorney's fees available to prevailing parties — a demand letter establishes the timeline of the dispute",
+        "State the legal basis for the claim, amount demanded, and a specific response deadline (typically 10–30 days)",
+        "For consumer debt collection, comply with the federal Fair Debt Collection Practices Act",
+        "Preserve any contracts, invoices, and communications that support the claim before sending the letter",
+      ],
+      restrictions: [
+        "Alaska Rule 82 attorney's fees cut both ways — if you send a demand and then lose in court, you may owe the other side's fees",
+        "Threatening criminal prosecution to collect a debt is prohibited and may constitute extortion",
+        "Statute of limitations: 3 years for most written contracts — a demand letter does not toll the limitations period",
+      ],
+      faq: [
+        { question: "Why does Alaska's attorney's fees rule matter for demand letters?", answer: "Alaska Civil Rule 82 awards attorney's fees to the prevailing party in most civil cases. Sending a clear demand letter before filing suit demonstrates good faith. It can also support a claim for pre-judgment interest and positions you well if the other side refuses a reasonable settlement and you prevail in court." },
+        { question: "How long should I give someone to respond to a demand letter in Alaska?", answer: "10 to 30 days is standard. For straightforward debt collection, 14 days is common. For complex commercial disputes, 30 days allows time for the recipient to consult counsel. Always specify the deadline clearly and indicate that failure to respond will result in legal action." },
+        { question: "Can I recover prejudgment interest in Alaska?", answer: "Yes. Alaska courts routinely award prejudgment interest on money judgments. For contract claims, the rate is 10.5% per annum (AS 45.45.010) or the contract rate if stated. Noting the accruing interest in your demand letter can incentivize the debtor to resolve the matter promptly." },
+        { question: "What happens if the debtor ignores my Alaska demand letter?", answer: "File suit in the appropriate court. Small claims court handles disputes up to $10,000. Superior Court handles larger amounts. Given Alaska's Rule 82 attorney's fees provision, prevailing in court is particularly valuable — but you must be prepared to cover your costs if you lose." },
+      ],
+    },
+  },
+
+  // ── Arkansas ──────────────────────────────────────────────────────────────
+  arkansas: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Arkansas Residential Landlord-Tenant Act (Ark. Code Ann. §18-17-101 et seq.), enacted 2007",
+        "Security deposit: maximum 2 months' rent; must be returned within 60 days of lease termination",
+        "Landlord must provide itemized statement of deductions within 60 days",
+        "Landlord must maintain premises in a habitable condition (§18-17-502)",
+        "Written lease advisable for any tenancy; required for terms exceeding 1 year under the Statute of Frauds",
+      ],
+      restrictions: [
+        "Self-help eviction is prohibited — landlord must use unlawful detainer court process",
+        "Retaliatory eviction or rent increases within 90 days of a tenant's complaint are presumed retaliatory",
+        "Landlord may not remove doors, windows, or utilities to force tenant out",
+        "Late fees must be specified in the lease — no statutory cap but must be reasonable",
+      ],
+      noticeRequirements: "30 days' written notice to terminate a month-to-month tenancy. 3 days' notice for failure to pay rent before filing unlawful detainer. 14 days' notice for other lease violations.",
+      faq: [
+        { question: "What are the security deposit rules in Arkansas?", answer: "Arkansas caps the security deposit at 2 months' rent. Landlords must return it — with an itemized list of any deductions — within 60 days of lease termination. Failure to comply can make the landlord liable for the full deposit amount even if some deductions were legitimate." },
+        { question: "What notice must an Arkansas landlord give to evict a tenant?", answer: "For nonpayment of rent: 3 days' written notice before filing unlawful detainer. For other lease violations: 14 days' notice to remedy or vacate. For no-cause termination of a month-to-month tenancy: 30 days' notice. Posting on the door is permitted when personal service fails." },
+        { question: "Does Arkansas require habitability standards?", answer: "Yes. Under §18-17-502, landlords must maintain premises that are safe, sanitary, and free from conditions that materially affect health and safety. This includes functional heating, plumbing, and structural integrity. Tenants may have limited repair-and-deduct rights for minor repairs." },
+        { question: "Can Arkansas landlords prohibit smoking?", answer: "Yes. Arkansas has no law preventing landlords from including a no-smoking clause in leases. Many landlords include smoking prohibitions for all common areas and units. Tenants who violate the clause may face lease termination after proper notice." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Arkansas Small Business Entity Tax Pass Through Act and Arkansas LLC Act (Ark. Code Ann. §4-32)",
+        "Annual Franchise Tax Report due by May 1 each year; $150 minimum annual franchise tax",
+        "Registered agent with an Arkansas physical address required",
+        "No statutory requirement for a written operating agreement — but strongly recommended",
+        "Articles of Organization must be filed with the Arkansas Secretary of State; $50 filing fee",
+      ],
+      restrictions: [
+        "Arkansas LLCs may not engage in banking, trust company, or insurance business",
+        "Professional LLCs (attorneys, CPAs, architects) require additional state licensing",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.'",
+        "Members are not personally liable for LLC debts absent fraud, commingling, or failure to follow formalities",
+      ],
+      faq: [
+        { question: "What is Arkansas's LLC annual franchise tax?", answer: "Arkansas requires all LLCs to file an Annual Franchise Tax Report and pay a minimum of $150 per year by May 1. LLCs with more complex structures may owe higher amounts. Late filing incurs penalties and interest and can result in the LLC's charter being forfeited." },
+        { question: "Is an operating agreement required for an Arkansas LLC?", answer: "Arkansas law does not require a written operating agreement, but it is essential for any multi-member LLC. Without one, the default rules under §4-32 govern the LLC, which may not align with the members' actual intentions regarding profit sharing, management, or exit rights." },
+        { question: "How is an Arkansas LLC taxed at the state level?", answer: "Arkansas LLCs are subject to the state's pass-through entity tax framework. Single-member LLCs pay no Arkansas corporate income tax — income is reported on the member's personal state return. Multi-member LLCs file partnership returns. Arkansas's corporate income tax rate is 4.9% (2024) for larger entities that elect corporate taxation." },
+        { question: "Can a foreigner own an Arkansas LLC?", answer: "Yes. Arkansas imposes no citizenship or residency requirements on LLC members or managers. Foreign nationals may own Arkansas LLCs, but federal reporting requirements (FinCEN Beneficial Ownership Information report) apply to all LLCs regardless of owner citizenship." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Arkansas is an at-will employment state — either party may terminate employment at any time for any lawful reason",
+        "Right-to-Work state under Ark. Const. Art. 5 §14 and Ark. Code Ann. §11-3-301 — union membership cannot be required",
+        "Arkansas minimum wage: $11.00/hour (2024); tipped employees minimum $2.63/hour",
+        "Overtime follows federal FLSA standards — time-and-a-half for hours over 40 per week",
+        "Arkansas Civil Rights Act (§16-123-107) prohibits employment discrimination",
+      ],
+      restrictions: [
+        "Non-compete agreements: Arkansas courts apply a reasonableness test — no specific statute as of 2024",
+        "Discrimination prohibited based on race, color, religion, national origin, sex, age, disability under state and federal law",
+        "Employee handbooks may create implied contracts — include clear at-will disclaimers",
+      ],
+      noticeRequirements: "No statutory notice requirement for at-will termination. Contractual notice provisions are enforceable if clearly stated.",
+      faq: [
+        { question: "What is Arkansas's minimum wage?", answer: "Arkansas minimum wage is $11.00/hour in 2024. The state's minimum wage exceeds the federal minimum of $7.25/hour. Tipped employees must receive at least $2.63/hour in direct wages, with tips bringing them to at least the minimum wage." },
+        { question: "Are non-compete agreements enforced in Arkansas?", answer: "Arkansas has no specific non-compete statute as of 2024, so courts apply common law. Courts enforce non-competes that are reasonable in duration (typically 1–2 years), geographic scope, and nature of restricted activity. Courts have been willing to blue-pencil overbroad clauses." },
+        { question: "Is Arkansas a right-to-work state?", answer: "Yes. Arkansas's constitution (Article 5, §14) prohibits requiring employees to join a union or pay union dues as a condition of employment. This applies to both public and private sector workers statewide." },
+        { question: "What are the Arkansas Civil Rights Act protections?", answer: "The Arkansas Civil Rights Act (§16-123-101 et seq.) prohibits employment discrimination based on race, color, religion, sex, national origin, age, and disability in businesses with 9 or more employees. It provides similar protections to federal Title VII but with different administrative procedures." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Arkansas Durable Power of Attorney Act (Ark. Code Ann. §28-68-101 et seq.)",
+        "Must be signed by the principal and two witnesses, and acknowledged before a notary public",
+        "A durable POA must expressly state it survives the principal's incapacity",
+        "Healthcare POA is a separate document under Arkansas's Advance Directive Act (§20-17-201 et seq.)",
+        "The agent (attorney-in-fact) must act in the principal's best interests and avoid conflicts of interest",
+      ],
+      restrictions: [
+        "Witnesses may not be: the agent, a relative of the agent, anyone who will inherit from the principal, or the principal's healthcare provider",
+        "An agent may not make gifts to themselves unless expressly authorized in the POA",
+        "A POA terminates upon the principal's death",
+        "Courts may remove an agent who breaches fiduciary duties",
+      ],
+      faq: [
+        { question: "Does an Arkansas POA require witnesses in addition to notarization?", answer: "Yes. Arkansas requires both two witnesses and notarization for a valid power of attorney. This is a stricter standard than many states that only require notarization. Witnesses cannot be the agent, related to the agent, or stand to inherit from the principal." },
+        { question: "What is the difference between a durable and non-durable POA in Arkansas?", answer: "A non-durable POA becomes invalid when the principal loses mental capacity. A durable POA survives incapacity and must include explicit language stating that it is not affected by subsequent disability. Without that language, Arkansas law presumes the POA is non-durable." },
+        { question: "Does Arkansas have a statutory POA form?", answer: "Yes. Arkansas Code §28-68-301 provides a statutory form for powers of attorney. Using this form provides certain protections and makes it more likely to be accepted by financial institutions and other third parties without additional scrutiny." },
+        { question: "Can an Arkansas POA be used for real estate transactions?", answer: "Yes. An Arkansas POA can authorize the agent to buy, sell, mortgage, or lease real estate. To be recorded in county records, the POA must be acknowledged before a notary and comply with recording requirements. The agent must strictly follow the authority granted and act in the principal's interest." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by Ark. Code Ann. §28-25-101 et seq.",
+        "Must be in writing, signed by the testator (or at the testator's direction in their presence), and attested by two witnesses",
+        "Witnesses must sign in the testator's presence and must be at least 18 years old",
+        "Testator must be at least 18 years old and of sound mind",
+        "Holographic wills (entirely handwritten and signed) are valid under §28-25-104",
+        "Probate filed in the Circuit Court (Probate Division) of the county where the testator resided",
+      ],
+      restrictions: [
+        "Surviving spouse is entitled to a statutory elective share of one-third of the decedent's estate",
+        "Children born or adopted after the will is executed are entitled to their intestate share unless the will provides for them",
+        "Arkansas has no state estate or inheritance tax",
+      ],
+      faq: [
+        { question: "Does Arkansas have an estate tax?", answer: "No. Arkansas does not impose a state estate tax or inheritance tax. The federal estate tax applies to estates exceeding the federal exemption ($13.61 million in 2024). This makes Arkansas favorable for estate planning compared to states with their own estate taxes." },
+        { question: "Are holographic wills valid in Arkansas?", answer: "Yes. Under §28-25-104, a holographic will — entirely written and signed in the testator's own handwriting — is valid in Arkansas without witnesses. It need not be dated to be valid, though dating is strongly recommended to establish the will's timeline relative to other documents." },
+        { question: "What is the spousal elective share in Arkansas?", answer: "A surviving spouse in Arkansas may elect to take one-third of the deceased spouse's estate rather than accepting what was left in the will. This right must be exercised within 9 months of death or 6 months after the will is admitted to probate, whichever is later." },
+        { question: "How is property distributed in Arkansas if there is no will?", answer: "Under Arkansas intestate succession (§28-9-201 et seq.), the estate passes first to the surviving spouse and children. If none, to parents, then siblings, and then more distant relatives. A surviving spouse's share varies depending on whether there are surviving children and whether they are children of the marriage." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Arkansas has no specific non-compete statute as of 2024 — courts apply common law reasonableness",
+        "Enforceable if: (1) ancillary to a lawful agreement, (2) supported by consideration, (3) reasonably limited in scope, geography, and duration",
+        "Courts weigh the employer's legitimate interest against the employee's ability to earn a livelihood",
+        "Blue-penciling has been applied by Arkansas courts to modify — not void — overly broad restrictions",
+        "Consideration required at signing; mid-employment additions need independent consideration",
+      ],
+      restrictions: [
+        "Courts scrutinize restrictions that would effectively prevent the employee from working in their field",
+        "Geographic scope should correspond to the employee's actual territory or customer base",
+        "Duration beyond 2 years faces increased skepticism in Arkansas courts",
+      ],
+      faq: [
+        { question: "How do Arkansas courts evaluate non-compete agreements?", answer: "Arkansas courts use a three-part common law test: (1) Is there a legitimate business interest? (2) Is the restriction reasonable in time and geography? (3) Does it impose undue hardship on the employee? Courts balance employer interests against the employee's right to earn a living in their profession." },
+        { question: "What constitutes a legitimate business interest for an Arkansas non-compete?", answer: "Arkansas courts recognize: trade secrets, confidential business information, customer relationships developed at the employer's expense, and specialized training provided by the employer. General skills and knowledge that any competent employee would have cannot justify a non-compete restriction." },
+        { question: "Will Arkansas courts blue-pencil a non-compete?", answer: "Sometimes. Arkansas courts have both voided overbroad non-competes entirely and modified them by blue-penciling to a reasonable scope. Drafting with cascading options (multiple time and geography combinations) gives courts flexibility to enforce the most reasonable combination." },
+        { question: "Can Arkansas employees be bound by non-competes signed after they start working?", answer: "Yes, but only with fresh consideration. Continued employment alone is generally insufficient in Arkansas. The employer should provide something of value at the time the new restriction is signed — a promotion, bonus, pay increase, or access to confidential information — to make the non-compete enforceable." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Arkansas uses a common law multi-factor test for worker classification",
+        "Key factors: right to control the manner of work, integration into the business, permanency, investment in equipment",
+        "Contractors must file quarterly self-employment tax returns with the IRS and Arkansas Department of Finance",
+        "Arkansas gross receipts (sales) tax may apply to contractor services in certain industries",
+        "Construction contractors: must be licensed through the Arkansas Contractors Licensing Board for projects over $50,000",
+      ],
+      restrictions: [
+        "Misclassifying employees as contractors can result in liability for unpaid Arkansas income tax withholding, unemployment insurance, and workers' compensation",
+        "Workers' compensation coverage: employers who use uninsured contractors may be liable for injuries to those contractors",
+        "Arkansas Department of Workforce Services audits contractor classifications for unemployment insurance compliance",
+      ],
+      faq: [
+        { question: "Do independent contractors pay state income tax in Arkansas?", answer: "Yes. Arkansas has a state income tax (top rate 4.7% in 2024). Independent contractors must make quarterly estimated tax payments to the Arkansas Department of Finance and Administration using Form AR1000ES. Failure to pay quarterly estimates results in penalties." },
+        { question: "What licenses do contractors need in Arkansas?", answer: "General contractors must be licensed by the Arkansas Contractors Licensing Board (ACLB) for commercial projects over $50,000. Electrical, plumbing, and HVAC contractors need separate trade licenses. Residential contractors need ACLB licensing for projects over $2,000 in some circumstances." },
+        { question: "What is the risk of worker misclassification in Arkansas?", answer: "Employers face back payment of state and federal payroll taxes, unemployment insurance premiums, workers' compensation coverage gaps, and potential civil suits by misclassified workers. The Arkansas Department of Workforce Services actively investigates classification disputes, particularly in construction and transportation." },
+        { question: "What should an Arkansas contractor agreement include to support independent contractor status?", answer: "Include: contractor sets their own hours and methods, contractor provides their own tools and equipment, contractor can work for multiple clients simultaneously, contractor bears their own business expenses, payment is per project (not hourly), and contractor is responsible for their own taxes. A right-of-substitution clause further supports contractor status." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Arkansas commercial leases are governed by common law — no state commercial landlord-tenant statute",
+        "Leases for more than 1 year must be in writing under the Statute of Frauds (§4-59-101)",
+        "Commercial leases should be recorded in the county Circuit Clerk's office if exceeding 3 years to protect against third-party claims",
+        "Specify clearly: base rent, CAM charges, insurance obligations, repair responsibilities, and assignment rights",
+        "Personal guarantees are commonly required for new or small-business tenants",
+      ],
+      restrictions: [
+        "No statutory caps on commercial security deposits or return timelines — all governed by the lease",
+        "No automatic right of renewal — must be expressly negotiated and timely exercised",
+        "Arkansas allows distress for rent (seizure of tenant's personal property) for unpaid commercial rent — uncommon but available",
+      ],
+      faq: [
+        { question: "Are commercial leases in Arkansas required to be in writing?", answer: "Leases for more than one year must be in writing under Arkansas's Statute of Frauds (§4-59-101). Shorter leases may be oral but written leases are strongly recommended for all commercial tenancies to clearly define obligations and avoid disputes." },
+        { question: "What is a CAM charge in an Arkansas commercial lease?", answer: "Common Area Maintenance (CAM) charges are a tenant's proportionate share of the costs to maintain shared areas — parking lots, lobbies, landscaping, and common corridors. In triple-net (NNN) leases, tenants pay CAM charges in addition to property taxes and insurance. CAM definitions should be negotiated carefully." },
+        { question: "Can an Arkansas commercial landlord evict a tenant for nonpayment?", answer: "Yes. After the notice period specified in the lease (or as required by Arkansas law), a commercial landlord may file an unlawful detainer action in circuit court. The process is faster than residential evictions. Well-drafted leases include specific default, notice, and cure provisions." },
+        { question: "How are Arkansas commercial lease disputes resolved?", answer: "Most commercial lease disputes go to circuit court. Arbitration clauses are enforceable and are increasingly common in commercial leases to provide faster, more private resolution. Arkansas courts generally enforce commercial lease terms as written, making precise drafting of default and remedy provisions critical." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Arkansas UCC Article 3 (§4-3-101 et seq.) for negotiable instruments",
+        "Must include: unconditional written promise to pay, specific sum, identified payee, and maker's signature",
+        "Arkansas's legal rate of interest: 6% per annum absent a written agreement",
+        "Maximum interest rate: varies by loan type — Arkansas constitutional limit is 17% for consumer loans; higher permitted for certain commercial transactions",
+        "Consumer protection laws may require additional disclosures for consumer credit promissory notes",
+      ],
+      restrictions: [
+        "Arkansas Amendment 60 (Arkansas Constitution): interest on consumer loans may not exceed 17% per annum — violation can render the loan void",
+        "Statute of limitations: 5 years from the date the cause of action accrues for written contracts (§16-56-111)",
+        "Usurious interest rates in consumer loans can result in voiding of the entire interest provision",
+      ],
+      faq: [
+        { question: "What is Arkansas's constitutional interest rate limit?", answer: "Arkansas's Amendment 60 to the state constitution caps interest rates on consumer loans at 17% per annum. This is a constitutional provision, not just a statute. Loans charging more than 17% are usurious, and courts may void the interest obligation entirely, leaving only the principal to be repaid." },
+        { question: "How long do I have to enforce an Arkansas promissory note?", answer: "Arkansas's statute of limitations for written contracts, including promissory notes, is 5 years from the date the cause of action arises (§16-56-111). For demand notes, the limitations period starts when demand is made. Partial payments or written acknowledgments of the debt can restart the clock." },
+        { question: "Does the Arkansas 17% cap apply to business loans?", answer: "The Arkansas constitutional limit primarily targets consumer loans. Commercial transactions between sophisticated parties generally have more flexibility. However, the constitutional language is broad, and parties should consult an Arkansas attorney for high-interest commercial lending arrangements to assess risk." },
+        { question: "Do I need to notarize a promissory note in Arkansas?", answer: "Notarization is not required for a promissory note to be legally valid in Arkansas. However, notarization adds evidentiary weight and is recommended for large-dollar notes. Notes secured by real property require notarization for recording as mortgages or deeds of trust." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Arkansas statute mandates a pre-suit demand letter for most civil claims",
+        "Clearly identify the parties, describe the facts giving rise to the claim, state the amount demanded, and set a response deadline",
+        "Consumer debt collection must comply with the federal Fair Debt Collection Practices Act",
+        "Arkansas Deceptive Trade Practices Act (§4-88-101) prohibits misrepresentation of legal rights in collection activity",
+        "Preserve all supporting documents (contracts, invoices, communications) before sending the letter",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written contracts, 3 years for oral contracts — demand letters do not toll the statute",
+        "Threatening criminal charges solely to collect a civil debt may constitute extortion under Arkansas law",
+        "Licensed debt collectors in Arkansas must comply with the Arkansas Fair Debt Collection Practices Act (§17-24-101)",
+      ],
+      faq: [
+        { question: "Is a demand letter legally required before suing in Arkansas?", answer: "No. Arkansas does not require a demand letter before filing most civil suits. However, sending one is good practice — it demonstrates good faith, may prompt voluntary payment, and establishes the date the claim was communicated. Some contracts require prior written notice before litigation." },
+        { question: "How long should I give someone to respond to an Arkansas demand letter?", answer: "10 to 30 days is standard. Simple debt collection letters typically request payment within 14 days. Complex commercial disputes may warrant 30 days. Always state the deadline clearly and note that failure to respond will result in legal action." },
+        { question: "Can I claim attorney's fees in my Arkansas demand letter?", answer: "Only if your contract specifically includes an attorney's fees clause or a statute authorizes recovery. Arkansas follows the American Rule — each party bears its own attorney's fees absent a contract or statute. Include attorney's fee provisions in all future commercial contracts." },
+        { question: "What court should I use for small claims in Arkansas?", answer: "Arkansas small claims court (District Court) handles claims up to $5,000. No attorney is required, and the process is streamlined. For larger amounts, file in Circuit Court. For claims between $5,000 and $25,000, an expedited process may be available in some district courts." },
+      ],
+    },
+  },
+
+  // ── Connecticut ───────────────────────────────────────────────────────────
+  connecticut: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by Connecticut General Statutes §47a-1 et seq. (Landlord and Tenant Act)",
+        "Security deposit: maximum 2 months' rent (or 1 month if tenant is 62 or older); must earn interest at the prevailing savings account rate",
+        "Interest on the deposit must be paid annually or credited against rent",
+        "Deposit must be returned within 30 days of termination (or 15 days of receiving tenant's new address, whichever is later)",
+        "Landlord must provide written summary of rights and responsibilities at lease signing",
+        "Landlord must maintain premises in habitable condition under §47a-7",
+      ],
+      restrictions: [
+        "Connecticut prohibits discrimination based on source of income (e.g., Section 8 vouchers) in many circumstances",
+        "No-cause evictions of month-to-month tenants require 3 months' notice in Connecticut",
+        "Self-help eviction (changing locks, removing belongings) is prohibited and results in significant penalties",
+        "Retaliatory rent increases or evictions within 6 months of a tenant complaint are presumed retaliatory",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 3 months' notice from landlord for no-cause termination. Nonpayment of rent: 3-day notice to quit before court filing. Lease violation: 15-day notice to remedy.",
+      faq: [
+        { question: "What is the security deposit limit in Connecticut?", answer: "Connecticut caps security deposits at 2 months' rent — reduced to 1 month's rent for tenants aged 62 or older. The landlord must pay interest on the deposit annually at the prevailing savings account rate and return it within 30 days of lease termination with an itemized statement." },
+        { question: "Can Connecticut landlords refuse Section 8 tenants?", answer: "Generally no. Connecticut's Fair Housing Act prohibits discrimination based on source of lawful income in most residential rental situations. Landlords who refuse to rent to applicants solely because they use housing assistance vouchers may face discrimination complaints and penalties." },
+        { question: "What notice must a Connecticut landlord give to terminate a month-to-month tenancy?", answer: "Connecticut requires 3 months' written notice to terminate a month-to-month tenancy without cause. This is significantly longer than most states. For tenancies with cause (nonpayment, lease violation), notice periods are shorter: 3 days for nonpayment, 15 days for other violations." },
+        { question: "What are the penalties for illegal eviction in Connecticut?", answer: "A landlord who engages in self-help eviction (changing locks, removing tenant's belongings, shutting off utilities) faces substantial penalties under §47a-46: the tenant can recover actual damages, punitive damages, and attorney's fees. Connecticut courts take self-help eviction violations very seriously." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Connecticut Uniform Limited Liability Company Act (Conn. Gen. Stat. §34-243 et seq.), effective 2017",
+        "Annual report required — due by the anniversary month of organization; $80 filing fee",
+        "Registered agent with a Connecticut address required",
+        "Operating agreement may be oral, written, or implied — written is essential for multi-member LLCs",
+        "Connecticut LLCs must have at least one member; single-member LLCs are permitted",
+      ],
+      restrictions: [
+        "Connecticut entity tax: $250 per year minimum business entity tax for LLCs (the Business Entity Tax was repealed for income years beginning January 1, 2021 — verify current status)",
+        "Professional LLCs (attorneys, physicians, architects) require state licensing approval",
+        "LLC name must be distinguishable from other Connecticut registered entities",
+      ],
+      faq: [
+        { question: "What is Connecticut's LLC annual filing requirement?", answer: "Connecticut LLCs must file an Annual Report with the Secretary of State during the anniversary month of their organization. The filing fee is $80. The report updates member/manager information and keeps the LLC in good standing. Failure to file results in administrative dissolution." },
+        { question: "Is a Connecticut LLC operating agreement required by law?", answer: "The Connecticut Uniform LLC Act does not mandate a written operating agreement. However, without one the statutory default rules apply. A written agreement is essential to establish custom voting thresholds, profit distributions, member withdrawal rights, and management structure." },
+        { question: "How is a Connecticut LLC taxed at the state level?", answer: "Connecticut has a state income tax. Pass-through LLC income is reported on members' personal Connecticut returns at rates up to 6.99%. LLCs with Connecticut-source income that is distributable to nonresident members may be subject to withholding requirements. Connecticut also imposes a Pass-Through Entity tax with available credit." },
+        { question: "Does Connecticut have a Pass-Through Entity (PTE) tax?", answer: "Yes. Connecticut enacted a Pass-Through Entity tax (Conn. Gen. Stat. §12-699) allowing LLCs and partnerships to pay state income tax at the entity level (reducing federal SALT deduction limitations). Members receive a credit against their personal Connecticut income tax for their share of the PTE tax paid." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Connecticut is an at-will employment state, but with significant statutory employee protections",
+        "Connecticut minimum wage: $16.35/hour (August 2024); scheduled increases to $17.00 in January 2025",
+        "Paid sick leave required: employers with 50+ employees must provide up to 40 hours paid sick leave per year",
+        "Family and Medical Leave: Connecticut FMLA applies to employers with 3+ employees (more protective than federal FMLA)",
+        "Overtime: time-and-a-half for hours over 40 per week (federal FLSA standard applies)",
+      ],
+      restrictions: [
+        "Non-compete agreements: CGS §31-50b (effective 2016) — must not be broader than necessary, must specify geographic limits and duration, must be supported by consideration",
+        "Connecticut Human Rights and Opportunities Act prohibits discrimination based on 14 protected categories including sexual orientation, gender identity, and pregnancy",
+        "Employers cannot retaliate against employees for exercising statutory rights (minimum wage, FMLA, OSHA)",
+      ],
+      noticeRequirements: "No statutory notice for at-will termination. Contractual notice provisions are enforceable. WARN Act (100+ employees) requires 60 days' notice for mass layoffs.",
+      faq: [
+        { question: "What are Connecticut's rules on non-compete agreements?", answer: "CGS §31-50b requires non-competes to be: reasonably limited in duration (courts consider 1–2 years reasonable), limited to a specific geographic area, necessary to protect legitimate business interests, and supported by consideration. Employers in some industries (broadcast employees, physicians) face additional restrictions." },
+        { question: "How generous is Connecticut's paid sick leave law?", answer: "Connecticut's Paid Sick Leave Act (CGS §31-57r) requires employers with 50 or more employees to provide up to 40 hours of paid sick leave per year. Service workers accrue 1 hour for every 40 hours worked. Connecticut was the first state to mandate paid sick leave nationally (2012)." },
+        { question: "How does Connecticut's FMLA differ from the federal FMLA?", answer: "Connecticut's FMLA applies to employers with just 3 or more employees (versus 50 for federal FMLA), covers more family members (including siblings and parents-in-law), and provides 16 weeks of leave in a 2-year period. The state law is significantly more protective than the federal standard." },
+        { question: "What protected classes does Connecticut recognize in employment?", answer: "Connecticut's Fair Employment Practices Act covers: race, color, religious creed, sex, age, national origin, ancestry, marital status, sexual orientation, gender identity/expression, disability, genetic information, and pregnancy. Employers with 3 or more employees are covered." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by Connecticut's Uniform Power of Attorney Act (CGS §1-350 et seq.), effective 2016",
+        "Must be signed by the principal and two witnesses who are adults and not the agent",
+        "Must be acknowledged before a notary public",
+        "A durable POA must expressly state it survives incapacity",
+        "Connecticut provides a statutory short form POA (CGS §1-351) that third parties are generally required to accept",
+        "Healthcare decisions require a separate Health Care Representative appointment (CGS §19a-575a) or Advance Directive",
+      ],
+      restrictions: [
+        "Witnesses cannot be: the agent, the agent's spouse or children, heirs of the principal, or operators/employees of care facilities where the principal resides",
+        "Agent may not make gifts unless expressly authorized",
+        "Financial institutions must accept a statutory short-form POA without requiring their own form (CGS §1-351e)",
+      ],
+      faq: [
+        { question: "Does Connecticut require witnesses and a notary for a POA?", answer: "Yes. Connecticut requires both two adult witnesses and acknowledgment before a notary. This is a stricter standard than many states. The witnesses cannot be the agent or the agent's close relatives. Using the statutory short form (CGS §1-351) makes the POA more likely to be accepted by financial institutions." },
+        { question: "Are Connecticut financial institutions required to accept a power of attorney?", answer: "Under CGS §1-351e, financial institutions must accept a properly executed Connecticut statutory short-form POA. They may require an affidavit from the agent but generally cannot impose additional requirements. Refusal without cause may be actionable." },
+        { question: "Does Connecticut's POA cover health care decisions?", answer: "No. Connecticut requires a separate Health Care Representative appointment (CGS §19a-575a) or an Advance Directive for healthcare decisions. A financial POA alone does not give the agent authority to make medical decisions." },
+        { question: "Can I create a springing power of attorney in Connecticut?", answer: "Yes. A springing POA only takes effect upon a specified event (typically incapacity). Connecticut law permits this structure under the Uniform POA Act. You must clearly specify the triggering conditions and how incapacity is to be determined (e.g., written certification by two physicians)." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by CGS §45a-250 et seq. (Connecticut Probate Code)",
+        "Must be in writing, signed by the testator, and witnessed by two credible witnesses",
+        "Witnesses must sign in the presence of the testator and each other",
+        "Testator must be at least 18 years old and of sound mind",
+        "Holographic wills are NOT valid in Connecticut — witnesses are always required",
+        "Probate filed in the Probate Court of the district where the decedent resided",
+        "Connecticut probate fees are based on estate value — can be significant for larger estates",
+      ],
+      restrictions: [
+        "Surviving spouse may elect a statutory share of the estate under CGS §45a-436",
+        "Connecticut imposes an estate tax on estates exceeding $12.92 million (2024) at rates up to 12%",
+        "Children born after the will was executed may claim a pretermitted share",
+      ],
+      faq: [
+        { question: "Does Connecticut have an estate tax?", answer: "Yes. Connecticut imposes an estate tax on estates with a taxable estate exceeding $12.92 million (indexed, 2024). The tax rate ranges from 10.8% to 12%. Connecticut also has a gift tax. This affects high-net-worth residents and makes estate planning with trusts particularly important in Connecticut." },
+        { question: "Are holographic wills valid in Connecticut?", answer: "No. Connecticut does not recognize holographic (handwritten, unwitnessed) wills. A valid Connecticut will must always be signed by the testator in the presence of two witnesses who then sign the will themselves. Compliance with these formalities is strictly required." },
+        { question: "What are Connecticut probate fees?", answer: "Connecticut's probate fees are set by statute (CGS §45a-107) on a sliding scale based on estate value. For example, estates between $500,000 and $2 million pay a fee of $2,250 plus 0.5% of the excess over $500,000. These fees can be substantial for large estates, making probate avoidance strategies (revocable trusts) popular in Connecticut." },
+        { question: "What is the spousal elective share in Connecticut?", answer: "A surviving spouse in Connecticut may elect to take a statutory share of the estate under CGS §45a-436 rather than what is left in the will. The elective share is one-third of the 'statutory estate,' which includes most property the decedent owned or transferred within 2 years of death." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Connecticut General Statutes §31-50b (effective January 1, 2016) governs employment non-competes",
+        "Agreement must be in writing and signed by the employer and employee",
+        "Must not be broader than necessary to protect legitimate business interests",
+        "Must specify geographic scope and duration",
+        "If non-compete restricts employment after termination: employer must provide some form of compensation or other consideration",
+        "Specific rules for broadcast employees (CGS §31-50e) — even more restrictive standards apply",
+      ],
+      restrictions: [
+        "Broadcast employees (TV, radio on-air talent): non-competes limited to specific circumstances with caps on duration",
+        "Physicians: Connecticut has considered additional restrictions on physician non-competes — verify current law",
+        "Non-competes that effectively prevent an employee from earning a living in their field are void",
+        "Courts will not blue-pencil Connecticut non-competes — overbroad restrictions may be voided entirely",
+      ],
+      faq: [
+        { question: "What does Connecticut require for a valid non-compete?", answer: "Under CGS §31-50b, a Connecticut non-compete must: be in writing, be supported by consideration, specify geographic limits and duration, and be no broader than necessary to protect legitimate business interests such as trade secrets or customer goodwill. Without these elements, the agreement is unenforceable." },
+        { question: "Does Connecticut permit blue-penciling of non-compete agreements?", answer: "Connecticut courts are generally reluctant to blue-pencil or modify non-compete agreements. Unlike Alabama, Connecticut courts tend to void an entire overbroad restriction rather than rewrite it. Precise drafting — with cascading or tiered provisions — is essential." },
+        { question: "Are there special non-compete rules for doctors in Connecticut?", answer: "Connecticut has considered legislation to ban or severely restrict physician non-competes to improve patient access to care. As of 2024, verify current law with counsel. Physician non-competes generally face stricter scrutiny than non-medical employment agreements." },
+        { question: "What are the rules for broadcast employee non-competes in Connecticut?", answer: "CGS §31-50e significantly limits non-competes for broadcast employees (on-air talent). Restrictions are limited to specific triggering events, must not prevent the employee from working in the same DMA (market), and compensation must be paid during any restricted period. These rules are more employee-protective than the general non-compete statute." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Connecticut applies the ABC test for unemployment insurance and workers' compensation classification (CGS §31-222)",
+        "ABC test requires all three: (A) worker is free from employer control, (B) service is outside usual course of employer's business or performed off-premises, (C) worker is customarily engaged in independent trade",
+        "Contractors must register with the Connecticut Department of Revenue Services (DRS) if performing taxable services",
+        "Home improvement contractors must be registered with the Connecticut Department of Consumer Protection",
+        "Federal Form 1099-NEC required for payments of $600 or more per year",
+      ],
+      restrictions: [
+        "Connecticut's strict ABC test makes contractor classification difficult — many workers deemed employees for unemployment and workers' comp purposes",
+        "Misclassification exposes employers to Connecticut income tax withholding liability, unemployment insurance assessments, and workers' comp penalties",
+        "Contractors may still be classified as employees under the ABC test even if operating through their own LLC",
+      ],
+      faq: [
+        { question: "What is Connecticut's ABC test for contractors?", answer: "Connecticut uses the ABC test for unemployment insurance and workers' compensation: the worker must be (A) free from the hiring company's direction and control, (B) performing services outside the usual course of the hiring company's business or off its premises, and (C) customarily engaged in an independent established trade. All three must be satisfied." },
+        { question: "Is Connecticut's ABC test stricter than the federal IRS test?", answer: "Yes. Connecticut's ABC test for unemployment and workers' comp purposes is stricter than the federal common law or economic reality tests used for IRS purposes. A worker can be a contractor for IRS purposes but an employee for Connecticut unemployment insurance — requiring unemployment contributions from the employer." },
+        { question: "What registration is required for Connecticut contractors?", answer: "Home improvement contractors must register with the Connecticut Department of Consumer Protection (CGS §20-427). New home construction contractors need a separate license. All contractors must register with DRS if performing taxable services. Electrical, plumbing, and HVAC contractors need trade licenses from the Department of Consumer Protection." },
+        { question: "What are the penalties for contractor misclassification in Connecticut?", answer: "Connecticut imposes penalties including unpaid unemployment insurance contributions with interest, back workers' compensation premiums, and personal liability for corporate officers who knowingly misclassify. The Connecticut Department of Labor actively investigates misclassification complaints, particularly in construction." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Connecticut commercial leases are governed by contract law and the Connecticut UCC where applicable",
+        "Leases for more than 1 year must be in writing under CGS §52-550 (Statute of Frauds)",
+        "Leases of real property for 2 years or more should be recorded in the town's land records",
+        "Connecticut imposes sales tax at 6.35% on commercial rent — landlords must collect and remit",
+        "ADA compliance obligations for commercial premises must be addressed in the lease",
+      ],
+      restrictions: [
+        "No statutory limits on commercial security deposits or return timelines — all contractual",
+        "No automatic renewal for commercial tenants — options must be expressly negotiated",
+        "Connecticut courts strictly enforce lease terms as written — commercial parties are held to the language they agreed to",
+      ],
+      faq: [
+        { question: "Does Connecticut charge sales tax on commercial rent?", answer: "Yes. Connecticut imposes its 6.35% sales and use tax on most commercial space rentals. Landlords are required to register as retailers, collect the tax from tenants, and remit it to the Department of Revenue Services. This is an important cost consideration that should be addressed explicitly in the lease." },
+        { question: "When must a Connecticut commercial lease be recorded?", answer: "Commercial leases for 2 years or more should be recorded in the land records of the town where the property is located. Recording protects the tenant against a subsequent purchaser or mortgagee who might not otherwise have notice of the lease. Short-term leases typically do not need to be recorded." },
+        { question: "What should a Connecticut commercial lease say about CAM charges?", answer: "Common Area Maintenance charges in Connecticut commercial leases should clearly define: what expenses are included (and excluded), the base year or stop amount, audit rights, and the cap on annual CAM increases. Connecticut courts strictly enforce the lease language, so imprecise CAM provisions frequently lead to disputes." },
+        { question: "What are the ADA obligations for Connecticut commercial landlords?", answer: "Both landlords and tenants may have obligations under the Americans with Disabilities Act to make commercial premises accessible. The lease should specify which party is responsible for ADA compliance and upgrades. Common areas are typically the landlord's responsibility; interior improvements are often the tenant's." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Connecticut's UCC Article 3 (CGS §42a-3-101 et seq.) for negotiable instruments",
+        "Must include: unconditional written promise to pay, fixed amount, identified payee, maker's signature",
+        "Connecticut's legal interest rate is 8% per annum absent a written agreement (CGS §37-1)",
+        "Connecticut usury limit: for personal loans, interest cannot exceed 12% per annum (CGS §37-4) — commercial transactions have greater flexibility",
+        "Truth in Lending Act disclosures required for consumer credit promissory notes",
+      ],
+      restrictions: [
+        "Statute of limitations: 6 years from the date the cause of action accrues for written contracts (CGS §52-576)",
+        "Consumer usury ceiling of 12% per annum for personal loans — violation voids the interest above the limit",
+        "Connecticut prohibits unconscionable contracts — courts may reform usurious or unconscionable loan terms",
+      ],
+      faq: [
+        { question: "What is the maximum interest rate on a Connecticut promissory note?", answer: "For personal (consumer) loans, Connecticut's usury limit is 12% per annum (CGS §37-4). Commercial loans have greater flexibility and may exceed this rate by agreement. The legal rate (absent agreement) is 8% per annum. Banks are generally exempt from state usury limits under federal preemption." },
+        { question: "How long do I have to collect on a Connecticut promissory note?", answer: "Connecticut's statute of limitations for written contracts, including promissory notes, is 6 years from the date the cause of action arises (CGS §52-576). A written acknowledgment of the debt or partial payment can restart the limitations period." },
+        { question: "Does a Connecticut promissory note need to be notarized?", answer: "Notarization is not legally required for a promissory note to be valid. However, notarization adds evidentiary credibility. Notes securing real property (mortgages, deeds of trust) must be notarized and recorded with the town clerk to create a valid lien." },
+        { question: "Can I charge compound interest on a Connecticut promissory note?", answer: "Yes, but it must be expressly stated. Compound interest is not implied — it must be clearly stated in the note, including the compounding period. The total effective annual rate resulting from compounding cannot violate Connecticut's usury limit for consumer transactions." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Connecticut statute requires a pre-suit demand letter for most civil claims",
+        "Exception: CGS §52-240a requires demand notice before suing on a product liability claim against a retailer",
+        "Demand letter should: identify parties, state the legal basis for the claim, specify the amount, and set a deadline",
+        "For consumer debt, comply with the federal FDCPA and Connecticut Creditors' Collection Practices Act (CGS §36a-645 et seq.)",
+        "Connecticut Unfair Trade Practices Act (CUTPA) — §42-110g provides for recovery of attorney's fees and punitive damages in CUTPA claims, making a demand letter particularly important",
+      ],
+      restrictions: [
+        "Statute of limitations: 6 years for written contracts, 2 years for personal injury — demand letters do not toll the statute",
+        "Connecticut debt collectors must comply with the Connecticut Creditors' Collection Practices Act",
+        "Threatening legal action without genuine intent to sue is prohibited under CUTPA and the FDCPA",
+      ],
+      faq: [
+        { question: "Is a demand letter required before filing suit in Connecticut?", answer: "Not for most claims. However, a demand letter is strongly recommended before Connecticut litigation given the potential for recovering attorney's fees under CUTPA and other statutes. Connecticut courts also expect good-faith settlement efforts, and a well-documented demand establishes your compliance." },
+        { question: "What is CUTPA and how does it affect demand letters?", answer: "Connecticut's Unfair Trade Practices Act (CGS §42-110a et seq.) allows private parties to sue for unfair or deceptive business practices and recover actual damages, punitive damages, and attorney's fees. A demand letter citing CUTPA violations can be a powerful negotiating tool and may prompt faster resolution." },
+        { question: "How long should I give a Connecticut debtor to respond?", answer: "10 to 30 days is standard. Connecticut courts generally expect parties to make good-faith attempts to resolve disputes. For consumer debt matters governed by the Connecticut Creditors' Collection Practices Act, providing 30 days aligns with FDCPA standards and demonstrates compliance." },
+        { question: "What is the Connecticut Creditors' Collection Practices Act?", answer: "CGS §36a-645 et seq. regulates debt collection in Connecticut. It prohibits harassment, misrepresentation, and unfair practices by creditors and collectors. It provides consumers the right to request verification of debts and restricts contact times and methods. Violations can result in damages, attorney's fees, and regulatory action." },
+      ],
+    },
+  },
+
+  // ── Delaware ──────────────────────────────────────────────────────────────
+  delaware: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Delaware Landlord-Tenant Code (25 Del. C. §5101 et seq.)",
+        "Security deposit: maximum 1 month's rent for tenancies of 1 year or less; for longer tenancies, maximum during first year is 1 month, capped at ongoing rent thereafter",
+        "Deposit must be returned within 20 days of termination with itemized deductions",
+        "Landlord must provide written checklist of premises condition at move-in",
+        "Landlord must maintain premises in compliance with housing and building codes (§5305)",
+      ],
+      restrictions: [
+        "No rent control in Delaware — landlords may raise rent with proper notice",
+        "Retaliatory eviction or rent increases within 90 days of tenant's complaint are presumed retaliatory",
+        "Self-help eviction is prohibited — formal court process required",
+        "Late fees: maximum of 5% of the monthly rent payment (§5501(d))",
+      ],
+      noticeRequirements: "60 days' written notice to terminate a month-to-month tenancy (landlord). 60 days' notice required from tenant for tenancies over 1 year. Nonpayment of rent: 5 days' notice to quit.",
+      faq: [
+        { question: "What is Delaware's security deposit limit?", answer: "Delaware caps the security deposit at 1 month's rent for tenancies up to 1 year. For longer tenancies, the cap is 1 month's rent during the first year and cannot exceed the current monthly rent going forward. Landlords must return the deposit within 20 days of termination." },
+        { question: "What is Delaware's late fee cap?", answer: "Under 25 Del. C. §5501(d), late fees cannot exceed 5% of the monthly rent payment. A fee charged for a $2,000/month unit, for example, cannot exceed $100. Late fees must be expressly stated in the lease to be collectable." },
+        { question: "How long must a Delaware landlord give notice to terminate a month-to-month tenancy?", answer: "60 days' written notice is required. This is longer than many states. Tenants with tenancies of more than 1 year must also give 60 days' notice to terminate. Failure to provide proper notice does not end the tenancy — the parties must continue under the original terms." },
+        { question: "What habitability standards apply in Delaware?", answer: "Delaware requires landlords to maintain premises fit for human habitation, including: working plumbing and heat, weatherproof structure, safe electrical systems, and freedom from pest infestations. Tenants may withhold rent or repair-and-deduct for landlord failures after proper notice under §5308." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Delaware Limited Liability Company Act (6 Del. C. §18-101 et seq.) — the most widely adopted LLC statute in the U.S.",
+        "Annual Franchise Tax: $300 due June 1 each year (all Delaware LLCs, regardless of activity)",
+        "No annual report required — just the franchise tax payment",
+        "Registered agent in Delaware required (industry of registered agents is well-established in Wilmington)",
+        "Operating agreement is critical — Delaware law gives maximum freedom of contract to govern internal affairs",
+        "Delaware LLCs do not need to list members' names in any public filing",
+        "Series LLCs are fully recognized under 6 Del. C. §18-215",
+      ],
+      restrictions: [
+        "Delaware has no state income tax on LLCs that conduct no business in Delaware ('Delaware advantage' for non-residents)",
+        "If the LLC does business in another state, it must register as a foreign LLC in that state and comply with that state's taxes",
+        "Charging order protection: Delaware provides robust protection — a creditor of a member can only get a charging order, not force dissolution",
+      ],
+      faq: [
+        { question: "Why do so many companies form LLCs in Delaware?", answer: "Delaware offers maximum contractual freedom under its LLC Act — almost everything can be modified by the operating agreement. The Court of Chancery provides sophisticated, predictable business law decisions. There is no state income tax for LLCs not doing business in Delaware. And the $300 annual franchise tax is flat regardless of LLC size." },
+        { question: "Does a Delaware LLC need to file an annual report?", answer: "No annual report is required for Delaware LLCs. The only annual obligation is payment of the $300 franchise tax by June 1 each year. Failure to pay results in the LLC falling out of good standing, which can affect its ability to access courts and enter contracts." },
+        { question: "Are series LLCs recognized in Delaware?", answer: "Yes. Delaware pioneered the series LLC under 6 Del. C. §18-215. A Delaware series LLC can establish separate series, each with its own assets, liabilities, members, and purposes — all under one LLC umbrella. This is particularly useful for real estate investors managing multiple properties." },
+        { question: "Do I need to live in Delaware to form a Delaware LLC?", answer: "No. Anyone can form a Delaware LLC regardless of residence. You need only a registered agent with a Delaware address (hundreds of registered agent companies operate in Wilmington). Members and managers can live anywhere in the world. However, if you do business in another state, you must register there as a foreign LLC." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Delaware is an at-will employment state — employment terminable at any time for any lawful reason",
+        "Delaware minimum wage: $13.25/hour (2024); scheduled to reach $15.00/hour by January 1, 2025",
+        "Paid Leave law (effective January 1, 2026 for employers with 10+ employees): up to 12 weeks paid family/medical leave",
+        "Delaware Discrimination in Employment Act prohibits discrimination based on 15 protected classes",
+        "Overtime: federal FLSA standards apply — time-and-a-half for hours over 40 per week",
+      ],
+      restrictions: [
+        "Non-compete agreements: HB 84 (effective August 1, 2022) — non-competes void for employees earning less than $100,000/year; maximum 2-year duration for higher earners",
+        "Delaware employers with federal contracts must comply with additional requirements",
+        "Whistleblower protections: Delaware Whistleblowers' Protection Act (§1701 et seq.) protects employees who report violations",
+      ],
+      noticeRequirements: "No statutory notice for at-will termination. WARN Act (100+ employees) requires 60 days' notice for mass layoffs. Contractual notice periods are enforceable.",
+      faq: [
+        { question: "What are Delaware's new non-compete restrictions?", answer: "Delaware's HB 84, effective August 1, 2022, makes post-employment non-compete agreements void for employees earning less than $100,000 per year. For employees earning $100,000 or more, non-competes are capped at 2 years. The law does not affect non-competes in connection with the sale of a business." },
+        { question: "What is Delaware's paid family leave law?", answer: "Delaware's Healthy Delaware Families Act (effective January 1, 2025 for employers with 25+ employees; January 1, 2026 for 10+ employees) provides up to 12 weeks of paid family leave and up to 6 weeks of medical leave per year. Benefits are funded by employer and employee contributions to a state insurance fund." },
+        { question: "What is Delaware's minimum wage schedule?", answer: "Delaware's minimum wage is $13.25/hour in 2024, increasing to $15.00/hour on January 1, 2025. Tipped employees must receive at least $2.23/hour direct wages with tips bringing them to the full minimum wage. Delaware's wage schedule has been on a planned increase since 2019." },
+        { question: "What protected classes does Delaware recognize?", answer: "Delaware's Discrimination in Employment Act (Title 19, Ch. 7) covers: race, marital status, genetic information, color, age (40+), religion, sex, sexual orientation, gender identity, national origin, disability, pregnancy, and status as a victim of domestic violence. Employers with 4+ employees are covered." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Delaware Uniform Power of Attorney Act (12 Del. C. §49A-101 et seq.), effective 2012",
+        "Must be signed by the principal and acknowledged before a notary public",
+        "A durable POA must expressly state it is not affected by the principal's subsequent disability",
+        "Delaware provides a statutory form POA — using it ensures third-party acceptance",
+        "Healthcare decisions require a separate Advance Healthcare Directive under 16 Del. C. §2503",
+      ],
+      restrictions: [
+        "An agent acting under a Delaware POA may not create or revise the principal's will",
+        "An agent may not make gifts from principal's estate unless the POA expressly authorizes this",
+        "Financial institutions must accept a properly executed Delaware POA within 7 business days or provide a written refusal with specific reasons",
+        "Courts may remove an agent who breaches fiduciary duties",
+      ],
+      faq: [
+        { question: "How quickly must Delaware financial institutions accept a power of attorney?", answer: "Under 12 Del. C. §49A-119, a financial institution must accept a properly executed Delaware POA within 7 business days or provide written notice of refusal with specific reasons. Unreasonable refusal can result in the institution being liable for attorney's fees — a stronger protection than many states provide." },
+        { question: "Does a Delaware POA need witnesses in addition to notarization?", answer: "Delaware's Uniform POA Act requires only notarization — witnesses are not statutorily required. However, some institutions and other states may require witnesses in addition. For maximum portability (especially if the principal owns real estate in multiple states), having witnesses is advisable." },
+        { question: "What is a springing POA in Delaware?", answer: "A springing POA takes effect only upon a specified event — typically the principal's incapacity. Delaware law permits springing POAs. The triggering conditions must be clearly defined in the document, often requiring written certification of incapacity by one or more licensed physicians." },
+        { question: "Does Delaware's POA cover healthcare decisions?", answer: "No. Financial POAs under 12 Del. C. §49A are limited to financial and property matters. Healthcare decisions require a separate Advance Healthcare Directive (living will) or appointment of a healthcare representative under 16 Del. C. §2503. Both documents are important components of comprehensive Delaware estate planning." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by 12 Del. C. §201 et seq. (Delaware Probate Code)",
+        "Must be in writing, signed by the testator, and attested by two or more witnesses",
+        "Witnesses must sign in the presence of the testator",
+        "Testator must be at least 18 years old and of sound and disposing mind",
+        "Holographic wills are NOT valid in Delaware — witnesses are always required",
+        "Probate filed in the Register of Wills in the county of residence",
+        "Delaware does not impose a state estate or inheritance tax",
+      ],
+      restrictions: [
+        "Surviving spouse has a right to an elective share of one-third of the 'elective estate'",
+        "Delaware's elective estate includes both probate and non-probate assets transferred in ways designed to avoid the elective share",
+        "Children born or adopted after the will was executed may claim a pretermitted share",
+      ],
+      faq: [
+        { question: "Does Delaware have an estate or inheritance tax?", answer: "No. Delaware repealed its estate tax effective January 1, 2018. There is also no Delaware inheritance tax. This makes Delaware particularly attractive for estate planning, combined with its trust law advantages — Delaware is a leading trust jurisdiction with powerful dynasty trust and asset protection laws." },
+        { question: "What makes Delaware a leading trust jurisdiction?", answer: "Delaware offers: no rule against perpetuities (trusts can last forever as 'dynasty trusts'), strong asset protection for self-settled trusts (Delaware Asset Protection Trusts), flexible directed trust statutes (bifurcating investment and distribution trustees), and a sophisticated Court of Chancery to resolve disputes. These advantages attract wealthy families nationally." },
+        { question: "Are holographic wills valid in Delaware?", answer: "No. Delaware does not recognize holographic wills. Every Delaware will must be in writing, signed by the testator, and attested by at least two witnesses. Failure to comply with these formalities will cause the will to be rejected for probate." },
+        { question: "What is the Delaware elective share?", answer: "A surviving spouse may elect to take one-third of the decedent's elective estate rather than the bequest under the will (12 Del. C. §901 et seq.). Delaware's elective estate is broadly defined to include probate assets and certain transfers designed to circumvent the elective share. The election must be made within 6 months of the appointment of the personal representative." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Delaware's non-compete law is governed by statute (House Bill 84, effective August 1, 2022) and common law",
+        "For employees earning less than $100,000/year: non-compete agreements are VOID and unenforceable",
+        "For employees earning $100,000/year or more: non-competes are enforceable if reasonable in scope and duration",
+        "Maximum enforceable duration for employment non-competes: 2 years",
+        "Sale-of-business non-competes: Delaware law is more permissive — courts apply reasonableness test without the salary threshold",
+        "Agreement must be in writing and supported by consideration",
+      ],
+      restrictions: [
+        "Cannot enforce a non-compete against a Delaware employee earning less than $100,000/year regardless of where the contract was signed",
+        "Healthcare providers: non-competes may face additional public policy scrutiny given patient continuity concerns",
+        "The $100,000 threshold applies to base salary — bonuses and other compensation may or may not count depending on the agreement",
+      ],
+      faq: [
+        { question: "When did Delaware's non-compete law change?", answer: "Delaware's House Bill 84 took effect August 1, 2022. It made post-employment non-compete agreements void and unenforceable for employees earning less than $100,000 per year. The law applies to Delaware employees regardless of where the employment agreement was signed." },
+        { question: "Can a Delaware employer enforce a non-compete for a $100,000+ employee?", answer: "Yes, subject to reasonableness requirements. For employees earning $100,000 or more annually, non-competes are enforceable in Delaware if they have a legitimate business justification, are reasonable in geographic scope, and do not exceed 2 years in duration. Courts will analyze the specific facts of the relationship." },
+        { question: "Does Delaware's non-compete law apply if the employment contract is governed by another state's law?", answer: "Potentially yes. If the employee works in Delaware, Delaware courts may apply Delaware's policy against enforcing non-competes for lower-wage workers regardless of the contract's choice-of-law provision, particularly where Delaware has a materially greater interest in the matter." },
+        { question: "How does Delaware treat non-competes in business sale transactions?", answer: "Non-competes accompanying the sale of a business are treated more favorably in Delaware. Courts apply a commercial reasonableness standard without the $100,000 salary threshold restriction. Sellers who receive value for goodwill can be held to broader restrictions, typically up to 5 years, if the scope is tied to the business sold." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Delaware uses a multi-factor common law test for worker classification — no statewide ABC test for all purposes",
+        "Delaware Department of Labor uses a six-factor test for unemployment insurance classification",
+        "Contractors with gross receipts above $10,000 must register with the Delaware Division of Revenue",
+        "Home improvement contractors must be registered with the Delaware Division of Revenue for state licensing",
+        "Federal Form 1099-NEC required for payments of $600 or more annually",
+      ],
+      restrictions: [
+        "Worker misclassification subjects employers to back withholding taxes, unemployment insurance, and workers' compensation liability",
+        "Employees misclassified as contractors may sue for back wages and benefits under the Delaware Wage Payment and Collection Act",
+        "Professional employer organizations (PEOs) must be licensed in Delaware",
+      ],
+      faq: [
+        { question: "How does Delaware classify workers as employees or contractors?", answer: "Delaware uses a multi-factor test for most employment purposes that examines: the employer's right to control the work, the method of payment, whether the worker supplies their own tools, whether the work is part of the employer's regular business, and the permanency of the relationship. No single factor is decisive." },
+        { question: "Does Delaware have a state income tax for contractors?", answer: "Yes. Delaware has a state income tax (top rate 6.6%) that applies to all income earned in Delaware. Independent contractors must make quarterly estimated tax payments to the Delaware Division of Revenue using Form 200-ES. Failure to pay estimated taxes results in interest and penalties." },
+        { question: "Do contractors need to register their business in Delaware?", answer: "Sole proprietors and partnerships with Delaware-source income above $10,000 must register with the Delaware Division of Revenue. If operating as an LLC or corporation, separate entity registration with the Division of Corporations is required. Some trades (home improvement, electrical) require additional licensing." },
+        { question: "What is the Delaware Wage Payment and Collection Act?", answer: "The Delaware Wage Payment and Collection Act (19 Del. C. §1101 et seq.) requires employers to pay employees all wages earned. Employees who are misclassified as contractors and denied wages can sue under this Act for back wages, penalties (up to 25% of unpaid wages), and attorney's fees — creating significant exposure for employers who misclassify." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Delaware commercial leases are governed by common law and the Delaware UCC",
+        "Leases for more than 1 year must be in writing under the Statute of Frauds (6 Del. C. §2714)",
+        "Leases for 5 years or more should be recorded in the county Recorder of Deeds office",
+        "No state sales tax on commercial rent in Delaware — a significant cost advantage over many states",
+        "Personal guarantees are commonly required; Delaware courts strictly enforce guarantee agreements",
+      ],
+      restrictions: [
+        "No statutory commercial security deposit limits or return deadlines — all contractual",
+        "Delaware Court of Chancery can hear commercial lease disputes involving equitable remedies (injunctions, specific performance)",
+        "The sophisticated Court of Chancery means Delaware courts expect commercial lease parties to live by the precise terms of their agreement",
+      ],
+      faq: [
+        { question: "Is there a sales tax on commercial rent in Delaware?", answer: "No. Delaware has no sales tax — making it one of only five states without a general sales tax. Commercial rent is not subject to any Delaware state sales tax. This provides a meaningful cost advantage for tenants leasing commercial space in Delaware compared to states like Connecticut or Maryland that tax commercial rent." },
+        { question: "What role does Delaware's Court of Chancery play in commercial leases?", answer: "The Delaware Court of Chancery is an equity court — it can grant injunctions, order specific performance, and award other non-monetary remedies in commercial lease disputes. Its sophisticated, business-experienced judges and deep body of commercial case law make Delaware lease disputes more predictable than in many other states." },
+        { question: "What should a Delaware commercial lease include regarding assignment?", answer: "Delaware courts enforce assignment restrictions strictly. The lease should clearly state: whether tenant can assign without consent, what standard applies to landlord consent (reasonable, sole discretion), whether profit on assignment must be shared with landlord, and whether assignment terminates the original tenant's obligations (novation) or leaves them intact (lease privity)." },
+        { question: "How are commercial evictions handled in Delaware?", answer: "Delaware commercial landlords may terminate a lease for default and file a Summary Possession action in Justice of the Peace Court for commercial properties. The process is faster than many states. Delaware also allows commercial landlords to pursue damages for breach in Superior Court simultaneously with a possession action." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Delaware's UCC Article 3 (6 Del. C. §3-101 et seq.) for negotiable instruments",
+        "Must include: unconditional written promise to pay, fixed amount, identified payee, maker's signature",
+        "Delaware has no usury limit for commercial promissory notes between corporations or LLCs",
+        "Consumer loan interest rates may be subject to Delaware's lending laws under 5 Del. C. §943 et seq.",
+        "Delaware is a popular jurisdiction for credit card and lending operations due to its permissive interest rate laws",
+      ],
+      restrictions: [
+        "Statute of limitations: 3 years from the date the cause of action accrues for instruments under UCC Article 3 (6 Del. C. §3-118)",
+        "Consumer borrowers retain rights under the federal Truth in Lending Act and Dodd-Frank Act",
+        "A promissory note that is part of a fraudulent scheme can be voided by Delaware courts under common law",
+      ],
+      faq: [
+        { question: "Why is Delaware popular for lending and credit card companies?", answer: "Delaware has no usury cap on interest rates for loans between business entities, and its consumer lending laws (5 Del. C. §943) are more permissive than most states. Many major credit card issuers (Citibank, Chase, Bank of America) are chartered in Delaware, allowing them to export Delaware's permissive interest rate laws to cardholders nationally under federal preemption (Marquette National Bank v. First Omaha Service Corp., 1978)." },
+        { question: "What is the statute of limitations for a Delaware promissory note?", answer: "Under Delaware's UCC Article 3 (6 Del. C. §3-118), the limitations period for most promissory notes is 3 years from the date the cause of action accrues. For demand instruments, the action accrues when demand is first made. For time instruments, it accrues on the stated due date." },
+        { question: "Is there a usury limit on commercial promissory notes in Delaware?", answer: "No. Delaware does not impose a usury cap on commercial promissory notes between businesses. This is one reason why Delaware is a major financial services hub. Consumer loans are subject to Delaware's consumer lending laws, which while permissive, do have disclosure and other requirements." },
+        { question: "What makes Delaware a favorable jurisdiction for promissory notes?", answer: "No usury limits for commercial notes, sophisticated Court of Chancery for complex commercial disputes, predictable case law, strong enforcement of contractual terms, and efficient litigation make Delaware highly favorable for lenders. Many business loans are governed by Delaware law regardless of where the parties operate." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Delaware statute requires a pre-suit demand letter for most civil claims",
+        "Delaware Court of Chancery: parties should attempt informal resolution before filing, particularly for injunctive relief",
+        "Demand letter should: identify the legal basis for the claim, state the specific remedy sought, and provide a reasonable deadline (10–30 days)",
+        "Consumer debt collection must comply with the federal FDCPA and Delaware's Consumer Protection Act (6 Del. C. §2511)",
+        "For claims under Delaware's Wage Payment and Collection Act, a written demand establishes the date of violation and starts the penalty calculation",
+      ],
+      restrictions: [
+        "Statute of limitations: 3 years for most contract claims (10 Del. C. §8106); do not delay — demand letters do not toll the statute",
+        "Delaware Consumer Fraud Act prohibits misleading statements in collection-related communications",
+        "Threatening legal action that is time-barred or clearly unsupported by law may violate FDCPA and Delaware law",
+      ],
+      faq: [
+        { question: "What court should I use for a Delaware civil claim?", answer: "Delaware has specialized courts: Court of Chancery for equitable claims (injunctions, fiduciary duty, corporate disputes), Superior Court for civil claims over $75,000, Court of Common Pleas for claims $25,000–$75,000, and Justice of the Peace Court for claims up to $25,000. Choosing the right court based on the nature and amount of your claim is important." },
+        { question: "Does Delaware have an attorney's fees shifting rule?", answer: "Delaware follows the American Rule — each party bears their own attorney's fees absent a contract clause or specific statute. However, Court of Chancery Rule 88 allows fee-shifting in certain corporate and LLC cases where a party has acted in bad faith. Including an attorney's fee clause in commercial contracts is advisable." },
+        { question: "How long should I give a Delaware debtor to respond to a demand letter?", answer: "10 to 30 days is standard. Delaware courts expect parties to make good-faith attempts at resolution. For complex commercial matters, 30 days allows time for counsel to respond. For straightforward debt, 10–14 days is reasonable. State the deadline clearly and the consequence of non-response." },
+        { question: "Can I send a demand letter to a Delaware LLC's registered agent?", answer: "Service of legal process must go to the registered agent. For pre-suit demand letters (not formal service), send to the company's principal office and any officer you know. It is good practice to send to both the registered agent address and the operating address to ensure actual receipt." },
+      ],
+    },
+  },
+  hawaii: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Written lease required for tenancies longer than one year (HRS §521-21)",
+        "Landlord must disclose name and address of managing agent and owner (HRS §521-43)",
+        "Security deposit cannot exceed one month's rent (HRS §521-44)",
+        "Landlord must return deposit within 14 days after tenant vacates",
+        "Move-in inventory checklist strongly recommended; required if deposit taken",
+      ],
+      restrictions: [
+        "No-cause eviction requires 45-day notice for month-to-month tenancies",
+        "Landlord cannot shut off utilities as an eviction tactic (HRS §521-74)",
+        "Tenant has right to repair-and-deduct for habitability defects under HRS §521-64",
+        "Rent increases require 45-day written notice for month-to-month tenants",
+        "Retaliation against tenants for reporting code violations is prohibited",
+      ],
+      noticeRequirements: "45-day notice required to terminate month-to-month tenancies; 10-day notice for nonpayment of rent before eviction filing",
+      faq: [
+        { question: "What is Hawaii's security deposit limit?", answer: "Hawaii caps security deposits at one month's rent (HRS §521-44). The landlord must return the deposit within 14 days after the tenant vacates, along with an itemized statement of any deductions. Failure to do so within 14 days forfeits the right to withhold any portion." },
+        { question: "Can a landlord enter without notice in Hawaii?", answer: "No. Hawaii law (HRS §521-53) requires 2 days' advance written notice before entry for non-emergency repairs or inspections. Emergency entry is permitted without notice. Repeated unauthorized entry can constitute a material breach entitling the tenant to terminate the lease." },
+        { question: "Does Hawaii require a written lease?", answer: "Written leases are required for tenancies over one year. For month-to-month or fixed-term leases of one year or less, oral agreements are enforceable but inadvisable. The Hawaii Residential Landlord-Tenant Code (HRS Chapter 521) applies to all residential tenancies regardless of whether a written lease exists." },
+        { question: "How long does eviction take in Hawaii?", answer: "Hawaii's eviction process (summary possession) typically takes 4–8 weeks. After the 10-day notice for nonpayment expires, the landlord files in district court. A hearing is usually scheduled within 15 days. Hawaii has tenant-friendly courts and judges often grant continuances, so timeline can extend." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Hawaii Revised LLC Act (HRS Chapter 428) governs; operating agreement need not be filed",
+        "Single-member LLCs are permitted and should still have a written operating agreement",
+        "Articles of Organization filed with DCCA Business Registration Division",
+        "Biennial report required with $12.50 fee",
+        "Registered agent with Hawaii street address required",
+      ],
+      restrictions: [
+        "Operating agreement cannot eliminate duty of loyalty in bad faith (HRS §428-1101)",
+        "Members cannot be held personally liable for LLC debts if formalities maintained",
+        "Professional LLCs for licensed services must comply with applicable licensing board rules",
+        "Foreign LLCs must register with DCCA before transacting business in Hawaii",
+      ],
+      faq: [
+        { question: "Does Hawaii require an operating agreement?", answer: "Hawaii does not require a written operating agreement by law, but HRS §428-1101 allows one to modify many default statutory rules. Without one, all disputes default to the Hawaii Revised LLC Act, which may not reflect the members' intent. For any multi-member LLC, a written agreement is essential." },
+        { question: "What are Hawaii's LLC annual requirements?", answer: "Hawaii LLCs must file a biennial report with the DCCA by the end of the anniversary quarter of formation. The filing fee is $12.50. Failure to file results in administrative dissolution. Hawaii also has a General Excise Tax (GET) of 4% on gross income that all LLCs must collect and remit." },
+        { question: "Can a single person own an LLC in Hawaii?", answer: "Yes. Single-member LLCs are fully permitted under HRS Chapter 428. A single-member LLC provides liability protection and the tax flexibility of a sole proprietorship (pass-through). A written operating agreement is especially important for single-member LLCs to reinforce the entity's separate existence." },
+        { question: "What is Hawaii's General Excise Tax and how does it affect LLCs?", answer: "Hawaii's GET (HRS Chapter 237) is a tax on gross business income at rates of 0.5% (wholesale) to 4% (retail/services). Unlike a sales tax, the GET is a business obligation but is commonly passed on to customers. All LLCs conducting business in Hawaii must register with the Department of Taxation and file GET returns." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Hawaii is an at-will employment state with significant statutory protections",
+        "Minimum wage: $14.00/hour (2024); increasing to $18.00 by 2028",
+        "Overtime: 1.5× for hours over 40/week; no daily overtime requirement",
+        "Prepaid Health Care Act (HRS Chapter 393): employers must provide health insurance to employees working 20+ hours/week",
+        "Written employment contracts should specify which provisions survive termination",
+      ],
+      restrictions: [
+        "Non-compete agreements are generally unenforceable against low-wage workers (HRS §480-4)",
+        "Hawaii bans salary history inquiries (HRS §378-2.4) — cannot ask about prior compensation",
+        "Employers cannot discriminate based on sexual orientation, gender identity, or arrest record (HRS §378-2)",
+        "Whistleblower protections under HRS §378-62 prohibit retaliation for reporting violations",
+        "Required breaks: 30-minute meal break for shifts over 5 hours",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Hawaii?", answer: "Hawaii is one of the most restrictive states on non-competes. HRS §480-4(c) prohibits non-compete and non-solicitation agreements for employees below a certain income threshold, and courts have held broadly that non-competes must be narrowly tailored to be enforceable. Non-solicitation of customers is somewhat more enforceable than non-competes." },
+        { question: "Must Hawaii employers provide health insurance?", answer: "Yes. Hawaii's Prepaid Health Care Act (HRS Chapter 393) requires employers to provide health insurance to employees who work at least 20 hours per week for 4 consecutive weeks. This is unique to Hawaii — no other state has a comparable mandate. The employer must pay at least 50% of the premium." },
+        { question: "What is Hawaii's minimum wage schedule?", answer: "Hawaii's minimum wage was $14.00/hour in 2024, increasing to $16.00 in 2026 and $18.00 in 2028 under Act 114 (2022). Employers must update wage rates in employment contracts as scheduled increases take effect, or use a clause referencing the applicable legal minimum." },
+        { question: "Can an employer ask about salary history in Hawaii?", answer: "No. HRS §378-2.4 prohibits employers from asking applicants about prior compensation history. Employers also cannot use salary history to set pay. Employment contracts and offer letters should set compensation independently of prior earnings. Violations can lead to HCRC complaints and civil liability." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Hawaii Uniform Power of Attorney Act (HRS Chapter 551E) governs durable POAs",
+        "Must be signed by principal and notarized; two witnesses required for health care POAs",
+        "Durable POA remains effective upon incapacity unless expressly revocable",
+        "Financial POA becomes effective immediately unless springing language used",
+        "Agent must act in principal's best interest and keep records of transactions",
+      ],
+      restrictions: [
+        "Agent cannot make gifts to themselves unless expressly authorized in the document",
+        "Agent cannot change the principal's will or create/revoke trusts unless authorized",
+        "Health care POA (HRS §327E) governs medical decisions separately from financial POA",
+        "Third parties (banks, title companies) may require their own POA forms or acknowledgments",
+        "POA automatically terminates upon principal's death",
+      ],
+      faq: [
+        { question: "Does Hawaii recognize durable powers of attorney?", answer: "Yes. Hawaii's Uniform Power of Attorney Act (HRS Chapter 551E) expressly provides for durable POAs that survive incapacity. The document must include language substantially like 'This power of attorney shall not be affected by the subsequent disability or incapacity of the principal.' Notarization is required." },
+        { question: "What is a health care surrogate in Hawaii?", answer: "Hawaii's Uniform Health-Care Decisions Act (HRS §327E) allows you to appoint a health care agent via a written advance directive. This is separate from a financial POA. The health care agent can make medical decisions, including end-of-life decisions, if you are incapacitated. Two witnesses are required; the agent cannot be a witness." },
+        { question: "Can a Hawaii POA be used for real estate transactions?", answer: "Yes, but the POA must specifically authorize real estate transactions. For recording with the Bureau of Conveyances, the POA itself must be recorded or a certified copy submitted with the deed. Title companies often require the POA to be recorded. Military personnel can use special POA forms under the Servicemembers Civil Relief Act." },
+        { question: "How do I revoke a power of attorney in Hawaii?", answer: "Revocation must be in writing and signed before a notary. Deliver the revocation to the agent and any third parties (banks, etc.) who received the original POA. Record the revocation with the Bureau of Conveyances if the original was recorded for real estate. Destroying the original document alone is insufficient if copies exist." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be 18 or older and of sound mind (HRS §560:2-501)",
+        "Will must be signed by testator in the presence of two witnesses",
+        "Two witnesses must sign within a reasonable time after witnessing the signing",
+        "Self-proved will requires notarization per HRS §560:2-504",
+        "Holographic wills not recognized in Hawaii unless meeting attestation requirements",
+      ],
+      restrictions: [
+        "Surviving spouse has elective share rights of 50% of augmented estate (HRS §560:2-202)",
+        "Pretermitted children (omitted heirs born after will execution) may take intestate share",
+        "Will cannot disinherit a spouse without a valid premarital agreement",
+        "Oral (nuncupative) wills are not valid in Hawaii",
+        "Hawaii estate tax applies to estates over $5.49 million",
+      ],
+      faq: [
+        { question: "Does Hawaii have an estate tax?", answer: "Yes. Hawaii imposes its own estate tax on estates over $5.49 million (indexed for inflation). The top rate is 20%. This threshold is lower than the federal exemption, so estates that owe no federal tax may still owe Hawaii estate tax. Planning strategies like irrevocable trusts or lifetime gifting can reduce exposure." },
+        { question: "What happens if I die without a will in Hawaii?", answer: "Your estate passes under Hawaii's intestate succession laws (HRS §560:2-101 et seq.). For married decedents, the surviving spouse inherits the entire estate if there are no surviving descendants or parents. If there are children, the spouse typically receives 50% and the children split the remainder. Unmarried partners have no inheritance rights without a will." },
+        { question: "Are holographic wills valid in Hawaii?", answer: "No. Hawaii does not recognize holographic (handwritten, unwitnessed) wills. A valid Hawaii will requires the signature of two witnesses who sign in the testator's presence. Attempting to rely on a holographic will can result in intestacy. Always use a properly witnessed and notarized will." },
+        { question: "What is the elective share in Hawaii?", answer: "A surviving spouse may elect against the will and claim 50% of the augmented estate, which includes probate assets, certain non-probate transfers, and transfers made during the marriage. The elective share must be claimed within 9 months of death or 6 months after probate is opened, whichever is later." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Non-compete agreements must be supported by adequate consideration (new employment or material benefit)",
+        "Agreement must be reasonable in scope, geography, and duration",
+        "HRS §480-4 restricts non-competes broadly — enforceability depends on employee income and role",
+        "Customer non-solicitation clauses are more enforceable than outright non-competes",
+        "Courts apply rule of reason analysis; overly broad agreements are void, not blue-penciled",
+      ],
+      restrictions: [
+        "Non-compete agreements are prohibited for employees earning below a threshold tied to median wages",
+        "Hawaii courts have declined to blue-pencil (judicially rewrite) overbroad non-competes",
+        "Non-competes cannot prevent an employee from working in their profession generally",
+        "Geographic restrictions limited to areas where employee actually worked or had client contact",
+        "Post-employment non-competes that bar any competition are disfavored by courts",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Hawaii?", answer: "Hawaii has some of the strictest non-compete laws in the country. HRS §480-4(c) restricts non-compete agreements for workers below certain wage thresholds. Even for higher-paid employees, courts scrutinize non-competes closely. Non-solicitation of clients is more likely to be enforceable than blanket competition bans." },
+        { question: "Will a Hawaii court rewrite an overbroad non-compete?", answer: "Generally no. Unlike states that blue-pencil overbroad clauses, Hawaii courts tend to void unenforceable restrictions rather than rewrite them. This means if your non-compete is too broad, a court may strike it entirely, leaving the employer with no protection. Draft precisely to protect only legitimate interests." },
+        { question: "What alternatives to non-competes work in Hawaii?", answer: "Non-disclosure agreements (NDAs), non-solicitation of clients and employees, and invention assignment agreements are all more readily enforceable. Protecting trade secrets through confidentiality clauses and access controls (rather than geographic/temporal competition bans) is a more defensible approach in Hawaii's restrictive legal climate." },
+        { question: "Can I include a non-compete in an independent contractor agreement in Hawaii?", answer: "Non-competes in IC agreements are also reviewed under the reasonableness standard and HRS §480-4. Courts look to the economic reality of the relationship. If the contractor is functionally an employee, employee-protective laws may apply. Keep restrictions narrow: limit to the specific client base and specific competitive services offered." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Hawaii uses the ABC test for unemployment insurance and some wage law purposes",
+        "Written agreement should clearly establish IC status and control",
+        "Contractor must control means and methods of work; client specifies results only",
+        "IRS Form 1099-NEC required for payments of $600+ per year",
+        "Hawaii GET license required for contractors providing taxable services",
+      ],
+      restrictions: [
+        "ABC test: worker presumed employee unless (A) free from control, (B) performs work outside usual business, and (C) customarily engaged in independent trade",
+        "Misclassification carries penalties including back taxes, GET, and unemployment contributions",
+        "Hawaii prepaid health care law may apply if contractor is functionally an employee",
+        "Independent contractors must carry their own general liability and professional liability insurance",
+        "Non-compete restrictions in IC agreements subject to same strict HRS §480-4 analysis",
+      ],
+      faq: [
+        { question: "What test does Hawaii use to classify workers?", answer: "Hawaii uses the ABC test for unemployment insurance purposes: a worker is an employee unless (A) the worker is free from direction and control, (B) the work performed is outside the usual course of the hiring entity's business, and (C) the worker is customarily engaged in an independently established trade. Failing any prong makes the worker an employee." },
+        { question: "Do independent contractors need a Hawaii GET license?", answer: "Yes. Any contractor providing taxable services in Hawaii must register for the General Excise Tax (GET) and file periodic returns. The GET is 4% on gross income from services. Contractors often add a GET surcharge to invoices. Failing to register and collect GET can result in assessments from the Department of Taxation." },
+        { question: "What should a Hawaii IC agreement include?", answer: "Include: scope of services, payment terms, project milestones, IP assignment (all work-for-hire language), confidentiality, contractor's obligation to pay own taxes and GET, indemnification for claims arising from contractor's work, termination clause, and explicit statements about lack of employee benefits. Attach a schedule of deliverables." },
+        { question: "Can a Hawaii contractor be required to carry insurance?", answer: "Yes. Requiring contractors to carry general liability (minimum $1M/$2M) and professional liability (errors & omissions) insurance is standard practice and enforceable. Require the client be named as additional insured on the GL policy. This protects both parties and demonstrates the IC relationship by treating the contractor as an independent business." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Hawaii commercial leases are governed by contract law; the residential landlord-tenant code does not apply",
+        "Lease must be in writing and signed by both parties for terms over one year (Statute of Frauds)",
+        "GET must be charged on commercial rent at 4% (plus 0.5% surcharge in some counties)",
+        "Disclose all material defects known to landlord before execution",
+        "Specify which party is responsible for TMI (taxes, maintenance, insurance) expenses",
+      ],
+      restrictions: [
+        "No statutory cap on commercial security deposits",
+        "Triple-net leases require careful drafting of CAM (Common Area Maintenance) provisions",
+        "Landlord must include GET gross-up clause if tenant is responsible for taxes on rent",
+        "Force majeure clauses became critical post-COVID — include specific triggering events",
+        "Personal guaranty provisions are common for small business tenants",
+      ],
+      faq: [
+        { question: "Is Hawaii GET charged on commercial rent?", answer: "Yes. Commercial rent in Hawaii is subject to the General Excise Tax at 4% (plus county surcharges of 0.5% in Honolulu). Landlords typically pass this GET to tenants via a gross-up clause. Leases should clearly specify whether quoted rent is inclusive or exclusive of GET, and who bears the obligation for payment." },
+        { question: "What is a typical commercial lease term in Hawaii?", answer: "Commercial leases in Hawaii's major markets (Honolulu, Maui) typically run 3–5 years for retail and 5–10 years for office space. Given Hawaii's high real estate costs, landlords often require longer initial terms with options to renew at pre-negotiated rent escalations (CPI-linked or fixed %). Negotiate renewal options and build-out allowances upfront." },
+        { question: "What should a Hawaii commercial lease say about CAM charges?", answer: "Triple-net and modified gross leases should define CAM charges precisely: list which expenses are included (landscaping, parking lot maintenance, security, common utilities) and which are excluded (capital improvements, management fees, landlord's income tax). Negotiate a CAM cap (5–10% annual increase) and audit rights to verify charges annually." },
+        { question: "Do I need a personal guaranty for a commercial lease in Hawaii?", answer: "Landlords routinely require personal guaranties from business owners, especially for new businesses or LLCs with limited credit history. Negotiate to limit the guaranty to a fixed dollar amount (6–12 months' rent), a 'burn-off' provision (guaranty expires after X years of timely payment), and an exclusion for landlord defaults. Never sign a full, open-ended guaranty without negotiation." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Hawaii has no statutory usury cap for commercial loans between businesses",
+        "Consumer loans: maximum interest rate is 12%/year unless licensed lender (HRS §478-3)",
+        "Note must state principal amount, interest rate, repayment schedule, and default provisions",
+        "Secured notes require UCC-1 financing statement filed with DCCA for personal property",
+        "Real property collateral requires mortgage recorded with Bureau of Conveyances",
+      ],
+      restrictions: [
+        "Consumer usury cap of 12%/year applies to personal, family, or household purpose loans",
+        "Payday lenders and consumer lenders require state licensing under HRS Chapter 480J",
+        "Confession of judgment clauses are disfavored in Hawaii courts",
+        "Note should specify Hawaii law as governing law and Honolulu courts as venue",
+        "Late fees must be reasonable and stated clearly in the note",
+      ],
+      faq: [
+        { question: "What is Hawaii's interest rate limit on loans?", answer: "For consumer loans (personal, family, or household purposes), Hawaii caps interest at 12% per year (HRS §478-3) for unlicensed lenders. Licensed lenders may charge higher rates. Commercial loans between businesses have no statutory usury cap. Always verify the purpose of the loan before choosing an interest rate." },
+        { question: "How do I secure a promissory note in Hawaii?", answer: "For personal property collateral, file a UCC-1 Financing Statement with the DCCA Business Registration Division. For real property, record a mortgage with the Bureau of Conveyances (or Land Court for Torrens-registered land). Proper perfection of the security interest is essential to priority over other creditors in the event of default." },
+        { question: "What happens if a borrower defaults in Hawaii?", answer: "The lender may accelerate the full balance, pursue judicial collection in Hawaii courts, and enforce against collateral. Hawaii requires judicial foreclosure for mortgages (non-judicial only if the mortgage expressly provides it). Small claims court handles disputes up to $10,000. The lender may also report the default to credit bureaus if applicable." },
+        { question: "Is a promissory note enforceable if not notarized in Hawaii?", answer: "Yes. A promissory note does not require notarization to be legally enforceable as a contract under Hawaii law. However, if the note is secured by real property and a mortgage will be recorded, the mortgage itself must be notarized and acknowledged. Notarization of the note itself adds evidentiary weight and reduces authenticity challenges." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required for civil demand letters in Hawaii",
+        "Clearly identify the claimant, respondent, factual basis, legal theory, and specific demand",
+        "Set a reasonable deadline (14–30 days) for response",
+        "Send via certified mail with return receipt for proof of delivery",
+        "Pre-suit demand is generally required before filing in small claims (up to $10,000)",
+      ],
+      restrictions: [
+        "Hawaii Unfair and Deceptive Practices Act (HRS §480-2) allows treble damages for UDAP violations",
+        "Letter must not contain threats of criminal charges to coerce civil payment (extortion)",
+        "Do not misrepresent legal authority or threaten legal action you are not prepared to take",
+        "Debt collection demand letters subject to FDCPA and Hawaii's debt collection statutes (HRS §443B)",
+        "Attorney-written letters carry a presumption of seriousness and often prompt faster settlement",
+      ],
+      faq: [
+        { question: "How long should I give a Hawaii respondent to reply to a demand letter?", answer: "14–30 days is standard for Hawaii civil demand letters. For consumer UDAP or insurance claims, 30 days allows adequate response time and demonstrates good faith. For straightforward commercial debts, 10–14 days is reasonable. State the deadline clearly and specify that failure to respond will result in filing in the appropriate court." },
+        { question: "What is Hawaii's small claims limit?", answer: "Hawaii's small claims court (District Court, small claims division) handles claims up to $10,000. Cases proceed informally without juries. Filing fee is approximately $35–$55. A demand letter sent before filing is good practice and may resolve the matter. Attorneys are not permitted to appear in small claims on behalf of parties without court permission." },
+        { question: "Can a demand letter support a Hawaii UDAP claim?", answer: "Yes. Under HRS §480-2, unfair or deceptive acts in trade or commerce give rise to treble damages and attorney's fees. A clear demand letter documenting the deceptive practice and requesting correction is the first step. If ignored, the letter becomes evidence of the respondent's notice and continued deceptive conduct, supporting a treble-damages award." },
+        { question: "Does Hawaii require a pre-suit demand letter for contract claims?", answer: "Hawaii law does not generally require a pre-suit demand letter for breach of contract claims. However, many contracts include a notice-and-cure provision requiring written notice of breach and an opportunity to cure before litigation. Check your contract carefully. A pre-suit letter also demonstrates good faith and may be referenced favorably by the court." },
+      ],
+    },
+  },
+  idaho: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Idaho Residential Landlord and Tenant Act (Idaho Code §§55-201 to 55-313) governs",
+        "Security deposit: no statutory cap, but must be returned within 21 days after termination",
+        "Written itemization required for any deposit deductions",
+        "Landlord must disclose name and address of owner or property manager",
+        "Move-in checklist recommended for documenting property condition",
+      ],
+      restrictions: [
+        "Month-to-month tenancy requires 30-day notice to terminate by either party",
+        "Landlord may not self-help evict — must use judicial process (unlawful detainer)",
+        "Rent withholding not available as a tenant remedy in Idaho",
+        "Landlord must maintain habitable premises; tenant can repair-and-deduct only if authorized by lease",
+        "Retaliatory eviction is prohibited under Idaho Code §6-320",
+      ],
+      noticeRequirements: "3-day notice required for nonpayment of rent; 30-day notice for lease violations with opportunity to cure; 30-day notice to terminate month-to-month tenancy",
+      faq: [
+        { question: "What is Idaho's security deposit return deadline?", answer: "Landlords must return the security deposit (or an itemized written statement of deductions plus any remaining balance) within 21 days after the lease terminates and the tenant vacates. If the landlord fails to comply, the tenant may recover the full deposit plus damages. Idaho Code §6-321 governs deposit accounting." },
+        { question: "Can a tenant withhold rent for repairs in Idaho?", answer: "Idaho does not have a general rent-withholding statute. Tenants cannot legally withhold rent unless expressly authorized by the lease. For serious habitability defects, tenants may seek court orders compelling repairs or, in severe cases, lease termination. Consulting an attorney before withholding rent is strongly advisable in Idaho." },
+        { question: "How does eviction work in Idaho?", answer: "The landlord must serve a written notice (3 days for nonpayment, 30 days for violations). If the tenant does not comply, the landlord files an unlawful detainer action in district court. Idaho courts typically schedule hearings within 7–14 days. A writ of possession is issued if the landlord prevails, and the sheriff enforces it." },
+        { question: "Is there rent control in Idaho?", answer: "No. Idaho law preempts local rent control ordinances — cities and counties cannot cap rent increases (Idaho Code §55-307). Landlords may raise rent with proper notice, and there is no statewide limit on rent increases. This means tenants have limited protection against rent hikes other than lease-term protections." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Idaho Uniform Limited Liability Company Act (Idaho Code §30-25-101 et seq.) governs",
+        "Operating agreement is not required to be filed but should be in writing",
+        "Articles of Organization filed with Idaho Secretary of State; $100 filing fee",
+        "Annual report required (no fee) to maintain good standing",
+        "Registered agent with Idaho street address required",
+      ],
+      restrictions: [
+        "Operating agreement may not eliminate members' right to information (Idaho Code §30-25-410)",
+        "Managers owe duty of care and loyalty unless modified by operating agreement",
+        "Single-member LLCs must still maintain separation from personal finances",
+        "Foreign LLCs must register before conducting business in Idaho ($100 fee)",
+      ],
+      faq: [
+        { question: "How much does it cost to form an LLC in Idaho?", answer: "The Articles of Organization filing fee is $100. There is no annual report fee; the annual report itself is free but mandatory. Idaho does not impose a franchise tax or minimum annual tax on LLCs, making it one of the cheaper states for LLC maintenance. Registered agent services typically cost $50–$150/year if using a commercial agent." },
+        { question: "Does Idaho require an operating agreement?", answer: "Idaho law does not require a written operating agreement, but Idaho Code §30-25-105 allows operating agreements to modify nearly all default statutory rules. Without one, all disputes default to the Idaho Uniform LLC Act. Multi-member LLCs especially need written agreements covering profit allocation, management, voting, and buy-sell provisions." },
+        { question: "What is Idaho's LLC annual report requirement?", answer: "Idaho LLCs must file an annual report with the Secretary of State. The report is due between January 1 and the end of the month of the LLC's anniversary of formation. There is no filing fee for the annual report. Failure to file results in administrative dissolution, which requires reinstatement and a $30 reinstatement fee." },
+        { question: "Can an Idaho LLC have one member?", answer: "Yes. Single-member LLCs are fully recognized under Idaho law and provide limited liability protection. For tax purposes, a single-member LLC is treated as a disregarded entity (taxed as a sole proprietor) by default. The owner should still maintain a separate bank account and operating agreement to preserve the liability shield." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Idaho is an at-will employment state with robust employer prerogatives",
+        "Minimum wage: $7.25/hour (federal minimum; Idaho has not set a higher rate)",
+        "Overtime: 1.5× for hours over 40/week (federal FLSA applies)",
+        "Written offer letters and contracts should specify at-will status explicitly",
+        "Non-compete agreements are enforceable if reasonable in scope, time, and geography",
+      ],
+      restrictions: [
+        "Idaho Code §44-2701 limits non-competes: 18-month maximum duration presumptively reasonable",
+        "Non-compete must protect legitimate business interest (trade secrets, customer relationships)",
+        "Idaho courts apply blue-penciling to reduce overbroad non-compete provisions",
+        "Wage theft is a criminal offense under Idaho Code §45-613",
+        "Employers must provide final wages within 10 days of termination (or next regular payday)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Idaho?", answer: "Yes, Idaho enforces non-compete agreements if they are reasonable. Idaho Code §44-2701 states that non-competes of 18 months or less are presumptively reasonable. Courts look at geographic scope, duration, and whether the restriction protects a legitimate business interest such as trade secrets or customer relationships." },
+        { question: "What is Idaho's minimum wage?", answer: "Idaho follows the federal minimum wage of $7.25/hour and has not enacted a higher state minimum. There is no state overtime law more favorable than federal FLSA (1.5× for over 40 hours/week). Employment contracts should specify the agreed rate and reference compliance with applicable law." },
+        { question: "When must Idaho employers pay terminated employees?", answer: "Idaho Code §45-606 requires final wages to be paid within 10 days after separation or on the next regular payday, whichever is earlier. If an employer withholds wages without cause, the employee can recover the wages plus a penalty of up to $500 or 10% of the unpaid amount, and attorney's fees." },
+        { question: "Can an Idaho employer require an arbitration clause in employment contracts?", answer: "Yes. Mandatory arbitration clauses in employment contracts are generally enforceable in Idaho under the Federal Arbitration Act. Class action waivers are also typically enforceable. Include clear disclosure that arbitration waives the right to jury trial and limits discovery. Some courts scrutinize one-sided arbitration provisions for unconscionability." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Idaho Uniform Power of Attorney Act (Idaho Code §15-12-101 et seq.) governs",
+        "Must be signed by principal and notarized; agent's acceptance by signature recommended",
+        "Durable POA must contain language stating it is not affected by incapacity",
+        "Healthcare POA governed separately by Idaho Code §39-4505",
+        "Two witnesses required for healthcare advance directives",
+      ],
+      restrictions: [
+        "Agent may not make gifts to self unless expressly authorized in the POA",
+        "Agent cannot execute or amend principal's will",
+        "Agent cannot appoint a successor agent unless the POA expressly authorizes it",
+        "Financial institutions may require their own POA acceptance forms",
+        "POA is automatically revoked upon principal's death",
+      ],
+      faq: [
+        { question: "How do I create a durable power of attorney in Idaho?", answer: "Sign the POA document before a notary public. The document must expressly state that it remains in effect notwithstanding the principal's subsequent disability or incapacity (Idaho Code §15-12-104). Record the POA with the county recorder if it will be used for real property transactions. Provide copies to your financial institutions in advance." },
+        { question: "What is the difference between a financial POA and a healthcare POA in Idaho?", answer: "A financial (general) POA covers property, banking, contracts, and business transactions. A healthcare POA (Idaho Code §39-4505) specifically covers medical decisions when you are incapacitated. Idaho recommends having both as separate documents. The healthcare directive also covers end-of-life preferences (living will component)." },
+        { question: "Can an agent in Idaho make gifts to themselves?", answer: "No, unless the POA document expressly authorizes it. Without express authority, an agent making gifts to themselves violates their fiduciary duty and can be held personally liable. Idaho Code §15-12-217 requires express grant of gifting authority, and gifts cannot exceed annual gift tax exclusion amounts without additional language." },
+        { question: "When does an Idaho POA expire?", answer: "A durable POA has no expiration unless the principal specifies a termination date or condition. It is automatically revoked by the principal's death, by court-appointed guardianship (to the extent the court limits it), or by the principal executing a written revocation delivered to the agent. Springing POAs activate only upon incapacity." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be 18 or older and of sound mind (Idaho Code §15-2-501)",
+        "Will must be in writing, signed by the testator, and witnessed by two adults",
+        "Witnesses must not be beneficiaries (to avoid disqualification of bequest)",
+        "Holographic wills valid if entirely in testator's handwriting and signed (Idaho Code §15-2-502)",
+        "Self-proved will requires notarization (Idaho Code §15-2-504)",
+      ],
+      restrictions: [
+        "Surviving spouse has elective share right to 50% of augmented estate",
+        "Pretermitted children born after will execution may take intestate share",
+        "No state estate or inheritance tax in Idaho",
+        "Testator cannot completely disinherit a spouse without a premarital agreement",
+        "Oral wills (nuncupative) are not valid in Idaho",
+      ],
+      faq: [
+        { question: "Does Idaho recognize handwritten wills?", answer: "Yes. Idaho Code §15-2-502 recognizes holographic wills if they are entirely in the testator's own handwriting and signed by the testator. No witnesses or notarization are required. However, holographic wills are more likely to be challenged. A formally witnessed will is always preferable when possible." },
+        { question: "Does Idaho have an estate tax?", answer: "No. Idaho does not impose a state estate tax or inheritance tax. Idaho's estate tax was tied to the federal estate tax credit (pickup tax) and was effectively eliminated when the federal credit was repealed in 2005. Estates are only subject to federal estate tax (currently over $13.6 million per person in 2024)." },
+        { question: "What happens if you die without a will in Idaho?", answer: "Intestate succession under Idaho Code §15-2-101 applies. Idaho is a community property state. Community property goes entirely to the surviving spouse. Separate property is distributed based on who survives: all to spouse if no children, or divided between spouse and children. Domestic partners have no rights without a will." },
+        { question: "Can I disinherit my children in Idaho?", answer: "Yes, with some caveats. You can disinherit adult children by explicitly stating so in your will. However, pretermitted children (children born or adopted after the will is executed and not mentioned) may claim an intestate share unless you update the will. Children cannot be completely disinherited without explicit language in the will." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Idaho Code §44-2701 governs non-compete enforceability",
+        "Must be in writing and signed by the employee",
+        "Must protect a legitimate business interest (trade secrets, specialized training, customer goodwill)",
+        "Consideration required: new employment or material benefit for existing employees",
+        "Must be reasonable in duration, geographic scope, and activity restricted",
+      ],
+      restrictions: [
+        "18-month duration is presumptively reasonable under Idaho Code §44-2701",
+        "Geographic scope must reflect areas where employee had actual client contact or market presence",
+        "Cannot prevent employee from using general skills developed prior to employment",
+        "Courts will blue-pencil (reduce) overbroad provisions to make them reasonable",
+        "Non-competes must be disclosed at or before the start of employment",
+      ],
+      faq: [
+        { question: "How long can an Idaho non-compete be?", answer: "Idaho Code §44-2701 establishes that 18 months is a presumptively reasonable non-compete duration. Courts may uphold longer terms if the employer justifies them, but 18 months is the safe harbor. Geographic scope and the nature of the restricted activity also affect enforceability — narrower is always better." },
+        { question: "Will Idaho courts rewrite an overbroad non-compete?", answer: "Yes. Idaho courts apply blue-penciling — they will modify overbroad non-competes to make them enforceable rather than voiding them entirely. This means you cannot rely on courts to save a poorly drafted agreement, but it also means an overbroad agreement will not be entirely wasted. Draft carefully to protect your core interests." },
+        { question: "What business interests justify a non-compete in Idaho?", answer: "Idaho courts recognize: protection of trade secrets and confidential information, customer relationships built using employer resources, and specialized training provided by the employer. General skills and industry knowledge that an employee had before employment cannot be restricted. The non-compete must be tailored to the actual interests at risk." },
+        { question: "Can Idaho non-competes be enforced against independent contractors?", answer: "Yes, but courts apply the same reasonableness analysis. The key distinction is whether the IC truly operates independently or is economically dependent on the hiring company. Overly broad IC non-competes are scrutinized more heavily. As with employee non-competes, limiting the restriction to customers or projects the IC actually worked on improves enforceability." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Idaho uses the common law control test for most IC classification purposes",
+        "Written agreement should detail scope of work, payment terms, and deliverables",
+        "IRS Form 1099-NEC required for payments of $600+ per year",
+        "Contractor must pay own self-employment taxes (Social Security, Medicare)",
+        "State requires contractor to hold applicable business licenses",
+      ],
+      restrictions: [
+        "Misclassification can result in back unemployment insurance taxes and penalties",
+        "Idaho Department of Labor may apply ABC-like factors for unemployment tax purposes",
+        "Worker's compensation: IC agreements should specify contractor carries own WC coverage",
+        "Non-compete restrictions subject to Idaho Code §44-2701 reasonableness analysis",
+        "IC cannot be treated as employee in practice (set hours, required uniform, daily supervision)",
+      ],
+      faq: [
+        { question: "How does Idaho classify workers as independent contractors?", answer: "Idaho primarily uses the common law control test: who controls how the work is done? Key factors include whether the worker sets their own hours, uses their own tools, works for multiple clients, and can profit or lose from the arrangement. For unemployment tax purposes, Idaho's Department of Labor may apply additional factors similar to the ABC test." },
+        { question: "What should an Idaho IC agreement include?", answer: "Include: project description and deliverables, payment terms and schedule, IC's responsibility for own taxes and insurance, confidentiality and IP assignment, termination provisions, and indemnification. Avoid provisions that impose employee-like control (mandatory hours, exclusive service, daily reporting). The agreement should reflect actual working conditions." },
+        { question: "Do Idaho contractors need a business license?", answer: "Idaho does not have a general statewide business license requirement, but contractors must comply with city and county licensing requirements. Contractors in licensed trades (construction, electrical, plumbing) must hold state-issued licenses from the Idaho Division of Building Safety. Verify local requirements before starting work." },
+        { question: "What are the risks of misclassifying a worker in Idaho?", answer: "Misclassification exposes the hiring company to: back unemployment insurance contributions (with 5% monthly penalties), unpaid worker's compensation premiums, IRS penalties for failure to withhold and remit payroll taxes, and potential civil liability for denial of employee benefits. Idaho's Department of Labor actively audits high-risk industries like construction and staffing." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Idaho commercial leases governed by Idaho Code and general contract law; no specific commercial landlord-tenant act",
+        "Written lease required for terms over one year (Statute of Frauds, Idaho Code §9-505)",
+        "Both parties must sign; corporate lessees should authorize signatories via resolution",
+        "Disclose all known material defects affecting the premises",
+        "Define responsibilities for utilities, maintenance, taxes, and insurance clearly",
+      ],
+      restrictions: [
+        "No statutory limit on commercial security deposits",
+        "Idaho follows common law: tenant must pay rent even if landlord fails to deliver possession (unless lease provides otherwise)",
+        "Self-help repossession by landlord is unlawful; must use unlawful detainer proceedings",
+        "Net lease tenants responsible for pro-rata share of property taxes, insurance, and CAM",
+        "Force majeure clause essential given Idaho's agricultural and natural disaster exposure",
+      ],
+      faq: [
+        { question: "Does Idaho have a commercial landlord-tenant law?", answer: "No. Idaho's Residential Landlord and Tenant Act (Idaho Code §§55-201 to 55-313) applies only to residential properties. Commercial leases are governed entirely by general contract principles. This gives both parties significant freedom to negotiate terms, which also means the written lease must comprehensively address all contingencies — nothing is implied by statute." },
+        { question: "What happens if a commercial landlord fails to deliver possession in Idaho?", answer: "At common law, if a landlord cannot deliver possession at the lease commencement, the tenant's remedy is an action for damages rather than rent abatement. Include a 'possession clause' in the lease specifying: if possession is not delivered by X date, the tenant may terminate or receive a rent-free period equal to the delay. Never rely on implied remedies." },
+        { question: "Are there any restrictions on commercial lease assignments in Idaho?", answer: "Commercial lease assignments are generally permitted unless the lease expressly prohibits or conditions them on landlord consent. Include a 'not to be unreasonably withheld' standard if tenant wants assignment rights. Idaho courts will enforce 'no assignment without consent' clauses strictly. Subletting and assignment rights should be negotiated at lease signing." },
+        { question: "What due diligence should I do before signing an Idaho commercial lease?", answer: "Verify: (1) landlord's ownership and authority to lease; (2) zoning and permitted use; (3) building permits for planned improvements; (4) property tax and special assessment history; (5) environmental history for industrial sites; (6) ADA compliance obligations; and (7) existing liens or mortgages that could affect your tenancy. Engage a local commercial real estate attorney." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Idaho has no general usury cap for commercial loans; consumer loans: 12% maximum unless licensed",
+        "Note must specify principal, interest rate, repayment terms, and default provisions",
+        "Consumer loan usury governed by Idaho Code §28-42-401",
+        "UCC Article 3 (Idaho Code §28-3-101 et seq.) governs negotiable instruments",
+        "Secured notes: UCC-1 filing with Idaho Secretary of State for personal property collateral",
+      ],
+      restrictions: [
+        "Interest rate must be stated as a specific number or calculation method — 'market rate' is insufficient",
+        "Consumer notes over 12% APR require lender licensing",
+        "Confession of judgment clauses are disfavored in Idaho courts",
+        "Prepayment penalties must be expressly stated; courts construe ambiguities against the lender",
+        "Late fees must be a stated amount or percentage, not an open-ended penalty",
+      ],
+      faq: [
+        { question: "What is Idaho's interest rate limit for loans?", answer: "Idaho Code §28-42-401 caps consumer loan interest at 12% per year for unlicensed lenders. Commercial loans between businesses have no statutory cap. If you charge more than 12% to a consumer without a license, the interest is unenforceable (but the principal debt remains). Always confirm whether the borrower is a consumer or a business." },
+        { question: "How do I perfect a security interest in Idaho?", answer: "File a UCC-1 Financing Statement with the Idaho Secretary of State for personal property collateral (equipment, inventory, accounts receivable). For real property, record a deed of trust or mortgage with the county recorder in the county where the property is located. Perfect the interest promptly — priority is generally first-to-file." },
+        { question: "What notice is required before declaring a default in Idaho?", answer: "Include a notice-and-cure provision in the note: give the borrower 10–30 days written notice of default before accelerating. Idaho courts look favorably on lenders who follow the note's procedures precisely. For secured transactions, the Idaho UCC requires commercially reasonable disposition of collateral after repossession." },
+        { question: "Is a promissory note enforceable without notarization in Idaho?", answer: "Yes. A promissory note does not require notarization to be enforceable in Idaho. As a negotiable instrument under UCC Article 3, it needs only to be in writing, signed by the maker, and contain an unconditional promise to pay a sum certain. Notarization of the accompanying deed of trust or mortgage is required for recording with the county recorder." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required for civil demand letters in Idaho",
+        "Identify parties, factual basis, legal theory, and specific monetary or injunctive demand",
+        "Set a reasonable response deadline (10–30 days)",
+        "Send via certified mail, return receipt requested, for proof of delivery",
+        "Pre-suit demand required for small claims (Magistrate Court, up to $5,000)",
+      ],
+      restrictions: [
+        "Letter must not threaten criminal prosecution to extract civil payment (blackmail/extortion)",
+        "Idaho Consumer Protection Act (Idaho Code §48-601 et seq.) prohibits unfair/deceptive trade practices",
+        "Must not misrepresent legal rights or threaten actions not actually intended",
+        "Debt collection letters subject to FDCPA if collecting consumer debt",
+        "Do not disclose third-party confidential information in the letter",
+      ],
+      faq: [
+        { question: "What is Idaho's small claims court limit?", answer: "Idaho Magistrate Court (small claims division) handles claims up to $5,000. The filing fee is approximately $50–$75. A pre-suit demand letter is good practice and required by some local court rules. Small claims proceedings are informal; parties typically represent themselves. Judges issue decisions at the hearing or within a few days." },
+        { question: "How long should a demand deadline be in Idaho?", answer: "10–30 days is standard. For simple contract or debt disputes, 14 days is common. For complex commercial matters or disputes involving insurance companies, 30 days is more appropriate. Be realistic — setting a 3-day deadline when you are not prepared to file immediately can undermine your credibility." },
+        { question: "What happens if the other party ignores my Idaho demand letter?", answer: "You may file a complaint in the appropriate Idaho court (Magistrate Court for smaller claims, District Court for larger ones). The demand letter establishes that you notified the respondent and gave them opportunity to resolve the matter. Courts look favorably on parties who attempted pre-suit resolution. Keep all delivery receipts as evidence." },
+        { question: "Can I send a demand letter before an Idaho lawsuit?", answer: "Yes, and it is strongly encouraged. Many cases settle after a well-drafted demand letter. In contract disputes, the letter starts the clock on any contractual notice-and-cure period. Under Idaho Rule of Civil Procedure, you can reference the unreturned demand letter at trial as evidence of the defendant's bad faith or notice of the claim." },
+      ],
+    },
+  },
+  indiana: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Indiana Code §32-31-1 et seq. governs residential landlord-tenant law",
+        "Security deposit: no statutory cap, but must be returned within 45 days after tenancy ends",
+        "Written itemization of deductions required within 45 days",
+        "Landlord must disclose name and address of owner and property manager (IC §32-31-3-18)",
+        "Written lease recommended; verbal leases enforceable for terms under one year",
+      ],
+      restrictions: [
+        "Landlord cannot collect more than 2 months' rent as security deposit for residential leases (check local ordinances)",
+        "Self-help eviction is illegal — must use Indiana's summary eviction process",
+        "Retaliatory evictions are prohibited (IC §32-31-8-6)",
+        "Landlord must give 30-day notice to terminate month-to-month tenancy",
+        "Tenant may not withhold rent without following statutory procedures",
+      ],
+      noticeRequirements: "10-day notice for nonpayment of rent; 30-day notice for lease violations; 30-day notice to terminate month-to-month tenancy",
+      faq: [
+        { question: "How long does a landlord have to return a security deposit in Indiana?", answer: "Indiana Code §32-31-3-12 requires landlords to return the security deposit within 45 days after the tenancy ends and the tenant surrenders possession. The landlord must provide a written itemized statement of any deductions. Failure to return within 45 days means the landlord loses the right to withhold any portion and may owe the tenant damages." },
+        { question: "What is the eviction process in Indiana?", answer: "The landlord must serve written notice (10 days for nonpayment, 30 days for violations). If the tenant does not comply, the landlord files a complaint for possession in small claims court (claims up to $10,000) or superior/circuit court. A hearing is scheduled within 60 days. The constable or sheriff enforces the writ of possession." },
+        { question: "Is there rent control in Indiana?", answer: "No. Indiana Code §32-31-1-20 preempts local rent control ordinances. No city or county may cap residential rent increases. Landlords may raise rent with proper notice. For month-to-month tenancies, 30 days' notice is required before a rent increase takes effect." },
+        { question: "Can an Indiana tenant repair-and-deduct?", answer: "Indiana does not have a general statutory right to repair-and-deduct. Tenants may pursue remedies through county health departments or courts for uninhabitable conditions, but unilaterally withholding rent or deducting repair costs risks eviction. Tenants should document all requests for repairs in writing before escalating." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Indiana Business Flexibility Act (IC §23-18-1 et seq.) governs LLCs",
+        "Articles of Organization filed with Indiana Secretary of State; $95 online filing fee",
+        "Biennial business entity report required ($32 fee every 2 years)",
+        "Registered agent with Indiana street address required",
+        "Operating agreement recommended; not required to be filed",
+      ],
+      restrictions: [
+        "Operating agreement may not eliminate members' right to access records (IC §23-18-4-3)",
+        "Members owe duty of loyalty and care unless modified by operating agreement",
+        "Indiana LLCs must maintain registered agent at all times or risk administrative dissolution",
+        "Foreign LLCs conducting business in Indiana must obtain a certificate of authority",
+      ],
+      faq: [
+        { question: "How much does it cost to form an LLC in Indiana?", answer: "The Articles of Organization filing fee is $95 online ($100 by mail). Indiana requires a biennial business entity report every two years ($32 fee). Indiana does not impose an annual franchise tax on LLCs, making ongoing maintenance costs relatively low. Registered agent services add $50–$150/year if using a commercial provider." },
+        { question: "What does Indiana's biennial report require?", answer: "Indiana LLCs must file a business entity report every two years with the Secretary of State. The report is due in the anniversary month of formation. Filing fee is $32 online. The report updates the LLC's registered agent, principal office address, and member/manager information. Failure to file results in administrative dissolution." },
+        { question: "Does Indiana recognize single-member LLCs?", answer: "Yes. Single-member LLCs are fully recognized under Indiana law. For federal tax purposes, a single-member LLC is a disregarded entity (taxed as a sole proprietor) by default. Indiana taxes LLCs at the individual member level (pass-through). Maintain a separate business bank account and operating agreement to preserve the liability shield." },
+        { question: "Can an Indiana operating agreement waive fiduciary duties?", answer: "Partially. Indiana Code §23-18-4-5 allows the operating agreement to limit or eliminate the duty of care and duty of loyalty, but it cannot eliminate the covenant of good faith and fair dealing. Courts have struck down provisions that eliminate all fiduciary duties wholesale. Use clear, specific language identifying which duties are modified and how." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Indiana is an at-will employment state; contracts that modify at-will status must be explicit",
+        "Minimum wage: $7.25/hour (Indiana follows federal minimum; no higher state rate)",
+        "Overtime: 1.5× for hours over 40/week (federal FLSA applies)",
+        "Written contracts should specify duration, compensation, duties, and termination procedures",
+        "Non-compete agreements enforceable if reasonable and supported by consideration",
+      ],
+      restrictions: [
+        "Indiana does not have a state wage theft law; FLSA and civil contract remedies apply",
+        "Employers cannot discriminate based on race, color, religion, sex, national origin (IC §22-9-1)",
+        "Indiana Senate Bill 5 (2023) limits some non-competes for certain healthcare workers",
+        "Meal and rest break requirements: Indiana has no state break law; FLSA applies",
+        "Final wages due on next regular payday after termination (IC §22-2-9-2)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Indiana?", answer: "Yes. Indiana enforces reasonable non-compete agreements under the common law reasonableness standard. Courts evaluate: whether the agreement protects a legitimate business interest (trade secrets, customer relationships, specialized training), and whether the duration, geography, and scope are reasonably tailored. Indiana courts blue-pencil overbroad provisions." },
+        { question: "When must Indiana employers pay terminated employees?", answer: "Indiana Code §22-2-9-2 requires payment of final wages on the next regular payday. The employer may not withhold wages for alleged misconduct without a signed written authorization from the employee. Violation of wage payment rules can result in penalties of 10% per day of unpaid wages, plus attorney's fees." },
+        { question: "Does Indiana have any required employment contract provisions?", answer: "Indiana does not mandate specific contract terms, but employers must: (1) pay at least the federal minimum wage; (2) comply with overtime rules; (3) not discriminate based on protected characteristics; and (4) maintain OSHA-compliant workplaces. Contracts that purport to waive these rights are void to that extent." },
+        { question: "Can an Indiana employer have a non-compete for healthcare workers?", answer: "Partly. Indiana Senate Bill 5 (2023) restricts non-competes for primary care physicians, limiting them to 2-year duration, 50-mile radius, and requiring the employer to pay the physician during the restriction period if they want to enforce it. Other healthcare professionals are not yet covered by this legislation but watch for expansion." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Indiana Code §30-5-1 et seq. (Indiana Power of Attorney Act) governs",
+        "Must be signed by principal before a notary and two witnesses",
+        "Durable POA must state it is effective despite principal's subsequent disability",
+        "Agent must act in principal's best interest and keep records of transactions",
+        "Healthcare representative governed by IC §16-36-1 (Health Care Consent Act)",
+      ],
+      restrictions: [
+        "Witnesses cannot be: the agent, a relative of the agent, or someone who will benefit from the estate",
+        "Agent cannot make gifts to themselves unless expressly authorized",
+        "Agent cannot exercise authority to change the principal's will or execute a new one",
+        "Banks may reject older POAs — Indiana allows them to require POAs executed within 3 years",
+        "POA revoked automatically by principal's death or appointment of guardian",
+      ],
+      faq: [
+        { question: "What are Indiana's witness requirements for a power of attorney?", answer: "Indiana Code §30-5-4-1 requires two witnesses in addition to notarization. Witnesses must be adults and cannot be: the named agent, a relative of the agent by blood or marriage, or anyone who stands to inherit from the principal. Failing to use proper witnesses can render the POA invalid, especially if challenged after incapacity." },
+        { question: "Can a bank refuse an Indiana power of attorney?", answer: "Indiana Code §30-5-11-2 provides financial institutions some protection when acting in reliance on a POA. However, institutions may require a POA affidavit and can reject a POA they believe to be revoked or invalid. Indiana allows institutions to require that POAs be executed within the previous 3 years before relying on them." },
+        { question: "What is a healthcare representative in Indiana?", answer: "Indiana's Health Care Consent Act (IC §16-36-1) allows you to appoint a healthcare representative (similar to a health care power of attorney) to make medical decisions if you are incapacitated. This is separate from a financial POA. Combined with a living will (advance directive), it ensures your medical wishes are carried out." },
+        { question: "How do I revoke an Indiana power of attorney?", answer: "Execute a written revocation signed before a notary and deliver it to the agent and all third parties (banks, etc.) who have a copy of the original POA. If the original was recorded for real property transactions, record the revocation with the county recorder. Destroying the original alone is insufficient if copies have been distributed." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be 18 or older (IC §29-1-5-1) and of sound mind",
+        "Will must be signed by testator in the presence of two witnesses",
+        "Witnesses must sign in testator's presence and in each other's presence",
+        "Self-proved will requires notarized affidavits of testator and witnesses (IC §29-1-5-3.1)",
+        "Holographic wills not recognized in Indiana if not witnessed",
+      ],
+      restrictions: [
+        "Surviving spouse has right of election against the will (IC §29-1-3-1): one-third of net estate",
+        "Pretermitted children born after the will may take intestate share (IC §29-1-3-8)",
+        "Indiana imposes no state estate tax (repealed in 2013)",
+        "Oral (nuncupative) wills have very limited recognition in Indiana",
+        "Will must be lodged with county clerk within 3 months of death",
+      ],
+      faq: [
+        { question: "Does Indiana recognize handwritten wills?", answer: "No. Indiana does not recognize holographic (handwritten, unwitnessed) wills. A valid Indiana will must be in writing and signed by two witnesses in the testator's presence. Without proper witnesses, a handwritten will is invalid. Consider using a self-proved will form with notarized attestation to avoid challenges." },
+        { question: "Does Indiana have an estate or inheritance tax?", answer: "No. Indiana repealed its inheritance tax in 2013 and has no estate tax. Only the federal estate tax applies, which currently exempts estates under approximately $13.6 million (2024). Indiana residents with estates below the federal threshold owe no death taxes." },
+        { question: "What is a surviving spouse's elective share in Indiana?", answer: "Under IC §29-1-3-1, a surviving spouse may elect against the will and claim one-third of the net estate. This right exists even if the will disinherits the spouse. The election must be made within 3 months of the will's admission to probate. Premarital agreements waiving the elective share are enforceable." },
+        { question: "How long does Indiana probate take?", answer: "Formal Indiana probate typically takes 6–12 months for straightforward estates. Complex estates with disputes, creditor claims, or out-of-state property can take 2 or more years. Indiana's supervised administration requires court approval for most transactions. Unsupervised administration (allowed if all beneficiaries agree) is faster and less expensive." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Indiana applies common law reasonableness test for non-competes",
+        "Must be supported by adequate consideration (employment or material benefit)",
+        "Must protect a legitimate business interest (trade secrets, customer relationships)",
+        "Written and signed by the employee",
+        "Geographic scope and duration must be reasonable relative to the employer's business",
+      ],
+      restrictions: [
+        "Healthcare non-competes for physicians limited by Indiana SB 5 (2023)",
+        "Courts will blue-pencil overbroad provisions to make them enforceable",
+        "Non-competes that prevent an employee from using general skills are unenforceable",
+        "Non-compete presented after job offer is made requires additional consideration",
+        "Indiana does not prohibit non-solicitation clauses (more readily enforced than competition bans)",
+      ],
+      faq: [
+        { question: "What makes a non-compete reasonable in Indiana?", answer: "Indiana courts apply the common law reasonableness test: (1) Is it necessary to protect a legitimate employer interest? (2) Is the duration reasonable (typically 1–2 years)? (3) Is the geographic scope limited to the area where the employee worked? (4) Is the scope of prohibited activity narrowly defined? Courts look at the totality of circumstances." },
+        { question: "Will an Indiana court modify an overbroad non-compete?", answer: "Yes. Indiana courts blue-pencil overbroad non-competes by reducing duration or geographic scope to make them enforceable. The court will not, however, write an entirely new agreement. This makes precise drafting important — include severability language and a provision stating that courts may modify the agreement to the maximum enforceable extent." },
+        { question: "Are non-competes for healthcare workers restricted in Indiana?", answer: "Yes, for primary care physicians. Under Indiana SB 5 (2023), non-compete agreements for primary care physicians are limited to 2 years, 50-mile radius, and only enforceable if the employer continues paying the physician's salary during the restriction period. Specialty physicians and other healthcare workers are not yet covered by SB 5." },
+        { question: "Can a non-solicitation clause be used instead of a non-compete in Indiana?", answer: "Yes. Customer non-solicitation clauses (preventing the employee from soliciting employer clients they personally served) are more readily enforced than blanket competition bans. Indiana courts view non-solicitation as a less severe restriction on the employee's livelihood. Non-solicitation of employees (anti-poaching clauses) are also generally enforceable." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Indiana uses a multi-factor common law test and economic reality test for classification",
+        "Written agreement must establish IC's control over means and methods of work",
+        "IRS Form 1099-NEC for payments of $600+ per year",
+        "Contractor must pay self-employment taxes and obtain own benefits",
+        "IC must hold applicable state and local business licenses",
+      ],
+      restrictions: [
+        "Indiana Department of Workforce Development uses its own classification factors for UI purposes",
+        "Misclassification: employer may owe back UI taxes, workers' comp premiums, and civil penalties",
+        "Do not impose employee-like control (set hours, required equipment, exclusive service, daily supervision)",
+        "Non-compete and non-solicitation in IC agreements subject to common law reasonableness review",
+        "IC providing construction services: Indiana Construction Wage Act and licensing laws apply",
+      ],
+      faq: [
+        { question: "How does Indiana classify independent contractors?", answer: "Indiana uses a multi-factor test examining: behavioral control (who directs how work is done), financial control (who bears the risk, provides tools, and has other clients), and the type of relationship (benefits, permanency, integration into business). For unemployment insurance, the Indiana DWD has its own factors that differ somewhat from the IRS analysis." },
+        { question: "What IC agreement clauses are most important in Indiana?", answer: "Include: (1) scope of services with specific deliverables; (2) payment terms and invoice schedule; (3) contractor's obligation to pay own taxes; (4) IP assignment (all work product is work-for-hire); (5) confidentiality; (6) no employee benefits; (7) termination rights; (8) indemnification. Avoid provisions that mandate specific working hours or exclusive service." },
+        { question: "Can a contractor be required to carry workers' compensation in Indiana?", answer: "Yes. Indiana law (IC §22-3-2-14) can require contractors to carry workers' comp if they function as employees. Require all IC subcontractors to provide certificates of workers' comp insurance. If a contractor is uninsured and is injured, the hiring company may be held liable as the statutory employer. This is especially critical in construction." },
+        { question: "What are Indiana's penalties for worker misclassification?", answer: "Indiana imposes civil penalties for misclassification, including: back UI taxes with interest, workers' comp premium assessments, FLSA violations (back pay, liquidated damages, attorney's fees), and potential criminal charges for willful payroll fraud. The Indiana Attorney General has increased enforcement activity in industries like construction and gig work." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Indiana commercial leases governed by general contract law; no specific commercial landlord-tenant act",
+        "Written lease required for terms over one year (Statute of Frauds, IC §32-21-1-1)",
+        "Both parties must sign; entities should authorize signatories by resolution",
+        "Disclose known material defects; Indiana follows caveat emptor for commercial properties",
+        "Specify rent, term, renewal options, permitted use, and responsibility for operating expenses",
+      ],
+      restrictions: [
+        "No statutory limit on commercial security deposits in Indiana",
+        "Landlord must use unlawful detainer process — self-help eviction is prohibited",
+        "Triple-net tenants typically pay property taxes, insurance, and maintenance directly",
+        "Assignment and subletting rights must be addressed expressly in the lease",
+        "Personal guaranty often required for small business or new entity tenants",
+      ],
+      faq: [
+        { question: "Can an Indiana commercial landlord change the locks if a tenant doesn't pay?", answer: "No. Self-help eviction (changing locks, removing doors, cutting utilities) is illegal in Indiana even for commercial tenants. Landlords must file an unlawful detainer action in court. Violating this rule exposes the landlord to damages including the tenant's lost business income. Always use the legal process." },
+        { question: "What is the typical lease term for Indiana commercial properties?", answer: "Retail leases in Indiana typically run 3–5 years; office leases 3–7 years; industrial/warehouse leases 5–10 years. Longer leases often include rent escalation clauses (2–3% annual increases or CPI-linked). Negotiate renewal options with pre-agreed rent formulas rather than leaving renewal rent to future market negotiation." },
+        { question: "How are CAM charges handled in Indiana commercial leases?", answer: "CAM (Common Area Maintenance) charges in triple-net leases cover expenses like parking lot maintenance, landscaping, exterior lighting, and common area cleaning. Indiana leases should specify: which costs are included, which are excluded (capital repairs, management fees), the tenant's proportionate share, CAM reconciliation timing, and whether there is an annual cap on increases." },
+        { question: "What is a personal guaranty in Indiana commercial leases and when is it required?", answer: "A personal guaranty makes an individual (usually the business owner) personally liable for the tenant's lease obligations. Indiana landlords commonly require personal guaranties from closely-held businesses, new entities, or tenants with limited credit history. Negotiate for: a capped guaranty (6–12 months' rent), a burn-off provision after X years of timely payment, and exclusion of landlord-caused defaults." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Indiana Uniform Commercial Code (IC Title 26, Art. 3) governs negotiable instruments",
+        "Note must be in writing, signed by maker, contain unconditional promise to pay sum certain",
+        "Indiana consumer loan maximum rate: 25% APR for unlicensed lenders (IC §24-4.5-3-508)",
+        "Commercial notes: no usury cap between businesses",
+        "UCC-1 financing statement required to perfect security interest in personal property",
+      ],
+      restrictions: [
+        "Consumer credit transactions governed by Indiana Uniform Consumer Credit Code (IC §24-4.5)",
+        "Payday loan interest rates capped at $15 per $100 for loans up to $550",
+        "Confession of judgment clauses may be void in Indiana consumer transactions",
+        "Prepayment penalty must be expressly stated in the note; presumed waived if not mentioned",
+        "Notes that violate consumer protection laws may be void or voidable",
+      ],
+      faq: [
+        { question: "What is Indiana's interest rate cap on loans?", answer: "For consumer credit transactions, Indiana's Uniform Consumer Credit Code (IC §24-4.5) caps interest rates: 36% APR for loans under $2,000, 21% for loans $2,000–$4,000, and 15% for loans over $4,000. Commercial loans between businesses have no usury cap. Always classify the loan purpose (consumer vs. commercial) before setting the rate." },
+        { question: "How do I create a secured promissory note in Indiana?", answer: "For personal property collateral, file a UCC-1 Financing Statement with the Indiana Secretary of State (online, $20 fee). For real property, record a mortgage with the county recorder where the property is located. Perfect the interest promptly to establish priority. In a bankruptcy, unperfected security interests are often avoided by the trustee." },
+        { question: "What happens if an Indiana borrower defaults?", answer: "The lender may accelerate the full balance (if the note includes an acceleration clause), file suit in Indiana courts, and enforce against collateral. Small claims court handles disputes up to $10,000 (circuit/superior court for larger amounts). For secured notes, the lender may repossess personal property collateral without court order if done peacefully (UCC §9-609)." },
+        { question: "Can I include a prepayment penalty in an Indiana promissory note?", answer: "Yes for commercial notes; consumer notes have restrictions. For consumer credit transactions, Indiana's UCCC limits prepayment penalties. For commercial notes, prepayment penalties are fully enforceable if clearly stated. Specify the penalty as a fixed amount or formula (e.g., 2% of remaining principal). Courts construe ambiguous penalty clauses against the lender." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; letter must clearly identify parties, claim, and demand",
+        "Set a reasonable deadline (10–30 days) for response or payment",
+        "Send via certified mail with return receipt; retain the green card as evidence",
+        "Indiana small claims court (up to $10,000) typically requires prior demand attempt",
+        "For consumer protection claims, demand should reference Indiana Deceptive Consumer Sales Act (IC §24-5-0.5)",
+      ],
+      restrictions: [
+        "Must not threaten criminal action to coerce civil payment (blackmail under IC §35-45-2-1)",
+        "Debt collection demand letters subject to FDCPA and Indiana collection licensing laws",
+        "Must not misrepresent legal rights, remedies, or status of the debt",
+        "Attorney-represented parties: communicate only through their attorney after retention",
+        "Do not include third-party personal information without consent",
+      ],
+      faq: [
+        { question: "What is Indiana's small claims court limit?", answer: "Indiana small claims court (part of circuit/superior court) handles disputes up to $10,000. Filing fees are approximately $37–$50. The process is informal and designed for self-represented parties. Sending a demand letter before filing demonstrates good faith and often resolves cases. Decisions are typically rendered at the hearing." },
+        { question: "How should I structure an Indiana demand letter?", answer: "Include: (1) your name and contact information; (2) recipient's name and address; (3) a concise factual summary of the dispute; (4) the legal basis for the claim (breach of contract, negligence, etc.); (5) the exact amount demanded or specific action requested; (6) a firm deadline; and (7) the consequence of non-response (e.g., filing in Marion County Small Claims Court)." },
+        { question: "Can a demand letter support an Indiana DCSA claim?", answer: "Yes. Under Indiana's Deceptive Consumer Sales Act (IC §24-5-0.5), consumers who suffered damages from unfair or deceptive practices can sue for the greater of actual damages or $500, plus attorney's fees. The demand letter should specifically reference the deceptive act and request correction within the statutory notice period. DCSA claims can be powerful tools." },
+        { question: "What if the other party responds to my Indiana demand letter but refuses to pay?", answer: "Document their response. If they dispute the claim, evaluate whether you have sufficient evidence. If they ignore the demand or their offer is unreasonable, file in the appropriate Indiana court. Small claims court for up to $10,000 is accessible and efficient. For larger amounts, retain an attorney to file in circuit or superior court." },
+      ],
+    },
+  },
+  iowa: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Iowa Code Chapter 562A (Uniform Residential Landlord and Tenant Act) governs",
+        "Security deposit: maximum 2 months' rent; must be returned within 30 days",
+        "Written itemization of deductions required within 30 days of tenancy end",
+        "Landlord must disclose name and address of owner and property manager (Iowa Code §562A.13)",
+        "Landlord must provide written notice of any nonrefundable fees",
+      ],
+      restrictions: [
+        "Landlord cannot collect more than 2 months' rent as security deposit",
+        "Self-help eviction is prohibited — must use judicial eviction (forcible entry and detainer)",
+        "Retaliatory eviction prohibited (Iowa Code §562A.36)",
+        "Tenant can repair-and-deduct for essential services if landlord fails to act within 7 days (Iowa Code §562A.24)",
+        "Landlord must maintain habitable premises; failure gives tenant right to terminate",
+      ],
+      noticeRequirements: "3-day notice for nonpayment of rent; 7-day notice for other lease violations; 30-day notice to terminate month-to-month tenancy",
+      faq: [
+        { question: "What is Iowa's security deposit limit?", answer: "Iowa Code §562A.12 caps security deposits at 2 months' rent. Deposits must be held in a trust account separate from the landlord's personal funds, or the landlord must post a bond. The landlord has 30 days after the tenancy ends to return the deposit and any itemized deductions. Failure to return on time forfeits the right to withhold." },
+        { question: "Can an Iowa tenant withhold rent for repairs?", answer: "Iowa Code §562A.24 allows tenants to repair-and-deduct for essential services (heat, water, electricity) if: (1) the landlord receives written notice; (2) the landlord fails to repair within 7 days (3 days for emergencies); and (3) the tenant does not cause the defect. The deduction is limited to one month's rent per repair." },
+        { question: "How do I evict a tenant in Iowa?", answer: "Serve the required written notice (3 days for nonpayment, 7 days for violations with an opportunity to cure). If the tenant does not comply, file a forcible entry and detainer action in Iowa District Court. A hearing is typically scheduled within 3–8 days after service. The sheriff enforces the writ of removal if the landlord prevails." },
+        { question: "Does Iowa require landlords to accept rental assistance payments?", answer: "Iowa does not have a statewide law requiring landlords to accept rental assistance on behalf of tenants. However, accepting emergency rental assistance (ERA) avoids the eviction process and may be in the landlord's financial interest. Iowa's ERA programs operated through county offices; check local requirements for any applicable rules." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Iowa Revised Uniform Limited Liability Company Act (Iowa Code Ch. 489) governs",
+        "Articles of Organization filed with Iowa Secretary of State; $50 online filing fee",
+        "Biennial report required (due in odd or even years based on formation year)",
+        "Registered agent with Iowa street address required",
+        "Operating agreement need not be filed but should be in writing",
+      ],
+      restrictions: [
+        "Operating agreement cannot eliminate fiduciary duties entirely (Iowa Code §489.110)",
+        "Members have right to inspect records; cannot be waived in operating agreement",
+        "Iowa LLCs must maintain registered agent at all times",
+        "Foreign LLCs must obtain certificate of authority before transacting business in Iowa ($100 fee)",
+      ],
+      faq: [
+        { question: "How much does it cost to form an Iowa LLC?", answer: "The Articles of Organization filing fee is $50 online ($100 by mail or expedited). Iowa requires a biennial report (due every 2 years), with a $45 filing fee. Iowa does not impose a franchise tax or minimum tax on LLCs, making ongoing maintenance relatively affordable. Commercial registered agent services add $50–$150/year." },
+        { question: "When is Iowa's biennial report due?", answer: "Iowa LLCs must file a biennial report with the Secretary of State. The due date depends on the year of formation: LLCs formed in odd years file in odd years; even-year formations file in even years. The report is due by April 1 of the applicable year. Late filings incur a $45 penalty, and failure to file leads to administrative dissolution." },
+        { question: "Can Iowa LLCs have non-voting members?", answer: "Yes. Iowa Code §489.401 allows LLCs to create multiple classes of membership with different voting, economic, and distribution rights. This must be specified in the operating agreement. Non-voting (economic-only) interests are useful for investors or passive partners. Document the class structure clearly to avoid disputes." },
+        { question: "Does an Iowa LLC need an operating agreement?", answer: "Iowa Code §489.105 does not require a written operating agreement, but without one, Iowa's default statutory rules govern — which may not match the members' intent. An operating agreement is especially important for multi-member LLCs to establish profit allocation, decision-making authority, and buy-sell provisions." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Iowa is an at-will employment state; written contracts that limit at-will status must be explicit",
+        "Minimum wage: $7.25/hour (Iowa follows federal minimum; no higher state rate)",
+        "Overtime: 1.5× for hours over 40/week (federal FLSA applies)",
+        "Iowa Civil Rights Act (Iowa Code Ch. 216) prohibits discrimination based on protected classes",
+        "Written employment agreements should address: compensation, benefits, duties, term, and termination",
+      ],
+      restrictions: [
+        "Iowa Code §91A.2 requires wages to be paid at least twice per month (semimonthly)",
+        "Employer cannot deduct from wages without written employee consent (Iowa Code §91A.5)",
+        "Iowa does not have a statewide non-compete statute; courts apply common law reasonableness",
+        "Iowa Code §91C.1 prohibits employers from requiring employees to pay for drug tests",
+        "Iowa prohibits salary history inquiries during hiring under Iowa Civil Rights Act guidance",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Iowa?", answer: "Iowa courts apply a common law reasonableness test to non-compete agreements. The agreement must: (1) be ancillary to a valid employment relationship; (2) be supported by consideration; (3) protect a legitimate business interest; and (4) be reasonable in duration, geographic scope, and restricted activity. Iowa courts are moderately receptive to enforcement." },
+        { question: "How often must Iowa employers pay wages?", answer: "Iowa Code §91A.3 requires wages to be paid at least semimonthly (twice per month). Employers may pay more frequently. Final wages must be paid by the next regular payday after termination. Unauthorized deductions from wages are prohibited without written employee consent and are a civil violation." },
+        { question: "What protected classes does Iowa recognize in employment?", answer: "Iowa Code §216.6 prohibits employment discrimination based on: race, color, creed, religion, national origin, sex, pregnancy, sexual orientation, gender identity, age (18+), disability, and genetic information. Iowa's protections are broader than federal law in some areas (sexual orientation, gender identity) — ensure employment contracts and handbooks comply." },
+        { question: "Can an Iowa employer conduct drug testing?", answer: "Yes. Iowa Code §730.5 authorizes employer drug testing programs for job applicants and employees under certain conditions. Employers must have a written drug testing policy, follow chain-of-custody procedures, and use certified laboratories. Employees who test positive have the right to request a retest. Drug test costs cannot be charged to employees (Iowa Code §91C.1)." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Iowa Uniform Power of Attorney Act (Iowa Code Ch. 633B) governs; effective July 1, 2014",
+        "Must be signed by principal before a notary; two witnesses also recommended",
+        "Durable POA must state it is effective despite principal's subsequent incapacity",
+        "Agent must act in principal's best interest and keep records of all transactions",
+        "Health care power of attorney governed by Iowa Code §144B",
+      ],
+      restrictions: [
+        "Agent may not make gifts to self unless expressly authorized in the POA",
+        "Agent cannot change the principal's will or create/amend trusts without express authority",
+        "Third parties may require agent certification (affidavit of agent's authority)",
+        "Iowa Code §633B.116 lists powers that require express grant — real estate transactions require explicit language",
+        "POA automatically terminates upon principal's death or court appointment of guardian",
+      ],
+      faq: [
+        { question: "What is Iowa's Uniform Power of Attorney Act?", answer: "Iowa's UPOAA (Iowa Code Ch. 633B), effective July 1, 2014, modernized Iowa POA law to align with the national uniform act. It provides clear default rules for agent authority, fiduciary duties, and third-party reliance. POAs executed before July 1, 2014 are still valid under prior law, but new POAs should comply with the UPOAA." },
+        { question: "What powers must be expressly granted in an Iowa POA?", answer: "Iowa Code §633B.201(b) lists actions requiring express authority: creating, amending, or revoking trusts; making gifts; creating or changing beneficiary designations; delegating authority to another agent; disclaiming property; exercising powers of appointment; and real estate transactions. These cannot be inferred from general language — list them explicitly." },
+        { question: "Can a third party in Iowa refuse to honor a valid POA?", answer: "Iowa Code §633B.119 requires third parties to honor valid POAs within a reasonable time. A refusal without a valid reason (e.g., genuine doubt about validity or revocation) may expose the third party to liability. Provide an agent certification (sworn statement of the agent's authority and that the POA has not been revoked) to ease third-party acceptance." },
+        { question: "How do I create a health care power of attorney in Iowa?", answer: "Iowa Code §144B.2 governs the health care power of attorney. It must be signed before two witnesses who are not related to the principal by blood or marriage, not the principal's physician, and not anyone entitled to inherit. The HCPOA may be combined with a living will (advance directive). Provide copies to your physician, hospital, and family." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be 18 or older (Iowa Code §633A.2702) and of sound mind",
+        "Will must be signed by testator in the presence of two witnesses",
+        "Witnesses must sign in testator's presence; they need not sign in each other's presence",
+        "Self-proved will: testator and witnesses sign notarized affidavits (Iowa Code §633A.2705)",
+        "Holographic wills are valid if entirely in testator's handwriting and signed (Iowa Code §633A.2703)",
+      ],
+      restrictions: [
+        "Surviving spouse has election rights to one-third of net estate (Iowa Code §633A.3103)",
+        "Iowa has no state estate or inheritance tax",
+        "Pretermitted children may claim intestate share if omitted from will without explanation",
+        "Oral (nuncupative) wills have no legal effect in Iowa",
+        "Will must be filed with the district court within 30 days of death",
+      ],
+      faq: [
+        { question: "Does Iowa recognize handwritten wills?", answer: "Yes. Iowa Code §633A.2703 recognizes holographic wills if they are entirely in the testator's own handwriting and signed. No witnesses or notarization are required for holographic wills. However, typed wills with two witnesses (and ideally notarized for self-proving status) are preferred because they are harder to challenge and easier to probate." },
+        { question: "Does Iowa have an estate tax?", answer: "No. Iowa repealed its inheritance tax for deaths occurring after January 1, 2025. As of 2025, Iowa imposes neither an estate tax nor an inheritance tax. Only the federal estate tax applies (over approximately $13.6 million per person). Earlier deaths may still have had Iowa inheritance tax obligations — check the specific date of death." },
+        { question: "What happens if I die without a will in Iowa?", answer: "Iowa's intestate succession laws (Iowa Code §633A.2101 et seq.) apply. For married decedents: the surviving spouse inherits the entire estate if all children are also children of the surviving spouse; otherwise, the spouse takes 50% and the children take 50%. Iowa is not a community property state — all property is subject to intestate rules." },
+        { question: "What is Iowa's elective share?", answer: "Under Iowa Code §633A.3103, a surviving spouse may elect against the will and claim one-third of the decedent's net estate. The election must be made within 4 months of the will's admission to probate. The right to elect can be waived in a premarital agreement. This prevents disinheritance of a spouse without their knowledge." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Iowa applies common law reasonableness test; no specific non-compete statute",
+        "Must be in writing, signed by employee, and supported by consideration",
+        "Must protect a legitimate business interest (trade secrets, customer relationships)",
+        "Duration typically limited to 1–2 years by Iowa courts",
+        "Geographic scope must match the employee's actual market area",
+      ],
+      restrictions: [
+        "Iowa courts rarely uphold non-competes with geographic scope beyond the employee's territory",
+        "Courts will modify overbroad provisions under the 'partial enforcement' doctrine",
+        "Non-competes imposed after employment begins require additional consideration beyond continued employment",
+        "Courts scrutinize non-competes for lower-wage workers more closely",
+        "Non-solicitation clauses (client and employee) are more readily enforced than blanket non-competes",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Iowa?", answer: "Iowa courts enforce reasonable non-compete agreements under the common law. Key factors: (1) whether there is a legitimate business interest to protect; (2) whether duration is reasonable (usually no more than 2 years); (3) whether geographic scope matches the employee's actual work area; and (4) whether the activity restriction is proportionate. Iowa courts will modify but not wholesale rewrite overbroad agreements." },
+        { question: "What consideration is needed for an Iowa non-compete?", answer: "For a new hire, the job offer itself is sufficient consideration. For existing employees, continued employment alone may not suffice — Iowa courts have split on this issue. Provide additional consideration: a signing bonus, promotion, salary increase, or access to confidential information. Document the consideration in the agreement." },
+        { question: "What geographic scope is reasonable in Iowa?", answer: "Iowa courts look at where the employee actually worked and had customer contact. A statewide restriction may be appropriate for a salesperson covering Iowa, but a city-only restriction might be all that is justified for a store manager. If the business is regional or national, broader scope may be upheld for senior employees with nationwide responsibilities." },
+        { question: "Is a non-solicitation agreement easier to enforce than a non-compete in Iowa?", answer: "Yes. Iowa courts are more receptive to non-solicitation agreements (prohibiting contact with former customers or employees) than to outright competition bans. Non-solicitation is seen as a lesser restraint on trade. Customer non-solicitation of 1–2 years for clients the employee personally served is routinely enforced in Iowa." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Iowa uses the economic reality and control tests for IC classification",
+        "Written agreement must establish IC's independence and control over work methods",
+        "IRS Form 1099-NEC for payments of $600+ per year",
+        "Contractor must pay own self-employment taxes",
+        "Iowa requires IC to hold applicable trade or professional licenses",
+      ],
+      restrictions: [
+        "Iowa Workforce Development uses its own ABC-like factors for unemployment insurance",
+        "Misclassification: employer liable for back UI taxes, workers' comp premiums, and civil penalties",
+        "Do not impose employee-like control (set hours, exclusive service, daily supervision, mandatory equipment)",
+        "Non-compete restrictions in IC agreements reviewed under common law reasonableness",
+        "Construction ICs subject to Iowa's contractor licensing requirements",
+      ],
+      faq: [
+        { question: "How does Iowa classify workers as independent contractors?", answer: "Iowa Workforce Development uses an ABC-like test for unemployment insurance: the worker is presumed an employee unless (A) free from direction and control, (B) work is performed outside the usual course of the hiring entity's business, and (C) the worker is customarily engaged in an independently established trade. Failing any prong means the worker is an employee for UI purposes." },
+        { question: "What essential provisions should an Iowa IC agreement include?", answer: "Include: scope of work and deliverables, payment schedule, contractor's obligation to pay own taxes and insurance, IP assignment, confidentiality, no employee benefits or equipment provided by company, termination rights, indemnification, and dispute resolution. Avoid provisions that set mandatory hours, require exclusive service, or that give the company day-to-day control over the work." },
+        { question: "Do Iowa contractors need to register for state taxes?", answer: "Iowa ICs providing taxable services or goods must collect and remit Iowa sales tax (6% base rate). They must register with the Iowa Department of Revenue and file sales tax returns. Contractors also pay Iowa income tax on net earnings. Filing quarterly estimated taxes is advisable to avoid underpayment penalties." },
+        { question: "Can Iowa contractors work for multiple clients simultaneously?", answer: "Yes, and this is an important indicator of genuine IC status. Iowa classifiers look at whether the worker has other clients and is economically independent. ICs who work exclusively for one company are often reclassified as employees. IC agreements should explicitly permit the contractor to provide services to other clients (subject to non-compete limitations)." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Iowa commercial leases governed by general contract law; no specific commercial landlord-tenant act",
+        "Written lease required for terms over one year (Statute of Frauds, Iowa Code §622.32)",
+        "Both parties must sign; corporate or LLC tenants should authorize signatory by resolution",
+        "Specify permitted use carefully to avoid future disputes about business changes",
+        "Determine responsibility for snow removal, HVAC maintenance, and parking lot upkeep",
+      ],
+      restrictions: [
+        "No statutory cap on commercial security deposits in Iowa",
+        "Self-help eviction is prohibited; must use forcible entry and detainer proceedings",
+        "Net lease tenants responsible for pro-rata share of taxes, insurance, and maintenance",
+        "Landlord must use commercially reasonable efforts to mitigate damages after tenant default",
+        "Assignment rights must be addressed expressly; silence may allow assignment",
+      ],
+      faq: [
+        { question: "What remedies does an Iowa commercial landlord have after default?", answer: "After following the notice-and-cure procedures in the lease, the landlord may: (1) terminate the lease and sue for unpaid rent; (2) accelerate remaining rent (if the lease allows); or (3) relet the space and hold the defaulting tenant liable for the shortfall. Iowa requires the landlord to make commercially reasonable efforts to relet — failure to mitigate reduces damages." },
+        { question: "How is commercial rent escalation typically handled in Iowa?", answer: "Iowa commercial leases commonly use: (1) fixed annual percentage increases (2–3%); (2) CPI-linked adjustments (tied to the Des Moines-West Des Moines CPI); or (3) fair market value resets at renewal. Fixed increases provide budget certainty; CPI links to inflation. Negotiate which CPI index applies and set a cap on annual CPI increases (e.g., not less than 2% nor more than 5%)." },
+        { question: "Is a personal guaranty standard for Iowa commercial leases?", answer: "Yes, for small businesses and new entities. Iowa landlords typically require personal guaranties from principals of closely-held businesses. Negotiate to limit exposure: cap the guaranty at 12 months' rent, include a 'burn-off' after 3–4 years of timely payment, and exclude landlord defaults from guaranty coverage. Review your liability before signing any open-ended guaranty." },
+        { question: "What due diligence should a tenant do before signing an Iowa commercial lease?", answer: "Verify: (1) the landlord's ownership and authority; (2) zoning and permitted use for your business; (3) building permits for any planned improvements; (4) ADA compliance obligations; (5) existing environmental issues (Iowa DNR database); (6) property tax history and pending assessments; and (7) any existing mortgages or liens that could result in lease termination. Iowa's DNR environmental database is a valuable due diligence resource." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Iowa Code §554.3101 et seq. (Iowa UCC Article 3) governs negotiable instruments",
+        "Note must contain unconditional promise to pay sum certain at a definite time",
+        "Iowa consumer loan usury: 21% APR maximum for unlicensed lenders (Iowa Code §535.2)",
+        "Commercial notes: no usury cap between businesses",
+        "UCC-1 financing statement filed with Iowa Secretary of State to perfect personal property security interests",
+      ],
+      restrictions: [
+        "Consumer usury cap of 21% applies to loans for personal, family, or household purposes",
+        "Iowa Code §535.5 allows parties to contract for interest up to 5% above the federal reserve discount rate for commercial transactions",
+        "Confession of judgment clauses are disfavored and rarely enforced in Iowa courts",
+        "Prepayment penalty must be expressly stated — not implied",
+        "Late fees must be specified; Iowa courts will strike unreasonable late fee clauses",
+      ],
+      faq: [
+        { question: "What is Iowa's interest rate limit on loans?", answer: "Iowa Code §535.2 sets a 5% usury limit as a baseline, but §535.2(4) allows parties to contract for higher rates. The practical consumer maximum for unlicensed lenders is 21% APR. Commercial loans between businesses have no effective cap if the rate is specified in writing. Licensed consumer lenders may have higher permitted rates." },
+        { question: "How do I enforce a promissory note in Iowa?", answer: "File a petition in Iowa District Court alleging the note, default, and damages. Iowa Code §554.3308 creates a presumption that the signature is genuine if the note is properly authenticated. Small claims court (Iowa Code §631) handles disputes up to $6,500. Prevailing plaintiffs can garnish wages or bank accounts to collect judgments." },
+        { question: "What makes a promissory note negotiable in Iowa?", answer: "Under Iowa UCC Article 3 (§554.3104), a negotiable instrument must: (1) be in writing and signed by the maker; (2) contain an unconditional promise to pay a sum certain in money; (3) be payable on demand or at a definite time; and (4) be payable to order or to bearer. If any element is missing, the note is not negotiable (still enforceable as a contract, but not as a UCC note)." },
+        { question: "Can I include a confession of judgment in an Iowa promissory note?", answer: "Confession of judgment (cognovit) clauses are disfavored in Iowa and rarely enforced. Iowa courts are reluctant to allow judgment to be entered without notice or hearing. For commercial notes, some courts have enforced them in limited circumstances, but consumer confession clauses are void. Rely instead on acceleration clauses and traditional collection remedies." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; letter must identify parties, factual basis, legal claim, and demand",
+        "Set a clear deadline (10–30 days) for payment or action",
+        "Send via certified mail for proof of delivery",
+        "Iowa small claims court (up to $6,500) typically expects prior demand to have been made",
+        "For consumer protection claims, reference Iowa Consumer Fraud Act (Iowa Code §714.16)",
+      ],
+      restrictions: [
+        "Cannot threaten criminal prosecution to coerce civil payment (criminal extortion, Iowa Code §711.4)",
+        "Debt collection letters must comply with FDCPA and Iowa debt collection licensing requirements",
+        "Must accurately represent the legal basis of the claim",
+        "Do not include third-party confidential information without consent",
+        "Attorney-represented parties: direct all communications to their attorney once represented",
+      ],
+      faq: [
+        { question: "What is Iowa's small claims court limit?", answer: "Iowa small claims court (Small Claims Division of District Court) handles claims up to $6,500. Filing fees are approximately $65–$85. The process is informal and typically resolved within 30–60 days of filing. A pre-suit demand letter is expected by the court and often results in settlement without filing." },
+        { question: "What should my Iowa demand letter include?", answer: "Include: your name and contact information, the recipient's name and address, a clear and specific description of the dispute (dates, amounts, contract terms breached), the exact amount demanded or specific action required, the legal basis (contract breach, unpaid invoice, etc.), a firm deadline (typically 14–30 days), and the consequence of non-response (filing in District Court)." },
+        { question: "Can a demand letter help resolve an Iowa contract dispute?", answer: "Yes. Iowa courts expect parties to attempt pre-suit resolution. A well-documented demand letter: starts the notice-and-cure period under many contracts, demonstrates good faith to the court, often prompts settlement (especially from businesses wanting to avoid court), and establishes the record of dispute in case of later litigation. Most disputes settle after a formal demand letter." },
+        { question: "How do Iowa consumer protection demand letters work?", answer: "Iowa Code §714.16 (Consumer Fraud Act) prohibits unfair or deceptive practices. A demand letter asserting a Consumer Fraud Act claim should: (1) describe the specific deceptive practice; (2) cite §714.16; (3) demand correction or restitution; and (4) state that continued violation may result in both private litigation and an Iowa AG complaint. Attorney's fees are available to prevailing consumers." },
+      ],
+    },
+  },
+  kansas: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Kansas Residential Landlord and Tenant Act (K.S.A. §58-2540 et seq.) governs",
+        "Security deposit: no more than 1 month's rent for unfurnished; 1.5 months for furnished (K.S.A. §58-2550)",
+        "Deposit must be returned within 30 days after tenancy ends; written itemization required",
+        "Landlord must provide written inventory of condition at move-in if deposit taken",
+        "Landlord must disclose name and address of managing agent",
+      ],
+      restrictions: [
+        "Self-help eviction prohibited — must use legal process (forcible detainer action)",
+        "Retaliatory eviction prohibited (K.S.A. §58-2572)",
+        "Landlord cannot shut off utilities or remove doors/windows to force tenant out",
+        "Tenant can repair-and-deduct only in limited habitability circumstances after notice to landlord",
+        "Month-to-month termination requires 30-day written notice",
+      ],
+      noticeRequirements: "3-day notice for nonpayment of rent; 30-day notice for lease violations with cure period; 30-day notice to terminate month-to-month tenancy",
+      faq: [
+        { question: "What is Kansas's security deposit limit?", answer: "Kansas Code §58-2550 limits security deposits to 1 month's rent for unfurnished units and 1.5 months for furnished units. Pet deposits may be charged separately. The landlord must return the deposit (with itemized deductions) within 30 days after the tenant surrenders possession. Failure to return within 30 days forfeits the right to retain any portion." },
+        { question: "How does eviction work in Kansas?", answer: "Kansas uses a two-step process: (1) serve written notice (3 days for nonpayment, 30 days for violations with opportunity to cure); (2) if noncompliant, file a forcible detainer action in District Court. Kansas courts typically schedule hearings within 3–5 business days. A writ of restitution is issued if the landlord prevails, and the sheriff enforces it." },
+        { question: "Can an Kansas tenant withhold rent?", answer: "Kansas does not have a general rent-withholding statute. Tenants may have limited repair-and-deduct rights after providing written notice of habitability issues and the landlord's failure to act. Unilaterally withholding rent risks eviction. Tenants should pursue the district court's small claims division or contact local housing agencies for assistance with habitability issues." },
+        { question: "Does Kansas have any cities with rent control?", answer: "No. Kansas has no statewide rent control law, and state law does not specifically preempt local ordinances on rent control, but no Kansas city has enacted rent control. Landlords may raise rent with 30-day notice for month-to-month tenants and at lease renewal for fixed-term leases." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Kansas Revised Limited Liability Company Act (K.S.A. §17-76,134 et seq.) governs",
+        "Articles of Organization filed with Kansas Secretary of State; $165 filing fee",
+        "Annual report required ($55 fee) due by April 15 each year",
+        "Registered agent with Kansas street address required",
+        "Operating agreement not required to be filed; should be in writing",
+      ],
+      restrictions: [
+        "Operating agreement may not eliminate duty of loyalty in bad faith (K.S.A. §17-76,134(b))",
+        "Members cannot be held personally liable for LLC debts if formalities maintained",
+        "Kansas imposes a privilege tax on LLCs with substantial operations in the state",
+        "Foreign LLCs must register with Secretary of State before doing business in Kansas",
+      ],
+      faq: [
+        { question: "How much does it cost to form and maintain a Kansas LLC?", answer: "Filing the Articles of Organization costs $165 online. Kansas also requires an annual report filed by April 15 each year with a $55 fee. Kansas LLCs are subject to the Kansas privilege tax (income-based) and potentially business income tax. Total annual compliance costs (filing, registered agent, taxes) can run $300–$600 for a small LLC." },
+        { question: "What is Kansas's LLC annual report requirement?", answer: "Kansas LLCs must file an annual report with the Secretary of State by April 15. The $55 fee is due regardless of whether the LLC had any revenue. The report updates the LLC's registered agent, principal office, and organizer information. Failure to file results in administrative dissolution, which requires reinstatement plus a $100 fee." },
+        { question: "Does Kansas recognize single-member LLCs?", answer: "Yes. Single-member LLCs are recognized under Kansas law. For tax purposes, a single-member LLC is a disregarded entity (taxed as a sole proprietor) by default unless an S or C corp election is made. Kansas also taxes LLC income at the member level. Maintain a separate business bank account and operating agreement to preserve the liability shield." },
+        { question: "Can a Kansas LLC have different classes of members?", answer: "Yes. Kansas law allows LLCs to create multiple classes of membership interests with different voting rights, economic rights, and distribution preferences. This flexibility is useful for investor arrangements. The operating agreement must specify the rights of each class clearly. Changes to class structure typically require unanimous member consent." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Kansas is an at-will employment state with limited statutory exceptions",
+        "Minimum wage: $7.25/hour (Kansas follows federal minimum; Wichita and other cities may differ)",
+        "Overtime: 1.5× for hours over 46/week under Kansas law (K.S.A. §44-1204); FLSA 40-hour rule also applies",
+        "Kansas Pay Equity Act requires equal pay for comparable work",
+        "Written employment contracts should expressly state any limitations on at-will termination",
+      ],
+      restrictions: [
+        "Kansas does not have a statewide paid sick leave law",
+        "Non-compete agreements enforceable if reasonable (K.S.A. §44-1205 limits certain non-competes)",
+        "Employers cannot discriminate based on protected characteristics under Kansas Act Against Discrimination (K.S.A. §44-1001 et seq.)",
+        "Kansas wage payment: final wages due on next regular payday (K.S.A. §44-315)",
+        "No ban-the-box law statewide; some localities may have restrictions",
+      ],
+      faq: [
+        { question: "What is Kansas's overtime threshold?", answer: "Kansas employers must pay 1.5× for hours over 46 per week under state law (K.S.A. §44-1204). However, the federal FLSA's 40-hour threshold also applies, and whichever standard is more beneficial to the employee governs. For most Kansas employers covered by FLSA, the 40-hour federal rule effectively controls. Contracts should reference both applicable thresholds." },
+        { question: "Are non-compete agreements enforceable in Kansas?", answer: "Yes. Kansas enforces reasonable non-compete agreements under common law. K.S.A. §44-1205 limits certain non-competes for specific industries. Courts consider duration (1–2 years typically reasonable), geographic scope (must match actual market area), and whether the restriction protects a legitimate interest. Kansas courts will blue-pencil overbroad agreements." },
+        { question: "When must Kansas employers pay terminated employees?", answer: "K.S.A. §44-315 requires final wages to be paid on the next regular payday after separation. For voluntarily quitting employees, the next scheduled payday applies. Unauthorized withholding of final wages can result in a penalty equal to the unpaid amount plus court costs and attorney's fees. File a complaint with the Kansas Department of Labor." },
+        { question: "Does Kansas require employment contracts for non-compete agreements?", answer: "Yes. Non-compete restrictions must be in a signed written agreement supported by adequate consideration. For new hires, the job offer is consideration. For existing employees, additional consideration beyond continued employment is advisable. Include clear definitions of prohibited activities, geographic scope, and duration. Courts will not imply non-compete obligations." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Kansas Uniform Power of Attorney Act (K.S.A. §58-654 et seq.) governs",
+        "Must be signed by principal before a notary and two witnesses",
+        "Durable POA must include language stating it survives incapacity",
+        "Agent must act in good faith and within scope of granted authority",
+        "Healthcare decisions governed by Kansas Durable Power of Attorney for Health Care (K.S.A. §58-629)",
+      ],
+      restrictions: [
+        "Witnesses cannot be the agent or a person who will benefit from the principal's estate",
+        "Agent cannot make gifts to self unless expressly authorized",
+        "Agent cannot execute, amend, or revoke principal's will",
+        "Real property transactions require the POA to be recorded with the county register of deeds",
+        "POA terminates automatically upon principal's death",
+      ],
+      faq: [
+        { question: "How do I make a power of attorney durable in Kansas?", answer: "Include language substantially similar to: 'This power of attorney shall not be affected by the subsequent disability or incapacity of the principal' (K.S.A. §58-654). Without this language, the POA terminates upon the principal's incapacity — the opposite of most people's intent. Notarization and two witnesses are required under K.S.A. §58-657." },
+        { question: "Does Kansas require a health care power of attorney to be separate?", answer: "Yes. Kansas's Durable Power of Attorney for Health Care (K.S.A. §58-629 et seq.) is a separate document from a financial POA. It specifically authorizes the agent to make medical decisions when the principal is incapacitated. You may also execute a Kansas Declaration (living will) specifying end-of-life preferences. Keep both documents on file with your doctor." },
+        { question: "Can a Kansas POA be used for real estate transactions?", answer: "Yes, but the POA must be recorded with the Register of Deeds in the county where the property is located before the deed is recorded. The POA must expressly authorize real property transactions. Title companies and lenders will require a recorded POA. Without recording, the POA cannot be used to pass clear title to real property." },
+        { question: "How do I revoke a Kansas power of attorney?", answer: "Execute a written revocation signed before a notary and deliver it to the agent and all third parties who have received the original POA. If the POA was recorded with a county Register of Deeds, record the revocation in the same office. Notify your financial institutions immediately. Destroying copies is insufficient if the agent retains the original." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be 18 or older (K.S.A. §59-601) and of sound mind",
+        "Will must be in writing and signed by the testator",
+        "Two witnesses must sign in the testator's presence (and in each other's presence)",
+        "Self-proved will: notarized affidavits of testator and witnesses (K.S.A. §59-606)",
+        "Holographic wills recognized if entirely in testator's handwriting and signed",
+      ],
+      restrictions: [
+        "Surviving spouse has elective share rights — one-half of property acquired during marriage",
+        "Kansas has no state estate tax (repealed); only federal estate tax applies",
+        "Pretermitted children not mentioned in will may take intestate share",
+        "Oral (nuncupative) wills not valid in Kansas except in limited military service circumstances",
+        "Will must be filed with the District Court within 6 months of testator's death",
+      ],
+      faq: [
+        { question: "Does Kansas recognize handwritten wills?", answer: "Yes. Kansas Code §59-606 recognizes holographic wills that are written entirely in the testator's own handwriting and signed. No witnesses or notarization are required for holographic wills. However, any printed or typed portion invalidates the holographic will. A properly witnessed typed will is always preferable and easier to probate." },
+        { question: "Does Kansas have an estate or inheritance tax?", answer: "No. Kansas repealed its estate and inheritance tax in 2010. Only the federal estate tax (over approximately $13.6 million per person in 2024) applies. This is favorable for Kansas residents with larger estates who would have faced both federal and state death taxes in prior years." },
+        { question: "What is the elective share in Kansas?", answer: "Under K.S.A. §59-6a201 et seq., a surviving spouse may elect against the will and claim a share of the augmented estate. The elective share in Kansas is calculated based on the length of the marriage (up to 50% of the augmented estate for marriages of 15+ years). The election must be made within 6 months of the will's admission to probate." },
+        { question: "How long does probate take in Kansas?", answer: "Kansas probate typically takes 6–12 months for straightforward estates. The estate must remain open for at least 6 months to allow creditors to file claims (K.S.A. §59-2239). Complex estates with disputes, multiple properties, or contested wills can take 2+ years. Small estates under $25,000 may qualify for simplified affidavit procedures (K.S.A. §59-1301)." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Kansas applies common law reasonableness test; no specific non-compete statute (see K.S.A. §44-1205 for employment services)",
+        "Must be in writing, signed by the employee, and supported by consideration",
+        "Must protect a legitimate business interest (trade secrets, customer relationships, specialized training)",
+        "Duration typically 1–2 years maximum based on Kansas case law",
+        "Geographic scope must be reasonably related to the employee's work area",
+      ],
+      restrictions: [
+        "Blanket non-competes that prevent all competitive activity are void as against public policy",
+        "Courts will blue-pencil overbroad provisions to make them enforceable",
+        "Non-competes in the employment agency/staffing industry have statutory limits (K.S.A. §44-1205)",
+        "Non-competes imposed mid-employment without additional consideration may lack enforceability",
+        "Courts weigh the hardship on the employee against the employer's legitimate interest",
+      ],
+      faq: [
+        { question: "How does Kansas enforce non-compete agreements?", answer: "Kansas applies the common law reasonableness test: the restriction must be no broader than necessary to protect the employer's legitimate interest, must not impose undue hardship on the employee, and must not injure the public. Duration of 1–2 years is typically acceptable. Kansas courts will blue-pencil (modify) overbroad agreements rather than void them entirely." },
+        { question: "Are there special non-compete rules for staffing agencies in Kansas?", answer: "Yes. K.S.A. §44-1205 limits non-compete agreements in the employment services industry. Staffing agencies cannot prohibit their employees from being hired by client companies after the employee has worked for the client for more than 6 months. These restrictions are void as against public policy for employment agency workers." },
+        { question: "What geographic scope is reasonable for a Kansas non-compete?", answer: "Kansas courts look at the employee's actual work territory. For a salesperson covering the eastern Kansas region, a statewide restriction may be enforceable. For a counter employee at a single location, county-level scope is more appropriate. Nationwide or international restrictions are rarely upheld for employees without national market responsibilities." },
+        { question: "Can Kansas employers use non-solicitation instead of non-competes?", answer: "Yes, and it is often more effective. Customer non-solicitation (prohibiting contact with clients the employee personally served) and employee non-solicitation (prohibiting recruitment of colleagues) are less restrictive than outright competition bans and are routinely enforced in Kansas. Non-solicitation periods of 1–2 years are generally upheld." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Kansas uses the common law control test for most IC classification purposes",
+        "Written agreement should establish IC's independence and control over work methods",
+        "IRS Form 1099-NEC for payments of $600+ per year",
+        "Contractor must pay self-employment taxes and provide own benefits",
+        "Kansas business licenses required for applicable trades",
+      ],
+      restrictions: [
+        "Kansas Department of Labor applies economic reality factors for unemployment insurance",
+        "Misclassification: employer may owe back UI taxes, workers' comp premiums, and civil penalties",
+        "IC cannot be treated as an employee in practice",
+        "Kansas Contractor Registration Act requires out-of-state contractors to register",
+        "Non-compete restrictions in IC agreements reviewed under common law reasonableness",
+      ],
+      faq: [
+        { question: "What test does Kansas use to classify workers?", answer: "Kansas uses the common law control test for most purposes: who controls how the work is done? For unemployment insurance, Kansas applies additional economic reality factors similar to the federal IRS test. Key factors: behavioral control (how work is performed), financial control (who bears risk and provides tools), and the type of relationship (permanency, integration into business)." },
+        { question: "What should a Kansas IC agreement include?", answer: "Include: scope of services and deliverables, payment terms, contractor's obligation to pay own taxes and insurance, IP assignment, confidentiality, no employee benefits, termination rights, indemnification, and dispute resolution (Kansas courts or arbitration). Avoid provisions that mandate specific working hours, exclusive service, or day-to-day control over the work." },
+        { question: "Are Kansas contractors required to have business licenses?", answer: "Kansas does not have a statewide general business license requirement, but licensed trades (electrical, plumbing, HVAC, contracting) require state licensing from the Kansas Department of Labor or applicable board. Many cities require business licenses for operations within their boundaries. Verify local requirements before contracting." },
+        { question: "What are Kansas's penalties for worker misclassification?", answer: "Misclassifying employees as ICs can result in: back unemployment insurance contributions with interest and penalties, workers' comp premium assessments, IRS payroll tax assessments with penalties, and civil liability for denial of employee benefits (health insurance, retirement). Kansas has increased scrutiny of construction and healthcare industries for misclassification." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Kansas commercial leases governed by general contract law; no specific commercial landlord-tenant act",
+        "Written lease required for terms over one year (Statute of Frauds, K.S.A. §33-106)",
+        "Both parties must sign; corporate tenants should have authority verified by resolution",
+        "Specify permitted use, rent, term, renewal options, and responsibility for operating expenses",
+        "Disclose known material defects to the commercial tenant",
+      ],
+      restrictions: [
+        "No statutory cap on commercial security deposits in Kansas",
+        "Landlord must use judicial process (unlawful detainer) to evict — self-help prohibited",
+        "Net lease CAM charges should be defined with specificity to avoid disputes",
+        "Assignment and subletting require express permission — silence restricts neither",
+        "Personal guaranty often required for new businesses or LLCs with limited credit",
+      ],
+      faq: [
+        { question: "Does Kansas have a commercial landlord-tenant statute?", answer: "No. Kansas's landlord-tenant law (K.S.A. §58-2540 et seq.) applies only to residential properties. Commercial leases are governed entirely by general contract law. This gives both parties freedom to negotiate but also means nothing is implied — every right and remedy must be addressed expressly in the lease." },
+        { question: "How are disputes in Kansas commercial leases typically resolved?", answer: "Most Kansas commercial leases include a dispute resolution clause: first mediation (before a neutral mediator), then arbitration or litigation in Wichita or Kansas City courts. Kansas courts enforce choice-of-law and choice-of-forum clauses. For fast injunctive relief (e.g., to stop a holdover tenant), Kansas courts have emergency procedures." },
+        { question: "What is a typical security deposit for Kansas commercial space?", answer: "Commercial security deposits in Kansas typically range from 1–3 months' rent, depending on the tenant's creditworthiness, lease term, and property type. Landlords may also require a letter of credit or personal guaranty in lieu of or in addition to a cash deposit. Negotiate deposit return conditions, including interest on large deposits held for multiple years." },
+        { question: "Can a Kansas commercial tenant sublease space without the landlord's consent?", answer: "Under common law, a tenant may sublease unless the lease expressly prohibits it. Kansas courts enforce 'no sublease without consent' clauses strictly. If the clause says 'consent not to be unreasonably withheld,' the landlord must have a legitimate reason to refuse (e.g., creditworthiness, incompatible use). Negotiate subletting rights upfront, not during the tenancy." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Kansas UCC Article 3 (K.S.A. §84-3-101 et seq.) governs negotiable instruments",
+        "Note must be in writing, signed by maker, and contain unconditional promise to pay sum certain",
+        "Consumer loan interest cap: 15% per year unless a higher rate is agreed in writing (K.S.A. §16-207)",
+        "Commercial notes: no usury cap between businesses if rate is in writing",
+        "UCC-1 financing statement filed with Kansas Secretary of State for personal property security interests",
+      ],
+      restrictions: [
+        "Consumer usury: 15% statutory rate; parties may contract for higher if in writing (K.S.A. §16-207)",
+        "Agricultural loans have special rules under Kansas law; consult an attorney for farm lending",
+        "Confession of judgment clauses are disfavored in Kansas courts",
+        "Prepayment penalty must be expressly stated; courts construe ambiguities against lender",
+        "Kansas mortgage foreclosure is judicial — minimum 2–3 months; right of redemption applies in some cases",
+      ],
+      faq: [
+        { question: "What is Kansas's interest rate cap on loans?", answer: "K.S.A. §16-207 sets a general usury cap of 15% per year but allows parties to contract in writing for any higher rate. For consumer loans, the contracting exception still applies but is scrutinized more closely. Commercial loans between businesses may set any rate if agreed in writing. Always express the rate as an annual percentage rate (APR) to avoid ambiguity." },
+        { question: "How do I perfect a security interest in Kansas?", answer: "For personal property, file a UCC-1 Financing Statement with the Kansas Secretary of State (online, $10–$20 fee). For real property, record a mortgage with the Register of Deeds in the county where the property is located. Perfect promptly — Kansas uses a first-to-file system for priority among competing creditors." },
+        { question: "What is the statute of limitations on promissory notes in Kansas?", answer: "Kansas Code §60-512 provides a 5-year statute of limitations for written contracts, including promissory notes. The clock starts running from the date of default or the maturity date of the note. After 5 years, the debt is time-barred unless the borrower made a partial payment or written acknowledgment restarting the limitations period." },
+        { question: "Can I collect attorney's fees on a Kansas promissory note?", answer: "Attorney's fees clauses in promissory notes are enforceable in Kansas if expressly stated. Without a fee clause, each party bears their own fees under the American Rule. Include language such as: 'In the event of default, the maker shall pay the lender's reasonable attorney's fees and costs incurred in collection.' Courts will award fees up to the amount stated as reasonable." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; letter must identify parties, factual basis, legal claim, and demand",
+        "Set a clear deadline (10–30 days) for payment or action",
+        "Send via certified mail with return receipt for proof of delivery",
+        "Kansas small claims court (up to $4,000) typically expects prior demand",
+        "For consumer protection claims, reference Kansas Consumer Protection Act (K.S.A. §50-623 et seq.)",
+      ],
+      restrictions: [
+        "Cannot threaten criminal charges to extract civil payment (criminal coercion under K.S.A. §21-5428)",
+        "Debt collection demand letters must comply with FDCPA and Kansas Consumer Protection Division rules",
+        "Must accurately represent the legal status of the claim and applicable deadlines",
+        "Do not threaten legal action that you are not prepared or authorized to take",
+        "Attorney-represented parties: direct communications to their attorney only",
+      ],
+      faq: [
+        { question: "What is Kansas's small claims court limit?", answer: "Kansas small claims court (handled by District Magistrate Courts) handles disputes up to $4,000. Filing fees are approximately $50–$75. The process is informal and usually resolved within 30–45 days. A pre-suit demand letter is expected and may resolve the case. Attorneys may appear but are not required in small claims." },
+        { question: "How should I structure a Kansas demand letter?", answer: "Include: (1) your name and address; (2) recipient's name and address; (3) date; (4) factual summary of the dispute (dates, contract terms, what went wrong); (5) legal basis (breach of contract, KCPA violation, etc.); (6) exact amount demanded; (7) deadline for response (14–30 days); and (8) consequence of non-response (filing in District Court or arbitration)." },
+        { question: "Can a demand letter support a Kansas Consumer Protection Act claim?", answer: "Yes. The Kansas Consumer Protection Act (K.S.A. §50-623 et seq.) prohibits deceptive consumer practices and allows consumers to recover the greater of actual damages or $10,000, plus attorney's fees. Sending a demand letter referencing the KCPA before filing creates a record of notice. The Kansas AG may also pursue enforcement on behalf of consumers." },
+        { question: "What if the debtor is a business registered in Kansas?", answer: "For business debtors, send the demand letter to the registered agent on file with the Kansas Secretary of State (searchable at sos.ks.gov) and to any known officers. This ensures proper notice. For corporate debtors, a letter to the registered agent starts the formal notice clock. If no response, file in the appropriate Kansas District Court." },
+      ],
+    },
+  },
+  // ── Kentucky ──────────────────────────────────────────────────────────────
+  kentucky: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Kentucky Uniform Residential Landlord and Tenant Act (KRS §383.505–383.715), adopted in most but not all counties",
+        "Security deposit: no statutory cap, but must be returned within 30 days of termination with itemized deductions (KRS §383.580)",
+        "Landlord must maintain premises fit for human habitation and in compliance with housing codes (KRS §383.595)",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing property) is prohibited — formal court process required (KRS §383.655)",
+        "Landlord may not retaliate against tenant for reporting code violations or exercising statutory rights (KRS §383.705)",
+        "URLTA applies only in counties that have adopted it — rural counties may operate under common law landlord-tenant rules",
+      ],
+      noticeRequirements: "7 days' written notice for nonpayment of rent before eviction filing; 14 days' notice to remedy lease violations. Month-to-month tenancy: 30 days' notice to terminate.",
+      faq: [
+        { question: "Does Kentucky's landlord-tenant law apply statewide?", answer: "No. The Kentucky Uniform Residential Landlord and Tenant Act (KRS §383.505 et seq.) applies only in counties that have formally adopted it, including Jefferson, Fayette, and several others. In non-adopting counties, common law governs the landlord-tenant relationship." },
+        { question: "How long does a Kentucky landlord have to return the security deposit?", answer: "Under KRS §383.580, the landlord must return the security deposit — with an itemized written statement of any deductions — within 30 days of lease termination. Failure to comply can result in the landlord forfeiting the right to keep any portion." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Kentucky Limited Liability Company Act (KRS Chapter 275); operating agreement is central to member governance",
+        "Articles of Organization filed with the Kentucky Secretary of State; $40 filing fee",
+        "Annual report required by June 30 each year; $15 filing fee",
+      ],
+      restrictions: [
+        "Kentucky does not recognize series LLCs — separate entities required for liability segregation",
+        "Professional LLCs (attorneys, physicians, CPAs) must obtain approval from the applicable licensing board",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing Kentucky entities",
+      ],
+      faq: [
+        { question: "Is a Kentucky LLC operating agreement required?", answer: "Kentucky law does not require LLCs to adopt a written operating agreement, but KRS §275.003 allows the operating agreement to override most default statutory rules. For multi-member LLCs, a written agreement is essential to avoid disputes over management, distributions, and member exit." },
+        { question: "What are Kentucky's annual LLC filing requirements?", answer: "All Kentucky LLCs must file an Annual Report with the Secretary of State by June 30 each year. The fee is $15. Failure to file results in an administrative dissolution notice, after which the LLC has 60 days to cure before dissolution takes effect." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Kentucky is an at-will employment state — either party may terminate the relationship at any time for any lawful reason",
+        "Kentucky minimum wage: $7.25/hour (mirrors federal rate); no state-level increase has been enacted",
+        "Kentucky Right-to-Work law (KRS §336.130): employees cannot be required to join or pay dues to a union as a condition of employment",
+      ],
+      restrictions: [
+        "Non-compete agreements are governed by common law only — Kentucky has no statute specifically regulating them; courts apply a reasonableness test for scope, duration, and geography",
+        "Kentucky Civil Rights Act (KRS §344) prohibits discrimination based on race, color, religion, sex, national origin, age (40+), and disability",
+        "Overtime governed by the federal FLSA — Kentucky has no additional daily overtime requirement",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Kentucky?", answer: "Yes, under common law, Kentucky courts enforce non-compete agreements that are reasonable in geographic scope, duration, and the interests they protect. There is no statute specifically governing them, so courts have wide discretion — agreements narrowly tailored to protect trade secrets or customer relationships are most likely to be upheld." },
+        { question: "Does Kentucky have its own minimum wage?", answer: "No. Kentucky's minimum wage matches the federal rate of $7.25/hour. The state legislature has declined to raise it above the federal floor, and Kentucky preempts local governments from setting higher minimum wages." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Kentucky Uniform Power of Attorney Act (KRS §457.010 et seq.), effective 2021",
+        "Must be signed by the principal and acknowledged before a notary public to be valid (KRS §457.050)",
+        "A durable POA must expressly state that it survives the principal's incapacity (KRS §457.060)",
+      ],
+      restrictions: [
+        "Agent may not make gifts to themselves or others unless the power is expressly granted in the POA document",
+        "Healthcare decisions require a separate Health Care Surrogate designation or Living Will Directive under KRS §311.621 et seq.",
+        "A POA used in real estate transactions must be recorded with the county clerk where the property is located",
+      ],
+      faq: [
+        { question: "Does a Kentucky power of attorney need to be notarized?", answer: "Yes. Under KRS §457.050, a POA must be signed by the principal and acknowledged before a notary public. Unlike some states, Kentucky's Uniform POA Act does not require witnesses in addition to a notary, but many financial institutions prefer both." },
+        { question: "What is a durable power of attorney in Kentucky?", answer: "A durable POA remains in effect if the principal later becomes incapacitated. Under KRS §457.060, the document must include language such as 'This power of attorney shall not be affected by subsequent incapacity of the principal.' Without this clause, the POA terminates upon incapacity." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by KRS §394.010 et seq. (Kentucky Descent and Distribution statutes)",
+        "Must be in writing, signed by the testator (or at testator's direction), and witnessed by at least two credible witnesses who sign in the testator's presence",
+        "Testator must be at least 18 years old (or lawfully married) and of sound mind",
+      ],
+      restrictions: [
+        "Kentucky has a unique inheritance tax — it taxes beneficiaries (not the estate) at rates up to 16% depending on the heir's relationship to the decedent; spouses, parents, and children are exempt",
+        "Surviving spouse has the right to elect against the will and take the statutory share (KRS §392.080)",
+        "Holographic wills (entirely handwritten and signed) are valid in Kentucky without witnesses (KRS §394.040)",
+      ],
+      faq: [
+        { question: "Does Kentucky have an inheritance tax or estate tax?", answer: "Kentucky imposes an inheritance tax on beneficiaries who receive property from a decedent's estate — it is one of only a handful of states to do so. Close relatives (Class A: spouse, parents, children, siblings) are fully exempt. More distant relatives and unrelated heirs pay rates from 4% to 16% depending on kinship." },
+        { question: "Are handwritten wills valid in Kentucky?", answer: "Yes. Kentucky recognizes holographic wills under KRS §394.040. A holographic will must be entirely in the testator's own handwriting and signed by the testator — no witnesses are required. However, holographic wills are more vulnerable to authenticity challenges during probate." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Kentucky has no statute governing non-compete agreements — enforceability is determined entirely by common law",
+        "Courts require the agreement to protect a legitimate business interest: trade secrets, customer relationships, or specialized training",
+        "The agreement must be in writing, signed by the employee, and supported by adequate consideration (new job offer or a separate payment)",
+      ],
+      restrictions: [
+        "Kentucky courts apply a strict reasonableness test — overly broad geographic scope or duration renders the agreement unenforceable, and Kentucky does not allow blue-penciling in most cases",
+        "A duration of 1–2 years is generally considered reasonable; geographic scope must align with where the employee actually worked or had customer contact",
+        "Non-competes imposed after hire without additional consideration (pay raise, promotion, or other benefit) may be unenforceable",
+      ],
+      faq: [
+        { question: "Can Kentucky courts rewrite an overly broad non-compete?", answer: "Generally no. Unlike Alabama, Kentucky courts have historically been reluctant to blue-pencil (modify and save) a non-compete that is found to be unreasonably broad. Courts are more likely to void the entire agreement. Drafting narrow, defensible restrictions from the outset is critical." },
+        { question: "What makes a non-compete enforceable in Kentucky?", answer: "A Kentucky non-compete must: protect a legitimate business interest, be reasonable in duration (typically 1–2 years) and geographic scope, be supported by adequate consideration, and not impose undue hardship on the employee. Courts weigh all four factors and will void agreements that fail the overall reasonableness test." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Kentucky uses a multi-factor common law right-of-control test for worker classification; no ABC test applies",
+        "Contractors must comply with Kentucky tax obligations including state income tax (flat 4.5% rate) and self-employment tax",
+        "IRS Form 1099-NEC required for payments of $600 or more annually to any contractor",
+      ],
+      restrictions: [
+        "Misclassifying employees as contractors exposes hiring parties to Kentucky workers' compensation liability, unemployment insurance assessments, and back taxes",
+        "Kentucky workers' compensation (KRS §342) applies to employees — contractors are excluded unless reclassified; verify industry-specific rules for construction",
+        "Contractors providing professional services (legal, medical, engineering) must hold valid Kentucky licenses",
+      ],
+      faq: [
+        { question: "How does Kentucky classify workers as employees vs. independent contractors?", answer: "Kentucky applies the common law right-of-control test: courts look at who controls how the work is performed (not just the result), who supplies tools, whether the relationship is permanent, and whether the work is integral to the business. No single factor is decisive." },
+        { question: "What Kentucky taxes apply to independent contractors?", answer: "Independent contractors in Kentucky owe a flat 4.5% state income tax on net self-employment income, plus federal self-employment tax. Many Kentucky cities also impose an occupational license tax (typically 1–2% of earned income) that contractors must file and remit locally." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Commercial leases in Kentucky are governed by common law and the Uniform Commercial Code where goods are involved — no dedicated commercial landlord-tenant statute",
+        "Leases exceeding one year must be in writing to satisfy Kentucky's Statute of Frauds (KRS §371.010)",
+        "Leases of three or more years should be recorded with the county clerk to be enforceable against third parties (KRS §382.270)",
+      ],
+      restrictions: [
+        "No statutory security deposit cap or mandatory return deadline for commercial leases — terms are purely contractual",
+        "Assignment and subletting require express landlord consent unless the lease provides otherwise",
+        "Kentucky sales tax (6%) does not apply to commercial rent, but landlords should verify local occupational taxes that may apply to rental income",
+      ],
+      faq: [
+        { question: "Is a written commercial lease required in Kentucky?", answer: "Any commercial lease with a term exceeding one year must be in writing under KRS §371.010 (Statute of Frauds). Oral leases for terms of one year or less are enforceable, but not advisable for commercial tenancies given the complexity of the obligations involved." },
+        { question: "What remedies does a Kentucky commercial landlord have for tenant default?", answer: "Kentucky common law and the lease agreement itself define landlord remedies for default. Typical remedies include: termination and re-entry, acceleration of rent, recovery of unpaid rent and costs, and damages for lost future rent. Self-help re-entry is generally not permitted without a clear lease provision and proper notice." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Kentucky's Uniform Commercial Code, Article 3 (KRS §355.3-101 et seq.)",
+        "Must contain an unconditional promise to pay a fixed sum of money, be signed by the maker, and be payable to an identified person or bearer",
+        "Interest rate must be stated; if omitted, Kentucky's legal rate of 8% per annum applies (KRS §360.010)",
+      ],
+      restrictions: [
+        "Usury: Kentucky caps consumer loan interest at the greater of 19% per annum or the prevailing federal discount rate plus 4% (KRS §360.010); violations render excess interest void",
+        "Statute of limitations: 5 years for written contracts (KRS §413.120) — claims on the note must be filed within 5 years of default",
+        "Notes secured by real property must comply with Kentucky mortgage recording requirements and be recorded with the county clerk",
+      ],
+      faq: [
+        { question: "What is the maximum interest rate on a Kentucky promissory note?", answer: "For consumer loans, Kentucky law (KRS §360.010) caps interest at 19% per annum or the federal discount rate plus 4%, whichever is greater. Commercial loans between businesses are generally not subject to the usury ceiling and may negotiate higher rates." },
+        { question: "How long do I have to enforce a Kentucky promissory note?", answer: "The statute of limitations for written contracts in Kentucky is 5 years from the date the cause of action accrues (typically the date of default). After 5 years, the debt is time-barred. Partial payments or written acknowledgments of the debt may restart the limitations period." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Kentucky statute mandates a pre-suit demand letter for most civil claims",
+        "Claims under the Kentucky Consumer Protection Act (KRS §367.220) may benefit from pre-suit notice to trigger settlement obligations",
+        "Letter should clearly state: the legal basis for the claim, the amount demanded, supporting facts, and a firm response deadline (10–30 days)",
+      ],
+      restrictions: [
+        "Threatening criminal prosecution solely to coerce payment on a civil debt may constitute extortion under KRS §514.080",
+        "Misrepresenting legal consequences or the sender's authority violates the FDCPA (federal) and Kentucky Consumer Protection Act",
+        "Statute of limitations: 5 years for written contracts, 5 years for open accounts — a demand letter does not toll the limitations period",
+      ],
+      faq: [
+        { question: "Is a demand letter required before filing suit in Kentucky?", answer: "Not for most civil claims. Kentucky courts do not require a pre-suit demand letter, but sending one demonstrates good faith, establishes the date of notice, and often prompts settlement without litigation. For claims under consumer protection statutes, a demand letter may strengthen your case." },
+        { question: "Can I recover attorney's fees in a Kentucky demand letter?", answer: "Only if a contract clause or specific statute authorizes it. Kentucky follows the American Rule — each party bears their own attorney's fees absent a contractual provision or statutory basis. Future contracts should include an attorney's fees clause to preserve this remedy." },
+      ],
+    },
+  },
+
+  // ── Louisiana ─────────────────────────────────────────────────────────────
+  louisiana: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by Louisiana Civil Code arts. 2668–2729 (Lease) — Louisiana is a civil law state, not a common law state, so lease interpretation follows the Civil Code",
+        "Security deposit: capped at one month's rent for most residential leases; must be returned within one month after the tenant vacates (La. R.S. §9:3251)",
+        "Landlord must deliver the premises in good condition and maintain them throughout the tenancy (La. Civ. Code art. 2696)",
+      ],
+      restrictions: [
+        "A landlord cannot lock out a tenant or remove their belongings without a court order — Louisiana courts strictly prohibit self-help eviction",
+        "Retaliation against tenants for exercising legal rights is prohibited under Louisiana law",
+        "No state rent control law in Louisiana — landlords may raise rents between lease terms with proper notice",
+      ],
+      noticeRequirements: "5 days' written notice for nonpayment of rent (La. Code Civ. Proc. art. 4701). Month-to-month tenancy: 10 days' notice to terminate (La. Civ. Code art. 2728). Week-to-week tenancy: 5 days' notice.",
+      faq: [
+        { question: "How is Louisiana's landlord-tenant law different from other states?", answer: "Louisiana is the only U.S. state based on the civil law tradition (derived from the Napoleonic Code) rather than common law. Lease rights and obligations are governed by the Louisiana Civil Code rather than a landlord-tenant act, and some common law concepts (like implied warranty of habitability as developed in other states) are replaced by Civil Code provisions." },
+        { question: "What is Louisiana's security deposit limit?", answer: "Louisiana R.S. §9:3251 caps residential security deposits at one month's rent. The landlord must return the deposit — with a written itemized statement of any deductions — within one month after the tenant vacates. Failure to return within one month can result in the landlord owing the tenant double the deposit amount plus attorney's fees." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Louisiana Limited Liability Company Law (La. R.S. §12:1301 et seq.); operating agreement is called the 'articles of organization' plus an internal 'member agreement'",
+        "Articles of Organization filed with the Louisiana Secretary of State; filing fee is $100 for domestic LLCs",
+        "Annual report required with the Secretary of State; $30 filing fee; due by the anniversary month",
+      ],
+      restrictions: [
+        "Louisiana is a community property state — a member's ownership interest acquired during marriage may be treated as community property, which can affect transfers and dissolution",
+        "Professional LLCs (licensed attorneys, physicians, CPAs) must obtain approval from the applicable Louisiana licensing board",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from all registered Louisiana entities",
+      ],
+      faq: [
+        { question: "How does Louisiana's community property law affect LLC membership?", answer: "Because Louisiana is a community property state, a membership interest acquired during marriage may be considered community property belonging to both spouses. This means a spouse who did not sign the operating agreement may have an economic interest in the LLC. Members should address this in the operating agreement and consider spousal consent provisions." },
+        { question: "Does Louisiana require an operating agreement for an LLC?", answer: "Louisiana law does not mandate a written operating agreement, but the LLC Law (La. R.S. §12:1301 et seq.) defaults apply when there is no agreement. A written operating agreement is essential for multi-member LLCs to establish custom rules for management, voting, profit allocation, and member exits." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Louisiana is an at-will employment state — employment may be terminated at any time by either party absent a contract or statutory protection",
+        "Louisiana minimum wage matches the federal rate of $7.25/hour — the state has no separate minimum wage law",
+        "Overtime follows the federal FLSA: 1.5× pay for hours over 40 per week",
+      ],
+      restrictions: [
+        "Non-compete agreements are strictly governed by La. R.S. §23:921 — they are void unless they meet exact statutory requirements: must specify a geographic area by parish(es), duration cannot exceed 2 years, and must be in writing signed by the employee",
+        "Louisiana law prohibits discrimination in employment based on race, color, religion, sex, national origin, age, and disability under the Louisiana Employment Discrimination Law (La. R.S. §23:301 et seq.)",
+        "Employers may not retaliate against employees who report workplace safety violations or exercise rights under Louisiana workers' compensation law",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Louisiana?", answer: "Louisiana takes one of the strictest approaches in the country to non-competes. Under La. R.S. §23:921, non-competes are void unless they meet precise statutory requirements: the agreement must specify the geographic area (by parish or parishes), limit the restriction to no more than 2 years, be in writing, and be signed by the employee. Courts do not blue-pencil non-competes in Louisiana — a defective agreement is simply void." },
+        { question: "What protections do Louisiana employees have against wrongful termination?", answer: "Louisiana is an at-will employment state, so employees can generally be terminated without cause. However, termination based on protected characteristics (race, sex, religion, etc.) violates the Louisiana Employment Discrimination Law. Additionally, La. R.S. §23:964 protects employees from retaliation for exercising labor rights, and workers' compensation retaliation is prohibited under La. R.S. §23:1361." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by Louisiana Civil Code arts. 2985–3034 (Mandate) — Louisiana uses the civil law concept of 'mandate' rather than the common law 'power of attorney,' though the practical function is the same",
+        "Must be in writing and signed by the principal (mandant); notarization is required for a mandate that is to be recorded or used in real estate transactions",
+        "A mandate to sell, acquire, or mortgage immovable property (real estate) must be executed before a notary and two witnesses in authentic act form",
+      ],
+      restrictions: [
+        "A mandate terminates by operation of law upon the principal's death or interdiction (legal incapacity), unless it is expressly made durable ('procuration durable') under La. Civ. Code art. 3026",
+        "The mandatary (agent) cannot make donations from the principal's property unless expressly authorized",
+        "Healthcare decisions require a separate Louisiana Advance Directive (Medical POA) under La. R.S. §40:1159.1 et seq.",
+      ],
+      faq: [
+        { question: "What is the difference between a mandate and a power of attorney in Louisiana?", answer: "Because Louisiana follows the civil law tradition, the legal instrument granting another person authority to act on your behalf is called a 'mandate' (mandant = principal, mandatary = agent). The concept is functionally identical to a power of attorney, but the governing rules come from the Louisiana Civil Code rather than a common law POA statute." },
+        { question: "Does a Louisiana mandate need to be notarized?", answer: "For ordinary purposes, a written mandate signed by the principal is sufficient. However, if the mandate will be used for real estate transactions (buying, selling, mortgaging), it must be executed as an 'authentic act' — before a notary and two witnesses — to be recorded and effective against third parties under La. Civ. Code art. 1833." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by Louisiana Civil Code arts. 1570–1755 and Louisiana Code of Civil Procedure; Louisiana recognizes two main will forms: notarial (witnessed before a notary) and olographic (entirely handwritten)",
+        "Notarial will: must be signed in the presence of a notary and two witnesses; notary reads or the testator acknowledges the contents",
+        "Testator must be at least 16 years old and of sound mind; testamentary capacity requirements follow the Civil Code",
+      ],
+      restrictions: [
+        "Louisiana's forced heirship law (La. Civ. Code art. 1493) protects children 23 or younger, or permanently incapacitated children of any age — these 'forced heirs' are entitled to a 'legitime' (reserved portion) that cannot be defeated by the will",
+        "The legitime is one-fourth of the estate if there is one forced heir, or one-half if there are two or more forced heirs",
+        "Louisiana has no state estate tax and no state inheritance tax — estates pass without state-level death tax",
+      ],
+      faq: [
+        { question: "What is Louisiana's forced heirship law?", answer: "Louisiana's forced heirship (La. Civ. Code art. 1493) is a unique civil law doctrine requiring that children aged 23 or younger (or permanently incapacitated children of any age) receive a minimum share of the estate called the 'legitime.' The reserved portion is one-fourth of the estate for one forced heir and one-half for two or more. A will that attempts to disinherit a forced heir can be partially nullified." },
+        { question: "Are handwritten wills valid in Louisiana?", answer: "Yes. Louisiana recognizes the olographic testament under La. Civ. Code art. 1575: it must be entirely written, dated, and signed in the testator's own handwriting — no notary or witnesses are required. However, probating an olographic will requires the testimony of two witnesses familiar with the testator's handwriting, making notarial wills more practical for most estates." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Strictly governed by La. R.S. §23:921 — non-compete agreements are void as a matter of public policy unless they satisfy all statutory requirements",
+        "Must be in writing and signed by the employee or independent contractor",
+        "Must specify the exact geographic area of restriction by parish or parishes (or specified parishes in multiple states for multi-state businesses)",
+      ],
+      restrictions: [
+        "Maximum duration is 2 years from the date of termination of the employment or business relationship — courts cannot extend this period",
+        "Louisiana courts do not blue-pencil or modify non-competes — a non-compete that fails to meet statutory requirements is entirely void",
+        "Non-solicitation of customers is valid without geographic limitation only if the employer can identify specific customers by name in the agreement or through an attached list",
+      ],
+      faq: [
+        { question: "What happens if a Louisiana non-compete is too broad?", answer: "Unlike most states, Louisiana courts will not modify (blue-pencil) an overbroad non-compete to make it enforceable — they simply declare it void. This means a poorly drafted non-compete provides the employer with no protection at all. Strict compliance with La. R.S. §23:921 is essential." },
+        { question: "Can a Louisiana non-compete cover the entire state?", answer: "Yes, if all parishes of Louisiana are specified in the agreement, a statewide restriction is permissible under §23:921. However, the parishes must be listed specifically — a vague reference to 'the state of Louisiana' without naming parishes may be deemed insufficient. Courts interpret non-compete statutes narrowly in Louisiana." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Louisiana uses a multi-factor economic reality/right-of-control test for worker classification; no ABC test is used",
+        "Contractors must obtain their own Louisiana state and local business licenses; the Secretary of State maintains a contractor registration system",
+        "IRS Form 1099-NEC required for payments of $600 or more per year to unincorporated contractors",
+      ],
+      restrictions: [
+        "Construction industry: Louisiana Contractor Licensing Board (LCLB) requires contractors performing work over $75,000 to be licensed; subcontractors must verify hiring party's license status",
+        "Misclassifying employees as contractors exposes businesses to Louisiana workers' compensation liability and unemployment insurance assessments",
+        "Louisiana's workers' compensation law (La. R.S. §23:1021 et seq.) applies to employees — contractors are excluded but may be reclassified if the economic reality test is not met",
+      ],
+      faq: [
+        { question: "How does Louisiana determine if a worker is an independent contractor?", answer: "Louisiana uses an economic reality/right-of-control test examining: who controls how and when the work is performed, who provides tools and equipment, whether the worker can profit or lose money on the engagement, whether services are integral to the business, and the permanency of the relationship. No single factor is conclusive." },
+        { question: "Do independent contractors in Louisiana pay state income tax?", answer: "Yes. Louisiana has a graduated state income tax (up to 4.25% for income over $50,000). Independent contractors must file and pay quarterly estimated Louisiana income tax on their self-employment income. Many Louisiana municipalities also impose an occupational license tax on earned income." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Louisiana commercial leases are governed by the Civil Code lease provisions (La. Civ. Code arts. 2668–2729) — not a separate commercial landlord-tenant statute",
+        "Leases of immovable property (real estate) for more than one year must be in writing; leases for three or more years must be recorded in the parish conveyance records to be enforceable against third parties",
+        "The lease must describe the leased premises with sufficient certainty to identify them (La. Civ. Code art. 2670)",
+      ],
+      restrictions: [
+        "Louisiana does not impose a security deposit cap for commercial leases — terms are purely contractual",
+        "Landlord's privilege (lien) on tenant's movables (equipment, inventory) in the leased premises arises automatically by law under La. Civ. Code art. 2707 — this can be waived by written agreement",
+        "Assignment or subletting requires lessor consent unless the lease expressly permits it",
+      ],
+      faq: [
+        { question: "What is the Louisiana lessor's privilege and how does it affect commercial tenants?", answer: "Under La. Civ. Code art. 2707, a Louisiana landlord (lessor) automatically has a privilege (lien) over a tenant's movable property located in the leased premises to secure unpaid rent. This means the landlord has priority over other creditors for those assets. Tenants with significant equipment or inventory should negotiate a waiver of this privilege in the lease." },
+        { question: "Does Louisiana tax commercial rent?", answer: "Louisiana does not impose a statewide sales tax on commercial rent. However, some Louisiana parishes and municipalities may impose local occupational taxes or license fees on businesses operating within their jurisdiction. Parties should verify local tax obligations for the specific leased location." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Louisiana's Commercial Laws (La. R.S. §10:3-101 et seq.), which adopts UCC Article 3 with Louisiana-specific modifications",
+        "Must contain: an unconditional promise to pay, a fixed sum of money, be signed by the maker, and be payable to an identified person or bearer",
+        "Interest rate must be stated; the legal rate of interest in Louisiana is 3.5% per annum (or the federal judicial rate) if no rate is specified (La. Civ. Code art. 2924)",
+      ],
+      restrictions: [
+        "Louisiana usury law (La. R.S. §9:3500 et seq.) caps consumer loan interest rates — excess interest is treated as a reduction of principal",
+        "Statute of limitations: 3 years for most promissory notes under Louisiana law (La. Civ. Code art. 3494) — shorter than most states",
+        "Notes secured by Louisiana real estate must be executed in authentic act form (before a notary and two witnesses) to be recorded and effective against third parties",
+      ],
+      faq: [
+        { question: "What is Louisiana's statute of limitations for promissory notes?", answer: "Louisiana has a shorter limitations period than most states — actions on promissory notes prescribe (expire) in 3 years from the date the obligation is due under La. Civ. Code art. 3494. Creditors must act promptly. Acknowledgment of the debt in writing can restart the prescriptive period." },
+        { question: "What is the legal interest rate for a Louisiana promissory note?", answer: "If no interest rate is specified, Louisiana Civil Code art. 2924 provides that the legal rate of interest applies. The legal rate is equal to the greater of 3.5% per annum or the federal judicial rate. Parties may contract for higher rates subject to applicable usury limits." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Louisiana statute requires a pre-suit demand letter for most civil claims",
+        "Exception: under La. R.S. §51:1409 (Louisiana Unfair Trade Practices Act), a 30-day written demand is required before filing a private LUPTA lawsuit",
+        "Letter should identify the legal basis for the claim, specify the amount demanded, attach supporting documentation, and set a firm deadline (typically 10–30 days)",
+      ],
+      restrictions: [
+        "Threatening criminal prosecution or false imprisonment solely to collect a debt may constitute extortion under Louisiana law",
+        "Misrepresenting legal rights or the sender's authority violates the FDCPA (federal) and Louisiana Unfair Trade Practices Act (La. R.S. §51:1401 et seq.)",
+        "Prescription (statute of limitations): 3 years for promissory notes, 10 years for written contracts (La. Civ. Code art. 3499), 1 year for delictual (tort) claims — a demand letter does not toll prescription",
+      ],
+      faq: [
+        { question: "Is a demand letter required before suing in Louisiana?", answer: "Not for most civil actions. However, if you intend to bring a claim under the Louisiana Unfair Trade Practices Act (La. R.S. §51:1409), a written demand giving the defendant 30 days to tender a reasonable settlement is a prerequisite to filing suit. For standard contract or debt claims, a pre-suit demand is advisable but not mandatory." },
+        { question: "What is Louisiana's prescription period for contract claims?", answer: "Louisiana uses the term 'prescription' rather than 'statute of limitations.' Written contracts prescribe in 10 years (La. Civ. Code art. 3499). Open accounts and oral contracts prescribe in 3 years. Sending a demand letter does not toll (stop) the prescriptive period — you must file suit or obtain a written acknowledgment of the debt." },
+      ],
+    },
+  },
+
+  // ── Maine ─────────────────────────────────────────────────────────────────
+  maine: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by Maine's landlord-tenant statutes, 14 M.R.S. §§6001–6046 and the Rental Property Act, 14 M.R.S. §6021 et seq.",
+        "Security deposit: capped at 2 months' rent for most residential tenancies (14 M.R.S. §6032); must be returned within 30 days of termination with itemized deductions",
+        "Landlord must maintain the premises fit for human habitation, in compliance with housing codes, and make necessary repairs (14 M.R.S. §6021)",
+      ],
+      restrictions: [
+        "Self-help eviction is illegal — Maine landlords must use the formal forcible entry and detainer (FED) court process (14 M.R.S. §6001)",
+        "Landlord may not retaliate against tenants within 6 months of a good-faith housing code complaint or exercise of legal rights (14 M.R.S. §6001(3))",
+        "Discrimination in rental housing is prohibited by Maine Human Rights Act based on race, sex, religion, national origin, familial status, disability, sexual orientation, and gender identity",
+      ],
+      noticeRequirements: "7 days' written notice for nonpayment of rent before eviction filing (14 M.R.S. §6002). 30 days' notice to terminate a month-to-month tenancy. Landlord must provide 24 hours' notice before entry except in emergencies.",
+      faq: [
+        { question: "What is the security deposit limit in Maine?", answer: "Maine caps security deposits at 2 months' rent (14 M.R.S. §6032). The landlord must return the deposit within 30 days of the tenant vacating, along with an itemized written statement of any deductions. Failure to comply entitles the tenant to double the wrongfully withheld amount plus attorney's fees." },
+        { question: "How much notice must a Maine landlord give before entering?", answer: "Maine law (14 M.R.S. §6025) requires landlords to give at least 24 hours' advance notice before entering a rented dwelling for non-emergency inspections or repairs. Entry without proper notice is a violation of the tenant's right to quiet enjoyment and can support a claim for damages." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Maine Limited Liability Company Act (31 M.R.S. §1501 et seq.); operating agreement governs internal affairs",
+        "Certificate of Formation filed with the Maine Secretary of State; $175 filing fee for domestic LLCs",
+        "Annual report required by June 1 each year; $85 filing fee",
+      ],
+      restrictions: [
+        "Maine does not recognize series LLCs — each separate business unit must form its own LLC",
+        "Professional LLCs (attorneys, CPAs, physicians) must obtain approval from the applicable Maine licensing authority",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from other registered Maine entities",
+      ],
+      faq: [
+        { question: "What are the annual compliance requirements for a Maine LLC?", answer: "Maine LLCs must file an Annual Report with the Secretary of State by June 1 each year. The fee is $85. The report confirms the LLC's registered agent and principal office address. Failure to file results in administrative dissolution after proper notice." },
+        { question: "Does Maine require a written LLC operating agreement?", answer: "Maine law does not require a written operating agreement, but the Maine LLC Act allows the operating agreement to modify most default statutory rules. For multi-member LLCs, a written agreement is essential to establish custom profit-sharing, management, and exit provisions that override the statutory defaults." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Maine is an at-will employment state, but has some of the strongest employee protections in New England",
+        "Maine minimum wage: $14.15/hour (2024); increases annually with the CPI",
+        "Maine Earned Paid Leave law (26 M.R.S. §637): employers with 10 or more employees must provide 1 hour of paid leave for every 40 hours worked, up to 40 hours per year, for any reason",
+      ],
+      restrictions: [
+        "Non-compete agreements are banned for workers earning at or below $7.50 above the state minimum wage (26 M.R.S. §599-A); for higher earners, non-competes must be provided at least 3 business days before the start of employment or the signing of a new contract",
+        "Maine Human Rights Act prohibits employment discrimination based on race, color, sex, sexual orientation, gender identity, physical or mental disability, religion, ancestry, national origin, familial status, and age (40+)",
+        "Maine's ban-the-box law (26 M.R.S. §598-A) restricts employers from asking about criminal history before a conditional job offer is made",
+      ],
+      faq: [
+        { question: "When are non-compete agreements enforceable in Maine?", answer: "Under 26 M.R.S. §599-A, non-compete agreements are unenforceable against employees who earn at or below $7.50 per hour above the applicable minimum wage. For workers above that threshold, the non-compete must be provided at least 3 business days before employment begins. Maine courts also apply a reasonableness test on scope, duration, and geographic area." },
+        { question: "What is Maine's Earned Paid Leave law?", answer: "Maine's Earned Paid Leave law (26 M.R.S. §637), effective January 2021, requires employers with 10 or more employees to provide up to 40 hours of paid leave per year, accrued at 1 hour per 40 hours worked. Unlike most states, the leave can be used for any reason — not just illness or family care — making it one of the most flexible paid leave laws in the country." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by Maine's Uniform Power of Attorney Act (18-C M.R.S. §§5-901 to 5-955), which took effect as part of the Maine Uniform Probate Code in 2019",
+        "Must be signed by the principal and acknowledged before a notary public; no witness requirement for standard POAs",
+        "A durable POA must expressly state that it survives the principal's incapacity (18-C M.R.S. §5-904)",
+      ],
+      restrictions: [
+        "Agent may not make gifts to themselves or others unless the power is expressly granted; gifts in excess of the annual federal gift tax exclusion require specific authorization",
+        "Healthcare decisions require a separate Advance Health Care Directive under 18-C M.R.S. §§5-801 to 5-817",
+        "A POA used to convey real property must be recorded with the county Registry of Deeds where the property is located",
+      ],
+      faq: [
+        { question: "Does a Maine power of attorney need to be notarized?", answer: "Yes. Maine's Uniform POA Act (18-C M.R.S. §5-905) requires the principal's signature to be acknowledged before a notary public. Unlike some states, Maine does not require witnesses in addition to a notary for a standard financial POA, though witnesses may be advisable for larger transactions or where the principal's capacity might be questioned." },
+        { question: "Can a Maine POA authorize healthcare decisions?", answer: "No. Maine uses separate instruments for healthcare and financial decisions. A healthcare agent is appointed through a Maine Advance Health Care Directive under 18-C M.R.S. §5-801 et seq. A financial POA alone does not authorize the agent to make medical decisions." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Maine Probate Code (18-C M.R.S. §§2-501 to 2-523)",
+        "Must be in writing, signed by the testator (or at the testator's direction), and witnessed by at least two individuals who sign within a reasonable time after witnessing",
+        "Testator must be at least 18 years old and of sound mind; minors who are lawfully married may also execute a will",
+      ],
+      restrictions: [
+        "Maine imposes an estate tax on estates exceeding $6.8 million (2024); the rate is graduated up to 12% — Maine's exemption is significantly lower than the federal exemption, making state-level planning important for Maine residents",
+        "Surviving spouse has the right to the elective share (a portion of the augmented estate) under 18-C M.R.S. §2-202",
+        "Holographic wills (entirely handwritten and signed) are valid in Maine without witnesses under 18-C M.R.S. §2-502(b)",
+      ],
+      faq: [
+        { question: "Does Maine have an estate tax?", answer: "Yes. Maine imposes a state estate tax on estates exceeding $6.8 million (2024 exemption), at graduated rates up to 12%. This threshold is far below the federal estate tax exemption ($13.61 million for 2024), meaning many Maine estates that owe no federal estate tax will still owe Maine estate tax. Residents with substantial assets should plan accordingly." },
+        { question: "Are holographic wills valid in Maine?", answer: "Yes. Maine recognizes holographic wills under 18-C M.R.S. §2-502(b). The material portions of the will must be in the testator's own handwriting and the will must be signed. No witnesses are required for a holographic will, but they are more difficult to probate and more susceptible to challenges." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by 26 M.R.S. §599-A (enacted 2019) — one of the most restrictive non-compete statutes in the country",
+        "Must be in writing and signed by the employee; must state the specific geographic area, duration, and scope of prohibited activities",
+        "For workers above the wage threshold, the employer must provide the proposed non-compete at least 3 business days before the start of employment or signing of the contract",
+      ],
+      restrictions: [
+        "Non-compete agreements are void and unenforceable for employees earning at or below the applicable minimum wage plus $7.50 per hour",
+        "Maximum duration: Maine courts disfavor non-competes lasting more than 1 year; agreements exceeding 1 year face heightened scrutiny",
+        "Employers may not retaliate against an employee who refuses to sign a non-compete agreement (26 M.R.S. §599-A(4))",
+      ],
+      faq: [
+        { question: "Who is exempt from non-compete agreements in Maine?", answer: "Under 26 M.R.S. §599-A, any employee earning at or below the state minimum wage plus $7.50 per hour cannot be bound by a non-compete — it is void as a matter of law. This exempts a large portion of Maine's hourly workforce. Employers should calculate each employee's hourly rate carefully before seeking a non-compete." },
+        { question: "What must a Maine employer do before asking an employee to sign a non-compete?", answer: "If the non-compete is presented at or before the start of employment, Maine law requires the employer to provide the proposed agreement at least 3 business days in advance of the employment start date or the signing date, whichever comes first. This gives employees a meaningful opportunity to review and negotiate terms." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Maine uses a multi-factor right-of-control test for employment classification; no ABC test applies for all purposes",
+        "Contractors must comply with Maine income tax obligations — Maine has a graduated income tax up to 7.15% (one of the higher state rates in the U.S.)",
+        "IRS Form 1099-NEC required for payments of $600 or more annually to unincorporated contractors",
+      ],
+      restrictions: [
+        "Maine workers' compensation (39-A M.R.S. §101 et seq.) covers employees — misclassification as a contractor can result in substantial back liability and penalties",
+        "Construction industry contractors must be registered with the Maine Department of Labor and comply with workers' compensation insurance requirements (39-A M.R.S. §403)",
+        "Maine's unemployment insurance law applies an ABC-like test for UI purposes (26 M.R.S. §1043) — a worker presumed to be an employee unless the hiring party can satisfy all three prongs",
+      ],
+      faq: [
+        { question: "Does Maine use an ABC test for independent contractors?", answer: "Maine uses an ABC test specifically for unemployment insurance purposes under 26 M.R.S. §1043. A worker is presumed to be an employee for UI unless the employer can show: (A) the worker is free from direction and control, (B) the service is performed outside the usual course of business, and (C) the worker is customarily engaged in an independent trade or business. For other purposes (workers' comp, wage laws), a right-of-control test applies." },
+        { question: "What licenses do Maine independent contractors need?", answer: "Maine requires state licenses for many contractor categories including construction, electrical, plumbing, HVAC, and other trades. The Maine Department of Professional and Financial Regulation oversees most professional licenses. Contractors must verify applicable license requirements for their specific trade and municipality before commencing work." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Commercial leases in Maine are governed by common law and general contract principles — no dedicated commercial landlord-tenant statute",
+        "Leases exceeding one year must be in writing under Maine's Statute of Frauds (33 M.R.S. §51)",
+        "Leases for more than 2 years should be recorded in the county Registry of Deeds to be enforceable against subsequent purchasers and creditors",
+      ],
+      restrictions: [
+        "No statutory cap on security deposits or mandatory return deadline for commercial leases — terms are entirely contractual",
+        "Assignment and subletting require express landlord consent unless the lease expressly permits it",
+        "Maine does not impose a sales tax on commercial rent, but landlords should account for Maine's 5.5% sales tax on tangible goods sold at the leased premises",
+      ],
+      faq: [
+        { question: "Are commercial leases in Maine required to be in writing?", answer: "Any commercial lease for more than one year must be in writing to be enforceable under Maine's Statute of Frauds (33 M.R.S. §51). Oral leases for one year or less may be enforceable, but written agreements are always advisable for commercial tenancies to avoid disputes over terms." },
+        { question: "What should a Maine commercial lease include to protect the landlord?", answer: "A well-drafted Maine commercial lease should address: permitted use, rent escalation mechanics, tenant's obligation to maintain and repair, default and cure periods, landlord's remedies upon default (including re-entry), assignment restrictions, personal guarantee requirements, insurance obligations, and a clear holdover provision specifying the rent rate and tenancy type during holdover." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Maine's Uniform Commercial Code, Article 3 (11 M.R.S. §3-1101 et seq.)",
+        "Must contain an unconditional promise to pay a fixed amount of money, be signed by the maker, and be payable to a specified person or bearer",
+        "Interest rate should be clearly stated; Maine's statutory rate for prejudgment interest is set annually by the State Court Administrator",
+      ],
+      restrictions: [
+        "Maine consumer lending is regulated under the Maine Consumer Credit Code (9-A M.R.S.) — maximum interest rates apply to consumer credit transactions",
+        "Statute of limitations: 6 years for written contracts (14 M.R.S. §752), including promissory notes — claims must be filed within 6 years of default",
+        "Notes secured by real estate must be recorded with the county Registry of Deeds to create a perfected lien against the property",
+      ],
+      faq: [
+        { question: "What is the statute of limitations on a Maine promissory note?", answer: "Maine's Statute of Limitations for written contracts, including promissory notes, is 6 years from the date the cause of action accrues (typically the date of default) under 14 M.R.S. §752. A written acknowledgment of the debt or partial payment can restart the limitations period." },
+        { question: "Are there usury limits on Maine promissory notes?", answer: "Maine's consumer lending laws (9-A M.R.S.) impose interest rate caps on consumer credit transactions. Commercial loans between businesses generally are not subject to usury limits and may negotiate higher rates. Lenders making consumer loans should consult Maine's Consumer Credit Code to ensure compliance with applicable rate ceilings and disclosure requirements." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Maine has no general statute requiring a pre-suit demand letter for civil claims",
+        "Exception: before filing suit under the Maine Unfair Trade Practices Act (5 M.R.S. §213), plaintiffs must provide written notice to the defendant 30 days before filing, allowing an opportunity to settle",
+        "Letter should state: the legal basis for the claim, the amount demanded, a clear deadline for response (typically 14–30 days), and consequences of non-response",
+      ],
+      restrictions: [
+        "Threatening criminal prosecution solely to collect a civil debt may constitute extortion under Maine criminal law (17-A M.R.S. §355)",
+        "Misrepresenting the identity of the sender (e.g., falsely claiming to be an attorney) is prohibited under the FDCPA and Maine UTPA",
+        "Statute of limitations: 6 years for written contracts, 6 years for open accounts, 6 years for UCC notes — a demand letter does not toll the limitations period",
+      ],
+      faq: [
+        { question: "When must I send a demand letter before suing in Maine?", answer: "For most civil claims, no demand letter is required before filing suit in Maine. However, if you plan to bring a claim under the Maine Unfair Trade Practices Act (5 M.R.S. §213), the statute requires written notice to the defendant at least 30 days before filing, giving them a chance to tender a reasonable settlement." },
+        { question: "What court should I use in Maine if the debtor ignores my demand letter?", answer: "Maine Small Claims Court handles claims up to $6,000. The District Court handles claims up to $30,000. The Superior Court handles larger claims. If the debt is commercial and clearly established, a motion for summary judgment after filing may resolve the matter quickly without a full trial." },
+      ],
+    },
+  },
+
+  // ── Maryland ──────────────────────────────────────────────────────────────
+  maryland: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by Maryland's landlord-tenant law (Md. Code, Real Property §§8-101 to 8-604) and Baltimore City or county-specific codes where applicable",
+        "Security deposit: capped at 2 months' rent (Md. Real Property §8-203); landlord must pay interest on the deposit at 1.5% per year and return it within 45 days of termination with itemized deductions",
+        "Written lease must be provided to the tenant before occupancy if the term is 12 months or longer; landlord must provide a receipt for any security deposit paid",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing belongings) is illegal in Maryland — landlords must use the formal District Court eviction process",
+        "Landlord may not retaliate against tenants for reporting habitability defects or exercising statutory rights (Md. Real Property §8-208.1)",
+        "Baltimore City and Prince George's County have rent stabilization provisions — landlords in those jurisdictions should confirm current caps before setting rent increases",
+      ],
+      noticeRequirements: "10 days' written notice for nonpayment of rent before filing for eviction (Md. Real Property §8-401). One month's notice to terminate a month-to-month tenancy (Md. Real Property §8-402). Landlord must give reasonable notice before entry.",
+      faq: [
+        { question: "What is the security deposit limit in Maryland?", answer: "Maryland caps security deposits at 2 months' rent under Md. Real Property §8-203. The landlord must hold the deposit in a separate account, pay interest at 1.5% per year, and return it within 45 days of the tenancy ending, with an itemized written list of deductions. Failure to comply can entitle the tenant to up to 3 times the wrongfully withheld amount plus attorney's fees." },
+        { question: "Is interest required on a Maryland security deposit?", answer: "Yes. Maryland is one of the few states that requires landlords to pay interest on security deposits. The interest rate is 1.5% per year, calculated from the date the deposit was received. Interest must be paid or credited to the tenant when the deposit is returned at the end of the tenancy." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Maryland Limited Liability Company Act (Md. Corps. & Assocs. Code §4A-101 et seq.)",
+        "Articles of Organization filed with the Maryland State Department of Assessments and Taxation (SDAT); $100 filing fee",
+        "Maryland LLCs must file a Personal Property Return with SDAT by April 15 each year — this is separate from the formation documents and lists business personal property subject to the county personal property tax",
+      ],
+      restrictions: [
+        "Maryland does not impose a state-level annual report fee for LLCs (unlike most states), but the Personal Property Return is mandatory and failure to file results in forfeiture of the LLC's charter",
+        "Professional LLCs (attorneys, physicians, CPAs) must comply with licensing requirements of the applicable Maryland board",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing Maryland-registered entities",
+      ],
+      faq: [
+        { question: "Does Maryland require an annual report for LLCs?", answer: "Maryland does not require a traditional annual report for LLCs, but all Maryland LLCs with business personal property must file a Personal Property Return with SDAT by April 15 each year. Even LLCs with no personal property should file a return indicating $0 to remain in good standing. Failure to file results in forfeiture of the charter." },
+        { question: "How is a Maryland LLC taxed at the state level?", answer: "Maryland LLCs are pass-through entities for state income tax purposes. Members report their share of LLC income on their Maryland personal income tax returns at rates up to 5.75% (plus a local piggyback income tax typically ranging 2.25–3.2% depending on the county). Maryland also has an 8% corporate income tax on C corporations, making the LLC pass-through structure attractive for most small businesses." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Maryland is an at-will employment state with comprehensive statutory employee protections",
+        "Maryland minimum wage: $15.00/hour for employers with 15 or more employees; $14.00/hour for employers with fewer than 15 employees (2024); Montgomery County has a higher local minimum",
+        "Maryland Healthy Working Families Act: employers with 15+ employees must provide up to 40 hours of paid sick leave per year; employers with fewer than 15 must provide 40 hours of unpaid leave",
+      ],
+      restrictions: [
+        "Non-compete agreements are banned for employees earning less than $15 per hour or $31,200 per year under Md. Lab. & Emp. §3-716 (effective October 2019); for covered employees, non-compete clauses are void as a matter of law",
+        "Maryland Fair Employment Practices Act prohibits discrimination based on race, color, religion, sex, age, national origin, marital status, sexual orientation, gender identity, disability, and genetic information",
+        "Employers with 50+ employees must provide unpaid leave under the federal FMLA and Maryland's expanded FMLA (Md. Lab. & Emp. §3-1201 et seq.)",
+      ],
+      faq: [
+        { question: "Who is exempt from non-compete agreements in Maryland?", answer: "Under Md. Lab. & Emp. §3-716, effective October 1, 2019, non-compete and conflict of interest clauses are unenforceable against employees who earn $15 per hour or less (or $31,200 per year or less). For employees above that threshold, non-competes must still be reasonable in scope and duration to be enforceable." },
+        { question: "What are Maryland's paid sick leave requirements?", answer: "The Maryland Healthy Working Families Act requires employers with 15 or more employees to provide up to 40 hours of paid sick and safe leave per year, accrued at 1 hour for every 30 hours worked. Employers with fewer than 15 employees must provide up to 40 hours of unpaid earned sick leave. Leave may be used for illness, preventive care, or situations involving domestic violence or sexual assault." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Maryland General and Limited Power of Attorney Act (Md. Est. & Trusts Code §§17-101 to 17-204)",
+        "Must be signed by the principal and two witnesses; must also be acknowledged before a notary public",
+        "A durable POA must expressly state that it is not affected by the subsequent disability of the principal (Md. Est. & Trusts §17-105)",
+      ],
+      restrictions: [
+        "Witnesses cannot be: the agent, the agent's spouse, a heir of the principal, or a person who signed the POA on behalf of the principal",
+        "Agent may not make gifts exceeding the annual federal gift tax exclusion unless expressly authorized in the POA",
+        "Healthcare decisions require a separate Maryland Advance Directive under the Maryland Health Care Decisions Act (Md. Health-Gen. §§5-601 to 5-618)",
+      ],
+      faq: [
+        { question: "Does a Maryland power of attorney require both witnesses and a notary?", answer: "Yes. Maryland's POA Act (Md. Est. & Trusts §17-110) requires the principal's signature to be witnessed by two adults and acknowledged before a notary public. This dual requirement makes Maryland's execution formalities stricter than many other states. Using both witnesses and a notary is essential for the POA to be accepted by financial institutions and courts." },
+        { question: "Can a Maryland POA be used immediately or does it spring into effect later?", answer: "A Maryland POA is effective immediately upon execution unless the document expressly provides that it takes effect upon a future date or event (a 'springing' POA). If you want the POA to become effective only upon your incapacity, the document must clearly specify the triggering condition and how incapacity is to be determined." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Maryland Estates and Trusts Code (Md. Est. & Trusts §§4-101 to 4-411)",
+        "Must be in writing, signed by the testator, and witnessed by at least two credible witnesses who sign in the presence of the testator",
+        "Testator must be at least 18 years old (or lawfully married) and of sound mind",
+      ],
+      restrictions: [
+        "Maryland imposes an estate tax on estates exceeding $5 million (2024 exemption) at graduated rates up to 16%; estates above this threshold must file a Maryland estate tax return within 9 months of death",
+        "Surviving spouse and children have statutory forced share rights under the Maryland intestate and elective share provisions (Md. Est. & Trusts §3-203)",
+        "Maryland does not recognize holographic wills — all wills must be signed in the presence of two witnesses",
+      ],
+      faq: [
+        { question: "Does Maryland have an estate tax?", answer: "Yes. Maryland imposes a state estate tax on estates exceeding $5 million (2024 threshold), with rates up to 16%. Maryland is also one of only two states (along with New Jersey) that historically had both an estate tax and an inheritance tax, though Maryland's inheritance tax applies only to property passing to certain beneficiaries. Careful estate planning is important for Maryland residents with substantial assets." },
+        { question: "Are handwritten wills valid in Maryland?", answer: "No. Maryland does not recognize holographic (handwritten) wills. All wills must be in writing (printed or typed is fine), signed by the testator, and witnessed by at least two adults who sign in the testator's presence. A holographic will executed in Maryland would be invalid." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by common law with statutory limitations under Md. Lab. & Emp. §3-716",
+        "Must be in writing, signed by the employee, and supported by adequate consideration (employment itself is sufficient consideration when presented at hiring)",
+        "Must protect a legitimate business interest such as trade secrets, specialized training, or customer relationships",
+      ],
+      restrictions: [
+        "Void and unenforceable for employees earning $15 per hour or less (or $31,200 per year or less) — this income threshold applies automatically and cannot be waived by the employee",
+        "For covered workers, the duration should not exceed 1–2 years and geographic scope must be tied to where the employee actually worked or had customer contact",
+        "Maryland courts apply a reasonableness test and may modify overbroad restrictions rather than voiding them entirely in some cases",
+      ],
+      faq: [
+        { question: "What is the income threshold for non-competes in Maryland?", answer: "Maryland Lab. & Emp. §3-716 makes non-compete and conflict of interest agreements unenforceable for employees earning $15 per hour or less ($31,200 per year). These employees cannot waive this protection. Employers should review each employee's compensation before including non-compete clauses." },
+        { question: "What duration is considered reasonable for a Maryland non-compete?", answer: "Maryland courts generally consider 1 to 2 years to be a reasonable duration for non-compete agreements. Courts also look at geographic scope (must be tied to where the employee worked), the breadth of prohibited activities, and whether the restriction genuinely protects a legitimate business interest. Courts may blue-pencil — reduce — an unreasonably long period in appropriate cases." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Maryland uses a multi-factor economic reality/right-of-control test for general worker classification",
+        "For unemployment insurance purposes, Maryland applies an ABC test — a worker is presumed to be an employee unless all three prongs are met (Md. Lab. & Emp. §8-205)",
+        "IRS Form 1099-NEC required for payments of $600 or more per year to unincorporated contractors",
+      ],
+      restrictions: [
+        "Misclassifying employees as contractors exposes employers to Maryland workers' compensation liability, unemployment insurance assessments, and unpaid wage claims under the Maryland Wage Payment and Collection Law",
+        "Construction industry: Maryland Home Improvement Commission licensing requirements apply to contractors performing home improvement work over $500",
+        "Maryland contractors must obtain a Maryland trader's license if selling goods, and may owe Maryland sales tax on applicable transactions",
+      ],
+      faq: [
+        { question: "How does Maryland classify workers for unemployment insurance purposes?", answer: "Maryland uses an ABC test for unemployment insurance (Md. Lab. & Emp. §8-205). A worker is presumed to be an employee unless: (A) the worker is free from direction and control, (B) the service is performed outside the usual course of the business, and (C) the worker is customarily engaged in an independently established trade. Failing any prong means the worker is an employee for UI purposes." },
+        { question: "What taxes do Maryland independent contractors owe?", answer: "Maryland independent contractors owe federal and Maryland state income tax on their net self-employment income. Maryland's income tax rate ranges from 2% to 5.75%, plus a county income tax (piggyback) typically between 2.25% and 3.2%. Quarterly estimated tax payments are required to avoid underpayment penalties." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Maryland commercial leases are governed by common law and general contract principles — no dedicated commercial landlord-tenant statute",
+        "Leases exceeding 7 years must be recorded in the county land records to be enforceable against third parties (Md. Real Property §3-101)",
+        "Leases exceeding 1 year must be in writing to satisfy Maryland's Statute of Frauds (Md. Cts. & Jud. Proc. §5-101)",
+      ],
+      restrictions: [
+        "No statutory security deposit cap for commercial leases — terms are entirely contractual",
+        "Maryland imposes a 6% sales and use tax; certain commercial services and tangible goods sold at the leased premises are taxable",
+        "Landlord's right to distrain (seize tenant property for unpaid rent) has been significantly limited by Maryland courts — contractual remedies are preferred",
+      ],
+      faq: [
+        { question: "When must a Maryland commercial lease be recorded?", answer: "Maryland law (Md. Real Property §3-101) requires leases for more than 7 years to be recorded in the county land records to be enforceable against subsequent purchasers and creditors. Shorter-term leases do not need to be recorded, but recording is always advisable for long-term commercial tenancies to protect the tenant's possessory interest." },
+        { question: "What are standard commercial lease types used in Maryland?", answer: "Maryland commercial tenants encounter gross leases (landlord pays operating expenses), net leases (tenant pays some operating expenses), double-net (tenant pays taxes and insurance), and triple-net or NNN leases (tenant pays taxes, insurance, and maintenance). The specific allocation of expenses should be clearly stated in the lease — Maryland courts enforce lease terms as written." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Maryland's Uniform Commercial Code, Article 3 (Md. Com. Law §§3-101 to 3-605)",
+        "Must be a written, unconditional promise to pay a fixed sum of money, signed by the maker, and payable to an identified person or bearer",
+        "Interest rate should be expressly stated; Maryland's legal rate of interest is 6% per annum where no rate is specified (Md. Com. Law §12-102)",
+      ],
+      restrictions: [
+        "Consumer lending: Maryland's Consumer Loan Law (Md. Com. Law §12-301 et seq.) caps interest rates for consumer loans — rates above the applicable cap are void as to excess interest",
+        "Statute of limitations: 3 years for a negotiable instrument (promissory note) under Md. Cts. & Jud. Proc. §5-101, as modified by UCC §3-118 which provides 6 years from the due date for demand notes and 6 years from the due date for other notes",
+        "Notes secured by Maryland real property must be recorded with the county land records to create an enforceable lien",
+      ],
+      faq: [
+        { question: "What is the statute of limitations on a Maryland promissory note?", answer: "Under Maryland UCC §3-118 (Md. Com. Law §3-118), the statute of limitations for a promissory note is 6 years from the due date or, for demand instruments, 6 years from the date the instrument is issued. Maryland's general 3-year statute of limitations (Md. Cts. §5-101) does not override the UCC's specific 6-year period for negotiable instruments." },
+        { question: "What is the maximum legal interest rate for a Maryland consumer promissory note?", answer: "For consumer loans, Maryland's Consumer Loan Law (Md. Com. Law §12-306) imposes rate ceilings that vary by loan type and amount. Consumer credit transactions are also subject to the Maryland Consumer Protection Act. Federally chartered banks are exempt from state usury limits. Parties to commercial loans between businesses generally may negotiate any rate without usury restriction." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Maryland statute requires a pre-suit demand letter for most civil claims",
+        "Exception: Maryland Consumer Protection Act (Md. Com. Law §13-401 et seq.) claims — while not strictly required, a pre-suit demand is standard practice and can trigger the 30-day good faith settlement period",
+        "The letter should clearly identify: the basis for the claim, the legal authority, the amount demanded, and a firm deadline for response (typically 14–30 days)",
+      ],
+      restrictions: [
+        "Threatening criminal action solely to compel payment on a civil debt may constitute extortion under Md. Crim. Law §3-705",
+        "Misrepresenting the identity or authority of the sender violates the FDCPA and Maryland Consumer Debt Collection Act (Md. Com. Law §14-201 et seq.)",
+        "Statute of limitations: 3 years for general civil claims; 6 years for promissory notes — a demand letter does not toll the limitations period",
+      ],
+      faq: [
+        { question: "What court should I use in Maryland after a demand letter is ignored?", answer: "Maryland District Court handles claims up to $30,000 (including small claims up to $5,000 in the District Court's small claims division). Circuit Court handles larger claims. For straightforward debt collection, filing in District Court with a motion for summary judgment based on written evidence is often the fastest path to judgment." },
+        { question: "Can I recover attorney's fees in Maryland if I send a demand letter?", answer: "Only if a contract clause or specific Maryland statute authorizes it. Maryland follows the American Rule — each party pays their own fees. However, certain statutes (e.g., Maryland Consumer Protection Act, Maryland Consumer Debt Collection Act) provide for attorney's fees in successful claims. Include a fee-shifting clause in future contracts to preserve this remedy." },
+      ],
+    },
+  },
+
+  // ── Mississippi ───────────────────────────────────────────────────────────
+  mississippi: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Mississippi has limited statewide landlord-tenant legislation — the primary framework is the Mississippi Residential Landlord and Tenant Act (Miss. Code §89-8-1 et seq.), which applies only in counties with populations of 100,000 or more",
+        "Security deposit: Mississippi has no statutory cap on the amount of the security deposit for residential leases; landlords may set any amount; deposit must be returned within 45 days of termination with itemized deductions (Miss. Code §89-8-21)",
+        "Landlord must maintain premises in habitable condition in counties where the Landlord and Tenant Act applies (Miss. Code §89-8-23)",
+      ],
+      restrictions: [
+        "Self-help eviction is prohibited — landlords must use the formal unlawful entry and detainer process through the justice court",
+        "Retaliation against tenants for reporting code violations or exercising legal rights is prohibited under §89-8-17 in applicable counties",
+        "In counties not subject to the Landlord and Tenant Act, common law governs the landlord-tenant relationship, providing fewer tenant protections",
+      ],
+      noticeRequirements: "3 days' written notice to vacate for nonpayment of rent before filing eviction in justice court (Miss. Code §89-7-27). 30 days' notice to terminate a month-to-month tenancy.",
+      faq: [
+        { question: "Does Mississippi have a statewide landlord-tenant law?", answer: "Mississippi's Residential Landlord and Tenant Act (Miss. Code §89-8-1 et seq.) applies only in counties with populations of 100,000 or more. In smaller counties, the common law governs, which generally provides fewer tenant protections. Landlords and tenants in smaller counties should rely more heavily on the written lease agreement to establish rights and obligations." },
+        { question: "Is there a security deposit limit in Mississippi?", answer: "No. Mississippi has no statutory cap on residential security deposits. However, deposits must be returned within 45 days of the tenancy ending in counties where the Landlord and Tenant Act applies, with an itemized statement of deductions. Landlords who fail to return deposits within the statutory period may owe damages." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Mississippi Limited Liability Company Act (Miss. Code §79-29-101 et seq.)",
+        "Certificate of Formation filed with the Mississippi Secretary of State; $50 filing fee — one of the lowest in the country",
+        "Annual report required with the Secretary of State; $0 filing fee (no annual report fee for Mississippi LLCs)",
+      ],
+      restrictions: [
+        "Mississippi does not recognize series LLCs — separate entities are required for liability segregation between business units",
+        "Professional LLCs (attorneys, physicians, CPAs) must comply with applicable Mississippi licensing board requirements",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing Mississippi-registered entities",
+      ],
+      faq: [
+        { question: "How much does it cost to form an LLC in Mississippi?", answer: "Mississippi has one of the lowest LLC formation fees in the country — $50 to file the Certificate of Formation with the Secretary of State. There is currently no annual report fee for Mississippi LLCs, though annual reports are still required to keep the LLC in good standing. This makes Mississippi an attractive state for small business formation." },
+        { question: "Is a written operating agreement required in Mississippi?", answer: "Mississippi law does not require LLCs to adopt a written operating agreement, but Miss. Code §79-29-123 allows the operating agreement to modify most default statutory rules. Without a written agreement, all governance defaults to the Mississippi LLC Act, which may not reflect the members' intentions. A written agreement is especially important for multi-member LLCs." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Mississippi is a strict at-will employment state — employment may be terminated by either party at any time for any lawful reason, with very limited exceptions",
+        "Mississippi minimum wage matches the federal rate of $7.25/hour — Mississippi has no state minimum wage law",
+        "Mississippi is a Right-to-Work state (Miss. Code §71-1-47) — employees cannot be required to join or pay dues to a union as a condition of employment",
+      ],
+      restrictions: [
+        "Non-compete agreements are not governed by statute in Mississippi — enforceability is determined entirely by common law; courts apply a reasonableness test for scope, duration, and geography",
+        "Mississippi has no state wage and hour law separate from the federal FLSA — federal overtime rules (1.5× for hours over 40/week) apply",
+        "Mississippi Human Rights Act prohibits discrimination in employment based on race, color, religion, sex, national origin, and age (40+)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Mississippi?", answer: "Yes, under common law. Mississippi courts enforce non-compete agreements that are reasonable in scope, duration, and geographic area, and that protect a legitimate business interest such as trade secrets or customer relationships. Courts apply a strict reasonableness test and will void — rather than modify — agreements that are too broad. Typical enforceable durations are 1–2 years." },
+        { question: "Does Mississippi have a state income tax on wages?", answer: "Mississippi is phasing out its state income tax on wages. The tax rate on earned income dropped to 4% in 2023 and is scheduled to decrease to 3% by 2025 and eventually to 0% under legislation enacted in 2022. Investment income and other types of income remain subject to Mississippi income tax during the phase-out period." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by Mississippi's Uniform Durable Power of Attorney Act (Miss. Code §87-3-101 et seq.)",
+        "Must be signed by the principal and acknowledged before a notary public to be valid",
+        "A durable POA must expressly state that it is not affected by the subsequent incapacity of the principal (Miss. Code §87-3-7)",
+      ],
+      restrictions: [
+        "Agent may not make gifts to themselves or others unless expressly authorized in the POA document",
+        "Healthcare decisions require a separate Mississippi Advance Health-Care Directive (Miss. Code §41-41-201 et seq.)",
+        "A POA used in real property transactions must be recorded in the county deed records where the property is located",
+      ],
+      faq: [
+        { question: "Does a Mississippi power of attorney need to be notarized?", answer: "Yes. Under Mississippi's durable POA statutes, the principal's signature must be acknowledged before a notary public to create a valid power of attorney. Some financial institutions may also request witnesses. Notarization is particularly important for POAs that will be used in real estate transactions or recorded in public records." },
+        { question: "What is a springing power of attorney in Mississippi?", answer: "A springing POA becomes effective only upon the occurrence of a specified event — typically the principal's incapacity. Mississippi law permits this structure, but the triggering event must be clearly defined in the document. Springing POAs are more complex to administer because third parties must verify that the trigger has occurred before accepting the agent's authority." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Mississippi Uniform Probate Code (Miss. Code §91-5-1 et seq.)",
+        "Must be in writing, signed by the testator (or at the testator's direction in the testator's presence), and witnessed by at least two witnesses who sign in the presence of the testator",
+        "Testator must be at least 18 years old (or lawfully married or emancipated) and of sound mind",
+      ],
+      restrictions: [
+        "Mississippi has no state estate tax and no state inheritance tax — estates pass without Mississippi-level death taxes, making Mississippi one of the most tax-favorable states for wealth transfer",
+        "Surviving spouse has the right to elect against the will and take a statutory share of the estate (Miss. Code §91-5-25)",
+        "Holographic wills (entirely handwritten and signed) are valid in Mississippi without witnesses (Miss. Code §91-5-1)",
+      ],
+      faq: [
+        { question: "Does Mississippi have an estate tax or inheritance tax?", answer: "No. Mississippi imposes neither a state estate tax nor a state inheritance tax. Assets passing from a Mississippi decedent are subject only to the federal estate tax (which applies to estates over $13.61 million in 2024). This makes Mississippi one of the most favorable states for estate planning from a tax perspective." },
+        { question: "Are handwritten wills valid in Mississippi?", answer: "Yes. Mississippi recognizes holographic wills under Miss. Code §91-5-1. The will must be entirely in the testator's own handwriting and signed by the testator. No witnesses or notarization are required. However, holographic wills are more difficult to probate (two witnesses to the testator's handwriting must testify) and are more susceptible to authenticity challenges." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Mississippi has no statute specifically governing non-compete agreements — enforceability is governed entirely by common law",
+        "Must be in writing, signed by the employee or contractor, and supported by adequate consideration (employment at hiring is sufficient consideration)",
+        "Must protect a legitimate business interest, such as trade secrets, confidential client relationships, or specialized training provided by the employer",
+      ],
+      restrictions: [
+        "Mississippi courts apply a strict reasonableness test and will not blue-pencil (modify) overbroad non-competes — if the agreement is unreasonably broad, it is void in its entirety",
+        "Duration of 1–2 years is generally considered reasonable; longer periods face heightened scrutiny",
+        "Geographic scope must be reasonable and tied to where the employee actually worked or had meaningful customer contact",
+      ],
+      faq: [
+        { question: "Will a Mississippi court modify an overbroad non-compete?", answer: "Generally no. Mississippi courts historically have refused to blue-pencil or modify non-compete agreements found to be unreasonably broad. Instead, an overbroad non-compete is void entirely. This means an employer who drafts an overly broad agreement is left with no protection at all. Non-competes in Mississippi must be carefully and narrowly drafted from the outset." },
+        { question: "What business interests can a Mississippi non-compete protect?", answer: "Mississippi courts recognize legitimate business interests including: trade secrets and confidential proprietary information, established customer relationships and goodwill, specialized training or knowledge provided exclusively by the employer, and protection against employees using employer resources to compete unfairly. General skills and knowledge the employee had before the job are not protectable." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Mississippi uses a multi-factor common law right-of-control test for worker classification — no ABC test applies",
+        "Contractors must comply with Mississippi state tax obligations; during the income tax phase-out period, self-employment income may still be subject to Mississippi income tax on non-wage income",
+        "IRS Form 1099-NEC required for payments of $600 or more per year to unincorporated contractors",
+      ],
+      restrictions: [
+        "Misclassifying employees as contractors exposes businesses to Mississippi workers' compensation liability and federal and state employment tax assessments",
+        "Mississippi workers' compensation (Miss. Code §71-3-1 et seq.) applies to employers with 5 or more employees — contractors are excluded but may be reclassified upon audit",
+        "Construction contractors in Mississippi must be licensed through the Mississippi State Board of Contractors for projects over $50,000",
+      ],
+      faq: [
+        { question: "How does Mississippi determine whether a worker is an employee or independent contractor?", answer: "Mississippi applies the common law right-of-control test, examining: who controls how and when the work is performed, who owns tools and equipment, whether the worker can work for multiple clients, whether the work is integral to the hiring party's business, and the permanency of the relationship. No single factor is determinative, but control over the manner of work is most important." },
+        { question: "What license do Mississippi construction contractors need?", answer: "Contractors performing construction work on projects with a total cost exceeding $50,000 must be licensed by the Mississippi State Board of Contractors (Miss. Code §73-13-1 et seq.). Subcontractors should verify that the general contractor holds a valid license before beginning work. Unlicensed contractors may be unable to enforce payment claims." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Mississippi commercial leases are governed by common law and general contract principles — there is no dedicated commercial landlord-tenant statute",
+        "Leases exceeding one year must be in writing under Mississippi's Statute of Frauds (Miss. Code §15-3-1)",
+        "Commercial leases of real property may be recorded in the county chancery clerk's office to protect the tenant's possessory interest against third parties",
+      ],
+      restrictions: [
+        "No statutory security deposit cap or mandatory return deadline for commercial leases — all terms are contractual",
+        "Mississippi imposes a 7% sales tax — the highest general sales tax rate in the country — which applies to tangible goods sold at commercial premises; landlords and tenants should address sales tax obligations in the lease",
+        "Assignment and subletting require express landlord consent unless the lease expressly permits it",
+      ],
+      faq: [
+        { question: "What is Mississippi's commercial landlord remedy for tenant default?", answer: "Mississippi's commercial landlord remedies are primarily defined by the lease agreement and common law. Typical remedies include: termination and re-entry, acceleration of remaining rent, recovery of unpaid rent and costs, and damages for lost future rent reduced by reasonable mitigation. Mississippi common law requires landlords to make reasonable efforts to mitigate damages after termination." },
+        { question: "Does Mississippi's sales tax affect commercial leases?", answer: "Mississippi imposes a 7% sales tax on the sale of tangible personal property and certain services, but generally does not impose sales tax on commercial rent itself. However, any goods or tangible personal property sold by the tenant at the leased premises are subject to the 7% rate, and the lease should allocate responsibility for collecting and remitting sales tax appropriately." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Mississippi's Uniform Commercial Code, Article 3 (Miss. Code §75-3-101 et seq.)",
+        "Must contain an unconditional promise to pay a fixed sum of money, be signed by the maker, and be payable to an identified person or bearer",
+        "Interest rate should be clearly stated; Mississippi's legal rate of interest is 8% per annum where no rate is agreed (Miss. Code §75-17-1)",
+      ],
+      restrictions: [
+        "Mississippi usury law: consumer loans are subject to rate limits under Miss. Code §75-17-1; the maximum rate for consumer loans is the greater of 10% per annum or 5% above the federal discount rate for consumer credit — excess interest is void",
+        "Statute of limitations: 3 years for written contracts (Miss. Code §15-1-49), including promissory notes — creditors must file suit within 3 years of default",
+        "Notes secured by Mississippi real estate must be recorded with the county chancery clerk to create a perfected lien",
+      ],
+      faq: [
+        { question: "What is the statute of limitations on a Mississippi promissory note?", answer: "Mississippi's statute of limitations for written contracts, including promissory notes, is 3 years from the date the cause of action accrues (typically the date of default) under Miss. Code §15-1-49. This is shorter than many states. A written acknowledgment of the debt or a partial payment may restart the limitations period." },
+        { question: "What is Mississippi's maximum interest rate for consumer loans?", answer: "Under Miss. Code §75-17-1, the maximum lawful interest rate for consumer loans in Mississippi is the greater of 10% per annum or 5% above the prevailing federal discount rate. Interest charged above this ceiling is void and uncollectable. Commercial loans between businesses may negotiate higher rates without violating Mississippi usury law." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Mississippi statute requires a pre-suit demand letter for most civil claims",
+        "A demand letter is strongly advisable to establish a record of notice, the date of the demand, and the creditor's good-faith attempt to resolve the dispute before litigation",
+        "The letter should clearly state: the factual and legal basis for the claim, the specific dollar amount demanded, a firm response deadline (typically 10–30 days), and the consequences of non-response (filing suit)",
+      ],
+      restrictions: [
+        "Threatening criminal prosecution solely to collect a civil debt may constitute extortion under Miss. Code §97-3-82",
+        "Misrepresenting legal rights, the sender's identity, or the consequences of non-payment violates the FDCPA (federal) and Mississippi Consumer Protection Act (Miss. Code §75-24-1 et seq.)",
+        "Statute of limitations: 3 years for written contracts and promissory notes; 3 years for open accounts — a demand letter does not toll the limitations period",
+      ],
+      faq: [
+        { question: "Is a demand letter required before filing suit in Mississippi?", answer: "Not for most civil claims. Mississippi courts do not require a formal pre-suit demand letter for general contract or debt actions. However, sending a demand letter is standard practice, demonstrates good faith, often prompts settlement, and creates an important record of when the debtor was first put on notice of the claim." },
+        { question: "What court handles small claims in Mississippi?", answer: "Mississippi justice courts handle small claims up to $3,500. County and circuit courts handle larger claims. For straightforward commercial debt cases, filing in justice court is the fastest and least expensive option. If the debtor ignores a properly served justice court complaint, the court may enter a default judgment within 30 days." },
+      ],
+    },
+  },
+  missouri: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Missouri Residential Landlord-Tenant Law (Mo. Rev. Stat. §441.005 et seq.); lease must identify the landlord and premises",
+        "No statutory cap on security deposits, but courts apply common law unreasonableness standards and damages must be actual",
+        "Landlord must return security deposit (with itemized deductions) within 30 days of tenancy end (§535.300)",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing belongings) is prohibited — formal unlawful detainer required",
+        "Retaliatory eviction against tenants who report housing code violations is prohibited under §441.880",
+        "Late fees are enforceable only if specified in the lease; courts scrutinize excessive late charges",
+      ],
+      noticeRequirements: "30-day written notice required to terminate a month-to-month tenancy; 10 days' notice for nonpayment of rent before eviction filing under §535.010",
+      faq: [
+        { question: "Is there a security deposit limit in Missouri?", answer: "Missouri has no statutory cap on security deposits, but landlords must return deposits within 30 days with an itemized statement. Courts can award damages for unreasonable withholding." },
+        { question: "How does eviction work in Missouri?", answer: "Missouri landlords must serve proper notice (10 days for nonpayment, 30 days for month-to-month termination), then file an unlawful detainer action in the circuit court. A hearing is typically scheduled within 10–15 days of filing." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Missouri LLC Act (Mo. Rev. Stat. §347.010 et seq.); Articles of Organization filed with the Secretary of State for a $50 fee",
+        "Missouri requires an annual registration report with a $45 fee, due by the end of the anniversary month of formation",
+        "Registered agent with a Missouri street address required; agent must be listed in Articles of Organization",
+      ],
+      restrictions: [
+        "Operating agreement cannot eliminate personal liability for intentional misconduct or knowing violation of law (§347.088)",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and must be distinguishable from existing entities",
+        "Professional LLCs providing licensed services (law, medicine) must comply with applicable licensing board rules",
+      ],
+      faq: [
+        { question: "How much does it cost to form an LLC in Missouri?", answer: "Articles of Organization cost $50 to file online with the Missouri Secretary of State. An annual registration report is due each year with a $45 fee." },
+        { question: "Does Missouri require a written operating agreement?", answer: "Missouri does not mandate a written operating agreement, but without one the default statutory rules under §347.010 et seq. govern all internal affairs — making a written agreement essential for any multi-member LLC." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Missouri is an at-will employment state; contracts should include an explicit at-will clause or clearly define any for-cause termination standard",
+        "Missouri became a right-to-work state in 2017 (Amendment 1 repealed the RTW law, but courts upheld the 2017 law); union membership cannot be required as a condition of employment",
+        "Missouri minimum wage: $12.30/hour in 2024, increasing annually; Kansas City and St. Louis have higher local minimums",
+      ],
+      restrictions: [
+        "Missouri has no statewide paid sick leave or paid family leave mandate — address leave policies contractually",
+        "Non-compete agreements are governed by common law; courts apply a reasonableness test — geographic scope and duration must be no greater than necessary to protect a legitimate business interest",
+        "Wage discrimination based on sex is prohibited under the Missouri Equal Pay Act (§290.400 et seq.)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Missouri?", answer: "Yes. Missouri courts enforce non-competes under common law if they are reasonable in duration, geographic scope, and scope of prohibited activity, and protect a legitimate interest such as trade secrets or customer relationships." },
+        { question: "What is Missouri's minimum wage?", answer: "Missouri's minimum wage is $12.30/hour in 2024 (increasing annually under Amendment 2 from 2018). Tipped employees have a lower base rate. Kansas City's minimum wage is higher; check local ordinances." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Missouri Durable Power of Attorney Act (Mo. Rev. Stat. §404.700 et seq.); must be signed before a notary public",
+        "Two witnesses are required if the principal is in a health care facility, assisted living, or similar setting (§404.705)",
+        "To be durable, the POA must include language stating it survives the principal's incapacity (§404.705(3))",
+      ],
+      restrictions: [
+        "Agent may not make gifts to themselves unless expressly authorized in the document",
+        "Healthcare decisions require a separate Missouri Durable Power of Attorney for Health Care (§404.800 et seq.) — a financial POA does not cover medical decisions",
+        "Real estate transactions using a POA require the instrument to be recorded in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does a Missouri power of attorney need to be notarized?", answer: "Yes. Under §404.705, a Missouri durable power of attorney must be signed and acknowledged before a notary public to be valid. Two witnesses are also required if signed in a health care or assisted living facility." },
+        { question: "Can one POA cover both financial and medical decisions in Missouri?", answer: "No. Missouri uses separate documents — a Durable Power of Attorney for financial/property matters under §404.700 and a Durable Power of Attorney for Health Care under §404.800. Both should be executed as part of a complete estate plan." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Must be signed by the testator and attested by two or more credible witnesses in the testator's presence (Mo. Rev. Stat. §474.320)",
+        "Witnesses must be 18+ and should not be named beneficiaries to avoid a potential conflict affecting their bequest",
+        "Holographic wills (entirely in testator's handwriting and signed) are valid in Missouri under §474.320(2)",
+      ],
+      restrictions: [
+        "Missouri has a spousal elective share — a surviving spouse may elect against the will to receive a statutory share of the augmented estate (§474.160)",
+        "Pretermitted (omitted) children — children born or adopted after will execution — may receive an intestate share unless the will expressly disinherits them",
+        "Missouri small estate affidavit procedure applies to estates under $40,000 (§473.097), avoiding full probate",
+      ],
+      faq: [
+        { question: "How many witnesses are required for a Missouri will?", answer: "Two credible witnesses must sign the will in the testator's presence. Witnesses who are also beneficiaries are not automatically disqualified, but their bequest may be reduced to what they would receive under intestacy." },
+        { question: "Does a Missouri will need to be notarized?", answer: "Notarization is not required for validity, but a self-proved will (with a notarized affidavit under §474.337) eliminates the need for witness testimony in probate and speeds up the process." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Missouri has no non-compete statute — enforceability is governed entirely by common law",
+        "Courts require the agreement to protect a legitimate business interest (trade secrets, customer relationships, specialized training) beyond mere competition",
+        "Duration must be reasonable — Missouri courts generally accept up to 2 years; geographic scope must match the employer's actual market area",
+      ],
+      restrictions: [
+        "Courts will not enforce non-competes that are broader than necessary — overbroad agreements are narrowed ('blue-penciled') or voided entirely depending on the court",
+        "Non-competes do not apply to independent contractors without explicit contractual inclusion; confirm employment vs. contractor status",
+        "Missouri courts have increasingly scrutinized non-competes for low-wage workers — minimal consideration beyond at-will employment may not suffice",
+      ],
+      faq: [
+        { question: "Will Missouri courts enforce a non-compete agreement?", answer: "Yes, if the agreement is reasonable in scope, duration, and geography, and protects a legitimate business interest. Missouri courts may 'blue-pencil' (narrow) an overly broad non-compete rather than void it entirely." },
+        { question: "What consideration is required for a Missouri non-compete?", answer: "A new employee's initial hire is sufficient consideration. For existing employees, some additional benefit (raise, promotion, signing bonus) beyond continued at-will employment is advisable to ensure enforceability." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Missouri applies the IRS common law control test and the economic reality test to distinguish contractors from employees",
+        "Agreement must clearly define the contractor's independent control over work methods, schedule, and tools to support classification",
+        "Contractors must obtain their own business licenses and handle self-employment taxes; agreement should specify tax responsibility",
+      ],
+      restrictions: [
+        "Missouri has no state ABC test like California — but misclassification can trigger back taxes, workers' comp liability, and unemployment insurance claims",
+        "Missouri law (§287.020) presumes a worker is an employee for workers' compensation purposes unless the contractor relationship is clearly established",
+        "Non-compete and non-solicitation clauses in contractor agreements are enforceable under Missouri common law if reasonable",
+      ],
+      faq: [
+        { question: "How does Missouri classify workers as contractors vs. employees?", answer: "Missouri uses a totality-of-circumstances approach examining behavioral control, financial control, and the type of relationship. The IRS 20-factor test and Missouri DOR guidance both inform the analysis." },
+        { question: "Does Missouri require a written independent contractor agreement?", answer: "There is no statutory requirement, but a written agreement is essential to document the contractor relationship, define deliverables, and support proper tax classification in any audit or dispute." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Missouri commercial leases are governed by general contract law and the Uniform Commercial Code where applicable — no specific commercial landlord-tenant statute",
+        "Lease must clearly identify the parties, premises, rent, term, and permitted use; a certificate of occupancy may be required for some uses",
+        "Personal guarantees are commonly required from principals of new or small business tenants",
+      ],
+      restrictions: [
+        "Missouri has no rent control for commercial properties — rent and escalation terms are freely negotiable",
+        "Commercial landlords may use self-help remedies (re-entry after lease termination) only if the lease expressly grants that right and the property is vacant without breach of peace",
+        "Landlord's lien on tenant's personal property for unpaid rent may attach under Missouri common law — address lien waiver in the lease",
+      ],
+      faq: [
+        { question: "Can a Missouri commercial landlord lock out a tenant?", answer: "Only if the lease is truly terminated and the space is vacant, and the lease grants the right of re-entry. Self-help lockouts on occupied premises without a court order risk wrongful eviction liability." },
+        { question: "Are there any Missouri disclosures required for commercial leases?", answer: "No state-mandated commercial lease disclosures exist in Missouri. However, parties should address environmental conditions, ADA compliance responsibility, and zoning compliance in the lease itself." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Missouri's version of UCC Article 3 (Mo. Rev. Stat. §400.3-101 et seq.) for negotiable instruments",
+        "Must include: unconditional written promise to pay, specific sum, identified payee, and maker's signature to be negotiable",
+        "Missouri usury limit for consumer loans: 9% per annum absent a contract rate (§408.020); written contracts may set higher rates",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written promissory notes under §516.120(1)",
+        "Consumer borrowers retain rights under the federal Truth in Lending Act (Regulation Z); required disclosures apply to consumer notes",
+        "Charging or contracting for interest above the legal maximum constitutes criminal usury under §408.100",
+      ],
+      faq: [
+        { question: "What is Missouri's usury limit for promissory notes?", answer: "Missouri allows parties to contract for any rate in a written agreement (§408.030). Without a written rate, the legal rate is 9% per annum (§408.020). Criminal usury provisions apply to certain predatory lending situations." },
+        { question: "What is the statute of limitations on a Missouri promissory note?", answer: "Under §516.120(1), a written promissory note must be sued upon within 5 years of the date the cause of action accrues (typically the date of default or maturity)." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Missouri statute requires a pre-suit demand letter for most civil claims, but it is standard practice and may be required by contract",
+        "Letter must identify the claim, the factual basis, the amount demanded, and a clear response deadline (typically 10–30 days)",
+        "Consumer debt collection demand letters must comply with the federal FDCPA and the Missouri Merchandising Practices Act (§407.010 et seq.)",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written contracts (§516.120); sending a demand letter does not toll the statute",
+        "Threatening criminal charges to collect a civil debt can constitute extortion under Missouri law",
+        "Do not misrepresent the legal status of a debt or threaten action that is time-barred or not actually intended",
+      ],
+      faq: [
+        { question: "What is Missouri's small claims court limit?", answer: "Missouri small claims court (Associate Circuit Court) handles claims up to $5,000. Filing fees are approximately $30–$45. A pre-suit demand letter is expected and may resolve the dispute without litigation." },
+        { question: "How should I send a demand letter in Missouri?", answer: "Send via certified mail with return receipt requested to the opposing party's last known address, and retain a copy with proof of mailing. For business entities, also send to the registered agent on file with the Missouri Secretary of State." },
+      ],
+    },
+  },
+
+  montana: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Montana Residential Landlord and Tenant Act (Mont. Code Ann. §70-24-101 et seq.); written lease required for terms over 1 year",
+        "Security deposit capped at 1 month's rent for unfurnished units (§70-25-201); must be returned within 10 days (no deductions) or 30 days (with itemized deductions) after tenancy ends",
+        "Landlord must provide a written inventory of existing damages at move-in if a security deposit is collected",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing tenant's property) is illegal — formal unlawful detainer required (§70-27-101)",
+        "Retaliatory eviction against tenants who report housing code violations or exercise legal rights is prohibited (§70-24-431)",
+        "Landlord cannot include lease terms waiving the tenant's rights under Montana law — such clauses are void (§70-24-109)",
+      ],
+      noticeRequirements: "7-day notice for nonpayment of rent with right to cure; 14-day notice for other lease violations; 30-day notice to terminate month-to-month tenancy (§70-24-422)",
+      faq: [
+        { question: "What is Montana's security deposit limit?", answer: "Montana limits security deposits to 1 month's rent for unfurnished units (Mont. Code Ann. §70-25-201). The landlord must return the deposit within 10 days (if no deductions) or 30 days (with an itemized written statement of deductions)." },
+        { question: "Is Montana an at-will eviction state?", answer: "No. Montana's Wrongful Discharge from Employment Act is unique, but in rental law, landlords still need valid cause and proper notice to evict tenants who are current on rent after the initial probationary period of the tenancy. Evictions without proper notice are unlawful." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Montana Limited Liability Company Act (Mont. Code Ann. §35-8-101 et seq.); Articles of Organization filed with Secretary of State for a $70 fee",
+        "Annual report required with a $15 fee due by April 15 each year; failure to file results in administrative dissolution",
+        "Registered agent with a Montana street address required",
+      ],
+      restrictions: [
+        "Operating agreement cannot reduce a member's right to inspect books and records (§35-8-305) below the statutory minimum",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and must be distinguishable from existing entities",
+        "Montana has no sales tax, but LLCs must comply with the Business Equipment Tax and applicable income tax on Montana-sourced income",
+      ],
+      faq: [
+        { question: "How much does it cost to form a Montana LLC?", answer: "Articles of Organization cost $70 to file with the Montana Secretary of State. An annual report with a $15 fee is due by April 15 each year." },
+        { question: "Does Montana have a state income tax on LLC earnings?", answer: "Yes. Montana taxes individual income at graduated rates up to 6.75% (2024). LLC members pay Montana income tax on their share of pass-through income. Montana has no sales tax, which reduces compliance burden for retail LLCs." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Montana is the only U.S. state without general at-will employment after the probationary period — the Wrongful Discharge from Employment Act (Mont. Code Ann. §39-2-901 et seq.) requires 'good cause' to terminate non-probationary employees",
+        "Probationary period (up to 6 months, or as specified in a written policy) applies to new hires — during this period, at-will termination is permitted",
+        "Montana minimum wage: $10.30/hour in 2024 (adjusted annually); must be stated or not contracted below this floor",
+      ],
+      restrictions: [
+        "Employers cannot circumvent the WDEA by labeling employees as contractors — misclassification risk is high under Montana law",
+        "Non-compete agreements are not enforceable against employees under Montana law (Mont. Code Ann. §28-2-703), except in the context of the sale of a business",
+        "Employers must follow any written personnel policies and progressive discipline procedures — they can become contractually binding",
+      ],
+      faq: [
+        { question: "Can I fire an employee at will in Montana?", answer: "Only during the probationary period (up to 6 months or as defined in a written policy). After that, the Wrongful Discharge from Employment Act requires 'good cause' — meaning a legitimate business reason. Montana is unique in the U.S. in providing this protection." },
+        { question: "Are non-compete agreements legal in Montana?", answer: "Generally no. Mont. Code Ann. §28-2-703 prohibits non-compete agreements for employees. The narrow exception is for the sale of a business, where the seller agrees not to compete with the buyer." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Montana Uniform Power of Attorney Act (Mont. Code Ann. §72-31-301 et seq.); must be signed by the principal and acknowledged before a notary public",
+        "To be durable, the POA must contain language stating it is not affected by the principal's incapacity (§72-31-305)",
+        "Agent must sign an acknowledgment of duties and responsibilities before exercising authority (§72-31-308)",
+      ],
+      restrictions: [
+        "Agent cannot make gifts to themselves unless the POA expressly grants that power (§72-31-355)",
+        "Healthcare decisions require a separate Montana Durable Power of Attorney for Health Care (§50-9-103) — a financial POA does not extend to medical authority",
+        "Real estate transactions under a POA require the instrument to be recorded in the county where the real property is located before use",
+      ],
+      faq: [
+        { question: "Does a Montana power of attorney need to be notarized?", answer: "Yes. Under §72-31-305, a Montana power of attorney must be signed and acknowledged before a notary public. Without notarization, the document will not be accepted by most financial institutions or for real estate transactions." },
+        { question: "What is the difference between a durable and a regular POA in Montana?", answer: "A regular POA terminates automatically if the principal becomes incapacitated. A durable POA (containing the statutory durability language under §72-31-305) remains effective despite incapacity — making it the appropriate tool for estate planning." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Montana Uniform Probate Code (Mont. Code Ann. §72-2-101 et seq.); must be signed by the testator and witnessed by two individuals who sign within a reasonable time after witnessing",
+        "Witnesses must not be named beneficiaries — an interested witness does not void the will but may lose their bequest",
+        "Holographic wills (entirely in the testator's handwriting and signed) are valid under §72-2-522",
+      ],
+      restrictions: [
+        "Montana has a spousal elective share — the surviving spouse may elect against the will (§72-2-221) to receive a share of the augmented estate",
+        "Pretermitted children (omitted from the will) may receive an intestate share under §72-2-302 unless the will expressly accounts for them",
+        "Montana has no estate tax or inheritance tax, simplifying estate planning for most residents",
+      ],
+      faq: [
+        { question: "Does Montana have an estate tax?", answer: "No. Montana has no state estate tax or inheritance tax. Federal estate tax may apply to estates exceeding the federal exemption ($13.61 million in 2024), but most Montana estates are not affected." },
+        { question: "Are holographic wills valid in Montana?", answer: "Yes. Under §72-2-522, a will entirely in the testator's handwriting and signed is valid in Montana without witnesses. However, a formally witnessed will is more difficult to challenge and is generally preferred." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Montana law (Mont. Code Ann. §28-2-703) prohibits non-compete agreements for employees — there is no general employee non-compete allowed in Montana",
+        "The only recognized exception is for the sale of a business: the seller may agree not to compete with the buyer in the same market (§28-2-703(1)(b))",
+        "Non-disclosure and confidentiality agreements protecting trade secrets are lawful and do not constitute non-competes",
+      ],
+      restrictions: [
+        "Any non-compete clause inserted into an employment agreement is void and unenforceable under §28-2-703 — employers cannot use them against Montana employees",
+        "Non-solicitation of employees or customers may also be scrutinized — focus restrictions narrowly on trade secret protection and confidentiality",
+        "For business sale transactions, the non-compete must be ancillary to the sale, limited in scope, and proportionate to the business's goodwill value",
+      ],
+      faq: [
+        { question: "Are non-compete agreements legal for employees in Montana?", answer: "No. Montana law (§28-2-703) prohibits non-compete agreements against employees. Only the narrow exception for the sale of a business applies. Employers should rely on NDAs and trade secret law (Montana Uniform Trade Secrets Act, §30-14-401 et seq.) instead." },
+        { question: "Can a Montana employer use a non-solicitation clause instead?", answer: "Non-solicitation clauses are not explicitly addressed by §28-2-703 but are viewed with similar skepticism. Courts will analyze whether the clause functions as a disguised non-compete. Narrow clauses protecting specific trade secret-linked customer relationships are more likely to survive." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Montana applies an economic reality and behavioral control test to distinguish independent contractors from employees, particularly for workers' compensation and unemployment insurance purposes",
+        "Agreement must establish that the contractor controls how, when, and where work is performed, has their own tools/equipment, and can work for multiple clients",
+        "Contractors must obtain their own Montana business license if applicable and handle self-employment taxes (federal and Montana income tax)",
+      ],
+      restrictions: [
+        "Montana's Workers' Compensation Act (§39-71-117) uses a stringent test — misclassified contractors may trigger back premiums and penalties",
+        "Montana's WDEA does not apply to true independent contractors, but misclassification can expose the contracting party to wrongful discharge claims",
+        "Non-compete clauses in contractor agreements fall under the §28-2-703 analysis if the contractor is found to be a functional employee",
+      ],
+      faq: [
+        { question: "How does Montana determine contractor vs. employee status?", answer: "Montana uses a multi-factor test examining behavioral control, financial control, and the nature of the relationship. The Department of Labor & Industry's workers' comp division applies its own statutory test under §39-71-117." },
+        { question: "Does Montana require a written independent contractor agreement?", answer: "No statute mandates a written agreement, but a detailed written contract is essential to document the contractor relationship and support classification in audits or disputes with the Montana Department of Labor." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Montana commercial leases are governed by general contract law and Montana UCC provisions where applicable — there is no dedicated commercial landlord-tenant statute",
+        "Lease should specify the parties, premises description, base rent, term, permitted use, and any tenant improvement allowance",
+        "Montana has no sales tax — commercial rent is not subject to a general sales tax, which simplifies rent calculations",
+      ],
+      restrictions: [
+        "Montana has no rent control for commercial leases — rent and escalation clauses are freely negotiable between the parties",
+        "Landlord self-help remedies (re-entry after tenant default) require the lease to expressly authorize them and must not breach the peace",
+        "Environmental disclosure is advisable for properties with known contamination — Montana DEQ standards apply",
+      ],
+      faq: [
+        { question: "Is commercial rent subject to tax in Montana?", answer: "No. Montana has no general sales tax, so commercial rent payments are not subject to a sales tax. This is an advantage over states like Arizona or New Mexico that tax commercial rent." },
+        { question: "What should a Montana commercial lease include about assignment?", answer: "The lease should specify whether the tenant may assign or sublease without consent, what landlord consent standard applies (reasonable or sole discretion), and whether assignment releases the original tenant from obligations." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Montana's UCC Article 3 (Mont. Code Ann. §30-3-101 et seq.) for negotiable instruments; must include an unconditional written promise to pay a fixed amount",
+        "Montana usury law (§31-1-107): maximum rate for consumer loans is 15% per annum absent a higher written contract rate agreed to by both parties",
+        "Promissory notes secured by Montana real property must be accompanied by a trust indenture or mortgage recorded in the county where the property is located",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written contracts and negotiable instruments under §27-2-202",
+        "Consumer borrowers retain federal Truth in Lending Act protections regardless of the contracted rate",
+        "Interest exceeding the statutory maximum may constitute usury — excess interest is void but the note itself remains enforceable for the principal",
+      ],
+      faq: [
+        { question: "What is Montana's interest rate limit for promissory notes?", answer: "Montana's general usury limit is 15% per annum for consumer loans (§31-1-107). Parties may contract for a higher rate in writing for commercial transactions. Consumer loans have additional TILA disclosure requirements." },
+        { question: "How long do I have to sue on a Montana promissory note?", answer: "Montana's statute of limitations for written instruments, including promissory notes, is 5 years from the date of default or maturity under §27-2-202." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Montana statute requires a pre-suit demand letter for most civil claims, but it is standard practice and may be required by contract",
+        "Demand letter should identify the parties, the factual basis of the claim, the legal theory (breach of contract, tort, etc.), the specific remedy sought, and a firm response deadline",
+        "Consumer collection demand letters must comply with the federal FDCPA and Montana Consumer Protection Act (§30-14-101 et seq.)",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written contracts (§27-2-202) — sending a demand letter does not toll the statute",
+        "Threatening criminal prosecution to extract a civil payment may constitute extortion under Montana law (§45-6-202)",
+        "Do not misrepresent the amount owed, the legal status of the claim, or consequences of non-payment",
+      ],
+      faq: [
+        { question: "What is Montana's small claims court limit?", answer: "Montana Justice Court handles small claims up to $7,000. A demand letter is strongly advisable before filing and may resolve the matter without court involvement." },
+        { question: "How should a demand letter be delivered in Montana?", answer: "Send via certified mail with return receipt requested to the opposing party's last known address. For business entities, also address to the registered agent on file with the Montana Secretary of State (sosmt.gov)." },
+      ],
+    },
+  },
+
+  nebraska: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Nebraska Landlord-Tenant Act (Neb. Rev. Stat. §76-1401 et seq.); written lease required for tenancies over 1 year",
+        "Security deposit: no statutory cap; landlord must return deposit within 14 days after tenancy ends with an itemized statement of deductions (§76-1416)",
+        "Landlord must disclose the name and address of the property manager or owner before the tenancy begins",
+      ],
+      restrictions: [
+        "Self-help eviction (locking out tenant, removing belongings) is illegal — formal eviction through county court required (§76-1431)",
+        "Retaliatory eviction against tenants who report housing code violations is prohibited (§76-1439)",
+        "Landlord cannot shut off utilities to force a tenant out — this constitutes an illegal lockout",
+      ],
+      noticeRequirements: "7-day written notice for nonpayment of rent (with right to cure); 30-day written notice for other lease violations; 30-day notice to terminate month-to-month tenancy (§76-1437)",
+      faq: [
+        { question: "What is Nebraska's security deposit return deadline?", answer: "Nebraska requires landlords to return the security deposit within 14 days after the tenancy ends. If deductions are made, a written itemized statement must accompany any remaining balance. Failure to return within 14 days can result in liability for the full deposit." },
+        { question: "How does eviction work in Nebraska?", answer: "Nebraska landlords must serve proper written notice (7 days for nonpayment), then file for eviction in county court. A hearing is typically scheduled within 10–14 days. Nebraska courts expect landlords to follow strict procedural rules." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Nebraska Uniform Limited Liability Company Act (Neb. Rev. Stat. §21-101 et seq.); Articles of Organization filed with Secretary of State for a $100 biennial report fee",
+        "Nebraska LLCs must file a biennial occupational tax report every two years; the fee is $10 plus $5 per member/manager up to $100 maximum",
+        "Registered agent with a Nebraska street address required; agent information filed with Secretary of State",
+      ],
+      restrictions: [
+        "Operating agreement cannot eliminate the duty of loyalty in bad faith or restrict a member's rights to inspect books under §21-147",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing entities",
+        "Professional LLCs for licensed services (law, medicine) must comply with applicable licensing board rules and may require all members to be licensed",
+      ],
+      faq: [
+        { question: "What does it cost to form and maintain a Nebraska LLC?", answer: "Articles of Organization cost $100 to file. Nebraska requires a biennial occupational tax report (due every 2 years) with a fee of $10 plus $5 per member up to a $100 cap. There is no annual report." },
+        { question: "Does Nebraska recognize single-member LLCs?", answer: "Yes. Single-member LLCs are fully recognized under Nebraska law. A written operating agreement is still advisable to establish the entity's separate existence and document operational rules." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Nebraska is a right-to-work state (Neb. Const. Art. XV, §13) — union membership cannot be required as a condition of employment",
+        "Nebraska minimum wage: $15.00/hour effective January 1, 2026 (initiated by voter referendum in 2022); $13.50/hour in 2024",
+        "At-will employment is the default in Nebraska; employment contracts should expressly state the at-will basis or any for-cause termination standard",
+      ],
+      restrictions: [
+        "Nebraska has no statewide paid sick leave or paid family leave mandate — leave terms should be addressed contractually",
+        "Non-compete agreements are enforceable in Nebraska but courts apply strict scrutiny — duration, geographic scope, and activity must each be reasonable and necessary to protect a legitimate interest",
+        "Nebraska wage payment law requires final wages to be paid on the next regular payday (§48-1230); the contract should address this",
+      ],
+      faq: [
+        { question: "Are non-compete agreements strictly enforced in Nebraska?", answer: "Nebraska enforces non-competes but subjects them to strict scrutiny. Courts require the restrictions to be reasonably tailored to protect a legitimate business interest (trade secrets, customer relationships) and will not enforce overbroad agreements." },
+        { question: "What is Nebraska's current minimum wage?", answer: "Nebraska's minimum wage is $13.50/hour in 2024, rising to $15.00/hour on January 1, 2026, under the ballot initiative approved by voters in November 2022." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Nebraska Uniform Power of Attorney Act (Neb. Rev. Stat. §30-4001 et seq.); must be signed by the principal and acknowledged before a notary public",
+        "To be durable, the POA must state that it is not affected by the principal's subsequent incapacity (§30-4004)",
+        "Agent must sign an acknowledgment of duties before exercising authority under the POA (§30-4006)",
+      ],
+      restrictions: [
+        "Agent cannot make gifts to themselves unless the power to do so is expressly granted in the document (§30-4052)",
+        "Healthcare decisions require a separate Nebraska Power of Attorney for Health Care (§30-3401 et seq.) — a financial POA does not extend to medical authority",
+        "Real estate transactions under a POA require the POA to be recorded in the register of deeds office in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does a Nebraska power of attorney need to be notarized?", answer: "Yes. Under §30-4005, a Nebraska power of attorney must be signed and acknowledged before a notary public. Without notarization, financial institutions and real estate title companies will typically refuse to honor it." },
+        { question: "Can a Nebraska power of attorney authorize real estate transactions?", answer: "Yes, but it must specifically grant real estate authority and must be recorded with the county register of deeds before use in any real estate transaction involving Nebraska property." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Nebraska Probate Code (Neb. Rev. Stat. §30-2326 et seq.); must be signed by the testator and witnessed by two individuals who sign within a reasonable time",
+        "Witnesses must be 18+ and competent; interested witnesses (beneficiaries) do not invalidate the will but their bequest may be affected",
+        "Holographic wills (entirely in testator's handwriting and signed) are valid in Nebraska without witnesses (§30-2328)",
+      ],
+      restrictions: [
+        "Nebraska has a spousal elective share — the surviving spouse may elect against the will to receive a share of the augmented estate (§30-2313)",
+        "Nebraska has an estate inheritance tax (not a state estate tax) — close relatives pay 1%, others pay up to 18% on the value of inherited assets above applicable exemptions",
+        "Nebraska small estate affidavit available for estates under $50,000 (§30-24,125), avoiding full probate",
+      ],
+      faq: [
+        { question: "Does Nebraska have an inheritance tax?", answer: "Yes. Nebraska is one of only six states with an inheritance tax. Close relatives (spouse, children, parents) pay 1% on amounts above their exemption; more distant relatives and non-relatives pay higher rates up to 18%. The will should account for this tax burden on beneficiaries." },
+        { question: "How many witnesses are needed for a Nebraska will?", answer: "Two witnesses are required for a formally executed will under §30-2327. Alternatively, a holographic will (entirely in the testator's handwriting and signed) requires no witnesses under §30-2328." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Nebraska has no non-compete statute — enforceability is determined under common law using a multi-factor reasonableness analysis",
+        "Courts require the agreement to protect a legitimate employer interest (trade secrets, confidential information, specialized training, or customer relationships built at employer expense)",
+        "Duration, geographic scope, and the scope of prohibited activity must each be no broader than necessary to protect the legitimate interest",
+      ],
+      restrictions: [
+        "Nebraska courts apply strict scrutiny and will not blue-pencil or rewrite overbroad non-competes — an overly broad agreement may be voided in its entirety",
+        "Non-competes signed mid-employment require additional consideration beyond continued at-will employment to be enforceable",
+        "Courts have been particularly skeptical of non-competes imposed on low-wage or entry-level employees who received no specialized training or access to trade secrets",
+      ],
+      faq: [
+        { question: "Will Nebraska courts rewrite an overbroad non-compete?", answer: "No. Unlike some states, Nebraska courts generally will not blue-pencil or narrow an overbroad non-compete. If the restriction is unreasonable in any dimension (duration, geography, activity), the court may void the entire agreement." },
+        { question: "What is adequate consideration for a Nebraska non-compete?", answer: "For a new employee, the initial offer of employment is sufficient. For an existing employee, Nebraska courts require something beyond continued at-will employment — such as a raise, promotion, signing bonus, or access to specific trade secrets." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Nebraska applies a totality-of-circumstances test examining behavioral control, financial control, and relationship type to distinguish contractors from employees",
+        "Agreement must clearly document that the contractor sets their own hours, uses their own tools, operates independently, and may work for multiple clients",
+        "Contractors must obtain their own Nebraska business licenses (where applicable) and pay Nebraska self-employment income tax on Nebraska-sourced earnings",
+      ],
+      restrictions: [
+        "Nebraska's workers' compensation law (§48-101 et seq.) presumes employee status — misclassified contractors trigger back premiums and potential penalties from the Nebraska Workers' Compensation Court",
+        "Nebraska right-to-work protections (Art. XV §13) apply to employees, not independent contractors — misclassification can affect labor relations compliance",
+        "Non-compete and NDA clauses in contractor agreements are enforceable under Nebraska common law if reasonable in scope",
+      ],
+      faq: [
+        { question: "How does Nebraska determine contractor vs. employee status?", answer: "Nebraska uses a multi-factor analysis examining control over the manner of work, integration into the business, economic dependence, and the parties' intent. The Nebraska Workers' Compensation Court and Department of Labor each apply similar but not identical tests." },
+        { question: "Is a written independent contractor agreement required in Nebraska?", answer: "No statute mandates it, but a detailed written agreement is essential to document the independent relationship, define deliverables and payment terms, and support proper tax and workers' comp classification." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Nebraska commercial leases are governed by general contract law — no dedicated commercial landlord-tenant statute; lease terms control",
+        "Lease should specify parties, premises, rent, term, permitted use, and maintenance/repair obligations with specificity",
+        "Personal guarantees are commonly required from principals of small or newly formed business tenants",
+      ],
+      restrictions: [
+        "Nebraska has no rent control for commercial properties — rent escalation, CPI adjustments, and percentage rent clauses are freely negotiable",
+        "Commercial landlord self-help remedies (re-entry on default) must be expressly included in the lease and cannot breach the peace; otherwise the landlord must use judicial process",
+        "Nebraska UCC Article 9 (§9-101 et seq.) governs security interests in a tenant's personal property — consider a landlord's lien waiver if financing is involved",
+      ],
+      faq: [
+        { question: "Does Nebraska require any specific disclosures in a commercial lease?", answer: "Nebraska has no mandatory commercial lease disclosure statutes. Parties should address environmental conditions, zoning compliance, ADA responsibility, and any known property defects in the lease." },
+        { question: "How are commercial evictions handled in Nebraska?", answer: "Nebraska commercial landlords must follow the judicial eviction process — typically a district court action after proper notice. Nebraska law does not allow self-help commercial evictions on an occupied premises without a court order." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Nebraska's UCC Article 3 (Neb. Rev. Stat. §3-101 et seq.) for negotiable instruments; must contain an unconditional written promise to pay a fixed sum",
+        "Nebraska usury limit: 16% per annum for consumer loans absent a written agreement specifying a higher rate (§45-101.03); commercial notes may exceed this by written agreement",
+        "Real estate promissory notes must be accompanied by a recorded trust deed or mortgage in the county register of deeds",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written instruments under §25-205; the clock begins on the date of default",
+        "Consumer borrowers retain federal Truth in Lending Act (TILA) protections — APR and fee disclosures are required for consumer notes",
+        "Charging interest above the statutory maximum constitutes usury and may render the excess interest void under Nebraska law",
+      ],
+      faq: [
+        { question: "What is Nebraska's usury limit for promissory notes?", answer: "Nebraska's default usury limit is 16% per annum for consumer loans (§45-101.03). Parties may contract for higher rates in writing for commercial transactions. Violation of usury laws can render excess interest void." },
+        { question: "What is the statute of limitations on a Nebraska promissory note?", answer: "Nebraska's statute of limitations for written instruments is 5 years (§25-205), measured from the date of default or maturity. After this period, the note is unenforceable through the courts." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No Nebraska statute mandates a pre-suit demand letter for most civil claims, but it is standard practice and is required in some contractual dispute resolution clauses",
+        "Letter should identify the parties, the factual basis of the claim, the legal theory, the amount or action demanded, and a firm response deadline (typically 10–30 days)",
+        "Consumer collection demand letters must comply with the federal FDCPA and Nebraska Consumer Protection Act (§87-301 et seq.)",
+      ],
+      restrictions: [
+        "Statute of limitations: 5 years for written contracts (§25-205) — a demand letter does not toll the statute",
+        "Threatening criminal prosecution to collect a civil debt may constitute criminal coercion under Nebraska law (§28-311)",
+        "Do not misrepresent the amount owed, the legal status of the claim, or the consequences of non-payment in the letter",
+      ],
+      faq: [
+        { question: "What is Nebraska's small claims court limit?", answer: "Nebraska County Court handles small claims up to $3,600. A pre-suit demand letter is expected and may resolve the dispute without court involvement. Filing fees are approximately $39–$54." },
+        { question: "How should a demand letter be delivered in Nebraska?", answer: "Send via certified mail with return receipt requested. For business entities, also address the letter to the registered agent on file with the Nebraska Secretary of State (sos.nebraska.gov) to ensure proper notice." },
+      ],
+    },
+  },
+
+  "new-hampshire": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by New Hampshire Landlord-Tenant Act (RSA 540 et seq.) and Residential Rental Agreements Act (RSA 540-A); lease must identify the landlord and premises",
+        "Security deposit capped at 1 month's rent (RSA 540-A:6(I)); must be returned with itemized deductions within 30 days after tenancy ends",
+        "Landlord must provide written receipt for security deposit and must hold it in a separate, interest-bearing account if the deposit exceeds $100 (RSA 540-A:6)",
+      ],
+      restrictions: [
+        "Self-help eviction is prohibited — landlord must use formal eviction process through the circuit court (RSA 540:2)",
+        "Retaliatory eviction or retaliation against tenants who report housing conditions is prohibited under RSA 540:13-a",
+        "Late fees are enforceable only if specified in the lease and must be reasonable; there is no statutory cap but courts may scrutinize excessive amounts",
+      ],
+      noticeRequirements: "7-day written notice for nonpayment of rent (RSA 540:3); 30-day written notice to terminate month-to-month tenancy; landlord must provide at least 30 days' notice before any rent increase",
+      faq: [
+        { question: "What is New Hampshire's security deposit limit?", answer: "RSA 540-A:6 caps security deposits at one month's rent. Deposits exceeding $100 must be held in a separate, interest-bearing bank account. The landlord must return the deposit with an itemized statement within 30 days of tenancy termination." },
+        { question: "Can a landlord raise rent without notice in New Hampshire?", answer: "No. New Hampshire requires at least 30 days' written notice before any rent increase takes effect. For fixed-term leases, rent increases apply at renewal. For month-to-month tenants, the increase requires proper 30-day notice." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the New Hampshire LLC Act (RSA 304-C:1 et seq.); Articles of Organization filed with the Secretary of State for a $100 fee",
+        "Annual report required with a $100 fee due by April 1 each year; failure to file results in administrative dissolution",
+        "Registered agent with a New Hampshire street address required; agent listed in Articles of Organization",
+      ],
+      restrictions: [
+        "Operating agreement cannot limit a member's right to inspect records below the statutory minimum (RSA 304-C:28) or eliminate the duty of loyalty in bad faith",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and must be distinguishable from existing entities in the state",
+        "Professional LLCs for licensed services must comply with applicable licensing board requirements — all members may need to be licensed",
+      ],
+      faq: [
+        { question: "How much does it cost to maintain a New Hampshire LLC?", answer: "Articles of Organization cost $100. Annual reports cost $100 and are due by April 1. New Hampshire has no general sales tax and no income tax on wages, which reduces ongoing tax compliance costs for LLCs." },
+        { question: "Does New Hampshire have an income tax on LLC earnings?", answer: "New Hampshire has no personal income tax on wages or salaries. However, New Hampshire's Business Profits Tax (BPT) and Business Enterprise Tax (BET) may apply to LLCs with sufficient nexus — consult a tax advisor for entity-level tax obligations." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "New Hampshire is an at-will employment state; employment contracts should expressly state the at-will basis or clearly define any for-cause termination standard",
+        "New Hampshire minimum wage: $7.25/hour (follows federal minimum); no statewide tipped wage above federal floor",
+        "Non-compete agreements must be disclosed to applicants before a job offer is made (RSA 275:70) — failure to disclose before the offer voids the agreement",
+      ],
+      restrictions: [
+        "New Hampshire has no statewide paid sick leave or paid family leave law — leave terms must be established contractually",
+        "Non-compete agreements are enforceable if reasonable, but RSA 275:70 (effective 2012) requires disclosure prior to any job offer; a non-compete presented after hiring is void for lack of timely disclosure",
+        "New Hampshire employers must pay final wages on the next regular payday after separation (RSA 275:44)",
+      ],
+      faq: [
+        { question: "What is New Hampshire's non-compete disclosure requirement?", answer: "Under RSA 275:70, employers must provide a copy of any non-compete agreement to prospective employees before making a job offer. A non-compete presented for the first time after an offer is accepted is unenforceable." },
+        { question: "Does New Hampshire have an income tax on wages?", answer: "No. New Hampshire imposes no tax on wages, salaries, or other earned income. The state's Interest and Dividends Tax (on investment income) is being phased out. This makes New Hampshire attractive for employees and remote workers." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the New Hampshire Uniform Power of Attorney Act (RSA 564-E:1 et seq.); must be signed by the principal and acknowledged before a notary public",
+        "To be durable, the POA must contain language stating it is not affected by the principal's incapacity or disability (RSA 564-E:104)",
+        "Agent must sign an acknowledgment of duties (RSA 564-E:302) before exercising authority under the POA",
+      ],
+      restrictions: [
+        "Agent cannot make gifts to themselves unless that power is expressly granted in the POA (RSA 564-E:217)",
+        "Healthcare decisions require a separate New Hampshire Durable Power of Attorney for Health Care (RSA 137-J) — a financial POA does not extend to medical authority",
+        "Real estate transactions under a POA require the POA to be recorded with the county register of deeds where the property is located",
+      ],
+      faq: [
+        { question: "Does a New Hampshire power of attorney need to be notarized?", answer: "Yes. Under RSA 564-E:105, a New Hampshire power of attorney must be signed and acknowledged before a notary public. Without notarization, financial institutions and title companies will typically refuse to accept it." },
+        { question: "Can one person serve as both agent and witness in New Hampshire?", answer: "No. A person who signs as a witness to the principal's signature cannot also serve as the named agent. The witness and agent must be different individuals to avoid a conflict of interest." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by RSA 551:1 et seq.; must be signed by the testator in the presence of two or more attesting witnesses who sign in the presence of the testator",
+        "Witnesses must be 18+ and should not be named beneficiaries — an interested witness is not disqualified but may face scrutiny",
+        "Holographic wills (entirely in testator's handwriting) are not recognized as valid in New Hampshire — formal execution with witnesses is required",
+      ],
+      restrictions: [
+        "New Hampshire has a spousal elective share — the surviving spouse may elect against the will to receive a share of the augmented estate (RSA 560:10)",
+        "New Hampshire abolished its estate tax effective January 1, 2003 — there is no state estate or inheritance tax",
+        "Probate in New Hampshire is handled by the Probate Court in each county; small estates under $10,000 may qualify for expedited administration (RSA 553:32)",
+      ],
+      faq: [
+        { question: "Does New Hampshire have an estate tax?", answer: "No. New Hampshire abolished its estate tax in 2003 and has no state inheritance tax. Federal estate tax may apply for estates exceeding the federal exemption ($13.61 million in 2024), but most New Hampshire estates are not affected." },
+        { question: "Are holographic wills valid in New Hampshire?", answer: "No. New Hampshire does not recognize holographic wills. A valid will must be witnessed by at least two individuals who sign in the testator's presence. A handwritten, unwitnessed will has no legal effect in New Hampshire." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "New Hampshire non-compete agreements are enforceable under common law if reasonable in scope, duration, and geography, and protect a legitimate business interest",
+        "RSA 275:70 requires employers to disclose the non-compete agreement to the prospective employee before making any job offer — pre-offer disclosure is mandatory",
+        "Agreement must protect a genuine interest (trade secrets, confidential client relationships, specialized training) and not merely restrict competition generally",
+      ],
+      restrictions: [
+        "A non-compete agreement that was not disclosed before the job offer is void under RSA 275:70 regardless of whether the employee later signed it",
+        "New Hampshire courts apply a reasonableness standard — overly broad duration (beyond 2 years), excessive geographic scope, or vague activity restrictions reduce enforceability",
+        "Non-competes for low-wage workers with no access to trade secrets or confidential information are particularly vulnerable to invalidation",
+      ],
+      faq: [
+        { question: "When must a New Hampshire employer disclose a non-compete?", answer: "Under RSA 275:70, the non-compete must be disclosed before any job offer is made. If the employer first presents the agreement at or after the offer stage, the agreement is void — the employee cannot waive this statutory protection." },
+        { question: "What makes a New Hampshire non-compete reasonable?", answer: "New Hampshire courts look at duration (typically 1–2 years is presumptively reasonable), geographic scope (must match the employer's actual territory), and whether the restriction is limited to activities where the employee had direct involvement and access to protectable information." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "New Hampshire applies a multi-factor test based on behavioral and financial control, and the nature of the parties' relationship, to distinguish contractors from employees",
+        "Agreement must document that the contractor controls how work is performed, uses their own tools and equipment, sets their own schedule, and may work for multiple clients simultaneously",
+        "Contractors must obtain any applicable New Hampshire business licenses, register for the Business Profits Tax if applicable, and handle their own self-employment taxes",
+      ],
+      restrictions: [
+        "New Hampshire's workers' compensation statute (RSA 281-A) presumes employee status — misclassified contractors may trigger back premiums and Department of Labor penalties",
+        "The New Hampshire Department of Employment Security applies its own ABC-like test for unemployment insurance purposes — A (free from direction/control), B (outside usual business), C (independently established trade",
+        "Non-compete clauses in contractor agreements must still comply with RSA 275:70 disclosure requirements if the contractor is found to be a functional employee",
+      ],
+      faq: [
+        { question: "How does New Hampshire classify workers as contractors vs. employees?", answer: "New Hampshire uses a totality-of-circumstances approach for most purposes, but the Department of Employment Security applies an ABC test for unemployment insurance purposes. Both analyses examine control, integration, and economic independence." },
+        { question: "Is a written independent contractor agreement required in New Hampshire?", answer: "No statute mandates a written agreement, but a detailed written contract is critical to document the independent relationship, support proper tax classification, and protect both parties in any audit or dispute." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "New Hampshire commercial leases are governed by general contract law — no dedicated commercial landlord-tenant statute; lease terms are the primary authority",
+        "Lease should identify the parties, describe the premises, set out the rent and term, define permitted use, and allocate maintenance, repair, and utility obligations",
+        "New Hampshire has no sales tax on rent — commercial rent payments are not subject to state sales tax",
+      ],
+      restrictions: [
+        "New Hampshire has no rent control for commercial properties — all rent terms and escalations are freely negotiable",
+        "Commercial landlord self-help eviction (changing locks, removing tenant belongings) is generally prohibited without a court order; landlords should use the Superior Court summary process",
+        "Any environmental conditions known to the landlord (contamination, USTs) should be disclosed — New Hampshire RSA 147-A applies to hazardous waste sites",
+      ],
+      faq: [
+        { question: "Is commercial rent subject to sales tax in New Hampshire?", answer: "No. New Hampshire has no general sales tax, so commercial rent is not taxed at the state level. This is a meaningful cost advantage compared to states like Connecticut or Massachusetts that impose a commercial rent tax." },
+        { question: "What should a New Hampshire commercial lease address about tenant improvements?", answer: "The lease should specify: who pays for improvements, whether improvements require landlord approval, whether improvements become landlord's property at lease end, and whether a tenant improvement allowance (TIA) is provided. New Hampshire courts enforce these provisions as written." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by New Hampshire's UCC Article 3 (RSA 382-A:3-101 et seq.) for negotiable instruments; must include an unconditional written promise to pay a fixed amount, identified payee, and maker's signature",
+        "New Hampshire has no statutory usury limit for commercial loans — parties may freely contract for any interest rate for business transactions",
+        "Consumer loan rates are subject to federal regulations (TILA, Regulation Z) and New Hampshire consumer lending laws under RSA 399-A",
+      ],
+      restrictions: [
+        "Statute of limitations: 3 years for most actions on negotiable instruments under RSA 508:4(I) and UCC §3-118",
+        "Consumer borrowers retain federal Truth in Lending Act protections regardless of the agreed rate",
+        "New Hampshire's consumer protection statute (RSA 358-A) prohibits unfair or deceptive acts in connection with consumer loan agreements",
+      ],
+      faq: [
+        { question: "Is there a usury limit for commercial promissory notes in New Hampshire?", answer: "No. New Hampshire imposes no usury limit on commercial transactions. Parties may contract for any interest rate in a business promissory note. Consumer transactions are subject to federal TILA requirements." },
+        { question: "What is the statute of limitations on a New Hampshire promissory note?", answer: "New Hampshire's general limitation period for written contracts and negotiable instruments is 3 years under RSA 508:4(I). The clock typically begins on the date of default or the maturity date of the note." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No New Hampshire statute requires a pre-suit demand letter for most civil claims, but it is standard practice and may be mandated by contract dispute resolution clauses",
+        "Letter should identify the parties, the factual and legal basis of the claim, the specific remedy demanded, and a clear response deadline (10–30 days is standard)",
+        "Consumer collection demand letters must comply with the federal FDCPA and New Hampshire Consumer Protection Act (RSA 358-A)",
+      ],
+      restrictions: [
+        "Statute of limitations: 3 years for most written contracts and tort claims (RSA 508:4) — a demand letter does not toll the statute",
+        "Threatening criminal charges to collect a civil debt is prohibited and may constitute criminal threatening or extortion under New Hampshire law",
+        "Do not misrepresent the legal status of the claim, the amount owed, or the consequences of non-response",
+      ],
+      faq: [
+        { question: "What is New Hampshire's small claims court limit?", answer: "New Hampshire District Court handles small claims up to $10,000 (as of 2024). A pre-suit demand letter is strongly recommended and may resolve the matter. Filing fees are approximately $90–$140 depending on the amount claimed." },
+        { question: "How should a demand letter be sent in New Hampshire?", answer: "Send via certified mail with return receipt requested to the opposing party's last known address. For business entities, also send to the registered agent on file with the New Hampshire Secretary of State (sos.nh.gov) to ensure proper notice." },
+      ],
+    },
+  },
+
+  "new-mexico": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the New Mexico Owner-Resident Relations Act (NMSA 1978, §47-8-1 et seq.); written lease recommended for any term over 1 year",
+        "Security deposit: no statutory cap on amount, but must be returned within 30 days of tenancy end with an itemized statement of deductions (§47-8-18)",
+        "New Mexico is a community property state — ensure both spouses sign the lease if both will be tenants, as community property rules affect liability",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing belongings) is illegal — formal eviction through the magistrate or district court required (§47-8-37)",
+        "Retaliatory action against tenants who report housing code violations or exercise legal rights is prohibited (§47-8-39)",
+        "Landlord cannot waive the tenant's statutory rights under the Owner-Resident Relations Act through lease provisions (§47-8-15)",
+      ],
+      noticeRequirements: "3-day notice for nonpayment of rent with right to cure (§47-8-33); 30-day written notice for other lease violations; 30-day notice to terminate month-to-month tenancy (§47-8-37)",
+      faq: [
+        { question: "How long does a New Mexico landlord have to return a security deposit?", answer: "New Mexico landlords must return the security deposit within 30 days after the tenancy ends (§47-8-18), along with an itemized written statement of deductions. Failure to return within 30 days can result in the tenant recovering the full deposit plus damages." },
+        { question: "Does New Mexico's community property law affect residential leases?", answer: "Yes. In New Mexico, property acquired during marriage is generally community property. If both spouses will occupy a rental, both should sign the lease to ensure both are bound by its terms and to clarify liability for rent and damages." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the New Mexico Limited Liability Company Act (NMSA 1978, §53-19-1 et seq.); Articles of Organization filed with the Public Regulation Commission for a $50 fee",
+        "Annual report required with a $25 fee due on or before the 15th day of the anniversary month of formation",
+        "Registered agent with a New Mexico street address required; agent information filed in Articles of Organization",
+      ],
+      restrictions: [
+        "Operating agreement cannot eliminate a member's right to access books and records below the statutory minimum (§53-19-15) or exclude liability for intentional misconduct",
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing entities",
+        "Professional LLCs for licensed services (law, medicine) must comply with applicable New Mexico licensing board requirements",
+      ],
+      faq: [
+        { question: "How much does it cost to form and maintain a New Mexico LLC?", answer: "Articles of Organization cost $50. New Mexico requires an annual report with a $25 fee due in the anniversary month of formation. New Mexico is a right-to-work state and has relatively low business formation costs." },
+        { question: "Does New Mexico recognize single-member LLCs?", answer: "Yes. Single-member LLCs are fully recognized under New Mexico law. A written operating agreement is strongly recommended even for single-member LLCs to document operational rules and reinforce the entity's separate existence." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "New Mexico is both an at-will employment state and a right-to-work state (NMSA 1978, §50-2-1 et seq.) — union membership cannot be required as a condition of employment",
+        "New Mexico minimum wage: $12.00/hour in 2024 (local rates may be higher — Albuquerque's minimum wage is $12.00/hour with annual adjustments)",
+        "Employment contracts should clearly state the at-will basis or define any for-cause termination standard, especially given common law exceptions recognized by New Mexico courts",
+      ],
+      restrictions: [
+        "New Mexico has no statewide paid sick leave law, but the New Mexico Healthy Workplaces Act (effective July 1, 2022) requires employers to provide 64 hours of earned sick leave per year (NMSA §50-17-1 et seq.)",
+        "Non-compete agreements are not governed by statute in New Mexico and are subject to common law scrutiny — New Mexico courts are historically hostile to non-competes and strictly scrutinize their scope",
+        "New Mexico Human Rights Act (§28-1-1 et seq.) prohibits employment discrimination; contracts should include equal opportunity clauses",
+      ],
+      faq: [
+        { question: "Does New Mexico require paid sick leave?", answer: "Yes. The New Mexico Healthy Workplaces Act (effective July 1, 2022) requires employers with 1 or more employees to provide up to 64 hours of paid sick leave per year, accruing at 1 hour per 30 hours worked." },
+        { question: "Are non-compete agreements enforceable in New Mexico?", answer: "New Mexico courts are historically hostile to non-competes and apply strict scrutiny. Courts require the restriction to be narrowly tailored, ancillary to a lawful agreement, and supported by adequate consideration. Overbroad agreements are routinely voided." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the New Mexico Uniform Power of Attorney Act (NMSA 1978, §45-5B-101 et seq.); must be signed by the principal and acknowledged before a notary public",
+        "To be durable, the POA must contain language stating it is not affected by the principal's subsequent incapacity or disability (§45-5B-104)",
+        "Agent must sign an acknowledgment of duties before exercising authority (§45-5B-302)",
+      ],
+      restrictions: [
+        "New Mexico is a community property state — a POA for real property should specify whether it covers community property, separate property, or both, and may require the non-signing spouse's consent for community property transactions",
+        "Healthcare decisions require a separate New Mexico Durable Power of Attorney for Health Care (§24-7A-1 et seq.) — a financial POA does not authorize medical decisions",
+        "Real estate transactions under a POA require the POA to be recorded with the county clerk in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does a New Mexico power of attorney need to be notarized?", answer: "Yes. Under §45-5B-105, a New Mexico power of attorney must be signed before a notary public. Without notarization, banks, title companies, and government agencies will typically refuse to honor it." },
+        { question: "How does New Mexico's community property law affect a power of attorney?", answer: "In New Mexico, community property can generally only be managed by both spouses. A POA over community property should expressly state that authority extends to community assets, and the non-signing spouse may need to provide consent for certain transactions involving jointly held property." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the New Mexico Uniform Probate Code (NMSA 1978, §45-2-101 et seq.); must be signed by the testator and witnessed by two individuals who sign within a reasonable time",
+        "Witnesses must be 18+ and competent; interested witnesses do not invalidate the will but their bequest may be reduced to their intestate share",
+        "Holographic wills (entirely in the testator's handwriting and signed) are valid in New Mexico under §45-2-502(B)",
+      ],
+      restrictions: [
+        "New Mexico is a community property state — the testator can only will their half of the community property; the surviving spouse retains their own half regardless of the will's terms",
+        "Pretermitted children (omitted from the will) may receive an intestate share under §45-2-302 unless the will expressly disinherits them",
+        "New Mexico has no state estate tax or inheritance tax — only federal estate tax may apply to large estates",
+      ],
+      faq: [
+        { question: "How does community property affect a New Mexico will?", answer: "In New Mexico, each spouse owns one-half of all community property acquired during marriage. A will can only dispose of the testator's half. The surviving spouse automatically retains their half of community property regardless of the will's provisions." },
+        { question: "Does New Mexico have an estate tax?", answer: "No. New Mexico abolished its estate tax in 2003 and has no inheritance tax. Federal estate tax may apply to estates exceeding the federal exemption ($13.61 million in 2024), but most New Mexico estates are not subject to estate tax." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "New Mexico has no non-compete statute — enforceability is determined under common law, and New Mexico courts are historically hostile to non-compete restrictions on employees",
+        "Courts require the agreement to be ancillary to an otherwise enforceable agreement, supported by adequate consideration, and narrowly tailored to protect a specific legitimate interest",
+        "Trade secret protection and confidentiality agreements (governed by the New Mexico Uniform Trade Secrets Act, §57-3A-1 et seq.) are the preferred alternative to non-competes in New Mexico",
+      ],
+      restrictions: [
+        "New Mexico courts routinely void non-competes that are overbroad in geography, duration, or scope of prohibited activity — there is no blue-pencil tradition in New Mexico",
+        "Non-competes must protect a specific identifiable business interest beyond mere competition — general restrictions on working in an industry are unenforceable",
+        "Non-solicitation of employees or customers will be scrutinized similarly — narrow the restriction to specific identified customer relationships or confidential information",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in New Mexico?", answer: "Rarely. New Mexico courts apply strict scrutiny to non-competes and have a long history of voiding them. The agreement must be narrowly tailored, protect a specific identifiable interest, and be supported by adequate consideration. Employers should rely on NDAs and trade secret law instead." },
+        { question: "What alternatives to non-competes work in New Mexico?", answer: "New Mexico courts are more receptive to non-disclosure agreements, trade secret protections under the Uniform Trade Secrets Act (§57-3A-1 et seq.), and narrow non-solicitation clauses limited to specific customer relationships where the employee had direct contact." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "New Mexico applies a totality-of-circumstances test examining behavioral control, financial control, and the nature of the relationship to distinguish contractors from employees",
+        "Agreement must document the contractor's control over work methods, use of their own tools, ability to work for multiple clients, and absence of integration into the employer's regular business operations",
+        "Contractors must register for New Mexico Gross Receipts Tax (GRT) if providing services in New Mexico — New Mexico's GRT applies broadly and differs from a typical sales tax",
+      ],
+      restrictions: [
+        "New Mexico's Workers' Compensation Act (§52-1-1 et seq.) presumes employee status — misclassification triggers back premiums, penalties, and potential liability for workplace injuries",
+        "New Mexico Taxation and Revenue Department applies an economic reality test for GRT purposes — contractors providing services to New Mexico clients may owe GRT even if not physically present",
+        "Non-compete clauses in contractor agreements face the same hostile judicial environment as employee non-competes — use NDAs and trade secret clauses instead",
+      ],
+      faq: [
+        { question: "What is New Mexico's Gross Receipts Tax and how does it affect contractors?", answer: "New Mexico's GRT (§7-9-1 et seq.) is a tax on the privilege of doing business in New Mexico — effectively a sales tax on most services and goods. Independent contractors providing services to New Mexico clients must register for GRT and remit the tax (currently 5.125% statewide, plus local surtaxes)." },
+        { question: "How does New Mexico classify workers as contractors vs. employees?", answer: "New Mexico uses a totality-of-circumstances approach examining control over the work, economic dependence, integration into the business, and the parties' intent. The Workers' Compensation Act and Taxation and Revenue Department each apply similar multi-factor tests." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "New Mexico commercial leases are governed by general contract law — no dedicated commercial landlord-tenant statute; the lease terms control",
+        "Lease should identify the parties, describe the premises, state the rent and term, define permitted use, and allocate maintenance, tax, and insurance obligations",
+        "New Mexico's Gross Receipts Tax (GRT) may apply to commercial rent — landlords collecting rent in New Mexico may owe GRT on rental receipts; verify with a tax advisor",
+      ],
+      restrictions: [
+        "New Mexico has no rent control for commercial properties — rent escalation and other pricing terms are freely negotiable",
+        "Commercial self-help eviction (locking out a tenant without a court order) is generally prohibited in New Mexico — landlords should use the formal judicial eviction process through the district court",
+        "Environmental disclosure is advisable — New Mexico Environment Department (NMED) standards apply to contaminated commercial properties",
+      ],
+      faq: [
+        { question: "Is commercial rent subject to New Mexico's Gross Receipts Tax?", answer: "Yes. New Mexico's GRT applies broadly and may apply to commercial rental income. Landlords renting commercial property in New Mexico should register for GRT and consult a tax advisor about whether their rental receipts are taxable and at what rate." },
+        { question: "How are commercial evictions handled in New Mexico?", answer: "New Mexico commercial landlords must follow the judicial eviction process — filing a complaint for restitution in district court after proper notice. Self-help evictions are not permitted on occupied premises. The process typically takes 3–6 weeks." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by New Mexico's UCC Article 3 (NMSA 1978, §55-3-101 et seq.) for negotiable instruments; must include an unconditional written promise to pay a fixed sum, identified payee, and maker's signature",
+        "New Mexico usury limit: no general statutory usury cap for commercial transactions; consumer loans are subject to the New Mexico Bank Installment Loan Act and federal TILA requirements",
+        "Real property-secured promissory notes must be accompanied by a mortgage or deed of trust recorded with the county clerk in the county where the property is located",
+      ],
+      restrictions: [
+        "Statute of limitations: 6 years for written contracts and promissory notes under §37-1-3(A)",
+        "Consumer borrowers retain federal Truth in Lending Act protections — required disclosures must accompany consumer promissory notes",
+        "New Mexico's community property rules affect enforcement of promissory notes against married debtors — both spouses may need to sign for community property to be reached",
+      ],
+      faq: [
+        { question: "What is the statute of limitations on a New Mexico promissory note?", answer: "New Mexico's statute of limitations for written contracts, including promissory notes, is 6 years under §37-1-3(A). The clock typically starts on the date of default or maturity. This is longer than most states." },
+        { question: "How does community property affect promissory note enforcement in New Mexico?", answer: "In New Mexico, a debt incurred during marriage for community purposes is a community debt. Creditors may reach community property to satisfy the debt. If both spouses do not sign the note, the lender may still reach community assets but may face challenges reaching the non-signing spouse's separate property." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No New Mexico statute requires a pre-suit demand letter for most civil claims, but it is standard practice and may be required by contract or applicable court rules",
+        "Letter should identify the parties, describe the factual and legal basis of the claim, state the specific remedy demanded, and provide a firm response deadline (10–30 days)",
+        "Consumer collection demand letters must comply with the federal FDCPA and New Mexico Unfair Practices Act (§57-12-1 et seq.)",
+      ],
+      restrictions: [
+        "Statute of limitations: 6 years for written contracts (§37-1-3(A)); a demand letter does not toll the statute",
+        "Threatening criminal prosecution to collect a civil debt may constitute extortion under New Mexico law (§30-16-9)",
+        "Do not misrepresent the nature of the debt, the legal status of the claim, or the consequences of non-payment in the letter",
+      ],
+      faq: [
+        { question: "What is New Mexico's small claims court limit?", answer: "New Mexico Magistrate Court handles small claims up to $10,000. A pre-suit demand letter is expected and may resolve the dispute without litigation. Filing fees are approximately $50–$90." },
+        { question: "How should a demand letter be sent in New Mexico?", answer: "Send via certified mail with return receipt requested to the opposing party's last known address. For business entities, also send to the registered agent on file with the New Mexico Public Regulation Commission (prc.nm.gov) to ensure proper notice." },
+      ],
+    },
+  },
+  "north-dakota": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by North Dakota Century Code §47-16; no statutory security deposit cap, but landlord must return deposit within 30 days of termination",
+        "Landlord must provide written statement of property condition at move-in if a deposit is collected (NDCC §47-16-07.2)",
+        "Written lease required for any term exceeding one year under the Statute of Frauds (NDCC §9-06-04)",
+      ],
+      restrictions: [
+        "Self-help eviction (locking out tenant, removing belongings) is prohibited; formal eviction through district court required",
+        "Landlord may not retaliate against a tenant who reports code violations or habitability issues",
+        "Late fees are not capped by statute but must be reasonable and specified in the lease",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 30 days' written notice required by either party to terminate. Nonpayment of rent: 3 days' notice to quit before filing an eviction action (NDCC §33-06-01).",
+      faq: [
+        { question: "Is there a security deposit limit in North Dakota?", answer: "North Dakota does not cap the security deposit amount. However, the landlord must return the deposit within 30 days after termination with an itemized statement of any deductions; failure to do so may forfeit the right to retain any portion." },
+        { question: "How much notice is required to end a month-to-month lease in North Dakota?", answer: "Either party must give 30 days' written notice to terminate a month-to-month tenancy. For nonpayment of rent, the landlord must serve a 3-day written notice before filing an eviction action in district court." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the North Dakota Limited Liability Company Act (NDCC Ch. 10-32.1); Articles of Organization filed with the Secretary of State for a $135 fee",
+        "Annual report required by November 15 each year; $50 filing fee",
+        "Registered agent with a North Dakota street address required",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from other registered entities",
+        "Professional service LLCs (law, medicine, accounting) must comply with state licensing board requirements",
+        "North Dakota does not impose a separate corporate income tax on pass-through LLC income — members report income on personal state returns at a top rate of 2.5%",
+      ],
+      faq: [
+        { question: "What is the cost to form an LLC in North Dakota?", answer: "Filing Articles of Organization with the North Dakota Secretary of State costs $135. There is also a $50 annual report fee due each November. North Dakota's low LLC fees and no corporate income tax on pass-through entities make it cost-effective for small businesses." },
+        { question: "Is a North Dakota LLC operating agreement required by law?", answer: "NDCC §10-32.1 does not require a written operating agreement, but without one the statutory default rules govern member rights and management. A written agreement is essential for multi-member LLCs to establish voting, profit-sharing, and exit procedures." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "North Dakota is an at-will employment state; either party may terminate employment at any time for any lawful reason",
+        "State minimum wage: $7.25/hour (tracks federal minimum); no state-level increases currently scheduled",
+        "Right-to-work state under NDCC §34-01-14; employees cannot be required to join or pay union dues as a condition of employment",
+      ],
+      restrictions: [
+        "Non-compete agreements are void and unenforceable in North Dakota under NDCC §9-08-06, except upon the sale of a business and its goodwill",
+        "Employers may not discriminate based on protected characteristics under the North Dakota Human Rights Act (NDCC §14-02.4)",
+        "Wage payment on termination: final wages due by the next regular payday after termination (NDCC §34-14-03)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in North Dakota?", answer: "No. NDCC §9-08-06 makes non-compete clauses void as against public policy in North Dakota, with a narrow exception for the seller of a business who agrees not to compete in the same market. Employers may protect trade secrets through confidentiality agreements, but geographic or time-based employment restrictions are unenforceable." },
+        { question: "What is North Dakota's minimum wage?", answer: "North Dakota follows the federal minimum wage of $7.25/hour and has not enacted a higher state rate. As a right-to-work state, employees cannot be compelled to join a union. Employment contracts should specify whether compensation is hourly, salaried, or commission-based." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the North Dakota Uniform Power of Attorney Act (NDCC Ch. 30.1-30); must be signed by the principal and acknowledged before a notary public",
+        "A durable POA must expressly state that it is not affected by the principal's subsequent incapacity (NDCC §30.1-30-04)",
+        "Health care decisions require a separate Health Care Directive under NDCC Ch. 23-06.5",
+      ],
+      restrictions: [
+        "Agent may not make gifts from the principal's property unless expressly authorized in the POA document",
+        "An agent cannot create, amend, or revoke the principal's will",
+        "Real estate transactions using a POA must be recorded with the county recorder in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does a North Dakota power of attorney need to be notarized?", answer: "Yes. Under NDCC §30.1-30-05, a power of attorney must be signed and acknowledged before a notary public to be valid. Witnesses are not required by statute but may be requested by financial institutions." },
+        { question: "What is a durable power of attorney in North Dakota?", answer: "A durable POA remains effective if the principal becomes incapacitated. It must include language stating the POA is not affected by the principal's subsequent disability or incapacity. Without this clause, the POA terminates automatically upon the principal's incapacity." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the North Dakota Uniform Probate Code (NDCC Ch. 30.1-08); must be signed by the testator and witnessed by two individuals",
+        "Both witnesses must be present at the same time and sign the will in the testator's presence",
+        "Holographic wills (entirely in the testator's handwriting and signed) are valid in North Dakota without witnesses",
+      ],
+      restrictions: [
+        "Witnesses should not be named beneficiaries to avoid interested-witness complications",
+        "Pretermitted children (born after will execution) receive an intestate share unless the will expressly disinherits them",
+        "North Dakota has no state estate or inheritance tax — assets pass free of state death taxes",
+      ],
+      faq: [
+        { question: "Does North Dakota have an estate tax?", answer: "No. North Dakota does not impose a state estate tax or inheritance tax. Only the federal estate tax (applicable to estates over $13.61 million in 2024) applies. This makes estate planning relatively straightforward compared to states with lower exemption thresholds." },
+        { question: "Are holographic wills valid in North Dakota?", answer: "Yes. A holographic will entirely in the testator's handwriting and signed by the testator is valid in North Dakota without witnesses. However, a formally witnessed will is generally more reliable and easier to admit to probate." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "North Dakota is one of the very few states that bans non-compete agreements outright; NDCC §9-08-06 renders them void as against public policy",
+        "The sole statutory exception is the sale of a business: a seller may agree not to carry on a similar business within a specified geographic area",
+        "Confidentiality and non-disclosure agreements protecting trade secrets remain fully enforceable",
+      ],
+      restrictions: [
+        "Any non-compete clause in an employment or contractor agreement is unenforceable — courts will not blue-pencil or narrow them",
+        "Employers may not condition employment or continued employment on signing a non-compete",
+        "Non-solicitation of employees may also be void if structured to function as a de facto non-compete",
+      ],
+      faq: [
+        { question: "Can a North Dakota employer enforce a non-compete signed in another state?", answer: "Courts are split, but North Dakota's strong public policy against non-competes (NDCC §9-08-06) typically overrides choice-of-law provisions when the employee works in North Dakota. Consult counsel if a non-compete references another state's law." },
+        { question: "What can a North Dakota employer use instead of a non-compete?", answer: "Employers can protect legitimate interests through trade secret agreements under the North Dakota Trade Secrets Act (NDCC Ch. 47-25.1), non-disclosure agreements, and narrowly tailored non-solicitation of specific customers tied to actual client relationships." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "North Dakota uses the common law right-to-control test to distinguish employees from independent contractors",
+        "For unemployment insurance purposes, North Dakota applies an ABC test under NDCC §52-01-01",
+        "Written agreement should specify scope of work, payment terms, IC's obligation to pay own taxes, and absence of employee benefits",
+      ],
+      restrictions: [
+        "Misclassification of employees as contractors exposes employers to back unemployment contributions, workers' comp penalties, and IRS payroll tax liability",
+        "Workers' compensation coverage is administered by WSI (Workforce Safety & Insurance) — contractors must verify their own coverage obligations",
+        "North Dakota ICs may not be required to join a union as a condition of work (right-to-work state)",
+      ],
+      faq: [
+        { question: "Does North Dakota require a written independent contractor agreement?", answer: "No statute mandates a written IC agreement, but a written contract is essential to document the parties' intent, define deliverables, set payment terms, and protect against misclassification claims." },
+        { question: "How does WSI workers' compensation affect North Dakota contractors?", answer: "North Dakota's Workforce Safety & Insurance (WSI) is a monopolistic state fund. Contractors performing work in North Dakota may need to secure their own WSI coverage; failing to do so can result in the hiring party being held responsible for benefits if an injury occurs." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Commercial leases in North Dakota are governed by general contract law; no separate commercial landlord-tenant statute",
+        "Written lease required for terms exceeding one year (Statute of Frauds, NDCC §9-06-04)",
+        "Both parties must sign; entities should confirm authority through corporate or LLC resolution",
+      ],
+      restrictions: [
+        "No statutory rent control for commercial properties in North Dakota",
+        "Landlord must use judicial process (summary process) for eviction — self-help remedies are prohibited",
+        "CAM charges, tax escalations, and operating expenses must be defined precisely in the lease to be enforceable",
+      ],
+      faq: [
+        { question: "Are there rent control laws for North Dakota commercial leases?", answer: "No. North Dakota has no rent control for commercial properties. Rent increases are governed entirely by the lease terms. Tenants should negotiate rent caps or escalation clauses at execution." },
+        { question: "What is the eviction process for commercial tenants in North Dakota?", answer: "Commercial landlords must serve written notice (typically 3 days for nonpayment as specified in the lease), then file a forcible entry and detainer action in district court if the tenant fails to cure. Self-help eviction is prohibited regardless of the lease language." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by North Dakota UCC Article 3 (NDCC Ch. 41-03); note must be a written, signed, unconditional promise to pay a sum certain",
+        "Consumer loans: general usury cap is 5.5% above the Federal Reserve discount rate or 7%, whichever is higher (NDCC §47-14-09); commercial parties may contract for any rate",
+        "Security interests in personal property perfected by UCC-1 filing with the North Dakota Secretary of State",
+      ],
+      restrictions: [
+        "Consumer usury limits apply; parties should state the annual percentage rate (APR) clearly to avoid disputes",
+        "Real property mortgages must be recorded with the county recorder in the county where the property is located",
+        "Confession of judgment clauses are disfavored and may be unenforceable in North Dakota courts",
+      ],
+      faq: [
+        { question: "What is North Dakota's usury limit on loans?", answer: "For consumer loans, NDCC §47-14-09 caps interest at 5.5 percentage points above the Federal Reserve discount rate or 7%, whichever is greater. Business-to-business loans are not subject to this cap if the rate is agreed to in writing." },
+        { question: "What is the statute of limitations on a promissory note in North Dakota?", answer: "Under NDCC §28-01-16, written contracts (including promissory notes) have a 6-year statute of limitations. The clock begins running from the date of default or the note's maturity date." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; the letter must identify both parties, state the factual basis for the claim, and specify the amount or action demanded",
+        "Set a clear response deadline (10–30 days) and send by certified mail with return receipt for proof of delivery",
+        "North Dakota small claims court handles disputes up to $15,000 — a demand letter is expected before filing",
+      ],
+      restrictions: [
+        "Do not threaten criminal prosecution to compel civil payment — this constitutes extortion under NDCC §12.1-23-10",
+        "Debt collection letters must comply with the federal Fair Debt Collection Practices Act (FDCPA) if sent by a third-party collector",
+        "Accurately state the legal basis for the claim and do not misrepresent deadlines or consequences",
+      ],
+      faq: [
+        { question: "What is North Dakota's small claims court limit?", answer: "North Dakota small claims court (County Court Small Claims Division) handles disputes up to $15,000. Filing fees are approximately $30–$80. A prior written demand letter is advisable and may resolve the dispute without litigation." },
+        { question: "How should I send a demand letter in North Dakota?", answer: "Send via USPS certified mail with return receipt requested, and keep a copy of the letter and the return receipt as proof of delivery. Email alone may be insufficient unless the recipient has agreed in writing to receive legal notices electronically." },
+      ],
+    },
+  },
+
+  oklahoma: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Oklahoma Residential Landlord and Tenant Act (41 Okla. Stat. §§101–136); no statutory cap on security deposits",
+        "Security deposit must be returned within 45 days of termination with an itemized written statement of deductions (41 Okla. Stat. §115)",
+        "Landlord must maintain the premises in habitable condition and comply with applicable housing codes under §118",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, shutting off utilities, removing tenant's property) is prohibited; formal eviction through district court required",
+        "Landlord may not retaliate against a tenant who has filed a complaint about habitability within 90 days of the complaint",
+        "Late fees are not capped by statute but must be specified in the lease and be reasonable",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 30 days' written notice to terminate. Nonpayment of rent: 5 days' notice to pay or quit before the landlord may file an eviction action (41 Okla. Stat. §131).",
+      faq: [
+        { question: "Is there a security deposit limit in Oklahoma?", answer: "Oklahoma law (41 Okla. Stat. §115) does not cap the security deposit amount. The landlord must return it within 45 days after the lease ends with an itemized statement; failure to do so entitles the tenant to the full deposit plus damages." },
+        { question: "What notice is required before eviction in Oklahoma?", answer: "For nonpayment of rent, a landlord must serve a 5-day written notice to pay or vacate. For other lease violations, a 15-day notice to remedy or quit is required. Only after the notice period expires without cure may the landlord file an eviction petition in district court." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Oklahoma Limited Liability Company Act (18 Okla. Stat. §§2000 et seq.); Articles of Organization filed with the Secretary of State for a $100 fee",
+        "Annual Certificate of Good Standing: $25 fee due annually to maintain LLC in good standing",
+        "Registered agent with an Oklahoma street address required",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'L.L.C.,' or 'LLC' and be distinguishable from existing registered names",
+        "Professional LLCs (attorneys, physicians, CPAs) must comply with their respective state licensing board requirements",
+        "Oklahoma does not recognize series LLCs; separate LLCs are required for each distinct business unit",
+      ],
+      faq: [
+        { question: "What does it cost to form and maintain an Oklahoma LLC?", answer: "Filing Articles of Organization costs $100, plus a $25 annual certificate fee to keep the LLC in good standing. Oklahoma's business taxes apply at the member level on pass-through income; there is no separate Oklahoma franchise tax for most LLCs." },
+        { question: "Is an operating agreement required for an Oklahoma LLC?", answer: "Oklahoma law does not require LLCs to have a written operating agreement, but without one the statutory default provisions in 18 Okla. Stat. §§2000 et seq. govern management and member rights. A written agreement is strongly recommended for multi-member LLCs." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Oklahoma is an at-will employment state; either party may terminate employment at any time for any lawful reason",
+        "State minimum wage: $7.25/hour (tracks the federal minimum); Oklahoma has not enacted a higher state rate",
+        "Right-to-work state under the Oklahoma Constitution Art. XXIII §1A; union membership cannot be required as a condition of employment",
+      ],
+      restrictions: [
+        "Non-compete agreements are limited by 15 Okla. Stat. §217: must not exceed 2 years, must be tied to a specific geographic area and legitimate business interest (trade secrets, customer relationships), and courts may reform overly broad restrictions",
+        "Employers may not discriminate based on protected characteristics under the Oklahoma Anti-Discrimination Act (25 Okla. Stat. §§1301 et seq.)",
+        "Oklahoma minimum wage: $7.25/hour — no state sick leave mandate; cities are preempted from setting higher local rates",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Oklahoma?", answer: "Yes, within limits. Under 15 Okla. Stat. §217, non-competes must be reasonable in duration (generally up to 2 years), geographic scope, and tied to a legitimate business interest such as trade secrets or established customer relationships. Oklahoma courts may reform — but not outright void — overly broad agreements." },
+        { question: "Is Oklahoma a right-to-work state?", answer: "Yes. Oklahoma's constitutional right-to-work provision (Art. XXIII §1A) prohibits requiring union membership or dues as a condition of employment in any Oklahoma business, making it an employer-friendly state for workforce flexibility." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Oklahoma Uniform Power of Attorney Act (58 Okla. Stat. §§3001 et seq.); must be signed by the principal and acknowledged before a notary public",
+        "A durable POA must expressly state it survives the principal's incapacity using language such as 'This power of attorney shall not be terminated by subsequent disability or incapacity of the principal'",
+        "Health care decisions require a separate Advance Directive for Health Care under 63 Okla. Stat. §§3101.1 et seq.",
+      ],
+      restrictions: [
+        "Agent may not make gifts of the principal's property unless expressly authorized in the POA document",
+        "An agent cannot create, amend, or revoke the principal's will",
+        "POA used in real estate transactions must be recorded with the county clerk in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does an Oklahoma power of attorney need to be notarized?", answer: "Yes. Under 58 Okla. Stat. §3005, a power of attorney must be acknowledged before a notary public to be valid. Some financial institutions also require witnesses; check with the specific institution before execution." },
+        { question: "How do I revoke a power of attorney in Oklahoma?", answer: "Execute a written revocation, deliver it to the agent, and notify any third parties who may have relied on the POA. If the POA was recorded for real estate, record the revocation in the same county clerk's office." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the Oklahoma Probate Code (84 Okla. Stat. §§1 et seq.); must be signed by the testator and witnessed by two competent adults",
+        "Both witnesses must sign in the presence of the testator and of each other",
+        "Holographic wills (entirely in the testator's handwriting and signed) are valid in Oklahoma without witnesses under 84 Okla. Stat. §54",
+      ],
+      restrictions: [
+        "Interested witnesses (beneficiaries who witness the will) do not automatically invalidate the will, but their bequest may be limited to their intestate share",
+        "Oklahoma has no state estate or inheritance tax — only federal estate tax applies",
+        "Pretermitted children (born after will execution) receive an intestate share unless expressly disinherited in the will",
+      ],
+      faq: [
+        { question: "Does Oklahoma have a state estate tax?", answer: "No. Oklahoma repealed its estate tax and does not impose an inheritance tax. Only the federal estate tax (applicable to estates exceeding $13.61 million in 2024) applies to Oklahoma decedents." },
+        { question: "How many witnesses are needed for a valid Oklahoma will?", answer: "Two competent adult witnesses are required for an attested will. Oklahoma also recognizes holographic wills written entirely in the testator's handwriting and signed, requiring no witnesses. A self-proving affidavit simplifies probate by eliminating the need for witnesses to testify in court." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by 15 Okla. Stat. §217; non-competes must be supported by adequate consideration (employment, a promotion, or a separate payment at signing)",
+        "The agreement must specify a definite geographic area and a duration no longer than 2 years",
+        "Must be tied to a legitimate business interest: trade secrets, confidential information, or established customer relationships",
+      ],
+      restrictions: [
+        "Oklahoma courts may reform (blue-pencil) overly broad non-competes rather than void them entirely, so courts may impose narrower limits",
+        "Non-competes may not be used to prevent employees from using general skills and knowledge acquired during employment",
+        "Non-competes in connection with the sale of a business are enforceable with broader geographic and duration terms than employee non-competes",
+      ],
+      faq: [
+        { question: "What makes a non-compete enforceable in Oklahoma?", answer: "Under 15 Okla. Stat. §217, the agreement must be (1) supported by consideration, (2) limited to a specific geographic area, (3) no longer than 2 years, and (4) tied to a legitimate business interest such as trade secrets or established customer relationships. Courts may narrow overly broad restrictions rather than void them." },
+        { question: "Can an Oklahoma employer enforce a non-compete against a former employee?", answer: "Yes, if the agreement meets the statutory requirements. Oklahoma courts have upheld well-drafted non-competes that are geographically and temporally reasonable. However, agreements that are overbroad in scope or unsupported by consideration are vulnerable to judicial reformation or rejection." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Oklahoma uses the common law right-to-control test to distinguish employees from independent contractors",
+        "For unemployment insurance, Oklahoma applies the ABC test under 40 Okla. Stat. §1-210(6)",
+        "Written agreement should specify scope of work, payment schedule, IC's obligation to carry own insurance and pay own taxes, and absence of employee benefits",
+      ],
+      restrictions: [
+        "Misclassification of employees as contractors may result in back unemployment contributions, workers' comp premiums, and IRS payroll tax assessments",
+        "Oklahoma Workers' Compensation Act may apply to contractors depending on industry — verify coverage obligations",
+        "As a right-to-work state, contractors cannot be required to join a union as a condition of the engagement",
+      ],
+      faq: [
+        { question: "What test does Oklahoma use for worker classification?", answer: "Oklahoma courts apply the common law right-to-control test for most employment purposes: the key factor is who controls how the work is performed, not just the outcome. For unemployment tax, Oklahoma uses an ABC test requiring the worker to be free from direction, performing work outside the company's usual business, and independently established in their trade." },
+        { question: "What should be included in an Oklahoma independent contractor agreement?", answer: "Include the scope of services, deliverables, payment terms, confirmation that the contractor pays their own taxes and insurance, IP assignment, confidentiality, termination rights, and dispute resolution. Avoid specifying set work hours or requiring exclusivity, which can indicate an employment relationship." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Commercial leases in Oklahoma are governed by general contract law; the Oklahoma Residential Landlord and Tenant Act does not apply",
+        "Written lease required for terms exceeding one year (Statute of Frauds, 15 Okla. Stat. §136)",
+        "Both parties must sign; corporate or LLC tenants should authorize signatories by resolution",
+      ],
+      restrictions: [
+        "No rent control applies to Oklahoma commercial properties",
+        "Landlord must obtain a judgment through district court to evict a commercial tenant — self-help is prohibited",
+        "CAM charges, property tax escalations, and utility responsibilities must be expressly defined in the lease",
+      ],
+      faq: [
+        { question: "Is there a commercial eviction statute in Oklahoma?", answer: "Yes. Commercial evictions follow the Forcible Entry and Detainer statute (12 Okla. Stat. §§1148.1 et seq.). The landlord must give written notice as specified in the lease (commonly 5–10 days for nonpayment), then file in district court. Unlawful self-help eviction exposes the landlord to tort liability." },
+        { question: "What are typical personal guaranty requirements in Oklahoma commercial leases?", answer: "Landlords commonly require personal guarantees from principals of new businesses or LLCs with limited credit history. A guaranty can be structured as 'good guy' (liability ends when tenant vacates and surrenders the space) or full-term. Negotiate guaranty burn-off provisions tied to on-time payment history." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Oklahoma UCC Article 3 (12A Okla. Stat. §§3-101 et seq.); must be a written, signed, unconditional promise to pay a definite sum",
+        "Consumer usury cap: 6% per year unless the parties agree in writing to a higher rate (15 Okla. Stat. §272); commercial notes may set any rate if agreed in writing",
+        "Security interests in personal property perfected by UCC-1 Financing Statement filed with the Oklahoma Secretary of State",
+      ],
+      restrictions: [
+        "Consumer usury limits apply — parties should specify the annual percentage rate (APR) clearly in the note",
+        "Real property mortgages must be recorded in the county where the property is located",
+        "Prepayment penalties must be expressly stated; silence is construed in favor of the borrower",
+      ],
+      faq: [
+        { question: "What is Oklahoma's interest rate cap on promissory notes?", answer: "Oklahoma's general usury cap is 6% per year (15 Okla. Stat. §272), but parties may contractually agree to a higher rate in writing. For commercial loans between businesses, no statutory cap applies if the rate is agreed to in writing. Consumer lenders should verify compliance with federal Truth in Lending Act (TILA) disclosure requirements." },
+        { question: "What is the statute of limitations on a promissory note in Oklahoma?", answer: "Oklahoma's statute of limitations for written contracts, including promissory notes, is 5 years under 12 Okla. Stat. §95. The limitations period begins when the payment is due and unpaid (the date of default)." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form is required; the letter must clearly identify both parties, state the factual basis for the claim, and specify the amount demanded or action required",
+        "Set a firm response deadline (10–30 days) and send by certified mail with return receipt for proof of delivery",
+        "Oklahoma small claims court (Small Claims Docket, District Court) handles disputes up to $10,000 — a prior demand letter is expected",
+      ],
+      restrictions: [
+        "Do not threaten criminal charges to induce civil payment — this may constitute extortion under Oklahoma law",
+        "Third-party debt collectors must comply with the federal Fair Debt Collection Practices Act (FDCPA)",
+        "Do not misrepresent the legal status of the debt or the consequences of nonpayment",
+      ],
+      faq: [
+        { question: "What is Oklahoma's small claims court limit?", answer: "Oklahoma's small claims docket in District Court handles disputes up to $10,000. Filing fees are approximately $80–$120. A prior written demand letter is advisable and may resolve the matter before a lawsuit is necessary." },
+        { question: "Can I recover attorney's fees in an Oklahoma demand letter?", answer: "Oklahoma follows the American Rule — each party bears their own attorney's fees unless a statute or contract provides otherwise. Including an attorney's fees clause in your original contract and referencing it in the demand letter strengthens your position if litigation becomes necessary." },
+      ],
+    },
+  },
+
+  oregon: {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Oregon Residential Landlord and Tenant Act (ORS Ch. 90); no statutory cap on security deposits, but deposits must be returned within 31 days of termination with an itemized written statement of deductions (ORS §90.300)",
+        "Landlord must provide a written disclosure of the move-in condition of the unit if collecting a security deposit (ORS §90.300(4))",
+        "Carbon monoxide and smoke detector working condition must be confirmed in writing at move-in (ORS §90.316–90.318)",
+      ],
+      restrictions: [
+        "Oregon statewide rent control (SB 608, 2019): rent increases are limited to 7% plus CPI (max 10%) per year for units more than 15 years old; exempts newer construction and single-family homes owned by individual landlords",
+        "No-cause evictions of month-to-month tenants are prohibited after the first year of tenancy in most circumstances (ORS §90.427); landlords must cite qualifying reasons",
+        "Self-help eviction is prohibited — landlords must use the formal court process under ORS Ch. 105",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 30 days' written notice from tenant; 90 days from landlord (or 30 days with relocation assistance in some circumstances). Nonpayment of rent: 10 days' notice to pay or quit before filing an eviction action (ORS §90.394).",
+      faq: [
+        { question: "Does Oregon have rent control?", answer: "Yes. Under SB 608 (ORS §90.600), annual rent increases for covered units are capped at 7% plus CPI (maximum 10% per year). Units built within the last 15 years are exempt, as are single-family homes rented by individual landlords who are not corporations or institutional investors." },
+        { question: "Can an Oregon landlord evict a tenant without cause?", answer: "Not after the first year. Under ORS §90.427, landlords may issue no-cause termination notices during the first year of tenancy, but after one year a qualifying reason (nonpayment, lease violation, landlord's intent to demolish or move in) is required. Different notice periods apply to each cause." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Oregon Limited Liability Company Act (ORS Ch. 63); Articles of Organization filed with the Oregon Secretary of State for a $100 fee",
+        "Annual report required by the anniversary date of formation; $100 annual report fee",
+        "Registered agent with an Oregon street address required",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from other registered Oregon entities",
+        "Professional service LLCs (law, medicine, engineering) must comply with licensing board requirements and may need to form as an LLP instead",
+        "Oregon imposes a minimum excise tax on LLCs: $150/year for LLCs with less than $500,000 in Oregon sales; higher brackets apply above that threshold",
+      ],
+      faq: [
+        { question: "What does it cost to form and maintain an Oregon LLC?", answer: "Oregon charges $100 to file Articles of Organization and $100 annually for the required annual report. Oregon's minimum excise tax for LLCs is $150/year for entities with under $500,000 in Oregon sales; larger LLCs pay more. Total first-year cost is typically $250–$500 including registered agent fees." },
+        { question: "Is an Oregon LLC operating agreement required by law?", answer: "ORS Ch. 63 does not require a written operating agreement to be filed, but it strongly recommends one for multi-member LLCs. Without a written agreement, statutory default rules govern profit distributions (pro rata by capital contribution), management voting (majority), and member exit rights." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Oregon is an at-will employment state, subject to significant statutory employee protections",
+        "Oregon minimum wage: $14.20/hour statewide (2024); $15.95/hour in the Portland metro area; $13.70/hour in non-urban counties",
+        "Oregon requires paid sick leave: at least 40 hours per year for employers with 10+ employees (5 paid days); smaller employers must provide 40 hours of unpaid sick leave (ORS §653.606)",
+      ],
+      restrictions: [
+        "Non-compete agreements are limited to 18 months' duration under ORS §653.295; employer must pay the employee's base salary during the restriction period OR the agreement is void — as of 2021, the 'garden leave' pay requirement makes Oregon non-competes practically burdensome",
+        "Non-competes are void if the employee earns less than the median Oregon family income ($100,533 in 2023) at time of termination",
+        "Oregon Equal Pay Act (ORS §652.220) requires equal pay for comparable work; employers cannot inquire about applicants' salary history",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in Oregon?", answer: "Only under strict conditions. Under ORS §653.295, non-competes must be 18 months or less, the employee must earn above the median Oregon family income, the employer must provide advance written notice at the time of job offer, and — critically — the employer must pay the employee's base salary during the restriction period. Failure to pay makes the non-compete void." },
+        { question: "What is Oregon's minimum wage in 2024?", answer: "Oregon's minimum wage is tiered: $14.20/hour statewide, $15.95/hour in the Portland metro area, and $13.70/hour in non-urban counties. Rates increase annually on July 1. Employment contracts must specify a wage at or above the applicable regional rate." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the Oregon Uniform Power of Attorney Act (ORS §§127.005–127.045); must be signed by the principal and acknowledged before a notary public or signed in the presence of two witnesses",
+        "A durable POA must contain explicit language stating it is not affected by the principal's subsequent incapacity (ORS §127.005(2))",
+        "Health care decisions require a separate Advance Directive under ORS §127.531 et seq.",
+      ],
+      restrictions: [
+        "Agent may not make gifts of the principal's property unless expressly authorized in the POA document",
+        "Agent cannot create, amend, or revoke the principal's will",
+        "Real estate transactions require the POA to be recorded with the county clerk in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does an Oregon power of attorney need to be notarized?", answer: "Yes. Under ORS §127.005, a POA must be acknowledged before a notary public or witnessed by two adult witnesses. Notarization is preferable as financial institutions and real estate recorders typically require it." },
+        { question: "What makes a POA 'durable' in Oregon?", answer: "A durable POA in Oregon must explicitly state that it remains effective notwithstanding the principal's subsequent disability or incapacity. Without this language, the POA terminates automatically if the principal becomes incapacitated, which is the opposite of what most people intend." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by Oregon Probate Code (ORS Ch. 112); must be in writing, signed by the testator, and witnessed by two competent adults",
+        "Both witnesses must sign in the presence of the testator; witnesses should not be named beneficiaries",
+        "Notarization is not required for a valid will, but a self-proving affidavit (ORS §113.055) expedites probate by eliminating the need for witness testimony",
+      ],
+      restrictions: [
+        "Oregon imposes an estate tax with a low threshold: estates exceeding $1 million (one of the lowest thresholds in the US) are subject to Oregon estate tax at rates of 10–16% (ORS §118.010)",
+        "Holographic wills (in testator's own handwriting) are not recognized in Oregon — a typed, witnessed will is required",
+        "Surviving spouse is entitled to an elective share (ORS §114.600) of the estate regardless of the will's provisions",
+      ],
+      faq: [
+        { question: "Does Oregon have a state estate tax?", answer: "Yes, and it has one of the lowest thresholds in the country. Oregon imposes an estate tax on estates exceeding $1 million, with rates ranging from 10% to 16% (ORS §118.010). Proper estate planning — including trusts and gifting strategies — is important for Oregon residents with modest estates." },
+        { question: "Are holographic wills valid in Oregon?", answer: "No. Oregon does not recognize holographic wills. Any valid Oregon will must be typed or printed, signed by the testator, and witnessed by two competent adults. Handwritten wills without witnesses are invalid under Oregon law." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by ORS §653.295; the agreement must be provided at the time of a written employment offer or when a current employee is promoted (advance written notice required)",
+        "The restriction period is capped at 18 months from the date of the employee's termination",
+        "The employer must pay the employee's base salary throughout the entire restriction period ('garden leave pay') or the non-compete is void",
+      ],
+      restrictions: [
+        "Non-competes are void against employees who earn less than the median Oregon family income at the time of termination (approximately $100,533 in 2023 — this figure is updated periodically)",
+        "Non-competes cannot apply to employees who are terminated without cause by the employer",
+        "Garden leave payment obligation makes Oregon non-competes economically costly — employers often use trade secret and non-solicitation agreements instead",
+      ],
+      faq: [
+        { question: "What is Oregon's 'garden leave' non-compete requirement?", answer: "Under ORS §653.295, if a non-compete agreement is enforceable, the employer must pay the employee their base salary for the entire duration of the restriction period (up to 18 months). If the employer fails to make these payments, the non-compete becomes void. This makes Oregon non-competes among the most employer-costly in the US." },
+        { question: "Who is exempt from Oregon non-compete agreements?", answer: "Employees earning less than the median Oregon family income at termination cannot be bound by a non-compete. Additionally, employees terminated without cause are exempt. Executives and key employees with access to trade secrets who earn above the income threshold are the primary candidates for enforceable non-competes." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Oregon uses a multi-factor control test for most employment purposes; for unemployment insurance, Oregon applies an ABC test (ORS §657.040)",
+        "Written agreement should specify scope of work, payment terms, contractor's obligation to pay own taxes and carry own insurance, and IP ownership",
+        "Oregon Contractor Registration: construction contractors must register with the Oregon Construction Contractors Board (ORS §701.035)",
+      ],
+      restrictions: [
+        "Misclassification exposes employers to Oregon unemployment insurance contributions, workers' compensation premiums, and Bureau of Labor and Industries (BOLI) civil penalties",
+        "Oregon's Gig Worker Fairness Act (2023) provides additional protections for app-based transportation and delivery workers",
+        "Oregon paid sick leave law does not apply to bona fide independent contractors, but misclassified workers can claim retroactive sick leave benefits",
+      ],
+      faq: [
+        { question: "Must Oregon construction contractors be registered?", answer: "Yes. Oregon requires construction contractors to register with the Oregon Construction Contractors Board (CCB) before entering into any construction contract. Unregistered contractors cannot enforce payment claims and may face civil penalties. Verify a contractor's registration at oregonccb.org before signing." },
+        { question: "What is Oregon's ABC test for independent contractors?", answer: "Under ORS §657.040, a worker is an employee for unemployment insurance purposes unless: (A) the worker is free from the company's direction and control, (B) the service is performed outside the company's usual business, and (C) the worker is independently established in the same type of work. All three prongs must be met." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Oregon commercial leases are governed by general contract law; the Residential Landlord and Tenant Act does not apply",
+        "Written lease required for terms exceeding one year (ORS §41.580 Statute of Frauds)",
+        "Both parties must sign; entities should authorize signatories by corporate or LLC resolution",
+      ],
+      restrictions: [
+        "No rent control applies to Oregon commercial properties (statewide rent control applies only to residential units)",
+        "Commercial landlords must use judicial process (Forcible Entry and Wrongful Detainer) for eviction — self-help is prohibited",
+        "CAM charges and operating expense pass-throughs must be defined with specificity to be enforceable",
+      ],
+      faq: [
+        { question: "Does Oregon's rent control law apply to commercial leases?", answer: "No. Oregon's statewide rent control (SB 608) applies only to residential rental properties. Commercial leases are freely negotiated with no statutory limits on rent increases. Tenants should negotiate renewal options and rent escalation caps at execution." },
+        { question: "What is the commercial eviction process in Oregon?", answer: "Landlords must serve written notice as specified in the lease (typically 10 days for nonpayment), then file a Forcible Entry and Wrongful Detainer action in circuit court if the tenant fails to cure. Oregon courts can move quickly in commercial FED cases, often resolving within 30–45 days of filing." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Oregon UCC Article 3 (ORS Ch. 73); must be a written, signed, unconditional promise to pay a definite sum",
+        "Consumer loans: Oregon usury cap is 9% per year or the rate agreed upon in writing (ORS §82.010); commercial loans may set any rate if agreed in writing",
+        "Security interests in personal property perfected by UCC-1 filing with the Oregon Secretary of State",
+      ],
+      restrictions: [
+        "Consumer usury limits apply; state the annual percentage rate (APR) clearly to comply with both Oregon law and federal TILA",
+        "Real property mortgages must be recorded in the county where the property is located",
+        "Oregon is a non-judicial foreclosure state for trust deeds but judicial process is required for mortgages",
+      ],
+      faq: [
+        { question: "What is Oregon's interest rate cap on promissory notes?", answer: "ORS §82.010 sets a general usury cap of 9% per year; parties may contractually agree to a higher rate in writing. Commercial notes between businesses are not subject to the usury cap if the rate is specified in the agreement. Always include the APR to satisfy federal Truth in Lending Act disclosures for consumer loans." },
+        { question: "What is the statute of limitations on a promissory note in Oregon?", answer: "Oregon's statute of limitations for written contracts, including promissory notes, is 6 years (ORS §12.080). The clock begins running from the date the payment is due and unpaid. A partial payment or written acknowledgment of the debt can restart the limitations period." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; clearly identify both parties, state the factual basis for the claim, and specify the exact amount or action demanded",
+        "Set a response deadline of 10–30 days and send by certified mail with return receipt for proof of delivery",
+        "Oregon small claims court handles disputes up to $10,000; a prior demand letter is standard practice before filing",
+      ],
+      restrictions: [
+        "Do not threaten criminal prosecution to extract civil payment — this may constitute extortion under ORS §162.355",
+        "Third-party debt collectors must comply with the federal FDCPA and Oregon's Unlawful Debt Collection Practices Act (ORS §646.639)",
+        "Do not misrepresent the legal basis for the claim or exaggerate the amount owed",
+      ],
+      faq: [
+        { question: "What is Oregon's small claims court limit?", answer: "Oregon Small Claims Court (part of Circuit Court) handles disputes up to $10,000. Filing fees range from $52–$95. No attorneys are permitted to represent parties in small claims. A demand letter is expected before filing and may resolve the dispute without court involvement." },
+        { question: "Are attorney's fees recoverable in Oregon demand letter cases?", answer: "Oregon follows the American Rule — each party pays their own attorney's fees unless a contract or statute provides otherwise. Oregon's Unlawful Trade Practices Act (ORS §646.638) allows recovery of attorney's fees for successful consumer claims, so reference the applicable statute in your demand letter when relevant." },
+      ],
+    },
+  },
+
+  "rhode-island": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the Rhode Island Residential Landlord and Tenant Act (RIGL §§34-18-1 et seq.); security deposit capped at 1 month's rent (RIGL §34-18-19)",
+        "Security deposit must be returned within 20 days of termination with an itemized written statement of deductions; failure to do so entitles the tenant to double the wrongfully withheld amount",
+        "Landlord must maintain premises in habitable condition and comply with applicable housing and building codes under RIGL §34-18-22",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing tenant's belongings, shutting off utilities) is prohibited; formal eviction through District Court required",
+        "Landlord may not retaliate against a tenant who exercises statutory rights (e.g., reporting code violations, joining a tenant organization) within 6 months of the protected activity",
+        "Late fees must be specified in the lease; no statutory cap, but must be reasonable",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 30 days' written notice required by either party to terminate. Nonpayment of rent: 5 days' written notice to pay or quit before the landlord may file an eviction action in District Court (RIGL §34-18-35).",
+      faq: [
+        { question: "What is Rhode Island's security deposit limit?", answer: "Rhode Island caps the security deposit at one month's rent (RIGL §34-18-19). The landlord must return it within 20 days of lease termination with an itemized statement. If the landlord wrongfully withholds any portion, the tenant is entitled to double the amount withheld." },
+        { question: "What notice is required before eviction in Rhode Island?", answer: "For nonpayment of rent, a 5-day written notice to pay or quit is required. For other lease violations, a 20-day notice to remedy or quit applies. After the notice period expires without cure, the landlord may file a complaint in District Court." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the Rhode Island Revised Uniform Limited Liability Company Act (RIGL §§7-16-1 et seq.); Articles of Organization filed with the Secretary of State for a $150 fee",
+        "Annual report required by the anniversary month of formation; $50 annual report fee",
+        "Registered agent with a Rhode Island street address required",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'L.L.C.,' or 'LLC' and be distinguishable from existing Rhode Island registered entities",
+        "Professional LLCs (attorneys, physicians, CPAs) must meet state licensing board requirements",
+        "Rhode Island corporate income tax applies to LLC income at the entity level if the LLC elects to be taxed as a corporation; pass-through taxation applies by default",
+      ],
+      faq: [
+        { question: "What does it cost to form and maintain a Rhode Island LLC?", answer: "Filing Articles of Organization costs $150, and the annual report fee is $50. Rhode Island has no minimum franchise tax for pass-through LLCs. Members report their share of LLC income on personal Rhode Island returns at the state rate (3.75%–5.99%)." },
+        { question: "Is a Rhode Island LLC operating agreement required by law?", answer: "RIGL §7-16-1 et seq. does not require a written operating agreement to be filed with the state, but without one, the statutory default rules govern member rights. A written agreement is essential for multi-member LLCs to set custom profit-sharing, voting, and exit procedures." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Rhode Island is an at-will employment state, subject to statutory employee protections",
+        "Rhode Island minimum wage: $14.00/hour (2024); scheduled to increase to $15.00/hour by January 1, 2025 (RIGL §28-12-3)",
+        "Rhode Island Healthy and Safe Families and Workplaces Act requires paid sick leave: 1 hour per 35 hours worked, up to 40 hours per year, for employers with 18+ employees (RIGL §28-57-1 et seq.)",
+      ],
+      restrictions: [
+        "Non-compete agreements are restricted under the Rhode Island Noncompetition Agreement Act (RIGL §28-59-1 et seq., effective 2020): banned entirely for employees earning $28.71/hour or less as of 2024 (the threshold is updated annually for inflation)",
+        "Non-competes must be supported by independent consideration beyond continued employment and cannot exceed 1 year in duration",
+        "Non-competes are void for employees classified as non-exempt under the FLSA, undergraduate or graduate students, apprentices, and employees terminated without cause or laid off",
+      ],
+      faq: [
+        { question: "Who is exempt from non-compete agreements in Rhode Island?", answer: "Under RIGL §28-59-1, non-competes are void for employees earning $28.71/hour or less (as of 2024, updated annually), non-exempt FLSA workers, students, apprentices, and employees terminated without cause or laid off. For covered higher-earning employees, non-competes must be supported by independent consideration and capped at 1 year." },
+        { question: "What is Rhode Island's minimum wage in 2024?", answer: "Rhode Island's minimum wage is $14.00/hour in 2024, scheduled to increase to $15.00/hour on January 1, 2025, under RIGL §28-12-3. Employment contracts must specify wages at or above the applicable rate, and employers must post the current minimum wage notice in the workplace." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by Rhode Island's statutory POA framework (RIGL §§18-16-1 et seq.); must be signed by the principal before a notary public",
+        "A durable POA must expressly state that it is not affected by the principal's subsequent incapacity or incompetence",
+        "Health care decisions require a separate Health Care Power of Attorney or Durable Power of Attorney for Health Care under RIGL §23-4.10-1 et seq.",
+      ],
+      restrictions: [
+        "Agent may not make gifts of the principal's property unless expressly authorized in the POA document",
+        "Agent cannot create, amend, or revoke the principal's will",
+        "Real estate transactions using a POA must record the POA with the town or city recorder (land evidence records) where the property is located",
+      ],
+      faq: [
+        { question: "Does a Rhode Island power of attorney need to be notarized?", answer: "Yes. Rhode Island requires a POA to be signed and acknowledged before a notary public to be effective. Financial institutions and real estate recorders typically also require witnesses; check specific institutional requirements before execution." },
+        { question: "What makes a POA durable in Rhode Island?", answer: "A durable POA must include explicit language (e.g., 'This power of attorney shall not be affected by any subsequent incapacity or mental incompetence of the principal') to remain valid after the principal becomes incapacitated. Without this clause, the POA terminates automatically upon incapacity." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by Rhode Island Probate Code (RIGL §§33-5-1 et seq.); must be in writing, signed by the testator, and witnessed by two competent adults",
+        "Both witnesses must sign in the presence of the testator; witnesses should not be named beneficiaries",
+        "Rhode Island requires probate for estates with real property; small estates (personal property under $15,000) may use a simplified affidavit procedure (RIGL §33-24-1)",
+      ],
+      restrictions: [
+        "Rhode Island imposes an estate tax on estates exceeding $1,774,583 (2024 exemption, adjusted annually for inflation) at graduated rates up to 16% (RIGL §44-22-1.1); this is one of the lower federal-to-state exemption ratios in the Northeast",
+        "Holographic wills (entirely in testator's handwriting) are not recognized in Rhode Island — a typed, witnessed will is required",
+        "Surviving spouse has an elective share right to 1/3 of the augmented estate (RIGL §33-25-2)",
+      ],
+      faq: [
+        { question: "Does Rhode Island have a state estate tax?", answer: "Yes. Rhode Island imposes an estate tax on estates exceeding approximately $1,774,583 (2024, adjusted annually), with rates up to 16% (RIGL §44-22-1.1). This is well below the federal exemption of $13.61 million, meaning many moderate-wealth Rhode Island residents owe state estate tax even if they owe no federal tax." },
+        { question: "Are holographic wills valid in Rhode Island?", answer: "No. Rhode Island does not recognize holographic wills. A valid Rhode Island will must be typed or printed, signed by the testator, and witnessed by two competent adults. An improperly executed will is invalid and the estate passes under intestacy laws." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Governed by the Rhode Island Noncompetition Agreement Act (RIGL §28-59-1 et seq., effective January 15, 2020); any agreement must be supported by independent consideration beyond continued employment",
+        "Must be provided to the employee at least 10 business days before starting employment (or before signing for current employees) and signed by both parties",
+        "Duration is capped at 1 year from the date of separation from employment",
+      ],
+      restrictions: [
+        "Non-competes are void for: (1) employees earning $28.71/hour or less (2024 threshold, updated annually), (2) non-exempt FLSA employees, (3) undergraduate and graduate students, (4) apprentices, and (5) employees terminated without cause or laid off",
+        "Non-competes are also void for employees under 18 years of age",
+        "Courts will not enforce a non-compete that exceeds the statutory limits on duration or applies to workers in the excluded categories — courts will not blue-pencil to reduce; the agreement is void",
+      ],
+      faq: [
+        { question: "What is the wage threshold for non-competes in Rhode Island?", answer: "Under RIGL §28-59-1, non-competes are void for employees earning $28.71/hour or less as of 2024. This threshold is updated annually for inflation. Employers should verify the current threshold at the time of execution and upon each renewal of the employment relationship." },
+        { question: "Can a Rhode Island employer enforce a non-compete against an employee it laid off?", answer: "No. RIGL §28-59-1 expressly voids non-competes for employees who are laid off or terminated without cause by the employer. This means that if business conditions lead to a layoff, the non-compete cannot be used to restrict the former employee's subsequent employment." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Rhode Island uses the ABC test for unemployment insurance and wage law purposes (RIGL §28-42-7.1): worker must be free from direction, performing work outside usual business, and independently established in their trade",
+        "Written agreement should specify scope of work, deliverables, payment schedule, IC's obligation to pay own taxes and insurance, and absence of employee benefits",
+        "Rhode Island requires public works contractors to be prequalified and registered (RIGL §37-14.1-1 et seq.)",
+      ],
+      restrictions: [
+        "Misclassification exposes employers to back unemployment insurance contributions, workers' compensation premiums (administered by the Rhode Island Department of Labor and Training), and wage-related penalties",
+        "Rhode Island's Gig Economy Worker Classification task force monitors worker classification in app-based industries",
+        "Paid sick leave under the Healthy and Safe Families and Workplaces Act does not apply to bona fide ICs; misclassified workers can claim retroactive sick leave benefits",
+      ],
+      faq: [
+        { question: "What is Rhode Island's ABC test for independent contractors?", answer: "Under RIGL §28-42-7.1, a worker is presumed to be an employee for unemployment purposes unless the hiring entity shows: (A) the worker is free from direction and control, (B) the work is outside the company's usual course of business, and (C) the worker is independently established in the same trade or occupation. All three prongs must be satisfied." },
+        { question: "What should a Rhode Island independent contractor agreement include?", answer: "Include the scope of services, deliverables, payment terms, confirmation that the contractor pays their own taxes and insurance, IP assignment, non-disclosure obligations, termination rights, and dispute resolution specifying Rhode Island law. Avoid language that grants the hiring party behavioral control over how the work is performed." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Rhode Island commercial leases are governed by general contract law; the Residential Landlord and Tenant Act does not apply",
+        "Written lease required for terms exceeding one year (Statute of Frauds, RIGL §9-1-4)",
+        "Both parties must sign; entities should authorize signatories through a corporate resolution or LLC member/manager authorization",
+      ],
+      restrictions: [
+        "No rent control applies to Rhode Island commercial properties",
+        "Landlords must use judicial process (Civil Action in District or Superior Court) for eviction — self-help is prohibited",
+        "CAM charges and common area expense pass-throughs must be defined with specificity; ambiguities are construed against the drafter",
+      ],
+      faq: [
+        { question: "What is the commercial eviction process in Rhode Island?", answer: "Commercial landlords must provide written notice as specified in the lease (commonly 5–10 days for nonpayment). After the notice period expires, the landlord files a complaint in District Court (for smaller commercial disputes) or Superior Court. Rhode Island courts require landlords to follow the statutory process strictly; self-help remedies expose the landlord to tort liability." },
+        { question: "Is a personal guaranty required for a Rhode Island commercial lease?", answer: "A personal guaranty is not legally required but is commonly requested by landlords from new businesses or LLCs without established credit. Negotiate the terms — particularly a burn-off provision that eliminates the guaranty after a period of timely payments — at the time of lease execution." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by Rhode Island UCC Article 3 (RIGL §§6A-3-101 et seq.); must be a written, signed, unconditional promise to pay a definite sum",
+        "Consumer usury: Rhode Island's general usury cap is 21% per year for consumer loans (RIGL §6-26-2); commercial loans may set any rate if agreed in writing",
+        "Security interests in personal property perfected by UCC-1 Financing Statement filed with the Rhode Island Secretary of State",
+      ],
+      restrictions: [
+        "Consumer loans above 21% APR are usurious unless the borrower is a business and the parties contract otherwise in writing",
+        "Real property mortgages must be recorded in the city or town land evidence records where the property is located",
+        "Confession of judgment clauses are disfavored and may not be enforceable in Rhode Island courts for consumer transactions",
+      ],
+      faq: [
+        { question: "What is Rhode Island's interest rate cap on loans?", answer: "Rhode Island's general consumer usury cap is 21% per year (RIGL §6-26-2). For commercial loans between businesses, there is no statutory cap if the rate is agreed to in writing. Consumer lenders must also comply with federal Truth in Lending Act (TILA) disclosure requirements." },
+        { question: "What is the statute of limitations on a promissory note in Rhode Island?", answer: "Rhode Island's statute of limitations for written contracts, including promissory notes, is 10 years (RIGL §9-1-13). The clock begins running from the date of default. Rhode Island's 10-year period is longer than most states, giving creditors additional time to collect on unpaid notes." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; the letter must identify both parties, state the factual basis for the claim, and specify the exact amount or action demanded",
+        "Set a clear response deadline (10–30 days) and send by certified mail with return receipt for proof of delivery",
+        "Rhode Island Small Claims Court (District Court) handles disputes up to $2,500; a prior demand letter is expected before filing",
+      ],
+      restrictions: [
+        "Do not threaten criminal prosecution to compel civil payment — this constitutes extortion under RIGL §11-42-1",
+        "Third-party debt collectors must comply with the federal FDCPA and Rhode Island Fair Debt Collection Practices Act (RIGL §19-14.9-1 et seq.)",
+        "Do not misrepresent the legal status of the claim or the consequences of nonpayment",
+      ],
+      faq: [
+        { question: "What is Rhode Island's small claims court limit?", answer: "Rhode Island Small Claims Court (District Court) handles disputes up to $2,500 — one of the lower limits in the US. For larger claims (up to $25,000), file in District Court under the regular civil docket. For amounts above $25,000, Superior Court is the appropriate venue." },
+        { question: "Can I recover attorney's fees through a Rhode Island demand letter?", answer: "Rhode Island follows the American Rule — each party pays their own legal fees unless a contract or statute provides otherwise. The Rhode Island Deceptive Trade Practices Act allows attorney's fee recovery for successful consumer protection claims, so reference the applicable statute when relevant." },
+      ],
+    },
+  },
+
+  "south-carolina": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Governed by the South Carolina Residential Landlord and Tenant Act (S.C. Code Ann. §§27-40-10 et seq.); no statutory cap on security deposits, but deposit must be returned within 30 days of termination with an itemized statement of deductions (§27-40-410)",
+        "Landlord must maintain the premises in habitable condition and comply with applicable housing codes under §27-40-440",
+        "Written lease required for any term exceeding 1 year; oral leases are valid for shorter terms but written leases are recommended",
+      ],
+      restrictions: [
+        "Self-help eviction (changing locks, removing tenant's property, shutting off utilities) is prohibited; formal eviction through magistrate court required under §27-40-710",
+        "Landlord may not retaliate against a tenant for reporting housing code violations or exercising statutory rights within 90 days of the protected activity (§27-40-650)",
+        "No rent control laws exist in South Carolina — landlords may raise rent with proper notice as specified in the lease",
+      ],
+      noticeRequirements: "Month-to-month tenancy: 30 days' written notice required by either party to terminate. Nonpayment of rent: 5 days' written notice to pay or quit before the landlord may file an eviction action in magistrate court (S.C. Code Ann. §27-40-710).",
+      faq: [
+        { question: "Is there a security deposit limit in South Carolina?", answer: "South Carolina does not cap the security deposit amount. The landlord must return the deposit within 30 days after the lease ends, with an itemized statement of deductions. Failure to return within 30 days entitles the tenant to the full deposit plus damages and attorney's fees." },
+        { question: "What is the eviction notice requirement in South Carolina?", answer: "For nonpayment of rent, the landlord must serve a 5-day written notice to pay or vacate before filing an eviction action. For material lease violations, a 14-day notice to remedy or quit is required. South Carolina magistrate courts process evictions relatively quickly — often within 2–3 weeks of filing." },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Governed by the South Carolina Uniform Limited Liability Company Act (S.C. Code Ann. §§33-44-101 et seq.); Articles of Organization filed with the Secretary of State for a $110 fee",
+        "No annual report required and no annual report fee — South Carolina does not require LLCs to file annual reports with the Secretary of State",
+        "Registered agent with a South Carolina street address required",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'L.L.C.,' or 'LLC' and be distinguishable from other South Carolina registered entities",
+        "Professional LLCs (attorneys, physicians, accountants) must meet applicable state licensing board requirements",
+        "South Carolina imposes a license tax on LLCs: a flat $25 annual fee plus $1 per $1,000 of capital stock paid in or property in South Carolina (for LLCs electing to be taxed as corporations); pass-through LLCs pay at the member level",
+      ],
+      faq: [
+        { question: "What does it cost to form an LLC in South Carolina?", answer: "Filing Articles of Organization costs $110. South Carolina does not require LLCs to file annual reports, which means lower ongoing compliance costs than most states. Members of pass-through LLCs report income on their personal South Carolina returns at rates up to 6.5%." },
+        { question: "Is a South Carolina LLC operating agreement required?", answer: "S.C. Code Ann. §33-44-103 allows LLCs to adopt an operating agreement; it need not be filed with the state. Without a written agreement, the statutory default rules govern management, profit distributions, and member exit rights. A written agreement is essential for multi-member LLCs." },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "South Carolina is a strong at-will employment state; the South Carolina Employment Security Law recognizes limited public policy exceptions to at-will termination",
+        "State minimum wage: $7.25/hour (tracks the federal minimum); South Carolina has no state minimum wage law of its own",
+        "Right-to-work state under S.C. Code Ann. §41-7-10; union membership cannot be required as a condition of employment",
+      ],
+      restrictions: [
+        "Non-compete agreements are enforceable under South Carolina common law if reasonable in scope, duration, and geography; courts apply the blue-pencil doctrine to reform overly broad restrictions rather than void the entire agreement",
+        "Employers may not discriminate based on protected characteristics under the South Carolina Human Affairs Law (S.C. Code Ann. §§1-13-10 et seq.)",
+        "No state-mandated paid sick leave; employees are governed by employer policy and federal FMLA (if eligible)",
+      ],
+      faq: [
+        { question: "Are non-compete agreements enforceable in South Carolina?", answer: "Yes. South Carolina courts enforce non-compete agreements under the common law reasonableness standard — they must be limited in time, geographic scope, and the type of competitive activity restricted. Courts apply the blue-pencil doctrine to narrow overly broad restrictions rather than void the entire agreement." },
+        { question: "Is South Carolina a right-to-work state?", answer: "Yes. Under S.C. Code Ann. §41-7-10, employees cannot be required to join a union or pay union dues as a condition of employment in South Carolina. This applies to both public and private sector employees, making South Carolina an employer-friendly state for workforce flexibility." },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Governed by the South Carolina Uniform Power of Attorney Act (S.C. Code Ann. §§62-8-101 et seq., effective 2017); must be signed by the principal and acknowledged before a notary public",
+        "A durable POA must expressly state that it is not affected by the principal's subsequent incapacity (§62-8-104)",
+        "Health care decisions require a separate Health Care Power of Attorney or Advance Directive under S.C. Code Ann. §§44-77-10 et seq.",
+      ],
+      restrictions: [
+        "Agent may not make gifts of the principal's property unless expressly authorized in the POA document",
+        "An agent cannot create, amend, or revoke the principal's will",
+        "Real estate transactions using a POA must be recorded with the Register of Deeds in the county where the property is located",
+      ],
+      faq: [
+        { question: "Does a South Carolina power of attorney need to be notarized?", answer: "Yes. Under S.C. Code Ann. §62-8-105, a power of attorney must be acknowledged before a notary public to be valid. Two witnesses are also required for POAs used in real estate transactions recorded in South Carolina land records." },
+        { question: "What makes a South Carolina POA durable?", answer: "A durable POA must include explicit language (e.g., 'This power of attorney shall not be terminated by subsequent incapacity of the principal') to remain effective after the principal becomes incapacitated. Without this language, the POA automatically terminates upon the principal's incapacity." },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Governed by the South Carolina Probate Code (S.C. Code Ann. §§62-1-100 et seq.); must be in writing, signed by the testator, and witnessed by two competent adults",
+        "Both witnesses must sign in the presence of the testator at the same time; witnesses should not be named beneficiaries",
+        "A self-proving affidavit (acknowledged before a notary) is permitted and expedites probate by eliminating the need for witness testimony (§62-2-503)",
+      ],
+      restrictions: [
+        "South Carolina has no state estate tax or inheritance tax — assets pass free of state death taxes",
+        "Holographic wills (entirely in testator's handwriting) are not recognized in South Carolina — a typed, witnessed will is required",
+        "Pretermitted children (born after will execution) may receive an intestate share unless expressly disinherited in the will",
+      ],
+      faq: [
+        { question: "Does South Carolina have a state estate tax?", answer: "No. South Carolina repealed its estate tax and does not impose an inheritance tax. Only the federal estate tax (applicable to estates exceeding $13.61 million in 2024) applies to South Carolina decedents, making it relatively tax-friendly for estate planning." },
+        { question: "Are holographic wills valid in South Carolina?", answer: "No. South Carolina does not recognize holographic wills. A valid will must be in writing (typed or printed), signed by the testator, and witnessed by two competent adults. An improperly executed will is invalid under the South Carolina Probate Code and the estate passes under intestacy laws." },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "South Carolina enforces non-compete agreements under the common law reasonableness standard; no specific statute governs employment non-competes",
+        "The agreement must be supported by adequate consideration: a new job offer, a promotion, a raise, or a separate payment; continued employment alone may be insufficient consideration under South Carolina case law",
+        "Must specify a definite duration and geographic area — open-ended restrictions are unenforceable",
+      ],
+      restrictions: [
+        "Courts apply the blue-pencil doctrine: if the restriction is overly broad, courts will narrow (not void) the agreement to make it reasonable",
+        "Non-competes for independent contractors are also enforceable under the reasonableness standard",
+        "Non-competes in connection with the sale of a business may be broader in scope and duration than employee non-competes",
+      ],
+      faq: [
+        { question: "What makes a non-compete enforceable in South Carolina?", answer: "South Carolina courts evaluate non-competes under a reasonableness standard: (1) adequacy of consideration, (2) time period (typically 1–2 years is considered reasonable), (3) geographic area (must be tied to actual business operations), and (4) scope (must be limited to competitive activity that poses a genuine threat to the employer's business). Courts will blue-pencil overly broad restrictions." },
+        { question: "How do South Carolina courts handle overbroad non-competes?", answer: "South Carolina courts apply the blue-pencil doctrine, meaning they will narrow an overly broad non-compete (e.g., reduce the geographic scope or duration) to the extent necessary to make it reasonable, rather than voiding the entire agreement. This makes drafting precision important — courts may leave a narrower restriction in place even if the original was overbroad." },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "South Carolina uses the common law right-to-control test to distinguish employees from independent contractors for most purposes",
+        "For unemployment insurance, South Carolina applies its own multi-factor test under S.C. Code Ann. §41-27-230",
+        "Written agreement should specify scope of work, deliverables, payment terms, IC's obligation to pay own taxes and carry their own insurance, and IP ownership",
+      ],
+      restrictions: [
+        "Misclassification of employees as contractors exposes employers to South Carolina unemployment insurance contributions, workers' compensation penalties, and IRS payroll tax assessments",
+        "South Carolina Workers' Compensation Act may apply to certain contractors — subcontractors in construction must verify coverage obligations under S.C. Code Ann. §42-1-400",
+        "As a right-to-work state, contractors cannot be required to join a union as a condition of the engagement",
+      ],
+      faq: [
+        { question: "What test does South Carolina use for worker classification?", answer: "South Carolina courts apply the common law right-to-control test for most employment law purposes: who directs how the work is done (not just the result)? For unemployment insurance, additional economic reality factors are considered, including investment in tools and equipment, opportunity for profit or loss, and the permanency of the working relationship." },
+        { question: "Are construction contractors in South Carolina subject to workers' compensation?", answer: "Yes, with important caveats. Under S.C. Code Ann. §42-1-400, if a contractor hires subcontractors who do not maintain their own workers' compensation insurance, the general contractor may be liable for any workplace injuries. Always verify that subcontractors carry their own coverage before work begins." },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "South Carolina commercial leases are governed by general contract law; the Residential Landlord and Tenant Act does not apply to commercial properties",
+        "Written lease required for terms exceeding one year (Statute of Frauds, S.C. Code Ann. §32-3-10)",
+        "Both parties must sign; entities should authorize signatories by corporate resolution or LLC member/manager authorization",
+      ],
+      restrictions: [
+        "No rent control applies to South Carolina commercial properties",
+        "Landlords must use judicial process (ejectment or summary ejectment in magistrate court) for eviction — self-help is prohibited",
+        "CAM charges, property tax escalations, and utility responsibilities must be expressly defined in the lease to be enforceable",
+      ],
+      faq: [
+        { question: "What is the commercial eviction process in South Carolina?", answer: "Commercial landlords must provide written notice as specified in the lease (commonly 5–10 days for nonpayment). After the notice period expires, the landlord may file an ejectment action in the appropriate court — magistrate court for smaller disputes, circuit court for larger ones. South Carolina courts move relatively efficiently on commercial ejectment matters." },
+        { question: "Does South Carolina require a personal guaranty for commercial leases?", answer: "A personal guaranty is not legally required but is routinely demanded by landlords for new businesses or LLCs with limited credit history. Negotiate the scope of the guaranty — full-lease guarantees, 'good guy' clauses, and burn-off provisions (guaranty expires after a period of on-time payments) are all common in South Carolina commercial practice." },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Governed by South Carolina UCC Article 3 (S.C. Code Ann. §§36-3-101 et seq.); must be a written, signed, unconditional promise to pay a definite sum",
+        "Consumer usury: South Carolina's maximum rate is 8.75% per year for consumer loans unless a higher rate is agreed in writing (S.C. Code Ann. §34-31-20); commercial loans may set any rate if agreed in writing",
+        "Security interests in personal property perfected by UCC-1 Financing Statement filed with the South Carolina Secretary of State",
+      ],
+      restrictions: [
+        "Consumer usury limits apply; specify the APR clearly in the note to comply with both state law and federal TILA",
+        "Real property mortgages must be recorded in the Register of Deeds in the county where the property is located",
+        "South Carolina is a judicial foreclosure state for mortgages — foreclosure proceedings are court-supervised",
+      ],
+      faq: [
+        { question: "What is South Carolina's interest rate cap on loans?", answer: "S.C. Code Ann. §34-31-20 sets a consumer usury cap of 8.75% per year; parties may contract for a higher rate in writing. Commercial business-to-business loans may agree to any rate if specified in writing. Always disclose the annual percentage rate (APR) to comply with federal TILA." },
+        { question: "What is the statute of limitations on a promissory note in South Carolina?", answer: "South Carolina's statute of limitations for written contracts, including promissory notes, is 3 years (S.C. Code Ann. §15-3-530). This is shorter than many states. The clock starts running from the date of default. A partial payment or written acknowledgment can restart the limitations period." },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "No statutory form required; clearly identify both parties, state the factual basis for the claim, and specify the exact amount or action demanded",
+        "Set a response deadline of 10–30 days and send by certified mail with return receipt for proof of delivery",
+        "South Carolina Magistrate Court handles disputes up to $7,500 without an attorney; a prior demand letter is standard practice before filing",
+      ],
+      restrictions: [
+        "Do not threaten criminal prosecution to extract civil payment — this may constitute extortion under S.C. Code Ann. §16-17-640",
+        "Third-party debt collectors must comply with the federal Fair Debt Collection Practices Act (FDCPA) and the South Carolina Consumer Protection Code",
+        "Do not misrepresent the legal status of the claim or exaggerate the amount owed",
+      ],
+      faq: [
+        { question: "What is South Carolina's magistrate court limit?", answer: "South Carolina Magistrate Courts handle civil disputes up to $7,500. Filing fees are approximately $80–$150. A prior written demand letter is advisable and may resolve the matter without litigation. For claims between $7,500 and $25,000, the Circuit Court Summary Court has jurisdiction." },
+        { question: "Can I recover attorney's fees through a South Carolina demand letter?", answer: "South Carolina follows the American Rule — each party pays their own attorney's fees unless a statute or contract provides otherwise. Attorney's fees are recoverable in some consumer protection claims (e.g., under the South Carolina Unfair Trade Practices Act) and where the contract expressly provides for them." },
+      ],
+    },
+  },
+  "south-dakota": {
+    "residential-lease-agreement": {
+      requirements: [
+        "Security deposit capped at one month's rent under SDCL § 43-32-6.1",
+        "Landlord must return deposit within 14 days of lease termination with itemized statement (SDCL § 43-32-24)",
+        "Lease must identify landlord or authorized agent with address for service of notices (SDCL § 43-32-18)",
+      ],
+      restrictions: [
+        "No rent control or rent stabilization laws in South Dakota",
+        "Late fees must be reasonable; courts may void unconscionable charges",
+        "Landlord cannot include lease terms waiving tenant's right to habitability",
+      ],
+      noticeRequirements: "Three days' written notice required for nonpayment of rent before eviction action may be filed (SDCL § 21-16-2)",
+      faq: [
+        {
+          question: "What is the maximum security deposit in South Dakota?",
+          answer: "South Dakota caps the security deposit at one month's rent under SDCL § 43-32-6.1. The landlord must return it within 14 days after the tenant vacates, along with a written itemization of any deductions.",
+        },
+        {
+          question: "How much notice is required to terminate a month-to-month lease in South Dakota?",
+          answer: "Either party must give at least one month's written notice to terminate a month-to-month tenancy under SDCL § 43-32-13.",
+        },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "South Dakota LLCs are governed by SDCL Title 47A (Uniform Limited Liability Company Act)",
+        "Articles of organization filing fee is $150; annual report fee is $50 (SDCL § 47A-1-13)",
+        "A registered agent with a South Dakota physical address is required (SDCL § 47A-1-13)",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' (SDCL § 47A-1-08)",
+        "Professional LLCs offering licensed services (law, medicine) must comply with applicable licensing boards",
+        "An operating agreement may not eliminate members' duty of loyalty or the obligation of good faith",
+      ],
+      faq: [
+        {
+          question: "Does South Dakota require a written LLC operating agreement?",
+          answer: "South Dakota does not mandate a written operating agreement by statute, but SDCL § 47A-1-01 et seq. allows oral, written, or implied agreements; a written agreement is strongly recommended to document member rights and profit allocations.",
+        },
+        {
+          question: "What are South Dakota LLC filing fees?",
+          answer: "The initial articles of organization cost $150, and the annual report fee is $50. South Dakota has no state income tax, making it a cost-effective and tax-friendly state for LLC formation.",
+        },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "South Dakota is an at-will employment state; contracts should explicitly confirm or modify at-will status",
+        "South Dakota minimum wage is $11.20/hour (2024), indexed annually to inflation under SDCL § 60-11-3.2",
+        "Employers must provide a pay stub showing hours worked and wages paid each pay period (SDCL § 60-11-14)",
+      ],
+      restrictions: [
+        "South Dakota has no state law requiring paid sick leave or family leave beyond federal FMLA",
+        "Employers cannot retaliate against employees for discussing wages (SDCL § 60-11-17.2)",
+        "Non-compete agreements are enforceable at common law but must be reasonable in scope, geography, and duration",
+      ],
+      faq: [
+        {
+          question: "Is South Dakota a right-to-work state?",
+          answer: "Yes, South Dakota is a right-to-work state under SDCL § 60-8-3, meaning employees cannot be required to join a union or pay union dues as a condition of employment.",
+        },
+        {
+          question: "Are non-compete agreements enforceable in South Dakota?",
+          answer: "Yes, South Dakota enforces non-compete agreements under common law principles. Courts evaluate reasonableness based on time, geographic scope, and the legitimate business interest protected; courts are generally reluctant to blue-pencil (rewrite) overly broad clauses.",
+        },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "A durable power of attorney must be signed by the principal before a notary public (SDCL § 59-7-2.1)",
+        "The document must contain language indicating it survives incapacity to be 'durable' under SDCL § 59-7-2.1",
+        "South Dakota follows the Uniform Power of Attorney Act (SDCL Chapter 59-12)",
+      ],
+      restrictions: [
+        "An agent may not make gifts to themselves or alter the principal's estate plan unless expressly authorized",
+        "Healthcare decisions require a separate healthcare power of attorney or advance directive under SDCL Chapter 59-7",
+        "A POA used for real property transactions should be recorded with the county register of deeds",
+      ],
+      faq: [
+        {
+          question: "Does a South Dakota power of attorney need to be notarized?",
+          answer: "Yes, SDCL § 59-12-5 requires a power of attorney to be signed by the principal and acknowledged before a notary public to be valid.",
+        },
+        {
+          question: "Can a South Dakota POA be used after the principal becomes incapacitated?",
+          answer: "Only if it is designated as 'durable' using language such as 'This power of attorney shall not be affected by the subsequent disability or incapacity of the principal,' as required by SDCL § 59-7-2.1.",
+        },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be at least 18 years old and of sound mind (SDCL § 29A-2-501)",
+        "Will must be signed by the testator or by another person at the testator's direction in their conscious presence",
+        "At least two witnesses must sign the will within a reasonable time after witnessing the testator's signature (SDCL § 29A-2-502)",
+      ],
+      restrictions: [
+        "Interested witnesses (beneficiaries) do not automatically void the will, but their bequest may be subject to challenge",
+        "A surviving spouse is entitled to an elective share of the estate under SDCL § 29A-2-202",
+        "South Dakota has no state estate or inheritance tax, which simplifies estate planning",
+      ],
+      faq: [
+        {
+          question: "Does South Dakota require a will to be notarized?",
+          answer: "Notarization is not required for a valid will, but South Dakota allows self-proved wills under SDCL § 29A-2-504, which include a notarized affidavit that expedites probate by eliminating witness testimony.",
+        },
+        {
+          question: "Are holographic wills valid in South Dakota?",
+          answer: "Yes. South Dakota recognizes holographic wills under SDCL § 29A-2-502(b), provided the material portions are in the testator's own handwriting and signed by the testator.",
+        },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Non-compete agreements are governed by common law in South Dakota — no specific statute authorizes or bans them",
+        "The agreement must protect a legitimate business interest such as trade secrets, customer relationships, or specialized training",
+        "Restrictions must be reasonable in time, geographic scope, and activity to be enforceable",
+      ],
+      restrictions: [
+        "South Dakota courts are generally reluctant to blue-pencil (rewrite) overly broad non-compete clauses",
+        "Non-competes signed without adequate consideration at the start of employment may be unenforceable",
+        "Agreements purporting to restrain all competition without limitation will likely be voided in their entirety",
+      ],
+      faq: [
+        {
+          question: "Will South Dakota courts enforce a non-compete agreement?",
+          answer: "South Dakota enforces non-competes under common law if they are reasonable in scope, duration, and geography and protect a legitimate business interest; courts tend to void rather than rewrite agreements that are overly broad.",
+        },
+        {
+          question: "What is a reasonable duration for a non-compete in South Dakota?",
+          answer: "South Dakota courts have generally upheld restrictions of one to two years as reasonable, depending on the industry and the nature of the employee's role and access to confidential information.",
+        },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "The agreement must clearly establish the worker's independent status, right to control the manner and means of work, and responsibility for their own taxes",
+        "Contractor is responsible for self-employment taxes; the agreement should disclaim employer withholding obligations",
+        "Identify the specific scope of services, deliverables, and payment terms to establish a true contractor relationship",
+      ],
+      restrictions: [
+        "South Dakota applies the economic reality test to determine worker classification for unemployment insurance purposes",
+        "Misclassifying employees as contractors may result in liability for back unemployment taxes and workers' compensation premiums",
+        "South Dakota has no state income tax, but contractors remain responsible for federal self-employment tax",
+      ],
+      faq: [
+        {
+          question: "How does South Dakota determine if a worker is an independent contractor?",
+          answer: "South Dakota uses an economic reality test for unemployment insurance purposes, examining the degree of control, opportunity for profit or loss, investment in equipment, and permanency of the working relationship.",
+        },
+        {
+          question: "Does a South Dakota independent contractor need a written agreement?",
+          answer: "No statute mandates a written agreement, but a written contract is strongly recommended to document the independent relationship, payment terms, and intellectual property ownership, which can be critical in disputes over worker classification.",
+        },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "No statutory form is required for commercial leases in South Dakota; parties have broad freedom to negotiate terms",
+        "Leases for more than one year must be in writing and signed to be enforceable under SDCL § 43-7-1 (Statute of Frauds)",
+        "Include clear provisions on rent escalation, permitted use, maintenance responsibilities, and renewal options",
+      ],
+      restrictions: [
+        "South Dakota has no commercial rent control; rent increases are governed solely by the lease terms",
+        "Landlords may not include self-help eviction clauses — court process is required to remove a defaulting commercial tenant",
+        "Triple-net (NNN) provisions must clearly specify which operating expenses pass through to the tenant",
+      ],
+      faq: [
+        {
+          question: "Is a written commercial lease required in South Dakota?",
+          answer: "Yes, leases longer than one year must be in writing to be enforceable under the South Dakota Statute of Frauds (SDCL § 43-7-1). Shorter-term agreements may be oral but written leases are recommended for all commercial tenancies.",
+        },
+        {
+          question: "Can a South Dakota commercial landlord evict a tenant without going to court?",
+          answer: "No. Self-help eviction (e.g., changing locks or removing property) is prohibited. Landlords must follow the unlawful detainer process under SDCL Chapter 21-16, including proper written notice before filing suit.",
+        },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Must identify the borrower and lender, the principal amount, interest rate, repayment schedule, and maturity date",
+        "South Dakota's maximum interest rate for consumer loans is governed by SDCL § 54-3-1.1; commercial parties may contract for any rate",
+        "Secured notes should reference a separate security agreement or deed of trust and describe the collateral",
+      ],
+      restrictions: [
+        "South Dakota has largely eliminated interest rate caps for commercial lenders under SDCL § 54-3-13, making it a favorable state for bank lending",
+        "Consumer usury protections remain for non-bank lenders — verify applicable rate limits for consumer transactions",
+        "Acceleration clauses and prepayment penalty terms must be clearly stated to be enforceable",
+      ],
+      faq: [
+        {
+          question: "Is there a usury limit on promissory notes in South Dakota?",
+          answer: "South Dakota removed most interest rate caps for commercial lenders (SDCL § 54-3-13), which is why many major credit card companies are chartered there. Consumer loans from non-bank lenders are still subject to applicable state and federal rate limits.",
+        },
+        {
+          question: "Does a South Dakota promissory note need to be notarized?",
+          answer: "Notarization is generally not required for an unsecured promissory note to be enforceable. However, if the note is secured by real property and the deed of trust is to be recorded, notarization of the deed of trust is required.",
+        },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Clearly identify the sender and recipient, the factual basis of the claim, and the specific amount or action demanded",
+        "State the deadline for response or payment — typically 10 to 30 days is reasonable in South Dakota practice",
+        "Send via certified mail with return receipt to create a documented record of delivery",
+      ],
+      restrictions: [
+        "South Dakota's statute of limitations for written contract claims is six years (SDCL § 15-2-13); verify the applicable limitations period before sending",
+        "A demand letter must not contain misrepresentations or constitute unauthorized practice of law if sent by a non-attorney on behalf of another",
+        "Threatening criminal prosecution to collect a civil debt may constitute extortion under South Dakota law",
+      ],
+      faq: [
+        {
+          question: "Is a demand letter required before filing suit in South Dakota?",
+          answer: "South Dakota law generally does not require a demand letter before filing a civil lawsuit, but many courts expect parties to have attempted to resolve the dispute, and a written demand establishes a clear record of the claim.",
+        },
+        {
+          question: "What is the statute of limitations for contract claims in South Dakota?",
+          answer: "South Dakota allows six years to bring an action on a written contract under SDCL § 15-2-13. The deadline is generally measured from the date of breach or the date the injury was or should have been discovered.",
+        },
+      ],
+    },
+  },
+  utah: {
+    "residential-lease-agreement": {
+      requirements: [
+        "No statutory cap on the security deposit amount under Utah Code; parties negotiate freely",
+        "Landlord must return security deposit within 30 days of lease termination with an itemized written statement (Utah Code § 57-17-3)",
+        "Lease must disclose the name and address of the landlord or property manager for service of notices (Utah Code § 57-22-4)",
+      ],
+      restrictions: [
+        "Utah has no statewide rent control; municipalities are preempted from enacting rent regulation",
+        "Landlord cannot retaliate against a tenant for complaining about habitability conditions (Utah Code § 57-22-6)",
+        "Lease provisions waiving the implied warranty of habitability are void as against public policy",
+      ],
+      noticeRequirements: "Three days' written notice is required for nonpayment of rent before an eviction action may be filed (Utah Code § 78B-6-802)",
+      faq: [
+        {
+          question: "How long does a Utah landlord have to return a security deposit?",
+          answer: "Utah Code § 57-17-3 requires landlords to return the security deposit — with an itemized statement of deductions — within 30 days after the tenant surrenders the property.",
+        },
+        {
+          question: "Does Utah have rent control?",
+          answer: "No. Utah prohibits local rent control ordinances, and there is no statewide rent cap. Rent increases are governed entirely by the lease terms and the landlord's right to set market rents upon renewal.",
+        },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Utah LLCs are formed under the Utah Revised Uniform Limited Liability Company Act (URULLCA), Utah Code § 48-3a-101 et seq.",
+        "Articles of organization filing fee is $54; annual renewal fee is $18 (Utah Division of Corporations)",
+        "A registered agent with a Utah physical address or a registered agent service is required (Utah Code § 48-3a-113)",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and must be distinguishable from existing entities (Utah Code § 48-3a-108)",
+        "Professional LLCs (PLLCs) for licensed professions require additional authorization from the applicable licensing board",
+        "An operating agreement may not eliminate the duty of loyalty or the obligation of good faith (Utah Code § 48-3a-110)",
+      ],
+      faq: [
+        {
+          question: "Does Utah require a written operating agreement?",
+          answer: "Utah Code § 48-3a-110 allows operating agreements to be written, oral, or implied, but a written agreement is essential to document profit allocations, management rights, and member exit rights.",
+        },
+        {
+          question: "What is the cost to form an LLC in Utah?",
+          answer: "The articles of organization filing fee is $54, and Utah's annual renewal fee is just $18 — one of the lowest in the country — making Utah an affordable state for LLC maintenance.",
+        },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Utah is an at-will employment state; contracts should confirm or modify at-will status explicitly",
+        "Utah minimum wage is $7.25/hour, matching the federal floor (Utah Code § 34-40-102)",
+        "Utah's Post-Employment Restrictions Act (Utah Code § 34-51-101 et seq.) governs the enforceability of non-compete agreements",
+      ],
+      restrictions: [
+        "Non-compete agreements are limited to a maximum duration of one year under Utah Code § 34-51-201 (effective May 2016)",
+        "Utah is a right-to-work state under Utah Code § 34-34-1; employees cannot be required to join or pay dues to a union",
+        "Employers must provide final paychecks by the next regular payday following termination (Utah Code § 34-28-5)",
+      ],
+      faq: [
+        {
+          question: "How long can a non-compete last in Utah?",
+          answer: "Under Utah's Post-Employment Restrictions Act (Utah Code § 34-51-201), non-compete agreements are capped at one year from the date of termination. Any longer duration is unenforceable.",
+        },
+        {
+          question: "Is Utah a right-to-work state?",
+          answer: "Yes. Utah Code § 34-34-1 prohibits requiring employees to join a union or pay union dues as a condition of employment, making Utah a right-to-work state.",
+        },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Utah follows the Uniform Power of Attorney Act codified at Utah Code § 75-9-101 et seq.",
+        "A durable power of attorney must be signed before a notary public or two witnesses (Utah Code § 75-9-105)",
+        "To be 'durable,' the document must contain language indicating it survives the principal's incapacity (Utah Code § 75-9-102)",
+      ],
+      restrictions: [
+        "An agent may not make gifts to themselves or change the principal's estate plan unless the agreement expressly grants such authority",
+        "Healthcare decisions require a separate advance healthcare directive under Utah Code § 75-2a-107",
+        "A POA used for real property transactions in Utah must be recorded with the county recorder's office",
+      ],
+      faq: [
+        {
+          question: "Does a Utah power of attorney need to be notarized?",
+          answer: "Yes. Utah Code § 75-9-105 requires a power of attorney to be signed in the presence of a notary public or two adult witnesses to be valid.",
+        },
+        {
+          question: "Can a Utah agent make gifts to themselves under a POA?",
+          answer: "Not unless the power of attorney expressly and specifically authorizes self-dealing gifts. Utah Code § 75-9-217 sets strict limits on gift-giving authority, and unauthorized transfers can be voided.",
+        },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be at least 18 years old (or legally married or emancipated) and of sound mind (Utah Code § 75-2-501)",
+        "Will must be signed by the testator, or by another person at the testator's direction in their conscious presence",
+        "Two witnesses must sign within a reasonable time after observing the testator's signature (Utah Code § 75-2-502)",
+      ],
+      restrictions: [
+        "A surviving spouse is entitled to an elective share of the estate under Utah Code § 75-2-202",
+        "Utah does not impose a state estate or inheritance tax, simplifying estate planning",
+        "Interested witnesses (beneficiaries) may trigger a presumption of undue influence that must be rebutted",
+      ],
+      faq: [
+        {
+          question: "Does Utah recognize holographic wills?",
+          answer: "Yes. Utah Code § 75-2-502(2) recognizes holographic wills where the material portions are in the testator's handwriting and the document is signed by the testator; witness signatures are not required.",
+        },
+        {
+          question: "Is probate required for all Utah estates?",
+          answer: "Not always. Utah allows small estate affidavits for estates valued below $100,000 in personal property. Revocable living trusts and beneficiary designations can also bypass probate entirely.",
+        },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Must comply with Utah's Post-Employment Restrictions Act (Utah Code § 34-51-101 et seq.)",
+        "Maximum enforceable duration is one year from the termination date (Utah Code § 34-51-201)",
+        "The agreement must protect a legitimate business interest such as trade secrets, customer relationships, or proprietary training",
+      ],
+      restrictions: [
+        "Any non-compete purporting to last longer than one year is void to the extent it exceeds the one-year limit",
+        "Courts may modify (blue-pencil) overly broad geographic or activity restrictions to make them reasonable",
+        "Garden leave clauses (paid non-compete periods) are generally enforceable if consideration equals salary",
+      ],
+      faq: [
+        {
+          question: "What is the maximum length of a non-compete in Utah?",
+          answer: "Utah Code § 34-51-201 caps post-employment non-compete agreements at one year from the date of separation; any provision exceeding one year is unenforceable under the Post-Employment Restrictions Act.",
+        },
+        {
+          question: "Will Utah courts rewrite an overly broad non-compete?",
+          answer: "Utah courts may apply the blue-pencil doctrine to narrow overly broad restrictions on geography or activity while preserving the agreement's core intent, unlike the all-or-nothing approach used in some other states.",
+        },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Clearly establish that the contractor controls the manner and means of work and is not subject to direct supervision",
+        "Contractor is responsible for all federal and state tax obligations including self-employment tax; agreement should disclaim employer withholding",
+        "Specify ownership of work product and intellectual property, particularly for software, creative, or consulting engagements",
+      ],
+      restrictions: [
+        "Utah applies the IRS common-law control test and economic reality factors to worker classification disputes",
+        "Misclassification exposes hiring entities to liability for unemployment insurance contributions and workers' compensation premiums",
+        "Utah has no state income tax withholding obligation for properly classified independent contractors",
+      ],
+      faq: [
+        {
+          question: "Does Utah require a written independent contractor agreement?",
+          answer: "No statute mandates a written agreement, but a detailed written contract is critical to establish the independent relationship and defend against misclassification claims brought by the Utah Labor Commission.",
+        },
+        {
+          question: "Can a Utah independent contractor receive employee benefits?",
+          answer: "No. Providing employee benefits (health insurance, paid leave, retirement contributions) to an independent contractor may indicate an employment relationship and support a misclassification finding.",
+        },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Leases for more than one year must be in writing and signed by both parties under Utah's Statute of Frauds (Utah Code § 25-5-3)",
+        "Include clear provisions on base rent, CAM charges, permitted use, build-out responsibilities, and renewal options",
+        "The lease should identify the landlord's registered agent or designated representative for official notices",
+      ],
+      restrictions: [
+        "Utah has no commercial rent control; all rent terms are freely negotiated between the parties",
+        "Self-help eviction of commercial tenants is prohibited; landlords must use the unlawful detainer process (Utah Code § 78B-6-802)",
+        "Force majeure and business interruption clauses should be negotiated carefully given Utah's natural disaster risk profile",
+      ],
+      faq: [
+        {
+          question: "Is a written commercial lease required in Utah?",
+          answer: "Yes, Utah Code § 25-5-3 requires leases exceeding one year to be in writing to be enforceable under the Statute of Frauds. All commercial leases should be in writing regardless of duration.",
+        },
+        {
+          question: "What happens if a commercial tenant in Utah stops paying rent?",
+          answer: "The landlord must serve a three-day written notice to pay or vacate, then file an unlawful detainer action in district court if the tenant does not comply. Self-help remedies such as lockouts are illegal.",
+        },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Must identify the parties, principal amount, interest rate, repayment schedule, and maturity date",
+        "Utah's legal interest rate for judgments is 2% above the federal discount rate; consumer lending rates are governed by the Utah Consumer Credit Code (Utah Code § 70C-1-101 et seq.)",
+        "Secured notes should reference a separate deed of trust or UCC-1 financing statement describing the collateral",
+      ],
+      restrictions: [
+        "Consumer loans are subject to the Utah Consumer Credit Code; lenders must be licensed and comply with disclosure requirements",
+        "Acceleration clauses, default interest rates, and prepayment penalties must be conspicuously stated to be enforceable",
+        "Usury limits do not apply to commercial transactions between sophisticated parties; parties may negotiate any rate",
+      ],
+      faq: [
+        {
+          question: "Is there a usury limit on promissory notes in Utah?",
+          answer: "Utah does not impose a usury cap on commercial loans between sophisticated parties. Consumer loans are regulated under the Utah Consumer Credit Code (Utah Code § 70C), which requires licensing and disclosure for most consumer lenders.",
+        },
+        {
+          question: "Does a Utah promissory note need to be notarized?",
+          answer: "Notarization is not required for an unsecured promissory note. If the note is secured by real property, the accompanying deed of trust must be acknowledged before a notary and recorded with the county recorder.",
+        },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Clearly identify the sender, recipient, the legal or factual basis for the claim, and the specific remedy demanded",
+        "Set a firm but reasonable deadline for response — typically 14 to 30 days in Utah commercial practice",
+        "Send via certified mail with return receipt or a trackable courier service to document delivery",
+      ],
+      restrictions: [
+        "Utah's statute of limitations for written contract claims is six years (Utah Code § 78B-2-309); confirm the applicable period before sending",
+        "A demand letter may not contain false statements or threats of criminal prosecution to collect a civil debt",
+        "Non-attorneys may not send demand letters on behalf of third parties for compensation without a law license",
+      ],
+      faq: [
+        {
+          question: "Is a demand letter required before suing in Utah?",
+          answer: "Utah law generally does not require a pre-suit demand letter, but sending one is best practice — it establishes a record of the claim, may prompt settlement, and is often expected by small claims and district courts.",
+        },
+        {
+          question: "What is the statute of limitations for contract disputes in Utah?",
+          answer: "Utah Code § 78B-2-309 provides a six-year statute of limitations for written contract claims. The clock generally begins on the date of breach.",
+        },
+      ],
+    },
+  },
+  vermont: {
+    "residential-lease-agreement": {
+      requirements: [
+        "No statutory cap on the security deposit amount; parties negotiate the amount freely (9 V.S.A. § 4461)",
+        "Landlord must return the security deposit within 14 days of tenancy termination with an itemized written statement of deductions (9 V.S.A. § 4461(e))",
+        "Lease must include the name and address of the landlord or authorized agent for service of notices (9 V.S.A. § 4456)",
+      ],
+      restrictions: [
+        "Vermont has strong tenant protections — landlords must provide habitable conditions and make necessary repairs under 9 V.S.A. § 4457",
+        "Retaliatory rent increases or evictions in response to tenant complaints about habitability are prohibited (9 V.S.A. § 4465)",
+        "Lease provisions waiving tenant's right to the implied warranty of habitability are void as against public policy",
+      ],
+      noticeRequirements: "14 days' written notice is required for nonpayment of rent before eviction proceedings may begin (12 V.S.A. § 4773)",
+      faq: [
+        {
+          question: "How long does a Vermont landlord have to return a security deposit?",
+          answer: "Vermont requires landlords to return the security deposit within 14 days after the tenant vacates and the tenancy ends, together with a written itemized statement of any deductions (9 V.S.A. § 4461(e)).",
+        },
+        {
+          question: "Can a Vermont landlord evict a tenant without cause?",
+          answer: "Vermont requires landlords to provide written notice and a legitimate reason for termination. For month-to-month tenancies, 30 days' written notice is required. Retaliatory and discriminatory evictions are prohibited under Vermont law.",
+        },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Vermont LLCs are governed by 11 V.S.A. Chapter 25 (Vermont Limited Liability Company Act)",
+        "Articles of organization filing fee is $125; annual report fee is $35 (Vermont Secretary of State)",
+        "A registered agent with a Vermont address or a registered agent service is required (11 V.S.A. § 4003)",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and must be distinguishable from existing entities (11 V.S.A. § 4005)",
+        "Professional LLCs must comply with applicable professional licensing requirements under Vermont law",
+        "An operating agreement may not eliminate members' duties of loyalty or the obligation of good faith",
+      ],
+      faq: [
+        {
+          question: "Does Vermont require a written LLC operating agreement?",
+          answer: "Vermont does not mandate a filed operating agreement, but 11 V.S.A. § 4054 allows members to adopt written or oral agreements; a written operating agreement is strongly recommended to document governance, profit allocation, and member rights.",
+        },
+        {
+          question: "What are Vermont LLC filing fees?",
+          answer: "The initial articles of organization cost $125, and the annual report fee is $35. Vermont's annual report is due by April 1 each year.",
+        },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Vermont is an at-will employment state, but contracts should clearly confirm or modify this status",
+        "Vermont minimum wage is $13.67/hour (2024), adjusted annually under 21 V.S.A. § 384(a)",
+        "Vermont requires employers to provide paid sick leave of up to 40 hours per year (21 V.S.A. § 481 et seq.)",
+      ],
+      restrictions: [
+        "Non-compete agreements are banned for low-wage workers earning less than twice the Vermont minimum wage under 21 V.S.A. § 495i",
+        "Vermont prohibits retaliation against employees for disclosing wages or discussing workplace safety concerns (21 V.S.A. § 495)",
+        "Employers must comply with Vermont's Parental and Family Leave Act (21 V.S.A. § 471 et seq.) for family-related absences",
+      ],
+      faq: [
+        {
+          question: "Are non-compete agreements enforceable in Vermont?",
+          answer: "Vermont bans non-compete agreements for workers earning less than twice the state minimum wage under 21 V.S.A. § 495i. For higher-wage employees, non-competes may be enforceable if reasonable in scope, duration, and geographic reach.",
+        },
+        {
+          question: "How much paid sick leave are Vermont employees entitled to?",
+          answer: "Vermont's Earned Sick Time Act (21 V.S.A. § 481 et seq.) entitles most employees to earn up to 40 hours of paid sick leave per year, accruing at one hour per 52 hours worked.",
+        },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Vermont follows the Uniform Power of Attorney Act codified at 14A V.S.A. § 101 et seq.",
+        "A power of attorney must be signed by the principal and acknowledged before a notary public (14A V.S.A. § 105)",
+        "To be 'durable,' the document must contain language indicating it survives the principal's incapacity (14A V.S.A. § 104)",
+      ],
+      restrictions: [
+        "An agent may not make gifts to themselves or alter the principal's estate plan unless the POA expressly grants that authority",
+        "Healthcare and end-of-life decisions require a separate advance directive under 18 V.S.A. § 9701 et seq.",
+        "A POA affecting Vermont real property should be recorded in the land records of the relevant town",
+      ],
+      faq: [
+        {
+          question: "Does a Vermont power of attorney need to be notarized?",
+          answer: "Yes. 14A V.S.A. § 105 requires the principal to sign the power of attorney in the presence of a notary public for it to be valid. Vermont does not require witness signatures in addition to notarization.",
+        },
+        {
+          question: "What is a Vermont durable power of attorney?",
+          answer: "A durable POA includes language that it remains effective if the principal becomes incapacitated, as authorized by 14A V.S.A. § 104. Without this language, the POA automatically terminates upon the principal's incapacity.",
+        },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be at least 18 years old and of sound mind (14 V.S.A. § 1 et seq.)",
+        "Will must be signed by the testator or at the testator's direction in their presence",
+        "Two or more credible witnesses must sign in the presence of the testator and of each other (14 V.S.A. § 5)",
+      ],
+      restrictions: [
+        "Vermont imposes an estate tax on estates exceeding approximately $5 million (32 V.S.A. § 7442a); the exemption is indexed to the federal exclusion",
+        "A surviving spouse may elect against the will and take a statutory share of the augmented estate (14 V.S.A. § 301 et seq.)",
+        "Interested witnesses (beneficiaries) should be avoided — their attestation does not void the will but may trigger challenges",
+      ],
+      faq: [
+        {
+          question: "Does Vermont have an estate tax?",
+          answer: "Yes. Vermont imposes an estate tax on estates exceeding the threshold set under 32 V.S.A. § 7442a, currently approximately $5 million. This makes Vermont one of the few states with both an estate tax and a relatively low exemption compared to the federal exclusion.",
+        },
+        {
+          question: "Does Vermont recognize holographic wills?",
+          answer: "No. Vermont does not recognize holographic (handwritten, unwitnessed) wills. A valid Vermont will must be witnessed by at least two credible witnesses who sign in the presence of the testator and each other.",
+        },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Non-compete agreements are prohibited for employees earning less than twice the Vermont minimum wage (21 V.S.A. § 495i, effective July 1, 2022)",
+        "For higher-wage employees, the agreement must protect a legitimate business interest — trade secrets, confidential information, or specialized training",
+        "Restrictions must be reasonable in duration, geographic scope, and the activities restricted",
+      ],
+      restrictions: [
+        "Any non-compete agreement imposed on a low-wage worker as defined in 21 V.S.A. § 495i is void and unenforceable",
+        "Vermont courts apply a reasonableness standard and may decline to blue-pencil overly broad restrictions",
+        "Employers must disclose non-compete terms before the worker accepts the offer (21 V.S.A. § 495i(d))",
+      ],
+      faq: [
+        {
+          question: "Who cannot be subject to a non-compete in Vermont?",
+          answer: "Under 21 V.S.A. § 495i, non-compete agreements cannot be imposed on workers whose compensation is less than twice the Vermont minimum wage. These workers are protected regardless of whether they sign such an agreement.",
+        },
+        {
+          question: "Must Vermont employers disclose non-compete terms before hiring?",
+          answer: "Yes. Vermont law (21 V.S.A. § 495i(d)) requires employers to provide the terms of any non-compete agreement to prospective employees before they accept an offer of employment.",
+        },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Clearly document the contractor's independence — control over work methods, use of own tools/equipment, and ability to work for other clients",
+        "Contractor bears responsibility for federal and Vermont state tax obligations; agreement should disclaim employer withholding",
+        "Specify deliverables, milestones, payment schedule, and intellectual property ownership to reinforce an arm's-length relationship",
+      ],
+      restrictions: [
+        "Vermont applies the ABC test for unemployment insurance purposes under 21 V.S.A. § 1301(6); all three prongs must be satisfied for contractor status",
+        "Misclassification can result in back unemployment tax assessments, workers' compensation liability, and civil penalties",
+        "Vermont has no special registration requirement for independent contractors, but contractors may need a Vermont business license for certain regulated trades",
+      ],
+      faq: [
+        {
+          question: "What test does Vermont use to classify independent contractors?",
+          answer: "Vermont uses the ABC test for unemployment insurance under 21 V.S.A. § 1301(6): the worker must be (A) free from direction and control, (B) performing work outside the company's usual course of business, and (C) customarily engaged in an independently established trade or occupation.",
+        },
+        {
+          question: "Are Vermont independent contractors subject to state income tax?",
+          answer: "Vermont has a state income tax and contractors must file Vermont returns on income earned in the state; however, the hiring entity has no withholding obligation for properly classified independent contractors.",
+        },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Leases for more than one year must be in writing under Vermont's Statute of Frauds (12 V.S.A. § 181)",
+        "Clearly specify rent escalation terms, permitted use of the premises, CAM charge methodology, and renewal options",
+        "Identify the landlord's registered address for official notices and specify how notices must be delivered",
+      ],
+      restrictions: [
+        "Vermont has no commercial rent control; all terms are subject to free negotiation between landlord and tenant",
+        "Self-help eviction of commercial tenants is prohibited; landlords must pursue judicial process under Vermont law",
+        "Vermont's Act 250 land use permit requirements may affect certain commercial development and build-out projects",
+      ],
+      faq: [
+        {
+          question: "Does Vermont require a written commercial lease?",
+          answer: "Yes, under 12 V.S.A. § 181 (Statute of Frauds), any lease for more than one year must be in writing. Even shorter-term leases should be in writing to avoid disputes over terms.",
+        },
+        {
+          question: "Can a Vermont commercial landlord evict a tenant without court approval?",
+          answer: "No. Vermont prohibits self-help eviction. Landlords must provide proper written notice of default and, if the tenant does not cure or vacate, file an eviction action in Vermont Superior Court.",
+        },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Must identify the parties, principal amount, interest rate, repayment terms, and maturity date",
+        "Vermont's maximum legal interest rate is 12% per annum absent a written agreement specifying a different rate (9 V.S.A. § 41a)",
+        "If secured by Vermont real property, a mortgage deed must accompany the note and be recorded in the town land records",
+      ],
+      restrictions: [
+        "Consumer credit transactions are governed by the Vermont Consumer Protection Act (9 V.S.A. § 2451 et seq.) and federal truth-in-lending requirements",
+        "Usurious interest rates in consumer transactions may be subject to civil penalties under Vermont Consumer Protection law",
+        "Prepayment penalties and late charges must be clearly disclosed in the note to be enforceable",
+      ],
+      faq: [
+        {
+          question: "What is Vermont's legal interest rate for promissory notes?",
+          answer: "Vermont's default legal interest rate is 12% per annum under 9 V.S.A. § 41a. Parties to a written agreement may contract for a different rate, subject to consumer protection limits for consumer transactions.",
+        },
+        {
+          question: "Does a Vermont promissory note need to be notarized?",
+          answer: "Notarization is not required for an unsecured note. For notes secured by Vermont real property, the accompanying mortgage deed must be acknowledged before a notary and recorded with the town clerk in the relevant Vermont municipality.",
+        },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Identify the parties, the factual and legal basis of the claim, and the specific relief or amount demanded",
+        "Set a clear deadline for response — typically 14 to 30 days is customary in Vermont legal practice",
+        "Send by certified mail with return receipt requested or by a courier with delivery confirmation",
+      ],
+      restrictions: [
+        "Vermont's statute of limitations for written contract claims is six years (12 V.S.A. § 511); verify the applicable period before sending",
+        "Vermont's Consumer Protection Act (9 V.S.A. § 2451 et seq.) allows consumers to recover attorney's fees and treble damages for unfair or deceptive acts — include appropriate legal basis if applicable",
+        "A demand letter must not contain misrepresentations or threats of criminal prosecution to collect a civil debt",
+      ],
+      faq: [
+        {
+          question: "Is a demand letter required before filing suit in Vermont?",
+          answer: "Vermont law generally does not require a formal demand letter before filing a civil lawsuit, but sending one is standard practice and demonstrates good faith in attempting to resolve the dispute before litigation.",
+        },
+        {
+          question: "What is the statute of limitations for contract claims in Vermont?",
+          answer: "Vermont allows six years to bring an action on a written contract under 12 V.S.A. § 511. The limitations period generally begins on the date of breach.",
+        },
+      ],
+    },
+  },
+  "west-virginia": {
+    "residential-lease-agreement": {
+      requirements: [
+        "No statutory cap on security deposit amount; parties negotiate freely under West Virginia Code § 37-6A-1 et seq.",
+        "Landlord must return the security deposit within 45 days after the lease termination date with an itemized list of deductions (W. Va. Code § 37-6A-2)",
+        "Lease must disclose the name and address of the landlord or authorized agent for service of legal notices",
+      ],
+      restrictions: [
+        "West Virginia has no statewide rent control; rent increases are governed solely by the lease terms",
+        "Landlords are prohibited from using retaliatory evictions in response to tenant complaints about habitability (W. Va. Code § 37-6-30)",
+        "Self-help eviction measures (lockouts, utility shutoffs) are prohibited — court process is required",
+      ],
+      noticeRequirements: "Nine days' written notice to pay rent or vacate is required before an eviction action may be filed for nonpayment (W. Va. Code § 55-3A-1)",
+      faq: [
+        {
+          question: "How long does a West Virginia landlord have to return a security deposit?",
+          answer: "West Virginia Code § 37-6A-2 requires landlords to return the security deposit within 45 days after the lease ends, along with a written itemized statement of any deductions for damages beyond normal wear and tear.",
+        },
+        {
+          question: "What notice is required before eviction for nonpayment in West Virginia?",
+          answer: "A landlord must serve a written notice giving the tenant at least nine days to pay all unpaid rent or vacate the premises before filing an eviction (unlawful detainer) action under W. Va. Code § 55-3A-1.",
+        },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "West Virginia LLCs are governed by the West Virginia Limited Liability Company Act, W. Va. Code § 31B-1-101 et seq.",
+        "Articles of organization filing fee is $100; annual report fee is $25 (West Virginia Secretary of State)",
+        "A registered agent with a West Virginia physical address is required (W. Va. Code § 31B-1-108)",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from names of existing entities (W. Va. Code § 31B-1-105)",
+        "Professional service LLCs must comply with applicable West Virginia licensing requirements",
+        "An operating agreement may not eliminate the duty of loyalty or the covenant of good faith and fair dealing",
+      ],
+      faq: [
+        {
+          question: "Does West Virginia require an LLC operating agreement?",
+          answer: "West Virginia does not require a public filing of an operating agreement, but W. Va. Code § 31B-1-103 allows members to govern the LLC by written or oral agreement; a written operating agreement is strongly recommended to prevent disputes.",
+        },
+        {
+          question: "What are West Virginia LLC filing fees?",
+          answer: "The articles of organization cost $100, and the annual report fee is $25. Annual reports are due July 1 each year for West Virginia LLCs.",
+        },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "West Virginia is an at-will employment state; employment contracts should clearly confirm or define any modification to at-will status",
+        "West Virginia minimum wage is $8.75/hour (W. Va. Code § 21-5C-2), above the federal floor",
+        "Employers must pay earned wages at least semi-monthly and on regular established paydays (W. Va. Code § 21-5-4)",
+      ],
+      restrictions: [
+        "West Virginia is a right-to-work state under W. Va. Code § 21-1A-3 (effective 2016); employees cannot be required to join a union or pay dues as a condition of employment",
+        "Non-compete agreements are enforceable under common law if reasonable in time, geography, and scope of restricted activity",
+        "Employers must comply with the West Virginia Wage Payment and Collection Act (W. Va. Code § 21-5-1 et seq.) for final wage obligations upon termination",
+      ],
+      faq: [
+        {
+          question: "Is West Virginia a right-to-work state?",
+          answer: "Yes. West Virginia passed its right-to-work law in 2016 (W. Va. Code § 21-1A-3), prohibiting compulsory union membership or dues payments as a condition of employment in both the public and private sectors.",
+        },
+        {
+          question: "Are non-compete agreements enforceable in West Virginia?",
+          answer: "Yes, West Virginia enforces non-compete agreements under common law principles. Courts evaluate reasonableness based on the duration, geographic scope, and the nature of the legitimate business interest being protected.",
+        },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "West Virginia follows the Uniform Power of Attorney Act, W. Va. Code § 39B-1-101 et seq.",
+        "A durable power of attorney must be signed by the principal and acknowledged before a notary public (W. Va. Code § 39B-1-105)",
+        "To be 'durable,' the document must state that it is not affected by the principal's subsequent incapacity (W. Va. Code § 39B-1-104)",
+      ],
+      restrictions: [
+        "An agent may not make gifts to themselves or amend the principal's estate plan unless the POA expressly authorizes such actions",
+        "Healthcare and medical decisions require a separate medical power of attorney or advance directive under W. Va. Code § 16-30-1 et seq.",
+        "A POA used for West Virginia real estate transactions should be recorded in the county clerk's office where the property is located",
+      ],
+      faq: [
+        {
+          question: "Does a West Virginia power of attorney need to be notarized?",
+          answer: "Yes. W. Va. Code § 39B-1-105 requires the principal to sign the power of attorney before a notary public for it to be valid. West Virginia does not require additional witness signatures for a standard durable POA.",
+        },
+        {
+          question: "When does a West Virginia power of attorney become effective?",
+          answer: "A West Virginia POA is effective upon signing unless it is designated as a 'springing' POA that takes effect only upon the occurrence of a specified event, such as the principal's incapacity as certified by a physician.",
+        },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be at least 18 years old and of sound mind (W. Va. Code § 41-1-2)",
+        "Will must be signed by the testator or by another person at the testator's direction in their presence",
+        "Two credible witnesses must sign the will in the presence of the testator and of each other (W. Va. Code § 41-1-3)",
+      ],
+      restrictions: [
+        "A surviving spouse may take an elective share of the estate in lieu of any testamentary provisions (W. Va. Code § 42-3-1)",
+        "West Virginia does not impose a state estate or inheritance tax, which simplifies estate planning for residents",
+        "Property passing outside the will (retirement accounts, life insurance with named beneficiaries, jointly-held assets) is not subject to testamentary control",
+      ],
+      faq: [
+        {
+          question: "Does West Virginia recognize holographic wills?",
+          answer: "Yes. West Virginia Code § 41-1-3 recognizes wholly handwritten wills signed by the testator without witness requirements, provided the entire will is in the testator's handwriting.",
+        },
+        {
+          question: "Does West Virginia have an estate or inheritance tax?",
+          answer: "No. West Virginia does not impose a state estate tax or inheritance tax. Estates are subject only to federal estate tax, which applies to taxable estates above the federal exemption amount.",
+        },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "West Virginia enforces non-compete agreements under common law — there is no specific statute governing them",
+        "The agreement must be ancillary to an otherwise enforceable contract (employment, sale of business) and protect a legitimate business interest",
+        "Restrictions must be reasonable in geographic scope, duration, and the activity or industry restricted",
+      ],
+      restrictions: [
+        "West Virginia courts may apply the blue-pencil doctrine to reform overly broad restrictions rather than voiding the entire agreement",
+        "Non-competes that are unreasonably broad in scope, duration, or geography are unenforceable or subject to judicial modification",
+        "Non-competes signed mid-employment without new consideration may be challenged as unenforceable",
+      ],
+      faq: [
+        {
+          question: "Will West Virginia courts enforce a non-compete agreement?",
+          answer: "Yes, if the agreement is ancillary to a valid employment contract and the restrictions are reasonable as to time, geography, and scope. West Virginia courts balance the employer's legitimate interests against the employee's ability to earn a living.",
+        },
+        {
+          question: "Can West Virginia courts rewrite an overly broad non-compete?",
+          answer: "Yes. West Virginia courts may apply the blue-pencil doctrine to narrow an overly broad restriction, for example by reducing an excessive geographic or time restriction, rather than voiding the entire agreement.",
+        },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Clearly establish the contractor's right to control the manner and means of performing the work without day-to-day supervision",
+        "Contractor is responsible for self-employment taxes and must obtain their own business licenses, insurance, and equipment",
+        "Specify the scope of work, deliverables, payment terms, and intellectual property ownership to reinforce independent status",
+      ],
+      restrictions: [
+        "West Virginia applies an economic reality and control test to determine worker classification for workers' compensation and unemployment insurance purposes",
+        "Misclassification of employees as contractors can result in back workers' compensation premiums and unemployment tax liability",
+        "West Virginia has no state income tax withholding obligation for properly classified independent contractors",
+      ],
+      faq: [
+        {
+          question: "How does West Virginia determine if a worker is an independent contractor?",
+          answer: "West Virginia courts and agencies apply a multi-factor economic reality and control test, examining the degree of behavioral and financial control, permanency of the relationship, and integration of the worker's services into the company's business.",
+        },
+        {
+          question: "Does a West Virginia independent contractor need a written agreement?",
+          answer: "No statute mandates a written agreement, but a detailed written contract documenting the independent relationship is strongly recommended to defend against misclassification claims and protect the parties' respective intellectual property and payment rights.",
+        },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Leases for more than one year must be in writing under West Virginia's Statute of Frauds (W. Va. Code § 36-1-3)",
+        "Include clearly defined rent amounts, escalation provisions, CAM charges, permitted use, and tenant improvement allowances",
+        "Identify the landlord's registered agent or notice address for formal legal communications",
+      ],
+      restrictions: [
+        "West Virginia has no commercial rent control; all rent and lease terms are freely negotiated",
+        "Self-help eviction of commercial tenants is prohibited; the landlord must use the judicial unlawful entry and detainer process",
+        "Commercial leases involving properties with environmental contamination may implicate West Virginia Voluntary Remediation of Hazardous Waste Act disclosures",
+      ],
+      faq: [
+        {
+          question: "Does West Virginia require a written commercial lease?",
+          answer: "Yes, W. Va. Code § 36-1-3 requires leases for more than one year to be in writing and signed to be enforceable. Even short-term commercial leases should be in writing to protect both parties' interests.",
+        },
+        {
+          question: "Can a West Virginia commercial landlord lock out a defaulting tenant?",
+          answer: "No. Self-help remedies such as lockouts or utility shutoffs are prohibited in West Virginia. Landlords must serve proper written notice and, if necessary, commence an unlawful entry and detainer action in the appropriate court.",
+        },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Must identify the borrower and lender, principal amount, interest rate, repayment schedule, and maturity date",
+        "West Virginia's legal interest rate is 6% per annum absent a written agreement specifying a higher rate (W. Va. Code § 47-6-5)",
+        "Notes secured by West Virginia real property require a separate deed of trust recorded with the county clerk",
+      ],
+      restrictions: [
+        "Consumer loans are subject to the West Virginia Consumer Credit and Protection Act (W. Va. Code § 46A-1-101 et seq.); lenders must comply with licensing and disclosure requirements",
+        "Excessive interest rates in consumer transactions may be subject to penalties under the Consumer Credit and Protection Act",
+        "Acceleration clauses and default interest provisions must be clearly stated in the note to be enforceable",
+      ],
+      faq: [
+        {
+          question: "What is the maximum legal interest rate for a promissory note in West Virginia?",
+          answer: "West Virginia Code § 47-6-5 sets the default legal interest rate at 6% per annum. Parties may agree in writing to a higher rate, subject to the consumer protection limits of the West Virginia Consumer Credit and Protection Act for consumer transactions.",
+        },
+        {
+          question: "Does a West Virginia promissory note need to be notarized?",
+          answer: "Notarization is not required for an unsecured promissory note to be enforceable. For notes secured by real property, the accompanying deed of trust must be acknowledged before a notary and recorded with the clerk of the county court.",
+        },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Clearly state the identity of the sender and recipient, the factual basis of the claim, the applicable legal theory, and the specific sum or action demanded",
+        "Set a firm deadline for response — typically 14 to 30 days is standard in West Virginia practice",
+        "Send via certified mail with return receipt to create a documented record of delivery",
+      ],
+      restrictions: [
+        "West Virginia's statute of limitations for written contract claims is ten years (W. Va. Code § 55-2-6); verify the applicable period before sending",
+        "West Virginia's Consumer Credit and Protection Act (W. Va. Code § 46A-2-127 et seq.) prohibits unfair or deceptive debt collection practices; demand letters must be accurate and not threatening",
+        "Non-attorneys may not send demand letters on behalf of third parties for compensation without a valid West Virginia law license",
+      ],
+      faq: [
+        {
+          question: "What is the statute of limitations for contract claims in West Virginia?",
+          answer: "West Virginia Code § 55-2-6 provides a ten-year statute of limitations for actions on written contracts — one of the longest in the United States. The period generally runs from the date of breach.",
+        },
+        {
+          question: "Is a demand letter required before filing a lawsuit in West Virginia?",
+          answer: "West Virginia generally does not require a pre-suit demand letter, but sending one is recommended as evidence of good faith, often required by small claims court practice, and can facilitate early settlement before litigation costs accumulate.",
+        },
+      ],
+    },
+  },
+  wyoming: {
+    "residential-lease-agreement": {
+      requirements: [
+        "No statutory cap on the security deposit amount; parties negotiate freely under Wyoming law",
+        "Landlord must return security deposit within 30 days (or 15 days if tenant gave advance notice of termination) with an itemized statement of deductions (Wyo. Stat. § 1-21-1208)",
+        "Lease must identify the landlord's name and address for service of legal process (Wyo. Stat. § 1-21-1203)",
+      ],
+      restrictions: [
+        "Wyoming has no statewide rent control or rent stabilization laws; municipalities are not authorized to enact rent control",
+        "Landlord may not use self-help eviction remedies — lockouts or utility shutoffs without court order are prohibited",
+        "Retaliatory evictions in response to tenant habitability complaints are prohibited under Wyoming common law",
+      ],
+      noticeRequirements: "Three days' written notice to pay or vacate is required for nonpayment of rent before an eviction action may be filed (Wyo. Stat. § 1-21-1002)",
+      faq: [
+        {
+          question: "How long does a Wyoming landlord have to return a security deposit?",
+          answer: "Wyoming Statute § 1-21-1208 requires landlords to return the security deposit within 30 days of lease termination — or within 15 days if the tenant gave advance notice — along with an itemized written statement of any deductions.",
+        },
+        {
+          question: "Does Wyoming have rent control?",
+          answer: "No. Wyoming has no statewide rent control and does not authorize local municipalities to enact rent stabilization ordinances. Rent increases are governed entirely by the lease terms and market conditions.",
+        },
+      ],
+    },
+    "llc-operating-agreement": {
+      requirements: [
+        "Wyoming LLCs are governed by the Wyoming Limited Liability Company Act, Wyo. Stat. § 17-29-101 et seq.",
+        "Articles of organization filing fee is $100; annual report fee is $60 (or 0.0002 times assets in Wyoming, whichever is greater) (Wyoming Secretary of State)",
+        "A registered agent with a Wyoming physical address is required (Wyo. Stat. § 17-29-108)",
+      ],
+      restrictions: [
+        "LLC name must include 'Limited Liability Company,' 'LLC,' or 'L.L.C.' and be distinguishable from existing entities (Wyo. Stat. § 17-29-108)",
+        "Wyoming does not require public disclosure of member identities — member information is not listed in public filings, providing strong privacy protection",
+        "Professional LLCs for licensed professions must obtain authorization from the applicable Wyoming licensing board",
+      ],
+      faq: [
+        {
+          question: "Why is Wyoming considered the most LLC-friendly state?",
+          answer: "Wyoming pioneered LLC law in 1977, imposes no state income or corporate tax, does not require public disclosure of LLC members (strong privacy protection), and offers charging order protection as the exclusive creditor remedy against LLC membership interests.",
+        },
+        {
+          question: "Does Wyoming require an LLC operating agreement?",
+          answer: "Wyoming does not require a filed operating agreement, but Wyo. Stat. § 17-29-110 permits members to adopt written, oral, or implied agreements; a written operating agreement is essential to document member rights, governance, and profit allocation.",
+        },
+      ],
+    },
+    "employment-contract": {
+      requirements: [
+        "Wyoming is an at-will employment state; contracts should clearly confirm or modify at-will status",
+        "Wyoming minimum wage is $5.15/hour for employers not covered by FLSA; the federal $7.25/hour minimum applies to most employers",
+        "Employers must pay wages on regular established paydays; final wages upon termination must be paid not later than the next regular payday (Wyo. Stat. § 27-4-104)",
+      ],
+      restrictions: [
+        "Wyoming is a right-to-work state under Wyo. Stat. § 27-7-109; no employee may be required to join a union or pay dues as a condition of employment",
+        "Wyoming has no state income tax, which affects employee compensation planning and net pay calculations",
+        "Non-compete agreements are enforceable under common law if reasonable in scope, duration, and geography",
+      ],
+      faq: [
+        {
+          question: "Is Wyoming a right-to-work state?",
+          answer: "Yes. Wyoming Statute § 27-7-109 prohibits requiring employees to join a union or pay union dues as a condition of employment. Wyoming has been a right-to-work state since 1963.",
+        },
+        {
+          question: "Are non-compete agreements enforceable in Wyoming?",
+          answer: "Yes, Wyoming enforces non-compete agreements under common law principles, provided they protect a legitimate business interest and are reasonable in scope, geographic area, and duration. Courts may modify but generally prefer to enforce carefully drawn restrictions.",
+        },
+      ],
+    },
+    "power-of-attorney": {
+      requirements: [
+        "Wyoming follows the Uniform Power of Attorney Act, Wyo. Stat. § 3-9-101 et seq.",
+        "A durable power of attorney must be signed by the principal before a notary public (Wyo. Stat. § 3-9-105)",
+        "To be 'durable,' the document must expressly state it is not affected by the principal's subsequent incapacity (Wyo. Stat. § 3-9-104)",
+      ],
+      restrictions: [
+        "An agent may not make gifts to themselves or alter the principal's estate plan unless the POA expressly and specifically authorizes those actions",
+        "Healthcare and medical decision-making authority requires a separate advance health care directive under Wyo. Stat. § 35-22-401 et seq.",
+        "A POA used for Wyoming real property transactions should be recorded with the county clerk in the county where the property is situated",
+      ],
+      faq: [
+        {
+          question: "Does a Wyoming power of attorney need to be notarized?",
+          answer: "Yes. Wyo. Stat. § 3-9-105 requires the principal to sign the power of attorney in the presence of a notary public for it to be legally valid in Wyoming.",
+        },
+        {
+          question: "Can a Wyoming POA authorize an agent to make gifts?",
+          answer: "Only if the power of attorney contains an express grant of gift-making authority. Without specific authorization, an agent who makes gifts from the principal's assets may be personally liable for breach of fiduciary duty under Wyo. Stat. § 3-9-117.",
+        },
+      ],
+    },
+    "last-will-and-testament": {
+      requirements: [
+        "Testator must be at least 18 years old and of sound and disposing mind (Wyo. Stat. § 2-6-101)",
+        "Will must be signed by the testator, or by someone else at the testator's direction in their conscious presence",
+        "Two competent witnesses must sign the will in the presence of the testator (Wyo. Stat. § 2-6-112)",
+      ],
+      restrictions: [
+        "Wyoming does not impose a state estate or inheritance tax — estates are subject only to federal estate tax above the applicable federal exemption",
+        "A surviving spouse may claim an elective share of the augmented estate under Wyo. Stat. § 2-5-101",
+        "Holographic wills (handwritten and unwitnessed) are recognized in Wyoming if the material portions are in the testator's handwriting and signed",
+      ],
+      faq: [
+        {
+          question: "Does Wyoming have an estate or inheritance tax?",
+          answer: "No. Wyoming imposes neither an estate tax nor an inheritance tax. This makes Wyoming one of the most estate tax-friendly states in the country, particularly attractive for high-net-worth individuals.",
+        },
+        {
+          question: "Does Wyoming recognize holographic wills?",
+          answer: "Yes. Wyoming Statute § 2-6-113 recognizes holographic wills — handwritten, unwitnessed documents — provided the material provisions are in the testator's handwriting and the document is signed by the testator.",
+        },
+      ],
+    },
+    "non-compete-agreement": {
+      requirements: [
+        "Wyoming enforces non-compete agreements under common law — there is no specific authorizing or limiting statute",
+        "The agreement must be supported by adequate consideration and ancillary to a valid employment or business sale contract",
+        "Restrictions must be reasonable as to duration, geographic area, and the scope of competitive activity prohibited",
+      ],
+      restrictions: [
+        "Wyoming courts assess reasonableness from the standpoint of both the employer's legitimate interest and the employee's ability to earn a livelihood",
+        "Overly broad geographic or temporal restrictions may be narrowed by Wyoming courts applying the blue-pencil doctrine",
+        "Non-competes imposed mid-employment without new, independent consideration may be challenged as lacking enforceability",
+      ],
+      faq: [
+        {
+          question: "Will Wyoming courts enforce a non-compete agreement?",
+          answer: "Yes, if the agreement is ancillary to valid employment and the restrictions are reasonable. Wyoming courts balance the employer's legitimate interests — such as protection of trade secrets and customer relationships — against the employee's ability to earn a livelihood.",
+        },
+        {
+          question: "Is there a maximum duration for a non-compete in Wyoming?",
+          answer: "Wyoming has no statutory maximum duration. Courts evaluate reasonableness case by case, and durations of one to two years are generally considered reasonable for most employment roles, depending on the industry and nature of the position.",
+        },
+      ],
+    },
+    "independent-contractor-agreement": {
+      requirements: [
+        "Clearly document the contractor's right to control the manner and means of work and freedom from day-to-day supervision",
+        "Contractor is solely responsible for all tax obligations including federal self-employment tax; Wyoming has no state income tax",
+        "Specify deliverables, payment schedule, intellectual property ownership, and confidentiality obligations to establish a true arm's-length relationship",
+      ],
+      restrictions: [
+        "Wyoming applies a multi-factor economic reality and control test to determine worker classification for workers' compensation and unemployment insurance purposes",
+        "Misclassification of employees as contractors can result in liability for back workers' compensation premiums and unemployment insurance contributions",
+        "Wyoming's lack of a state income tax does not relieve contractors of federal self-employment tax obligations",
+      ],
+      faq: [
+        {
+          question: "How does Wyoming classify workers as independent contractors?",
+          answer: "Wyoming uses an economic reality and control analysis, examining the degree of behavioral and financial control, permanency of the relationship, integration into the business, and other factors to determine whether a worker is truly an independent contractor.",
+        },
+        {
+          question: "Do Wyoming independent contractors pay state income tax?",
+          answer: "No. Wyoming has no state income tax, so Wyoming-based independent contractors owe no state income tax on their earnings. They remain responsible for federal self-employment tax and federal income tax.",
+        },
+      ],
+    },
+    "commercial-lease-agreement": {
+      requirements: [
+        "Leases for more than one year must be in writing under Wyoming's Statute of Frauds (Wyo. Stat. § 1-23-105)",
+        "Clearly define rent amounts, escalation methodology, permitted use of the premises, maintenance responsibilities, and renewal options",
+        "Identify the landlord's registered agent or notice address for formal legal communications under the lease",
+      ],
+      restrictions: [
+        "Wyoming has no commercial rent control; all rent and lease terms are freely negotiated between landlord and tenant",
+        "Self-help eviction of commercial tenants is not authorized; landlords must use the judicial forcible entry and detainer process (Wyo. Stat. § 1-21-1001 et seq.)",
+        "Environmental indemnification clauses are important given Wyoming's extensive oil, gas, and mining industry activity",
+      ],
+      faq: [
+        {
+          question: "Does Wyoming require a written commercial lease?",
+          answer: "Yes, Wyo. Stat. § 1-23-105 requires leases for more than one year to be in writing and signed by the party to be charged. All commercial leases should be in writing regardless of term to protect both parties.",
+        },
+        {
+          question: "What happens if a commercial tenant in Wyoming stops paying rent?",
+          answer: "The landlord must serve a three-day written notice to pay or vacate and, if the tenant does not comply, file a forcible entry and detainer action in the appropriate Wyoming court. Self-help remedies such as lockouts are prohibited.",
+        },
+      ],
+    },
+    "promissory-note": {
+      requirements: [
+        "Must identify the parties, principal amount, interest rate, repayment schedule, and maturity date",
+        "Wyoming's statutory interest rate for judgments is 10% per annum; parties may contract for any rate in writing (Wyo. Stat. § 40-14-106)",
+        "Notes secured by Wyoming real property require a separate mortgage or deed of trust recorded with the county clerk",
+      ],
+      restrictions: [
+        "Wyoming imposes no state income or corporate tax, which simplifies interest income reporting for Wyoming-based lenders",
+        "Consumer credit transactions are subject to the Wyoming Uniform Consumer Credit Code (Wyo. Stat. § 40-14-101 et seq.); lenders must comply with applicable licensing and disclosure requirements",
+        "Prepayment penalties, default interest rates, and acceleration clauses must be clearly stated in the note to be enforceable",
+      ],
+      faq: [
+        {
+          question: "Is there a usury limit on promissory notes in Wyoming?",
+          answer: "Wyoming does not impose a general usury cap on commercial loans; parties may contract for any interest rate in writing under Wyo. Stat. § 40-14-106. Consumer loans are regulated under the Wyoming Uniform Consumer Credit Code.",
+        },
+        {
+          question: "Does a Wyoming promissory note need to be notarized?",
+          answer: "Notarization is generally not required for an unsecured promissory note. If the note is secured by Wyoming real property, the accompanying mortgage or deed of trust must be acknowledged before a notary and recorded with the county clerk.",
+        },
+      ],
+    },
+    "demand-letter": {
+      requirements: [
+        "Clearly identify the sender and recipient, the legal and factual basis for the claim, and the specific sum or action demanded",
+        "Set a reasonable deadline for response — typically 14 to 30 days is standard in Wyoming practice",
+        "Send via certified mail with return receipt requested or by a trackable courier service to document delivery",
+      ],
+      restrictions: [
+        "Wyoming's statute of limitations for written contract claims is ten years (Wyo. Stat. § 1-3-105(a)(i)); confirm the applicable period before sending",
+        "A demand letter must not contain misrepresentations or threats of criminal prosecution to collect a civil debt, which may violate Wyoming law",
+        "Non-attorneys may not send demand letters on behalf of third parties for compensation without a valid Wyoming law license",
+      ],
+      faq: [
+        {
+          question: "What is the statute of limitations for contract claims in Wyoming?",
+          answer: "Wyoming allows ten years to bring an action on a written contract under Wyo. Stat. § 1-3-105(a)(i) — one of the longest limitation periods in the United States. The clock generally starts on the date of breach.",
+        },
+        {
+          question: "Is a demand letter required before filing suit in Wyoming?",
+          answer: "Wyoming law generally does not require a formal pre-suit demand letter, but sending one establishes a written record of the claim, demonstrates good faith, and often prompts settlement before the expense of litigation.",
         },
       ],
     },
