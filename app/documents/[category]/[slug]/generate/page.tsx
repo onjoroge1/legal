@@ -109,18 +109,24 @@ export default function GeneratePage() {
     loadIntents()
   }, [legacySlug])
 
+  // Resolved document slug — stable string used as effect dependency instead of the doc object.
+  // Using the object directly causes an infinite loop because it's reconstructed on every render.
+  const docSlug = doc?.slug ?? null
+
   useEffect(() => {
     const load = async () => {
-      if (!legacySlug || !doc) return
+      if (!legacySlug || !docSlug) return
       setIsLoadingQuestions(true)
       setQuestionError(null)
       try {
         const response = await fetch(`/api/templates/${legacySlug}/questionnaires`)
         if (response.ok) {
           const questionnaires = await response.json()
-          const match = selectedIntent
+          const intentId = selectedIntent?.id ?? null
+          const intentName = selectedIntent?.name ?? null
+          const match = intentId
             ? questionnaires.find(
-                (q: any) => q.metadata?.intent === selectedIntent.id || q.name === selectedIntent.name
+                (q: any) => q.metadata?.intent === intentId || q.name === intentName
               ) || questionnaires[0]
             : questionnaires[0]
           if (match && match.questions?.length > 0) {
@@ -133,28 +139,32 @@ export default function GeneratePage() {
       } catch {
         // DB unavailable — fall through to code-defined questions
       }
-      // Fallback: use code-defined questions for this document type
-      // This covers all cases where the DB has no questionnaire configured.
-      const codeQuestions = getDocumentQuestions(doc.slug)
-      setQuestions(codeQuestions)
+      // Fallback: use code-defined questions for this document type.
+      // Covers all cases where the DB has no questionnaire configured.
+      setQuestions(getDocumentQuestions(docSlug))
       setIsLoadingQuestions(false)
     }
     load()
-  }, [legacySlug, selectedIntent, doc])
+    // Depend only on string/primitive values — never objects (new reference each render = infinite loop)
+  }, [legacySlug, selectedIntent?.id, docSlug])
 
   useEffect(() => {
     if (!legacySlug) return
     setValidationErrors(getDocumentValidation(legacySlug, formData, selectedIntent?.id))
-  }, [legacySlug, formData, selectedIntent])
+  }, [legacySlug, formData, selectedIntent?.id])
 
   useEffect(() => {
     if (!legacySlug) return
     setStateWarnings(getStateWarnings(legacySlug, formData.state, selectedIntent?.id))
-  }, [legacySlug, formData.state, selectedIntent])
+  }, [legacySlug, formData.state, selectedIntent?.id])
+
+  // Stable doc metadata for use in effects — avoids object-reference churn
+  const docTitle = doc?.title ?? ""
+  const docCategory = doc?.category ?? ""
 
   useEffect(() => {
     const createDraft = async () => {
-      if (!session?.user?.email || !doc) return
+      if (!session?.user?.email || !docSlug) return
       try {
         const existingRes = await fetch(`/api/documents/draft?slug=${legacySlug}`)
         if (existingRes.ok) {
@@ -171,19 +181,20 @@ export default function GeneratePage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title: doc.title,
-            type: doc.title,
+            title: docTitle,
+            type: docTitle,
             slug: legacySlug,
-            category: doc.category,
+            category: docCategory,
             status: "draft",
-            metadata: { source: "generate", documentType: doc.title, intent: selectedIntent?.id },
+            metadata: { source: "generate", documentType: docTitle, intent: selectedIntent?.id },
           }),
         })
         if (res.ok) setDraftDocumentId((await res.json()).id)
       } catch {}
     }
     createDraft()
-  }, [session, doc, legacySlug, selectedIntent, intents])
+    // String/primitive deps only — no object references that change every render
+  }, [session?.user?.email, docSlug, legacySlug, selectedIntent?.id, intents.length, docTitle, docCategory])
 
   useEffect(() => {
     if (typeof window === "undefined" || !legacySlug) return
