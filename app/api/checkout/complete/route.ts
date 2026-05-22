@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
-import { getDocumentByLegacySlug } from "@/lib/document-catalog"
+import { getDocumentByLegacySlug, getDocumentBySlug } from "@/lib/document-catalog"
 
 /**
  * Complete checkout - Create account/login and save document

@@ -9,8 +9,10 @@ import {
   Scale,
   FileText,
   Shield,
+  ShieldCheck,
   Loader2,
   ArrowRight,
+  Info,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
@@ -27,6 +29,7 @@ import { getIntentsForDocument, Intent } from "@/lib/intent-registry"
 import { getDocumentValidation } from "@/lib/document-validation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { getStateWarnings } from "@/lib/state-warnings"
+import { getDocumentQuestions } from "@/lib/document-questions"
 
 export default function GeneratePage() {
   const router = useRouter()
@@ -108,7 +111,7 @@ export default function GeneratePage() {
 
   useEffect(() => {
     const load = async () => {
-      if (!legacySlug) return
+      if (!legacySlug || !doc) return
       setIsLoadingQuestions(true)
       setQuestionError(null)
       try {
@@ -120,20 +123,24 @@ export default function GeneratePage() {
                 (q: any) => q.metadata?.intent === selectedIntent.id || q.name === selectedIntent.name
               ) || questionnaires[0]
             : questionnaires[0]
-          if (match) {
-            setQuestions(match.questions || [])
-          } else {
-            setQuestions([])
-            setQuestionError("No questionnaire configured for this document type.")
+          if (match && match.questions?.length > 0) {
+            // DB questionnaire found — use it
+            setQuestions(match.questions)
+            setIsLoadingQuestions(false)
+            return
           }
         }
       } catch {
-        setQuestionError("Failed to load questionnaire data.")
+        // DB unavailable — fall through to code-defined questions
       }
+      // Fallback: use code-defined questions for this document type
+      // This covers all cases where the DB has no questionnaire configured.
+      const codeQuestions = getDocumentQuestions(doc.slug)
+      setQuestions(codeQuestions)
       setIsLoadingQuestions(false)
     }
     load()
-  }, [legacySlug, selectedIntent])
+  }, [legacySlug, selectedIntent, doc])
 
   useEffect(() => {
     if (!legacySlug) return
@@ -210,20 +217,9 @@ export default function GeneratePage() {
     check()
   }, [session])
 
-  useEffect(() => {
-    const genPreview = async () => {
-      if (!isFormValid || !legacySlug) return
-      try {
-        const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ formData, intent: selectedIntent?.id }),
-        })
-        if (res.ok) setDocumentPreview((await res.json()).document)
-      } catch {}
-    }
-    genPreview()
-  }, [isFormValid, formData, legacySlug, selectedIntent])
+  // Note: document preview is only generated on explicit "Generate Document" button click,
+  // not automatically on form change. Auto-generation on every keystroke wastes AI tokens
+  // and creates a poor UX with multiple concurrent requests.
 
   const saveDocument = async (): Promise<string | null> => {
     if (!isFormValid || !doc) return null
@@ -291,36 +287,48 @@ export default function GeneratePage() {
         localStorage.setItem("document-intent", selectedIntent.id)
       }
 
+      // Generate the document content
+      const genRes = await fetch(`/api/documents/${category}/${slug}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formData, intent: selectedIntent?.id }),
+      })
+
+      if (!genRes.ok) {
+        toast.error("Failed to generate document. Please try again.")
+        return
+      }
+
+      const { document: content } = await genRes.json()
+
+      // Show preview in the right panel immediately
+      setDocumentPreview(content)
+
+      // Subscribers: auto-save and redirect to dashboard
       if (hasSubscription && session?.user?.email) {
-        const genRes = await fetch(`/api/documents/${category}/${slug}/generate`, {
+        const saveRes = await fetch("/api/documents", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ formData, intent: selectedIntent?.id }),
+          body: JSON.stringify({
+            title: doc.title,
+            type: doc.title,
+            category: doc.category,
+            content,
+            status: "completed",
+            metadata: { formData, slug: legacySlug, intent: selectedIntent?.id, generatedAt: new Date().toISOString() },
+          }),
         })
-        if (genRes.ok) {
-          const { document: content } = await genRes.json()
-          const saveRes = await fetch("/api/documents", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: doc.title,
-              type: doc.title,
-              category: doc.category,
-              content,
-              status: "completed",
-              metadata: { formData, slug: legacySlug, intent: selectedIntent?.id, generatedAt: new Date().toISOString() },
-            }),
-          })
-          if (saveRes.ok) {
-            const saved = await saveRes.json()
-            router.push(`/dashboard/documents/${saved.id}`)
-            return
-          }
+        if (saveRes.ok) {
+          const saved = await saveRes.json()
+          router.push(`/dashboard/documents/${saved.id}`)
+          return
         }
       }
 
-      router.push(`/documents/${category}/${slug}/preview`)
+      // Non-subscribers: show preview in current page (they see it, then go to checkout)
+      // No redirect — the preview panel is now populated above
     } catch {
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsGenerating(false)
     }
@@ -427,6 +435,33 @@ export default function GeneratePage() {
                     Please fill in all required fields
                   </p>
                 )}
+              </div>
+
+              {/* YMYL trust signal — honest statement of compliance basis */}
+              <div className="mt-6 rounded-xl border border-border/50 bg-card/60 p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+                  <span className="text-xs font-medium text-foreground">State-Law Compliance</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Generated documents incorporate{" "}
+                  {formData.state ? (
+                    <span className="font-medium text-foreground">{formData.state}</span>
+                  ) : (
+                    "your selected state's"
+                  )}{" "}
+                  statutory requirements. This is not legal advice.{" "}
+                  <Link href="/lawyers" className="text-primary hover:underline">
+                    Consult a licensed attorney
+                  </Link>{" "}
+                  for your specific situation.
+                </p>
+                <div className="flex items-start gap-1.5 pt-0.5">
+                  <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">
+                    Statutes referenced vary by state and document type. Always verify current law before signing.
+                  </p>
+                </div>
               </div>
             </div>
           </ScrollArea>
