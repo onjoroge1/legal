@@ -179,10 +179,16 @@ export const STATE_ELIGIBLE_DOCS: StateEligibleDoc[] = [
  * Key state-specific legal requirements for each state × doc combination.
  * These are the unique, meaningful facts that make the page non-thin.
  */
+export interface StateDocStatute {
+  label: string  // e.g. "Cal. Civil Code §§1940–1954 (Landlord-Tenant)"
+  url: string    // Justia or official .gov URL
+}
+
 export const STATE_DOC_NOTES: Record<string, Record<string, {
   requirements: string[]
   restrictions: string[]
   noticeRequirements?: string
+  statutes?: StateDocStatute[]
   faq: { question: string; answer: string }[]
 }>> = {
   // ── California ───────────────────────────────────────────────────────────
@@ -12622,6 +12628,9 @@ export function getStatePageData(stateSlug: string, docSlug: string) {
 
   const stateNotes = STATE_DOC_NOTES[stateSlug]?.[docSlug]
   const notes = stateNotes ?? getGenericStateNotes(state.name, doc.title)
+  const statutes = notes.statutes?.length
+    ? notes.statutes
+    : getStatuteLinks(stateSlug, docSlug, state.name)
 
   const pageTitle = `${state.name} ${doc.title}`
   const seoTitle = `${state.name} ${doc.title} Template | LegalLawDocs.com`
@@ -12635,6 +12644,7 @@ export function getStatePageData(stateSlug: string, docSlug: string) {
     metaDescription,
     h1: pageTitle,
     notes,
+    statutes,
   }
 }
 
@@ -12667,4 +12677,186 @@ export function getSiblingStatePages(docSlug: string, currentStateSlug: string):
         category: doc.category,
       }
     })
+}
+
+// ── Statute links ─────────────────────────────────────────────────────────────
+// Justia chapter/title-level URLs per state × document type.
+// Populated for the top 10 states and most common document types.
+// Justia URL pattern: https://law.justia.com/codes/{state-slug}/{path}
+//
+// NOTE: This object is populated separately from STATE_DOC_NOTES so entries
+// can be added incrementally without touching the large data block above.
+export const STATE_STATUTE_LINKS: Record<string, Record<string, StateDocStatute[]>> = {
+  california: {
+    "residential-lease-agreement": [
+      { label: "Cal. Civil Code §§ 1940–1954.1 — Hiring of Real Property", url: "https://law.justia.com/codes/california/civil-code/division-3/part-4/title-5/chapter-2/" },
+      { label: "Cal. Civil Code § 1950.5 — Security Deposits", url: "https://law.justia.com/codes/california/civil-code/section-1950-5/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "Cal. Corp. Code Title 2.5 — California Revised Uniform Limited Liability Company Act", url: "https://law.justia.com/codes/california/corporations-code/title-2-5/" },
+    ],
+    "independent-contractor-agreement": [
+      { label: "Cal. Labor Code § 2775 — Worker Classification (AB 5)", url: "https://law.justia.com/codes/california/labor-code/division-2/part-1/chapter-2/article-1/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "Cal. Civil Code §§ 3426–3426.11 — California Uniform Trade Secrets Act", url: "https://law.justia.com/codes/california/civil-code/division-4/part-1/title-1/chapter-4/" },
+    ],
+    "employment-agreement": [
+      { label: "Cal. Labor Code — Employment Regulation", url: "https://law.justia.com/codes/california/labor-code/" },
+    ],
+  },
+  texas: {
+    "residential-lease-agreement": [
+      { label: "Tex. Prop. Code Title 8, Ch. 92 — Landlord and Tenant", url: "https://law.justia.com/codes/texas/property-code/title-8/chapter-92/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "Tex. Bus. Orgs. Code Title 3, Ch. 101 — Limited Liability Companies", url: "https://law.justia.com/codes/texas/business-organizations-code/title-3/chapter-101/" },
+    ],
+    "independent-contractor-agreement": [
+      { label: "Tex. Labor Code — Employment Practices", url: "https://law.justia.com/codes/texas/labor-code/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "Tex. Civ. Prac. & Rem. Code Ch. 134A — Texas Uniform Trade Secrets Act", url: "https://law.justia.com/codes/texas/civil-practice-and-remedies-code/title-6/chapter-134a/" },
+    ],
+    "employment-agreement": [
+      { label: "Tex. Labor Code — Wages and Hours", url: "https://law.justia.com/codes/texas/labor-code/" },
+    ],
+  },
+  "new-york": {
+    "residential-lease-agreement": [
+      { label: "N.Y. Real Prop. Law — Landlord and Tenant", url: "https://law.justia.com/codes/new-york/rpl/" },
+      { label: "N.Y. Real Prop. Acts. Law — Summary Proceedings", url: "https://law.justia.com/codes/new-york/rpapl/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "N.Y. Ltd. Liab. Co. Law — Limited Liability Company Law", url: "https://law.justia.com/codes/new-york/llc/" },
+    ],
+    "independent-contractor-agreement": [
+      { label: "N.Y. Labor Law — General Provisions", url: "https://law.justia.com/codes/new-york/lab/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "N.Y. Gen. Bus. Law Art. 23-A — Trade Secrets", url: "https://law.justia.com/codes/new-york/gen-bus/article-23-a/" },
+    ],
+    "employment-agreement": [
+      { label: "N.Y. Labor Law — Employment", url: "https://law.justia.com/codes/new-york/lab/" },
+    ],
+  },
+  florida: {
+    "residential-lease-agreement": [
+      { label: "Fla. Stat. Ch. 83, Part II — Florida Residential Landlord and Tenant Act", url: "https://law.justia.com/codes/florida/title-vi/chapter-83/part-ii/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "Fla. Stat. Ch. 605 — Florida Revised Limited Liability Company Act", url: "https://law.justia.com/codes/florida/title-xxxvi/chapter-605/" },
+    ],
+    "independent-contractor-agreement": [
+      { label: "Fla. Stat. Ch. 440 — Workers' Compensation", url: "https://law.justia.com/codes/florida/title-xxxi/chapter-440/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "Fla. Stat. Ch. 688 — Florida Uniform Trade Secrets Act", url: "https://law.justia.com/codes/florida/title-xl/chapter-688/" },
+    ],
+    "employment-agreement": [
+      { label: "Fla. Stat. Ch. 448 — Labor and Employment", url: "https://law.justia.com/codes/florida/title-xxxi/chapter-448/" },
+    ],
+  },
+  georgia: {
+    "residential-lease-agreement": [
+      { label: "Ga. Code Ann. Title 44, Ch. 7 — Landlord and Tenant", url: "https://law.justia.com/codes/georgia/title-44/chapter-7/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "Ga. Code Ann. Title 14, Ch. 11 — Georgia Limited Liability Company Act", url: "https://law.justia.com/codes/georgia/title-14/chapter-11/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "Ga. Code Ann. Title 10, Ch. 1, Art. 27 — Georgia Trade Secrets Act", url: "https://law.justia.com/codes/georgia/title-10/chapter-1/article-27/" },
+    ],
+    "employment-agreement": [
+      { label: "Ga. Code Ann. Title 34 — Labor and Industrial Relations", url: "https://law.justia.com/codes/georgia/title-34/" },
+    ],
+  },
+  illinois: {
+    "residential-lease-agreement": [
+      { label: "765 ILCS 710 — Illinois Residential Tenants' Right to Repair Act", url: "https://law.justia.com/codes/illinois/chapter-765/act-710/" },
+      { label: "765 ILCS 720 — Landlord-Tenant Act", url: "https://law.justia.com/codes/illinois/chapter-765/act-720/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "805 ILCS 180 — Limited Liability Company Act", url: "https://law.justia.com/codes/illinois/chapter-805/act-180/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "765 ILCS 1065 — Illinois Trade Secrets Act", url: "https://law.justia.com/codes/illinois/chapter-765/act-1065/" },
+    ],
+    "employment-agreement": [
+      { label: "820 ILCS 115 — Illinois Wage Payment and Collection Act", url: "https://law.justia.com/codes/illinois/chapter-820/act-115/" },
+    ],
+  },
+  pennsylvania: {
+    "residential-lease-agreement": [
+      { label: "68 P.S. §§ 250.101–250.602 — Landlord and Tenant Act of 1951", url: "https://law.justia.com/codes/pennsylvania/title-68/chapter-7/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "15 Pa. C.S. Ch. 89 — Pennsylvania Limited Liability Company Law", url: "https://law.justia.com/codes/pennsylvania/title-15/chapter-89/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "12 Pa. C.S. Ch. 53 — Pennsylvania Uniform Trade Secrets Act", url: "https://law.justia.com/codes/pennsylvania/title-12/chapter-53/" },
+    ],
+    "employment-agreement": [
+      { label: "43 P.S. — Labor Code", url: "https://law.justia.com/codes/pennsylvania/title-43/" },
+    ],
+  },
+  ohio: {
+    "residential-lease-agreement": [
+      { label: "Ohio Rev. Code Ch. 5321 — Landlords and Tenants", url: "https://law.justia.com/codes/ohio/title-53/chapter-5321/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "Ohio Rev. Code Ch. 1705 — Limited Liability Companies", url: "https://law.justia.com/codes/ohio/title-17/chapter-1705/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "Ohio Rev. Code Ch. 1333 — Ohio Uniform Trade Secrets Act", url: "https://law.justia.com/codes/ohio/title-13/chapter-1333/" },
+    ],
+    "employment-agreement": [
+      { label: "Ohio Rev. Code Title 41 — Labor and Industry", url: "https://law.justia.com/codes/ohio/title-41/" },
+    ],
+  },
+  michigan: {
+    "residential-lease-agreement": [
+      { label: "MCL Ch. 554 — Michigan Security Deposit Act & Landlord-Tenant", url: "https://law.justia.com/codes/michigan/chapter-554/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "MCL Ch. 450 — Michigan Limited Liability Company Act", url: "https://law.justia.com/codes/michigan/chapter-450/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "MCL §§ 445.1901–445.1910 — Michigan Uniform Trade Secrets Act", url: "https://law.justia.com/codes/michigan/chapter-445/" },
+    ],
+    "employment-agreement": [
+      { label: "MCL Ch. 408 — Michigan Labor Code", url: "https://law.justia.com/codes/michigan/chapter-408/" },
+    ],
+  },
+  washington: {
+    "residential-lease-agreement": [
+      { label: "RCW Ch. 59.18 — Washington Residential Landlord-Tenant Act", url: "https://law.justia.com/codes/washington/title-59/chapter-59-18/" },
+    ],
+    "llc-operating-agreement": [
+      { label: "RCW Ch. 25.15 — Washington Uniform Limited Liability Company Act", url: "https://law.justia.com/codes/washington/title-25/chapter-25-15/" },
+    ],
+    "non-disclosure-agreement": [
+      { label: "RCW Ch. 19.108 — Washington Uniform Trade Secrets Act", url: "https://law.justia.com/codes/washington/title-19/chapter-19-108/" },
+    ],
+    "employment-agreement": [
+      { label: "RCW Title 49 — Washington Labor Regulations", url: "https://law.justia.com/codes/washington/title-49/" },
+    ],
+  },
+}
+
+/**
+ * Returns statute links for a given state × document combination.
+ * Falls back to a Justia state code root link when no specific links are configured.
+ */
+export function getStatuteLinks(stateSlug: string, docSlug: string, stateName: string): StateDocStatute[] {
+  const specific = STATE_STATUTE_LINKS[stateSlug]?.[docSlug]
+  if (specific?.length) return specific
+
+  // Fallback: Justia state code index page
+  return [
+    {
+      label: `${stateName} State Code (Justia)`,
+      url: `https://law.justia.com/codes/${stateSlug}/`,
+    },
+  ]
 }

@@ -17,6 +17,7 @@ import {
   Download,
   Crown,
   Globe,
+  ExternalLink,
 } from "lucide-react"
 import { documentCatalog, getDocumentBySlug, getDocumentsByCategory, getRelatedDocuments, getDocumentPath, getVariantDocuments } from "@/lib/document-catalog"
 import { getIntentsForDocument } from "@/lib/intent-registry"
@@ -657,7 +658,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     if (!stateData) notFound()
 
     const siblings = getSiblingStatePages(parsed.docSlug, parsed.stateSlug)
-    const { state, doc: stateDoc, pageTitle, notes } = stateData
+    const { state, doc: stateDoc, pageTitle, notes, statutes } = stateData
     const generateUrl = `/documents/${category}/${slug}/generate`
     const parentDocUrl = `/documents/${stateDoc.category}/${stateDoc.slug}`
 
@@ -811,6 +812,32 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                       <p className="mt-1 text-sm text-muted-foreground">{notes.noticeRequirements}</p>
                     </div>
                   )}
+                </div>
+
+                {/* Official Statute References */}
+                <div className="rounded-2xl border border-border/40 bg-muted/30 p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <ExternalLink className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold text-foreground">Official Statute References</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Primary {state.name} statutes governing this document type.
+                  </p>
+                  <ul className="space-y-2">
+                    {statutes.map((s, i) => (
+                      <li key={i}>
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-2 text-sm text-primary hover:underline"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                          {s.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
