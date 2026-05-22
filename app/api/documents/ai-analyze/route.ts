@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { generateObject } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { google } from "@ai-sdk/google"
 import { z } from "zod"
 
 export const maxDuration = 60
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       : document.content
 
     const { object } = await generateObject({
-      model: openai("gpt-4o-mini"),
+      model: google("gemini-2.0-flash"),
       schema: analysisSchema,
       prompt: `You are a legal document analyst. Analyze the following legal document and provide a structured analysis.
 

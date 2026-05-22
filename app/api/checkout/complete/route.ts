@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       // Import the generation logic directly
       try {
         const { generateText } = await import("ai")
-        const { openai } = await import("@ai-sdk/openai")
+        const { google } = await import("@ai-sdk/google")
         const { getDocumentPrompt } = await import("@/lib/document-prompts")
         
         const document = getDocumentByLegacySlug(slug)
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
         const documentSpecificInstructions = getDocumentPrompt(slug, intent)
 
         const result = await generateText({
-          model: openai("gpt-4o-mini"),
+          model: google("gemini-2.0-flash"),
           prompt: `Generate a complete, professional, legally compliant ${document.title} based on these details:
 
 ${Object.entries(formData)

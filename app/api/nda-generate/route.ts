@@ -1,5 +1,5 @@
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { google } from "@ai-sdk/google"
 
 export const maxDuration = 60
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const additional = ndaData.ADDITIONAL || "none"
 
   const result = await generateText({
-    model: openai("gpt-4o-mini"),
+    model: google("gemini-2.0-flash"),
     prompt: `Generate a complete, professional, legally compliant Non-Disclosure Agreement (NDA) based on these details:
 
 State/Jurisdiction: ${state}

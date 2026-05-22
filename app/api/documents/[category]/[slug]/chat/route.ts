@@ -4,7 +4,7 @@ import {
   streamText,
   type UIMessage,
 } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 
@@ -107,7 +107,7 @@ After gathering ALL needed information, respond with EXACTLY this format (this i
 Start by greeting the user and asking your first question.`
 
     const result = streamText({
-      model: openai("gpt-4o-mini"),
+      model: google("gemini-2.0-flash"),
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages as UIMessage[]),
       abortSignal: request.signal,

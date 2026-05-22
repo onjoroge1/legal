@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
     { url: `${BASE_URL}/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/lawyers`, lastModified: new Date(), changeFrequency: "daily", priority: 0.85 },
+    { url: `${BASE_URL}/advertise`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
   ]
 
   // ── Category hub pages ────────────────────────────────────────────────────
