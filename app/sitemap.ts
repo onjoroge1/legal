@@ -5,45 +5,46 @@ import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
 import { getStatePageStaticParams } from "@/lib/state-pages"
 import { getInternationalPageStaticParams } from "@/lib/international-pages"
 import { getCityPageStaticParams } from "@/lib/city-pages"
+import { blogPosts } from "@/lib/blog-posts"
 
 // Always use the canonical production domain — never a Vercel preview URL.
-// NEXTAUTH_URL and NEXT_PUBLIC_APP_URL are deployment-specific; the sitemap must
-// reference the canonical domain so Google doesn't index preview URLs.
 const BASE_URL = process.env.NEXT_PUBLIC_CANONICAL_URL ?? "https://www.legallawdocs.com"
+
+// ── lastmod helpers ───────────────────────────────────────────────────────────
+// Google ignores <priority> and <changeFrequency>. Only <lastmod> moves the
+// needle. Use real content-change dates — not new Date() on every deploy.
+const d = (iso: string) => new Date(iso)
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ── Core static pages ────────────────────────────────────────────────────
+  // Dates = last time each page's content meaningfully changed.
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${BASE_URL}/documents`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
-    { url: `${BASE_URL}/privacy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
-    { url: `${BASE_URL}/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE_URL}/lawyers`, lastModified: new Date(), changeFrequency: "daily", priority: 0.85 },
-    { url: `${BASE_URL}/advertise`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: BASE_URL,                          lastModified: d("2025-05-22") },
+    { url: `${BASE_URL}/documents`,           lastModified: d("2025-05-22") },
+    { url: `${BASE_URL}/lawyers`,             lastModified: d("2025-05-22") },
+    { url: `${BASE_URL}/advertise`,           lastModified: d("2025-05-22") },
+    { url: `${BASE_URL}/blog`,                lastModified: d("2025-05-22") },
+    { url: `${BASE_URL}/about`,               lastModified: d("2025-04-01") },
+    { url: `${BASE_URL}/contact`,             lastModified: d("2025-04-01") },
+    { url: `${BASE_URL}/privacy`,             lastModified: d("2025-04-01") },
+    { url: `${BASE_URL}/terms`,               lastModified: d("2025-04-01") },
+    { url: `${BASE_URL}/login`,               lastModified: d("2025-04-01") },
+    { url: `${BASE_URL}/signup`,              lastModified: d("2025-04-01") },
   ]
 
   // ── Category hub pages ────────────────────────────────────────────────────
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
     url: `${BASE_URL}/documents/${cat.id}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.9,
+    lastModified: d("2025-05-22"),
   }))
 
-  // ── Document detail pages (canonical, indexable) ──────────────────────────
+  // ── Document detail pages (canonical) ────────────────────────────────────
   const documentPages: MetadataRoute.Sitemap = documentCatalog.map((doc) => ({
     url: `${BASE_URL}/documents/${doc.category}/${doc.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.85,
+    lastModified: d("2025-05-22"),
   }))
 
-  // ── Intent subroute pages (indexable: true && tier === "subroute" only) ──────
+  // ── Intent subroute pages ─────────────────────────────────────────────────
   const intentEntries = getAllIndexableSubrouteIntents()
   const intentPages: MetadataRoute.Sitemap = intentEntries
     .map(({ legacySlug, intent }) => {
@@ -51,45 +52,49 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (!doc) return null
       return {
         url: `${BASE_URL}/documents/${doc.category}/${doc.slug}/${intent.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: intent.priority === "high" ? 0.75 : 0.65,
+        lastModified: d("2025-05-22"),
       }
     })
     .filter(Boolean) as MetadataRoute.Sitemap
 
-  // ── State-specific document pages (Sprint 6) ─────────────────────────────
+  // ── State-specific document pages ─────────────────────────────────────────
   const stateParams = getStatePageStaticParams()
   const statePages: MetadataRoute.Sitemap = stateParams.map(({ category, slug }) => ({
     url: `${BASE_URL}/documents/${category}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.78,
+    lastModified: d("2025-05-22"),
   }))
 
-  // ── International document pages ─────────────────────────────────────────
+  // ── International document pages ──────────────────────────────────────────
   const intlParams = getInternationalPageStaticParams()
   const intlPages: MetadataRoute.Sitemap = intlParams.map(({ category, slug }) => ({
     url: `${BASE_URL}/documents/${category}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.75,
+    lastModified: d("2025-05-15"),
   }))
 
-  // ── City-specific residential lease pages ────────────────────────────────
-  // Only cities with material local ordinance differences (rent control,
-  // just-cause eviction, mandatory disclosures). ROI-only — no city pages
-  // for doc types governed purely by state law.
+  // ── City-specific residential lease pages ─────────────────────────────────
   const cityParams = getCityPageStaticParams()
   const cityPages: MetadataRoute.Sitemap = cityParams.map(({ category, slug }) => ({
     url: `${BASE_URL}/documents/${category}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.80, // slightly above intl (0.75) — city ordinances = high-intent searches
+    lastModified: d("2025-05-22"),
   }))
 
-  // NOTE: generate, preview, checkout, and download pages are excluded.
-  // They are disallowed in robots.ts and should not be indexed.
+  // ── Blog posts — use actual publish dates ─────────────────────────────────
+  const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+  }))
 
-  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages, ...intlPages, ...cityPages]
+  // NOTE: generate, preview, checkout, and download pages are excluded —
+  // disallowed in robots.ts and must not be indexed.
+
+  return [
+    ...staticPages,
+    ...categoryPages,
+    ...documentPages,
+    ...intentPages,
+    ...statePages,
+    ...intlPages,
+    ...cityPages,
+    ...blogPostPages,
+  ]
 }
