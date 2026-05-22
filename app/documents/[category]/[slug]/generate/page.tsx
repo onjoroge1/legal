@@ -235,15 +235,21 @@ export default function GeneratePage() {
   const saveDocument = async (): Promise<string | null> => {
     if (!isFormValid || !doc) return null
     try {
-      const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formData, intent: selectedIntent?.id }),
-      })
-      if (!res.ok) throw new Error("Failed to generate document")
-      const { document: content } = await res.json()
-      const endpoint = draftDocumentId ? "/api/documents" : "/api/documents"
-      const saveRes = await fetch(endpoint, {
+      // Use already-generated preview content if available — avoid a redundant AI call
+      let content = documentPreview
+
+      if (!content) {
+        const res = await fetch(`/api/documents/${category}/${slug}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ formData, intent: selectedIntent?.id }),
+        })
+        if (!res.ok) throw new Error("Failed to generate document")
+        const data = await res.json()
+        content = data.document
+      }
+
+      const saveRes = await fetch("/api/documents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

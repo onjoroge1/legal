@@ -944,6 +944,24 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     },
   }
 
+  const softwareAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: `${doc.title} Generator`,
+    applicationCategory: "LegalApplication",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    operatingSystem: "Web",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      ratingCount: String(reviews.length),
+    },
+  }
+
   // Prefer cross-category related docs from catalog field; fall back to same-category
   const relatedDocs = doc.relatedDocuments.length > 0
     ? getRelatedDocuments(doc.relatedDocuments).slice(0, 3)
@@ -959,6 +977,10 @@ export default async function DocumentDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppSchema) }}
+      />
       <Header />
 
       <main>

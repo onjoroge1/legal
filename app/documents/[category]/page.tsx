@@ -70,8 +70,27 @@ export default async function CategoryHubPage({ params }: PageProps) {
 
   const ItemIcon = meta.icon
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: meta.heading,
+    description: meta.description,
+    url: `https://legallawdocs.com/documents/${meta.id}`,
+    numberOfItems: docs.length,
+    itemListElement: docs.map((doc, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: doc.title,
+      url: `https://legallawdocs.com/documents/${doc.category}/${doc.slug}`,
+    })),
+  }
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
       <Header />
 
       <main>
