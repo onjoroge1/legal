@@ -76,7 +76,7 @@ export async function POST(request: Request) {
         const documentSpecificInstructions = getDocumentPrompt(slug, intent)
 
         const result = await generateText({
-          model: google("gemini-2.0-flash"),
+          model: google("gemini-2.5-flash"),
           prompt: `Generate a complete, professional, legally compliant ${document.title} based on these details:
 
 ${Object.entries(formData)

@@ -181,7 +181,7 @@ export async function POST(
       }
 
       const enhanced = await generateText({
-        model: google("gemini-2.0-flash"),
+        model: google("gemini-2.5-flash"),
         prompt: `You are a legal document expert. Enhance this legal document template to be fully compliant with the jurisdiction's law.
 
 Document Type: ${doc.title}
@@ -221,7 +221,7 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
     }
 
     const result = await generateText({
-      model: google("gemini-2.0-flash"),
+      model: google("gemini-2.5-flash"),
       prompt: `You are a legal document expert. Generate a complete, professionally formatted, legally compliant ${doc.title}.
 
 ${stateContext}

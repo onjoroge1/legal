@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       : document.content
 
     const { object } = await generateObject({
-      model: google("gemini-2.0-flash"),
+      model: google("gemini-2.5-flash"),
       schema: analysisSchema,
       prompt: `You are a legal document analyst. Analyze the following legal document and provide a structured analysis.
 

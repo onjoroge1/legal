@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const additional = ndaData.ADDITIONAL || "none"
 
   const result = await generateText({
-    model: google("gemini-2.0-flash"),
+    model: google("gemini-2.5-flash"),
     prompt: `Generate a complete, professional, legally compliant Non-Disclosure Agreement (NDA) based on these details:
 
 State/Jurisdiction: ${state}
