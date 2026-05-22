@@ -14,6 +14,8 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
+import { parseStatePageSlug } from "@/lib/state-pages"
+import { parseInternationalPageSlug } from "@/lib/international-pages"
 import { useSession } from "next-auth/react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import DocumentPreview from "@/components/documents/document-preview"
@@ -31,7 +33,23 @@ export default function GeneratePage() {
   const searchParams = useSearchParams()
   const category = params?.category as string
   const slug = params?.slug as string
-  const doc = getDocumentBySlug(slug)
+
+  // Resolve the underlying catalog doc — handles both plain slugs and
+  // state-page / international-page composite slugs like
+  // "california-independent-contractor-agreement".
+  const _catalogDoc = getDocumentBySlug(slug)
+  const _parsedState = !_catalogDoc && slug ? parseStatePageSlug(slug) : null
+  const _parsedIntl = !_catalogDoc && !_parsedState && slug ? parseInternationalPageSlug(slug) : null
+  const doc = _catalogDoc ?? _parsedState?.doc ?? _parsedIntl?.doc ?? null
+
+  // State/country pre-fill: when arriving from a geo landing page, seed the
+  // STATE form field so the AI knows which jurisdiction's law to apply.
+  const _geoPreFill: Record<string, string> = _parsedState
+    ? { state: _parsedState.state.name }
+    : _parsedIntl
+    ? { country: _parsedIntl.country.name }
+    : {}
+
   const { data: session } = useSession()
   const [hasSubscription, setHasSubscription] = useState(false)
 
@@ -165,12 +183,16 @@ export default function GeneratePage() {
     if (stored && storedSlug === legacySlug) {
       try {
         const data = JSON.parse(stored)
-        setFormData(data)
+        // Merge geo pre-fill but don't override anything already in storage
+        setFormData({ ..._geoPreFill, ...data })
         if (localStorage.getItem("document-intent") && intents.length > 0) {
           const intent = intents.find((i) => i.id === localStorage.getItem("document-intent"))
           if (intent) setSelectedIntent(intent)
         }
       } catch {}
+    } else if (Object.keys(_geoPreFill).length > 0) {
+      // No stored data — seed with geo context from the landing page URL
+      setFormData(_geoPreFill)
     }
   }, [legacySlug, intents, formData])
 

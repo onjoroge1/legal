@@ -3,6 +3,8 @@ import { openai } from "@ai-sdk/openai"
 import { prisma } from "@/lib/prisma"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { getDocumentPrompt } from "@/lib/document-prompts"
+import { parseStatePageSlug, STATE_DOC_NOTES } from "@/lib/state-pages"
+import { parseInternationalPageSlug } from "@/lib/international-pages"
 
 export const maxDuration = 60
 
@@ -25,10 +27,38 @@ async function getTemplateByLegacySlug(legacySlug: string) {
 }
 
 /**
+ * Build a state-law context block to inject into AI prompts.
+ * Pulls from STATE_DOC_NOTES so the model gets the same accurate
+ * requirements/restrictions shown on the public SEO landing pages.
+ */
+function buildStateContext(stateSlug: string, docSlug: string, stateName: string): string {
+  const notes = STATE_DOC_NOTES[stateSlug]?.[docSlug]
+  if (!notes) return `Jurisdiction: ${stateName}. Apply ${stateName} law throughout.`
+
+  const lines: string[] = [
+    `JURISDICTION: ${stateName}`,
+    `Apply ${stateName}-specific law throughout. Cite real ${stateName} statutes.`,
+    ``,
+    `${stateName.toUpperCase()} LEGAL REQUIREMENTS FOR THIS DOCUMENT:`,
+    ...notes.requirements.map((r) => `• ${r}`),
+    ``,
+    `${stateName.toUpperCase()} RESTRICTIONS AND LIMITATIONS:`,
+    ...notes.restrictions.map((r) => `• ${r}`),
+  ]
+
+  if (notes.noticeRequirements) {
+    lines.push(``, `NOTICE REQUIREMENTS: ${notes.noticeRequirements}`)
+  }
+
+  return lines.join("\n")
+}
+
+/**
  * Document generation API
  * POST /api/documents/[category]/[slug]/generate
  *
- * Resolves document by canonical (category, slug) pair.
+ * Handles both plain catalog slugs (e.g. "independent-contractor-agreement")
+ * and state/international composite slugs (e.g. "california-independent-contractor-agreement").
  * Template DB lookups use legacySlug for backwards compatibility.
  */
 export async function POST(
@@ -42,12 +72,36 @@ export async function POST(
       request.headers.get("x-dry-run") === "1" ||
       new URL(request.url).searchParams.get("dryRun") === "1"
 
-    // Resolve document by canonical slug and validate category
-    const doc = getDocumentBySlug(slug)
+    // ── Resolve document ────────────────────────────────────────────────────
+    // Handles: plain slug, state-page slug, international-page slug.
+    let doc = getDocumentBySlug(slug)
+    let stateSlug: string | null = null
+    let stateName: string = formData.state || formData.STATE || ""
+
+    if (!doc) {
+      const parsedState = parseStatePageSlug(slug)
+      if (parsedState && parsedState.doc.category === category) {
+        // Resolve full CatalogDocument from the base slug
+        doc = getDocumentBySlug(parsedState.doc.slug)
+        stateSlug = parsedState.state.slug
+        stateName = parsedState.state.name
+      }
+    }
+
+    if (!doc) {
+      const parsedIntl = parseInternationalPageSlug(slug)
+      if (parsedIntl && parsedIntl.doc.category === category) {
+        // Resolve full CatalogDocument from the base slug
+        doc = getDocumentBySlug(parsedIntl.doc.slug)
+        stateName = parsedIntl.country.name
+      }
+    }
+
     if (!doc || doc.category !== category) {
       return Response.json({ error: "Document not found" }, { status: 404 })
     }
 
+    // ── Template lookup ─────────────────────────────────────────────────────
     // Templates in DB are keyed by legacy underscore slug
     const template = await getTemplateByLegacySlug(doc.legacySlug)
 
@@ -57,10 +111,17 @@ export async function POST(
       day: "numeric",
     })
 
-    // Prompt addendum from the canonical slug
-    const documentSpecificInstructions = getDocumentPrompt(slug, intent)
+    // ── Prompt components ───────────────────────────────────────────────────
+    // Generic doc-type instructions (structure, sections, intent)
+    const documentSpecificInstructions = getDocumentPrompt(doc.slug, intent)
 
-    // Template-based generation (with AI enhancement)
+    // State/jurisdiction-specific law context (requirements + restrictions from STATE_DOC_NOTES)
+    const jurisdiction = stateName || "the applicable jurisdiction"
+    const stateContext = stateSlug
+      ? buildStateContext(stateSlug, doc.slug, stateName)
+      : `JURISDICTION: ${jurisdiction}\nApply ${jurisdiction} law and cite applicable statutes throughout.`
+
+    // ── Template-based generation (with AI enhancement) ─────────────────────
     if (template && typeof template === "object" && "content" in template && template.content) {
       let documentContent = template.content as string
       const variables =
@@ -94,30 +155,38 @@ export async function POST(
 
       const enhanced = await generateText({
         model: openai("gpt-4o-mini"),
-        prompt: `Enhance this legal document template with state-specific provisions and professional formatting:
+        prompt: `You are a legal document expert. Enhance this legal document template to be fully compliant with the jurisdiction's law.
 
-Template: ${documentContent}
-State: ${formData.STATE || formData.state || "California"}
 Document Type: ${doc.title}
 Intent: ${intent || "standard"}
-Form Data: ${JSON.stringify(formData)}
+Current Date: ${currentDate}
 
-Tasks:
-1. Add state-specific legal citations and statutes for ${formData.STATE || formData.state || "California"}
-2. Ensure professional legal document formatting
-3. Add appropriate legal language based on the document type
-4. Verify all required sections are present
-5. Use the current date: ${currentDate}
-6. Maintain the structure and key content from the template
-7. Follow these document-specific instructions: ${documentSpecificInstructions}
+${stateContext}
 
-Output ONLY the enhanced document. No commentary before or after.`,
+Party Details from Form:
+${Object.entries(formData)
+  .filter(([, v]) => v !== undefined && v !== "")
+  .map(([k, v]) => `  ${k}: ${v}`)
+  .join("\n")}
+
+Template to enhance:
+${documentContent}
+
+Instructions:
+1. Replace any remaining placeholder variables with appropriate language or leave blanks for manual completion
+2. Add all jurisdiction-required clauses and citations listed above
+3. Ensure the document is compliant with the restrictions listed above
+4. Apply professional legal formatting with proper section numbering
+5. Include a complete signature block
+6. Follow these document-specific guidelines: ${documentSpecificInstructions}
+
+Output ONLY the enhanced document. No preamble, no commentary.`,
       })
 
       return Response.json({ document: enhanced.text })
     }
 
-    // Pure AI generation (no template in DB yet)
+    // ── Pure AI generation (no template in DB yet) ──────────────────────────
     if (isDryRun) {
       return Response.json({
         document: `DRY RUN: No template found for ${doc.title}. AI generation will be used.`,
@@ -126,23 +195,31 @@ Output ONLY the enhanced document. No commentary before or after.`,
 
     const result = await generateText({
       model: openai("gpt-4o-mini"),
-      prompt: `Generate a complete, professional, legally compliant ${doc.title} based on these details:
+      prompt: `You are a legal document expert. Generate a complete, professionally formatted, legally compliant ${doc.title}.
 
+${stateContext}
+
+Document Type: ${doc.title}
+Intent: ${intent || "standard"}
+Current Date: ${currentDate}
+
+Party and Transaction Details:
 ${Object.entries(formData)
-  .map(([key, value]) => `${key}: ${value}`)
+  .filter(([, v]) => v !== undefined && v !== "")
+  .map(([k, v]) => `  ${k}: ${v}`)
   .join("\n")}
 
-REQUIREMENTS:
-- Write a complete, formal legal document with proper section numbering
-- Include ${formData.STATE || formData.state || "California"}-specific legal citations and statutes
-- Use proper legal language and formatting
+Document Requirements:
+- Write a complete, formal legal document with numbered sections and subsections
+- Incorporate ALL jurisdiction-specific requirements and restrictions listed above
+- Reference the actual statutes cited above by name and number where applicable
+- Use precise legal language appropriate for ${jurisdiction}
 - Include all standard sections for a ${doc.title}
-- Reference actual ${formData.STATE || formData.state || "California"} statutes where applicable
-- Make it professionally formatted and ready to sign
-- Use the current date: ${currentDate}
-- Follow these document-specific instructions: ${documentSpecificInstructions}
+- Include a complete execution/signature block at the end
+- Make it ready to sign with no placeholder text remaining (use blanks like "___" where info not provided)
+- Follow these document-specific guidelines: ${documentSpecificInstructions}
 
-Output ONLY the document text. No commentary before or after.`,
+Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     })
 
     return Response.json({ document: result.text })
