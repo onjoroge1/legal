@@ -4,6 +4,7 @@ import { categories } from "@/lib/categories"
 import { getAllIndexableSubrouteIntents } from "@/lib/intent-registry"
 import { getStatePageStaticParams } from "@/lib/state-pages"
 import { getInternationalPageStaticParams } from "@/lib/international-pages"
+import { getCityPageStaticParams } from "@/lib/city-pages"
 
 // Always use the canonical production domain — never a Vercel preview URL.
 // NEXTAUTH_URL and NEXT_PUBLIC_APP_URL are deployment-specific; the sitemap must
@@ -74,8 +75,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }))
 
+  // ── City-specific residential lease pages ────────────────────────────────
+  // Only cities with material local ordinance differences (rent control,
+  // just-cause eviction, mandatory disclosures). ROI-only — no city pages
+  // for doc types governed purely by state law.
+  const cityParams = getCityPageStaticParams()
+  const cityPages: MetadataRoute.Sitemap = cityParams.map(({ category, slug }) => ({
+    url: `${BASE_URL}/documents/${category}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.80, // slightly above intl (0.75) — city ordinances = high-intent searches
+  }))
+
   // NOTE: generate, preview, checkout, and download pages are excluded.
   // They are disallowed in robots.ts and should not be indexed.
 
-  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages, ...intlPages]
+  return [...staticPages, ...categoryPages, ...documentPages, ...intentPages, ...statePages, ...intlPages, ...cityPages]
 }

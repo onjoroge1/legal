@@ -44,6 +44,12 @@ import {
   getInternationalPageStaticParams,
   getSiblingCountryPages,
 } from "@/lib/international-pages"
+import {
+  parseCityPageSlug,
+  getCityPageData,
+  getCityPageStaticParams,
+  getSiblingCityPages,
+} from "@/lib/city-pages"
 
 const statesCovered = [
   "California", "New York", "Texas", "Florida", "Illinois",
@@ -69,7 +75,8 @@ export async function generateStaticParams() {
   }))
   const stateParams = getStatePageStaticParams()
   const intlParams = getInternationalPageStaticParams()
-  return [...docParams, ...stateParams, ...intlParams]
+  const cityParams = getCityPageStaticParams()
+  return [...docParams, ...stateParams, ...intlParams, ...cityParams]
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -129,6 +136,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
       }
     }
+    // Check if this is a city-specific page
+    const parsedCity = parseCityPageSlug(slug)
+    if (parsedCity && category === "real-estate") {
+      const cityData = getCityPageData(parsedCity.city.slug)
+      if (cityData) {
+        const canonical = `https://legallawdocs.com/documents/${category}/${slug}`
+        return {
+          title: cityData.seoTitle,
+          description: cityData.metaDescription,
+          alternates: { canonical },
+          authors: [{ name: "LegalLawDocs.com" }],
+          robots: {
+            index: true,
+            follow: true,
+            googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+          },
+          openGraph: {
+            type: "website",
+            url: canonical,
+            title: cityData.seoTitle,
+            description: cityData.metaDescription,
+            siteName: "LegalLawDocs.com",
+          },
+        }
+      }
+    }
     return {}
   }
 
@@ -172,6 +205,205 @@ export default async function DocumentDetailPage({ params }: PageProps) {
   // ── State page branch ─────────────────────────────────────────────────────
   if (!doc || doc.category !== category) {
     const parsed = parseStatePageSlug(slug)
+
+    // ── City page branch ──────────────────────────────────────────────────
+    if (!parsed || parsed.doc.category !== category) {
+      const parsedCity = parseCityPageSlug(slug)
+      if (parsedCity && category === "real-estate") {
+        const cityData = getCityPageData(parsedCity.city.slug)
+        if (!cityData) notFound()
+
+        const { city, notes, pageTitle } = cityData
+        const generateUrl = `/documents/${category}/${slug}/generate`
+        const parentDocUrl = `/documents/real-estate/residential-lease-agreement`
+        const siblings = getSiblingCityPages(city.slug)
+
+        const cityFaqSchema = {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: notes.faq.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }
+
+        return (
+          <div className="min-h-screen">
+            <Header />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(cityFaqSchema) }} />
+
+            {/* Breadcrumb */}
+            <div className="border-b border-border/30 bg-secondary/20">
+              <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">
+                <Breadcrumb
+                  items={[
+                    { label: "Documents", href: "/documents" },
+                    { label: "Real Estate", href: "/documents/real-estate" },
+                    { label: "Residential Lease Agreement", href: parentDocUrl },
+                    { label: `${city.name} Form` },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <main>
+              {/* Hero */}
+              <section className="relative overflow-hidden border-b border-border/40 py-16 lg:py-20">
+                <div className="pointer-events-none absolute inset-0 grid-pattern animate-grid-fade" />
+                <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+                <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                  <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+                    <div>
+                      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary">
+                        <MapPin className="h-3.5 w-3.5" />
+                        <span>{city.name}, {city.state}</span>
+                      </div>
+                      <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+                        {pageTitle}
+                      </h1>
+                      <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                        Generate a residential lease agreement that complies with {city.name}&apos;s local ordinances — including rent control rules, just-cause eviction requirements, and mandatory disclosures that go beyond {city.state} state law.
+                      </p>
+                      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                        <Button size="lg" className="gap-2" asChild>
+                          <Link href={generateUrl}>
+                            <Sparkles className="h-4 w-4" />
+                            Generate {city.name} Lease
+                          </Link>
+                        </Button>
+                        <Button size="lg" variant="outline" asChild>
+                          <Link href={parentDocUrl}>All Lease Agreement options</Link>
+                        </Button>
+                      </div>
+                      <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.name} ordinance compliant</div>
+                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.state} state law included</div>
+                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />Instant PDF & DOCX</div>
+                      </div>
+                    </div>
+                    <div className="rounded-2xl border border-border/50 bg-card/60 p-8">
+                      <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">City-Specific Document</div>
+                      <h2 className="font-serif text-xl font-bold text-foreground">{pageTitle}</h2>
+                      <p className="mt-1 text-xs text-muted-foreground">{city.name}, {city.state}</p>
+                      <div className="mt-4 space-y-2">
+                        {["Local ordinance compliant", `${city.state} state law included`, "Customized to your situation", "Instant PDF & DOCX download"].map((item) => (
+                          <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                      <Button asChild className="mt-6 w-full" size="lg">
+                        <Link href={generateUrl}>Generate {city.name} Lease <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Local Ordinance Requirements */}
+              <section className="py-16 lg:py-20">
+                <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                  <div className="mb-10">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-primary">Local Ordinances</p>
+                    <h2 className="mt-2 font-serif text-3xl font-bold text-foreground">{city.name} Lease Requirements</h2>
+                    <p className="mt-3 text-muted-foreground">What {city.name}&apos;s local ordinances require that {city.state} state law does not.</p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {notes.requirements.map((req, i) => (
+                      <div key={i} className="flex gap-3 rounded-xl border border-border/50 bg-card/60 p-4">
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                        <p className="text-sm text-secondary-foreground">{req}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {notes.restrictions.length > 0 && (
+                    <div className="mt-10">
+                      <h3 className="font-semibold text-foreground mb-4">Restrictions & Limits</h3>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {notes.restrictions.map((r, i) => (
+                          <div key={i} className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-50/50 dark:bg-amber-950/20 p-4">
+                            <Shield className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+                            <p className="text-sm text-secondary-foreground">{r}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {notes.noticeRequirements && (
+                    <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                      <p className="text-sm font-semibold text-primary mb-1">Notice Requirements</p>
+                      <p className="text-sm text-secondary-foreground">{notes.noticeRequirements}</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* FAQ */}
+              <section className="border-t border-border/40 bg-secondary/20 py-16 lg:py-20">
+                <div className="mx-auto max-w-3xl px-4 lg:px-8">
+                  <div className="mb-10">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-primary">FAQ</p>
+                    <h2 className="mt-2 font-serif text-3xl font-bold text-foreground">{city.name} Lease FAQ</h2>
+                    <p className="mt-3 text-muted-foreground">Common questions about renting in {city.name}.</p>
+                  </div>
+                  <div className="space-y-6">
+                    {notes.faq.map((item, i) => (
+                      <div key={i} className="rounded-xl border border-border/50 bg-card/60 p-6">
+                        <h3 className="font-semibold text-foreground">{item.question}</h3>
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* CTA */}
+              <section className="py-16">
+                <div className="mx-auto max-w-3xl px-4 lg:px-8 text-center">
+                  <h2 className="font-serif text-3xl font-bold text-foreground">Create Your {city.name} Lease Agreement</h2>
+                  <p className="mt-4 text-muted-foreground">Our AI builds a lease that incorporates {city.name}&apos;s local ordinances automatically — so you don&apos;t have to research them yourself.</p>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Button asChild size="lg">
+                      <Link href={generateUrl}>Generate {city.name} Lease <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    </Button>
+                    <Button variant="outline" size="lg" asChild>
+                      <Link href={parentDocUrl}>All Lease Agreement options</Link>
+                    </Button>
+                  </div>
+                </div>
+              </section>
+
+              {/* Sibling city pages */}
+              {siblings.length > 0 && (
+                <section className="border-t border-border/40 py-16">
+                  <div className="mx-auto max-w-5xl px-4 lg:px-8">
+                    <h2 className="font-serif text-2xl font-bold text-foreground">Other {city.state} Cities</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">Local ordinances vary by city. Find the right lease for your city.</p>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+                      {siblings.map((sibling) => (
+                        <Link
+                          key={sibling.slug}
+                          href={`/documents/real-estate/${sibling.slug}-residential-lease-agreement`}
+                          className="flex items-center gap-2 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-sm font-medium text-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                        >
+                          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                          {sibling.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              <LegalDisclaimer />
+            </main>
+            <Footer />
+          </div>
+        )
+      }
+    }
 
     // ── International page branch ─────────────────────────────────────────
     if (!parsed || parsed.doc.category !== category) {

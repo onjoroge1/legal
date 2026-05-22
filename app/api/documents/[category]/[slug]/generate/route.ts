@@ -5,6 +5,7 @@ import { getDocumentBySlug } from "@/lib/document-catalog"
 import { getDocumentPrompt } from "@/lib/document-prompts"
 import { parseStatePageSlug, STATE_DOC_NOTES } from "@/lib/state-pages"
 import { parseInternationalPageSlug } from "@/lib/international-pages"
+import { parseCityPageSlug, CITY_DOC_NOTES, CITY_DOC_SLUG } from "@/lib/city-pages"
 
 export const maxDuration = 60
 
@@ -73,15 +74,16 @@ export async function POST(
       new URL(request.url).searchParams.get("dryRun") === "1"
 
     // ── Resolve document ────────────────────────────────────────────────────
-    // Handles: plain slug, state-page slug, international-page slug.
+    // Handles: plain catalog slug, state-page slug, international-page slug,
+    // and city-specific slug (e.g. "chicago-residential-lease-agreement").
     let doc = getDocumentBySlug(slug)
     let stateSlug: string | null = null
     let stateName: string = formData.state || formData.STATE || ""
+    let cityContextOverride: string | null = null  // built for city pages
 
     if (!doc) {
       const parsedState = parseStatePageSlug(slug)
       if (parsedState && parsedState.doc.category === category) {
-        // Resolve full CatalogDocument from the base slug
         doc = getDocumentBySlug(parsedState.doc.slug)
         stateSlug = parsedState.state.slug
         stateName = parsedState.state.name
@@ -91,9 +93,33 @@ export async function POST(
     if (!doc) {
       const parsedIntl = parseInternationalPageSlug(slug)
       if (parsedIntl && parsedIntl.doc.category === category) {
-        // Resolve full CatalogDocument from the base slug
         doc = getDocumentBySlug(parsedIntl.doc.slug)
         stateName = parsedIntl.country.name
+      }
+    }
+
+    if (!doc) {
+      const parsedCity = parseCityPageSlug(slug)
+      if (parsedCity && category === "real-estate") {
+        doc = getDocumentBySlug(CITY_DOC_SLUG)
+        const { city } = parsedCity
+        stateName = `${city.name}, ${city.state}`
+        const cityNotes = CITY_DOC_NOTES[city.slug]
+        if (cityNotes) {
+          // Build city-specific context block (requirements + restrictions from local ordinances)
+          cityContextOverride = [
+            `JURISDICTION: ${city.name}, ${city.state}`,
+            `This lease must comply with BOTH ${city.state} state law AND ${city.name} local ordinances.`,
+            ``,
+            `${city.name.toUpperCase()} LOCAL ORDINANCE REQUIREMENTS:`,
+            ...cityNotes.requirements.map((r) => `• ${r}`),
+            ``,
+            `${city.name.toUpperCase()} LOCAL RESTRICTIONS:`,
+            ...cityNotes.restrictions.map((r) => `• ${r}`),
+            ``,
+            `NOTICE REQUIREMENTS: ${cityNotes.noticeRequirements}`,
+          ].join("\n")
+        }
       }
     }
 
@@ -117,9 +143,10 @@ export async function POST(
 
     // State/jurisdiction-specific law context (requirements + restrictions from STATE_DOC_NOTES)
     const jurisdiction = stateName || "the applicable jurisdiction"
-    const stateContext = stateSlug
-      ? buildStateContext(stateSlug, doc.slug, stateName)
-      : `JURISDICTION: ${jurisdiction}\nApply ${jurisdiction} law and cite applicable statutes throughout.`
+    const stateContext = cityContextOverride
+      ?? (stateSlug
+        ? buildStateContext(stateSlug, doc.slug, stateName)
+        : `JURISDICTION: ${jurisdiction}\nApply ${jurisdiction} law and cite applicable statutes throughout.`)
 
     // ── Template-based generation (with AI enhancement) ─────────────────────
     if (template && typeof template === "object" && "content" in template && template.content) {

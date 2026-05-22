@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { parseStatePageSlug } from "@/lib/state-pages"
 import { parseInternationalPageSlug } from "@/lib/international-pages"
+import { parseCityPageSlug } from "@/lib/city-pages"
 import { useSession } from "next-auth/react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import DocumentPreview from "@/components/documents/document-preview"
@@ -40,14 +41,16 @@ export default function GeneratePage() {
   const _catalogDoc = getDocumentBySlug(slug)
   const _parsedState = !_catalogDoc && slug ? parseStatePageSlug(slug) : null
   const _parsedIntl = !_catalogDoc && !_parsedState && slug ? parseInternationalPageSlug(slug) : null
-  const doc = _catalogDoc ?? _parsedState?.doc ?? _parsedIntl?.doc ?? null
+  const _parsedCity = !_catalogDoc && !_parsedState && !_parsedIntl && slug ? parseCityPageSlug(slug) : null
+  const doc = _catalogDoc ?? _parsedState?.doc ?? _parsedIntl?.doc ?? (_parsedCity ? { slug: "residential-lease-agreement", legacySlug: "residential_lease_agreement", category: "real-estate", title: "Residential Lease Agreement" } as any : null)
 
-  // State/country pre-fill: when arriving from a geo landing page, seed the
-  // STATE form field so the AI knows which jurisdiction's law to apply.
+  // State/country/city pre-fill: seed the form so the AI knows the jurisdiction.
   const _geoPreFill: Record<string, string> = _parsedState
     ? { state: _parsedState.state.name }
     : _parsedIntl
     ? { country: _parsedIntl.country.name }
+    : _parsedCity
+    ? { state: _parsedCity.city.state, city: _parsedCity.city.name }
     : {}
 
   const { data: session } = useSession()
