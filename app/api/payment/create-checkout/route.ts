@@ -4,34 +4,48 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { stripe, PRICE_IDS } from "@/lib/stripe"
 import { getDocumentByLegacySlug } from "@/lib/document-catalog"
+import { randomBytes } from "crypto"
+import bcrypt from "bcryptjs"
 
 /**
  * POST /api/payment/create-checkout
  * Creates a Stripe Checkout Session for single-doc purchase or subscription.
  * Saves the document as "pending_payment" first, passes its ID to Stripe metadata
  * so the webhook can finalize it after payment succeeds.
+ *
+ * Supports both authenticated users (session) and guests (email in body).
+ * Guests get a user record created silently; they set their password post-payment.
  */
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const body = await request.json()
-    const { paymentType, slug, formData, documentContent, intent } = body
+    const { paymentType, slug, formData, documentContent, intent, guestEmail, guestName } = body
 
     if (!paymentType || !slug) {
       return NextResponse.json({ error: "paymentType and slug are required" }, { status: 400 })
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    })
+    // Resolve the user — authenticated session takes priority, then guest email
+    const emailToUse = session?.user?.email ?? guestEmail
+    if (!emailToUse) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 })
+    }
+
+    let user = await prisma.user.findUnique({ where: { email: emailToUse } })
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
+      // Guest checkout — create account silently with a secure random password.
+      // They'll receive a "set your password" link via email post-payment (P6).
+      const tempPassword = randomBytes(24).toString("hex")
+      const hashedPassword = await bcrypt.hash(tempPassword, 10)
+      user = await prisma.user.create({
+        data: {
+          email: emailToUse,
+          name: guestName || emailToUse.split("@")[0],
+          password: hashedPassword,
+        },
+      })
     }
 
     const docInfo = getDocumentByLegacySlug(slug)
@@ -80,10 +94,14 @@ export async function POST(request: Request) {
 
     let checkoutSession
 
+    // Pre-fill Stripe's email field so guests don't retype it
+    const stripeEmailPrefill = !session?.user?.email ? { customer_email: emailToUse } : {}
+
     if (paymentType === "subscription") {
       // Recurring subscription
       checkoutSession = await stripe.checkout.sessions.create({
         customer: stripeCustomerId,
+        ...stripeEmailPrefill,
         mode: "subscription",
         line_items: [{ price: PRICE_IDS.professional, quantity: 1 }],
         success_url: `${appUrl}/dashboard/documents/${pendingDoc.id}?payment=success`,
@@ -92,6 +110,7 @@ export async function POST(request: Request) {
           userId: user.id,
           documentId: pendingDoc.id,
           paymentType: "subscription",
+          isGuest: session?.user?.email ? "false" : "true",
         },
         subscription_data: {
           metadata: { userId: user.id },
@@ -102,6 +121,7 @@ export async function POST(request: Request) {
       const unitAmount = Math.round((docInfo.price || 19) * 100) // price in cents
       checkoutSession = await stripe.checkout.sessions.create({
         customer: stripeCustomerId,
+        ...stripeEmailPrefill,
         mode: "payment",
         line_items: [
           {
@@ -122,6 +142,7 @@ export async function POST(request: Request) {
           userId: user.id,
           documentId: pendingDoc.id,
           paymentType: "single",
+          isGuest: session?.user?.email ? "false" : "true",
         },
       })
     }
