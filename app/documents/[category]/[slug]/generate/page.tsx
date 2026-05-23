@@ -81,6 +81,8 @@ export default function GeneratePage() {
   const MAX_RETRIES = 2
   const [generationAttempts, setGenerationAttempts] = useState(0)
   const [generationFailed, setGenerationFailed] = useState(false)
+  // Draft restore banner
+  const [draftRestore, setDraftRestore] = useState<{ content: string; savedAt: string } | null>(null)
 
   // legacySlug: used for template/draft/document-access DB lookups (keyed by old underscore slug)
   // category/slug: used for canonical generate + chat API calls
@@ -224,6 +226,24 @@ export default function GeneratePage() {
     }
   }, [legacySlug, intents, formData])
 
+  // Check localStorage for a previously generated document (7-day TTL)
+  useEffect(() => {
+    if (typeof window === "undefined" || !legacySlug || documentPreview) return
+    try {
+      const raw = localStorage.getItem(`doc-preview-${legacySlug}`)
+      if (!raw) return
+      const saved = JSON.parse(raw) as { content: string; savedAt: string }
+      const age = Date.now() - new Date(saved.savedAt).getTime()
+      const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+      if (age < SEVEN_DAYS && saved.content) {
+        setDraftRestore(saved)
+      } else {
+        // Expired — clean up
+        localStorage.removeItem(`doc-preview-${legacySlug}`)
+      }
+    } catch {}
+  }, [legacySlug, documentPreview])
+
   useEffect(() => {
     const check = async () => {
       if (!session?.user?.email) return
@@ -348,6 +368,16 @@ export default function GeneratePage() {
       // Persist document content so checkout page can pass it to the API
       sessionStorage.setItem("document-content", content)
 
+      // Persist to localStorage so user can restore if they close the tab (7-day TTL)
+      try {
+        localStorage.setItem(
+          `doc-preview-${legacySlug}`,
+          JSON.stringify({ content, savedAt: new Date().toISOString() })
+        )
+      } catch {}
+      // Hide restore banner if it was showing
+      setDraftRestore(null)
+
       // Subscribers: auto-save and redirect to dashboard
       if (hasSubscription && session?.user?.email) {
         const saveRes = await fetch("/api/documents", {
@@ -452,6 +482,50 @@ export default function GeneratePage() {
         <aside className={`w-full shrink-0 border-r border-border/40 bg-card/40 lg:block lg:w-96 ${mobileTab === "form" ? "block" : "hidden"}`}>
           <ScrollArea className="h-full">
             <div className="p-6">
+
+              {/* Draft restore banner */}
+              {draftRestore && (
+                <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-3">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Saved draft found</p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    You generated this document{" "}
+                    {(() => {
+                      const mins = Math.round((Date.now() - new Date(draftRestore.savedAt).getTime()) / 60000)
+                      if (mins < 60) return `${mins}m ago`
+                      const hrs = Math.round(mins / 60)
+                      if (hrs < 24) return `${hrs}h ago`
+                      return `${Math.round(hrs / 24)}d ago`
+                    })()}
+                    . Restore it without regenerating?
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="flex-1 h-7 text-xs"
+                      onClick={() => {
+                        setDocumentPreview(draftRestore.content)
+                        sessionStorage.setItem("document-content", draftRestore.content)
+                        setMobileTab("preview")
+                        setDraftRestore(null)
+                      }}
+                    >
+                      Restore
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="flex-1 h-7 text-xs"
+                      onClick={() => {
+                        localStorage.removeItem(`doc-preview-${legacySlug}`)
+                        setDraftRestore(null)
+                      }}
+                    >
+                      Dismiss
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-2 mb-6">
                 <FileText className="h-5 w-5 text-primary" />
                 <h2 className="text-sm font-semibold text-foreground">Document Information</h2>
