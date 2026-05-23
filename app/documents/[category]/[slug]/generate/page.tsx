@@ -13,6 +13,7 @@ import {
   Loader2,
   ArrowRight,
   Info,
+  Eye,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
@@ -74,6 +75,8 @@ export default function GeneratePage() {
   const [draftDocumentId, setDraftDocumentId] = useState<string | null>(null)
   const [documentPreview, setDocumentPreview] = useState<string>("")
   const [stateWarnings, setStateWarnings] = useState<string[]>([])
+  // Mobile: toggle between form and preview panes
+  const [mobileTab, setMobileTab] = useState<"form" | "preview">("form")
 
   // legacySlug: used for template/draft/document-access DB lookups (keyed by old underscore slug)
   // category/slug: used for canonical generate + chat API calls
@@ -318,8 +321,9 @@ export default function GeneratePage() {
 
       const { document: content } = await genRes.json()
 
-      // Show preview in the right panel immediately
+      // Show preview in the right panel immediately + switch mobile tab
       setDocumentPreview(content)
+      setMobileTab("preview")
 
       // Subscribers: auto-save and redirect to dashboard
       if (hasSubscription && session?.user?.email) {
@@ -385,8 +389,37 @@ export default function GeneratePage() {
         </div>
       </header>
 
+      {/* Mobile tab bar — only visible below lg */}
+      <div className="flex shrink-0 border-b border-border/40 lg:hidden">
+        <button
+          onClick={() => setMobileTab("form")}
+          className={`flex flex-1 items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
+            mobileTab === "form"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
+          }`}
+        >
+          <FileText className="h-4 w-4" />
+          Fill Out Form
+        </button>
+        <button
+          onClick={() => setMobileTab("preview")}
+          className={`flex flex-1 items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
+            mobileTab === "preview"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
+          }`}
+        >
+          <Eye className="h-4 w-4" />
+          Preview
+          {documentPreview && (
+            <span className="ml-1 h-2 w-2 rounded-full bg-green-500" />
+          )}
+        </button>
+      </div>
+
       <div className="flex flex-1 overflow-hidden">
-        <aside className="hidden w-96 shrink-0 border-r border-border/40 bg-card/40 lg:block">
+        <aside className={`w-full shrink-0 border-r border-border/40 bg-card/40 lg:block lg:w-96 ${mobileTab === "form" ? "block" : "hidden"}`}>
           <ScrollArea className="h-full">
             <div className="p-6">
               <div className="flex items-center gap-2 mb-6">
@@ -484,7 +517,7 @@ export default function GeneratePage() {
           </ScrollArea>
         </aside>
 
-        <div className="flex flex-1 flex-col">
+        <div className={`flex flex-1 flex-col ${mobileTab === "preview" ? "block" : "hidden lg:flex"}`}>
           <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
               <div className="rounded-2xl border border-border/40 bg-card/80 p-6">
