@@ -325,6 +325,9 @@ export default function GeneratePage() {
       setDocumentPreview(content)
       setMobileTab("preview")
 
+      // Persist document content so checkout page can pass it to the API
+      sessionStorage.setItem("document-content", content)
+
       // Subscribers: auto-save and redirect to dashboard
       if (hasSubscription && session?.user?.email) {
         const saveRes = await fetch("/api/documents", {
@@ -546,7 +549,8 @@ export default function GeneratePage() {
                         documentTitle={doc.title}
                         onSaveDocument={saveDocument}
                         onSignComplete={() => { toast.success("Document signed successfully!") }}
-                        slug={legacySlug}
+                        slug={slug}
+                        category={category}
                       />
                     </div>
                   </div>

@@ -25,6 +25,7 @@ interface DocumentSigningProps {
   onSignComplete?: () => void
   onSaveDocument?: () => Promise<string | null>
   slug?: string
+  category?: string
 }
 
 /**
@@ -32,17 +33,19 @@ interface DocumentSigningProps {
  * Handles document signing and sending for signature
  * Only available for paid users - redirects to checkout for free users
  */
-export default function DocumentSigning({ 
-  documentId, 
+export default function DocumentSigning({
+  documentId,
   documentTitle,
   onSignComplete,
   onSaveDocument,
-  slug
+  slug,
+  category,
 }: DocumentSigningProps) {
   const router = useRouter()
   const params = useParams()
   const { data: session } = useSession()
   const documentSlug = slug || (params?.slug as string)
+  const documentCategory = category || (params?.category as string)
   
   const [signerEmail, setSignerEmail] = useState("")
   const [signerName, setSignerName] = useState("")
@@ -86,7 +89,7 @@ export default function DocumentSigning({
     if (session?.user?.email) {
       router.push("/dashboard/billing")
     } else {
-      router.push(`/documents/${documentSlug}/checkout`)
+      router.push(`/documents/${documentCategory}/${documentSlug}/checkout`)
     }
   }
 

@@ -382,8 +382,8 @@ export default function CheckoutPage() {
                   <div className="space-y-3">
                     {[
                       { icon: Sparkles, text: "AI-powered customization", color: "text-primary" },
-                      { icon: Shield, text: "Legally compliant in all 50 states", color: "text-accent" },
-                      { icon: CheckCircle2, text: "Reviewed by legal professionals", color: "text-primary" },
+                      { icon: Shield, text: "State statute citations included", color: "text-accent" },
+                      { icon: CheckCircle2, text: "Instant PDF & DOCX download", color: "text-primary" },
                       { icon: Lock, text: "Bank-level data encryption", color: "text-accent" },
                     ].map((item) => (
                       <div key={item.text} className="flex items-center gap-2.5">
