@@ -1,17 +1,36 @@
 "use client"
 
+import React from "react"
+
 interface DocumentPreviewProps {
   template: string
+  watermark?: boolean
 }
 
 /**
  * DocumentPreview component
  * Renders a legal document with professional formatting
  */
-export default function DocumentPreview({ template }: DocumentPreviewProps) {
+const WATERMARK_SVG = encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="340" height="200">
+    <text
+      x="50%" y="50%"
+      transform="rotate(-40, 170, 100)"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      fill="rgba(0,0,0,0.07)"
+      font-size="18"
+      font-family="Arial, sans-serif"
+      font-weight="700"
+      letter-spacing="2"
+    >DRAFT · LegalLawDocs.com</text>
+  </svg>
+`)
+
+export default function DocumentPreview({ template, watermark = false }: DocumentPreviewProps) {
   // Split template into lines and format
   const lines = template.split('\n')
-  const formattedLines: JSX.Element[] = []
+  const formattedLines: React.ReactElement[] = []
   
   let currentParagraph: string[] = []
   
@@ -93,13 +112,29 @@ export default function DocumentPreview({ template }: DocumentPreviewProps) {
   flushParagraph()
   
   return (
-    <div 
-      className="font-serif text-sm leading-relaxed text-gray-800"
-      style={{
-        fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif',
-      }}
-    >
-      {formattedLines}
+    <div className="relative">
+      {/* Repeating diagonal watermark overlay — shown for non-subscribers */}
+      {watermark && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url("data:image/svg+xml,${WATERMARK_SVG}")`,
+            backgroundRepeat: "repeat",
+            pointerEvents: "none",
+            zIndex: 10,
+          }}
+        />
+      )}
+      <div
+        className="font-serif text-sm leading-relaxed text-gray-800"
+        style={{
+          fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif',
+        }}
+      >
+        {formattedLines}
+      </div>
     </div>
   )
 }

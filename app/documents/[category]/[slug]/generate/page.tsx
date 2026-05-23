@@ -540,7 +540,7 @@ export default function GeneratePage() {
                   <div className="space-y-4">
                     <ScrollArea className="h-[calc(100vh-350px)]">
                       <div className="bg-white shadow-xl rounded-lg p-8 md:p-12 max-w-4xl mx-auto border border-gray-200">
-                        <DocumentPreview template={documentPreview} />
+                        <DocumentPreview template={documentPreview} watermark={!hasSubscription} />
                       </div>
                     </ScrollArea>
                     <div className="bg-card/50 rounded-lg p-4 border border-border/40">
