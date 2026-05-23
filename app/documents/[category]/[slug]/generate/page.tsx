@@ -77,6 +77,10 @@ export default function GeneratePage() {
   const [stateWarnings, setStateWarnings] = useState<string[]>([])
   // Mobile: toggle between form and preview panes
   const [mobileTab, setMobileTab] = useState<"form" | "preview">("form")
+  // Retry tracking — max 2 retries (3 total attempts)
+  const MAX_RETRIES = 2
+  const [generationAttempts, setGenerationAttempts] = useState(0)
+  const [generationFailed, setGenerationFailed] = useState(false)
 
   // legacySlug: used for template/draft/document-access DB lookups (keyed by old underscore slug)
   // category/slug: used for canonical generate + chat API calls
@@ -275,6 +279,11 @@ export default function GeneratePage() {
   }
 
   const handleFormChange = (data: Record<string, any>) => {
+    // Form changed — reset retry counter so updated inputs get fresh attempts
+    if (generationFailed) {
+      setGenerationAttempts(0)
+      setGenerationFailed(false)
+    }
     const newData = { ...formData, ...data }
     setFormData(newData)
     if (draftDocumentId) {
@@ -315,11 +324,22 @@ export default function GeneratePage() {
       })
 
       if (!genRes.ok) {
-        toast.error("Failed to generate document. Please try again.")
+        const nextAttempts = generationAttempts + 1
+        setGenerationAttempts(nextAttempts)
+        setGenerationFailed(true)
+        if (nextAttempts >= MAX_RETRIES) {
+          toast.error("Generation failed after multiple attempts. Please contact support.")
+        } else {
+          toast.error(`Generation failed. You have ${MAX_RETRIES - nextAttempts} ${MAX_RETRIES - nextAttempts === 1 ? "retry" : "retries"} remaining.`)
+        }
         return
       }
 
       const { document: content } = await genRes.json()
+
+      // Success — reset retry counter
+      setGenerationAttempts(0)
+      setGenerationFailed(false)
 
       // Show preview in the right panel immediately + switch mobile tab
       setDocumentPreview(content)
@@ -352,7 +372,14 @@ export default function GeneratePage() {
       // Non-subscribers: show preview in current page (they see it, then go to checkout)
       // No redirect — the preview panel is now populated above
     } catch {
-      toast.error("Something went wrong. Please try again.")
+      const nextAttempts = generationAttempts + 1
+      setGenerationAttempts(nextAttempts)
+      setGenerationFailed(true)
+      if (nextAttempts >= MAX_RETRIES) {
+        toast.error("Generation failed after multiple attempts. Please contact support.")
+      } else {
+        toast.error(`Something went wrong. You have ${MAX_RETRIES - nextAttempts} ${MAX_RETRIES - nextAttempts === 1 ? "retry" : "retries"} remaining.`)
+      }
     } finally {
       setIsGenerating(false)
     }
@@ -470,21 +497,51 @@ export default function GeneratePage() {
                 </div>
               )}
 
-              <div className="mt-8 pt-6 border-t">
-                <Button
-                  onClick={handleGenerateDocument}
-                  disabled={!isFormValid || isGenerating}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isGenerating ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</>
-                  ) : (
-                    <>Generate Document<ArrowRight className="ml-2 h-4 w-4" /></>
-                  )}
-                </Button>
-                {!isFormValid && (
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
+              <div className="mt-8 pt-6 border-t space-y-3">
+                {generationAttempts >= MAX_RETRIES ? (
+                  // Exhausted all retries
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center space-y-2">
+                    <p className="text-sm font-medium text-destructive">
+                      Generation failed after {MAX_RETRIES} attempts.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      This may be a temporary issue.{" "}
+                      <a
+                        href="mailto:support@legallawdocs.com?subject=Document%20generation%20failed"
+                        className="text-primary underline"
+                      >
+                        Contact support
+                      </a>{" "}
+                      or try again later.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-1"
+                      onClick={() => { setGenerationAttempts(0); setGenerationFailed(false) }}
+                    >
+                      Reset & Try Again
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleGenerateDocument}
+                    disabled={!isFormValid || isGenerating}
+                    className="w-full"
+                    size="lg"
+                    variant={generationFailed ? "outline" : "default"}
+                  >
+                    {isGenerating ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</>
+                    ) : generationFailed ? (
+                      <><ArrowRight className="mr-2 h-4 w-4" />Try Again ({MAX_RETRIES - generationAttempts} left)</>
+                    ) : (
+                      <>Generate Document<ArrowRight className="ml-2 h-4 w-4" /></>
+                    )}
+                  </Button>
+                )}
+                {!isFormValid && generationAttempts === 0 && (
+                  <p className="text-xs text-muted-foreground text-center">
                     Please fill in all required fields
                   </p>
                 )}
