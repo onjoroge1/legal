@@ -16,6 +16,8 @@ import {
   Eye,
   Download,
   Lock,
+  CheckCircle2,
+  Sparkles,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
@@ -85,6 +87,54 @@ export default function GeneratePage() {
   const [generationFailed, setGenerationFailed] = useState(false)
   // Draft restore banner
   const [draftRestore, setDraftRestore] = useState<{ content: string; savedAt: string } | null>(null)
+  // Generation progress animation
+  const [generationProgress, setGenerationProgress] = useState(0)
+  const [genStatusIdx, setGenStatusIdx] = useState(0)
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const GENERATION_STATUSES = [
+    "Analyzing your requirements…",
+    "Researching applicable state laws…",
+    "Drafting legal clauses…",
+    "Applying compliance requirements…",
+    "Structuring the agreement…",
+    "Adding jurisdiction-specific language…",
+    "Cross-referencing statute citations…",
+    "Reviewing legal provisions…",
+    "Finalizing your document…",
+  ]
+
+  // Drive the fake progress bar while the AI call is in-flight
+  useEffect(() => {
+    if (isGenerating) {
+      setGenerationProgress(0)
+      setGenStatusIdx(0)
+      let statusCounter = 0
+
+      progressIntervalRef.current = setInterval(() => {
+        setGenerationProgress((prev) => {
+          // Asymptotic curve: fast early, slow near 92%
+          const increment = prev < 25 ? 5 : prev < 55 ? 2.5 : prev < 80 ? 1 : 0.25
+          return Math.min(prev + increment, 92)
+        })
+        statusCounter += 1
+        setGenStatusIdx(statusCounter % GENERATION_STATUSES.length)
+      }, 1100)
+    } else {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+        progressIntervalRef.current = null
+      }
+      // Jump to 100% briefly, then reset after the transition plays
+      setGenerationProgress(100)
+      const t = setTimeout(() => setGenerationProgress(0), 800)
+      return () => clearTimeout(t)
+    }
+    return () => {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGenerating])
 
   // legacySlug: used for template/draft/document-access DB lookups (keyed by old underscore slug)
   // category/slug: used for canonical generate + chat API calls
@@ -366,6 +416,7 @@ export default function GeneratePage() {
   const handleGenerateDocument = async () => {
     if (!isFormValid || !doc) return
     setIsGenerating(true)
+    setMobileTab("preview") // show progress animation on mobile
     try {
       sessionStorage.setItem("document-data", JSON.stringify(formData))
       sessionStorage.setItem("document-slug", legacySlug)
@@ -700,14 +751,124 @@ export default function GeneratePage() {
                     <FileText className="h-5 w-5 text-primary" />
                     <h3 className="text-lg font-semibold">Document Preview</h3>
                   </div>
-                  {isFormValid && (
+                  {isGenerating ? (
+                    <Badge variant="outline" className="gap-1.5 border-primary/30 bg-primary/5 text-primary">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Generating…
+                    </Badge>
+                  ) : documentPreview ? (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Ready
+                    </Badge>
+                  ) : isFormValid ? (
                     <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                       Ready to Generate
                     </Badge>
-                  )}
+                  ) : null}
                 </div>
 
-                {isFormValid && documentPreview ? (
+                {isGenerating ? (
+                  /* ── Generation loading state ─────────────────────────────────── */
+                  <div className="flex flex-col items-center justify-center min-h-[420px] py-10 px-6 space-y-8">
+
+                    {/* Animated document graphic */}
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer pulse ring */}
+                      <div className="absolute h-36 w-28 rounded-2xl bg-primary/10 animate-ping opacity-20" />
+                      {/* Middle glow */}
+                      <div className="absolute h-36 w-28 rounded-2xl bg-primary/10 animate-pulse" />
+
+                      {/* Stacked "paper" cards — depth effect */}
+                      <div className="absolute h-32 w-24 rounded-xl bg-gray-100 border border-gray-200 translate-x-3 translate-y-3 shadow" />
+                      <div className="absolute h-32 w-24 rounded-xl bg-gray-50 border border-gray-200 translate-x-1.5 translate-y-1.5 shadow-sm" />
+
+                      {/* Front document card */}
+                      <div className="relative h-32 w-24 rounded-xl bg-white border-2 border-primary/20 shadow-xl overflow-hidden">
+                        {/* Fold corner */}
+                        <div
+                          className="absolute top-0 right-0 h-6 w-6 bg-primary/10"
+                          style={{ clipPath: "polygon(100% 0, 0 0, 100% 100%)" }}
+                        />
+                        {/* Animated writing lines */}
+                        <div className="px-3 pt-4 space-y-2">
+                          {[80, 90, 55, 85, 70, 40].map((w, i) => (
+                            <div
+                              key={i}
+                              className="h-1.5 rounded-full bg-primary/20 animate-pulse"
+                              style={{
+                                width: `${w}%`,
+                                animationDelay: `${i * 180}ms`,
+                                animationDuration: "1.4s",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        {/* Scale icon centred below lines */}
+                        <div className="absolute bottom-2 right-2">
+                          <Scale className="h-4 w-4 text-primary/30" />
+                        </div>
+                      </div>
+
+                      {/* Sparkles badge */}
+                      <div className="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 animate-bounce">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+                    </div>
+
+                    {/* Status message */}
+                    <div className="text-center space-y-1.5 min-h-[3rem]">
+                      <p className="text-sm font-semibold text-foreground transition-all duration-500">
+                        {GENERATION_STATUSES[genStatusIdx]}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        AI is drafting your <span className="font-medium">{doc.title}</span>
+                      </p>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="w-full max-w-xs space-y-2">
+                      <div className="relative h-2.5 rounded-full bg-secondary overflow-hidden">
+                        {/* Shimmer sweep */}
+                        <div
+                          className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"
+                          style={{ left: `${Math.max(0, generationProgress - 20)}%` }}
+                        />
+                        {/* Fill */}
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+                          style={{ width: `${generationProgress}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[11px] text-muted-foreground">
+                        <span>Drafting…</span>
+                        <span className="font-medium tabular-nums">{Math.round(generationProgress)}%</span>
+                      </div>
+                    </div>
+
+                    {/* Step tracker */}
+                    <div className="flex items-center gap-3 text-[11px]">
+                      <div className="flex items-center gap-1 text-green-600 font-medium">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Laws applied
+                      </div>
+                      <div className="h-px w-5 bg-border" />
+                      <div className={`flex items-center gap-1 font-medium transition-colors ${generationProgress >= 35 ? "text-green-600" : "text-muted-foreground"}`}>
+                        {generationProgress >= 35
+                          ? <CheckCircle2 className="h-3.5 w-3.5" />
+                          : <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                        Clauses drafted
+                      </div>
+                      <div className="h-px w-5 bg-border" />
+                      <div className={`flex items-center gap-1 font-medium transition-colors ${generationProgress >= 78 ? "text-green-600" : "text-muted-foreground"}`}>
+                        {generationProgress >= 78
+                          ? <CheckCircle2 className="h-3.5 w-3.5" />
+                          : <div className="h-3.5 w-3.5 rounded-full border-2 border-muted shrink-0" />}
+                        Compliance check
+                      </div>
+                    </div>
+                  </div>
+                ) : isFormValid && documentPreview ? (
                   <div className="space-y-4">
                     <ScrollArea className="h-[calc(100vh-350px)]">
                       {/* Paper-style document container — mimics a printed letter-size page */}
