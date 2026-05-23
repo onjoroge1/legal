@@ -24,6 +24,7 @@ import { getDocumentBySlug } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { toast } from "@/lib/safe-toast"
+import DocumentPreview from "@/components/documents/document-preview"
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -39,6 +40,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [previewContent, setPreviewContent] = useState<string | null>(null)
 
   // Pre-fill from session if signed in
   useEffect(() => {
@@ -67,6 +69,12 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!doc) router.push("/documents")
   }, [doc, router])
+
+  // Load generated document from sessionStorage for the preview
+  useEffect(() => {
+    const content = sessionStorage.getItem("document-content")
+    if (content) setPreviewContent(content)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -297,9 +305,35 @@ export default function CheckoutPage() {
               </form>
             </div>
 
-            {/* Right: order summary */}
+            {/* Right: document preview + order summary */}
             <div className="w-full shrink-0 lg:w-80">
               <div className="sticky top-24 space-y-5">
+
+                {/* Document preview — watermarked teaser */}
+                {previewContent && (
+                  <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/80">
+                    <div className="border-b border-border/40 bg-secondary/40 px-5 py-3 flex items-center justify-between">
+                      <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Your Document</h2>
+                      <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                    </div>
+                    {/* Fixed-height scrollable preview with bottom fade */}
+                    <div className="relative max-h-72 overflow-hidden">
+                      <div className="overflow-y-auto max-h-72 p-4">
+                        <DocumentPreview template={previewContent} watermark={true} />
+                      </div>
+                      {/* Bottom gradient fade */}
+                      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-card/95 to-transparent" />
+                    </div>
+                    <div className="px-4 pb-4 pt-2 text-center">
+                      <p className="text-xs text-muted-foreground">
+                        <Lock className="inline h-3 w-3 mr-1 align-middle" />
+                        Complete purchase to unlock your full document
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Order summary */}
                 <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/80">
                   <div className="border-b border-border/40 bg-secondary/40 p-5">
                     <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Order Summary</h2>
