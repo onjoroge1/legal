@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
+import { sendDocumentReadyEmail } from "@/lib/email-service"
 
 // Stripe requires the raw body for signature verification
 export const runtime = "nodejs"
@@ -73,19 +74,28 @@ export async function POST(request: Request) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  const { userId, documentId, paymentType } = session.metadata || {}
+  const { userId, documentId, paymentType, isGuest } = session.metadata || {}
 
   if (!userId) {
     console.error("checkout.session.completed missing userId in metadata")
     return
   }
 
-  // Finalize the pending document
+  // Fetch the user for email + name
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, name: true },
+  })
+
+  // Finalize the pending document and fetch its content for the email
+  let finalizedDoc: { title: string; content: string } | null = null
   if (documentId) {
-    await prisma.userDocument.update({
+    const doc = await prisma.userDocument.update({
       where: { id: documentId },
       data: { status: "completed" },
+      select: { title: true, content: true },
     })
+    finalizedDoc = doc
   }
 
   // For subscriptions, update user record when the session completes
@@ -101,6 +111,20 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
       },
     })
+  }
+
+  // Send "document ready" email with PDF attached (fire-and-forget — never block the webhook)
+  if (user?.email && finalizedDoc?.content && documentId) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://legallawdocs.com"
+    sendDocumentReadyEmail({
+      userEmail: user.email,
+      userName: user.name || user.email.split("@")[0],
+      documentTitle: finalizedDoc.title,
+      documentContent: finalizedDoc.content,
+      documentId,
+      isGuest: isGuest === "true",
+      appUrl,
+    }).catch((err) => console.error("sendDocumentReadyEmail failed:", err))
   }
 }
 

@@ -1,6 +1,8 @@
 // Email service using Resend API
 // Install: npm install resend
 
+import { generatePDF } from "@/lib/pdf-generator"
+
 let Resend: any
 let resend: any
 
@@ -167,6 +169,113 @@ export async function sendNewFeaturesEmail(
     subject: "New Features Available on LegalLawDocs",
     html,
   })
+}
+
+/**
+ * Send document ready email with PDF attached.
+ * Called by the Stripe webhook after checkout.session.completed.
+ */
+export async function sendDocumentReadyEmail({
+  userEmail,
+  userName,
+  documentTitle,
+  documentContent,
+  documentId,
+  isGuest = false,
+  appUrl,
+}: {
+  userEmail: string
+  userName: string
+  documentTitle: string
+  documentContent: string
+  documentId: string
+  isGuest?: boolean
+  appUrl: string
+}): Promise<boolean> {
+  if (!resend) {
+    console.warn("Email service not configured. Document ready email not sent for:", documentTitle)
+    return false
+  }
+
+  const dashboardUrl = `${appUrl}/dashboard/documents/${documentId}`
+  const safeTitle = documentTitle.replace(/[^a-zA-Z0-9\s-]/g, "").trim()
+
+  // Generate PDF attachment
+  let pdfBuffer: Buffer | null = null
+  try {
+    pdfBuffer = await generatePDF(documentContent, documentTitle)
+  } catch (err) {
+    console.error("PDF generation failed for document email:", err)
+    // Continue — send the email without attachment rather than failing entirely
+  }
+
+  const guestNote = isGuest
+    ? `<p style="margin-top:16px; padding:12px 16px; background:#f0f9ff; border-left:3px solid #2563eb; border-radius:4px; font-size:13px; color:#374151;">
+        <strong>Set up your account password</strong><br>
+        A LegalLawDocs account was created with this email. Visit your dashboard to set a password and access all your documents anytime.
+      </p>`
+    : ""
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your document is ready</title>
+</head>
+<body style="margin:0; padding:0; background:#f9fafb; font-family: Arial, sans-serif; color:#111827;">
+  <div style="max-width:560px; margin:40px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+    <!-- Header -->
+    <div style="background:#1e293b; padding:24px 32px; text-align:center;">
+      <p style="margin:0; font-size:20px; font-weight:700; color:#ffffff; letter-spacing:-0.3px;">
+        Legal<span style="color:#6366f1;">Law</span>Docs
+      </p>
+    </div>
+    <!-- Body -->
+    <div style="padding:32px;">
+      <h1 style="margin:0 0 8px; font-size:22px; font-weight:700; color:#111827;">Your document is ready 🎉</h1>
+      <p style="margin:0 0 24px; font-size:15px; color:#6b7280;">Hi ${userName}, your <strong>${documentTitle}</strong> has been generated and attached to this email as a PDF.</p>
+      ${pdfBuffer ? `<p style="margin:0 0 24px; font-size:14px; color:#374151;">📎 <strong>${safeTitle}.pdf</strong> is attached below.</p>` : ""}
+      <a href="${dashboardUrl}" style="display:inline-block; background:#6366f1; color:#ffffff; font-weight:600; font-size:14px; padding:12px 24px; border-radius:8px; text-decoration:none; margin-bottom:24px;">
+        View &amp; Download in Dashboard →
+      </a>
+      ${guestNote}
+      <hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
+      <p style="margin:0; font-size:12px; color:#9ca3af;">
+        You're receiving this because you purchased a document from LegalLawDocs. Questions? Reply to this email.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+
+  try {
+    const payload: Record<string, unknown> = {
+      from: process.env.RESEND_FROM_EMAIL || "LegalLawDocs <noreply@legallawdocs.com>",
+      to: userEmail,
+      subject: `Your ${documentTitle} is ready`,
+      html,
+    }
+
+    if (pdfBuffer) {
+      payload.attachments = [
+        {
+          filename: `${safeTitle}.pdf`,
+          content: pdfBuffer,
+        },
+      ]
+    }
+
+    const result = await resend.emails.send(payload)
+    if (result.error) {
+      console.error("Document ready email error:", result.error)
+      return false
+    }
+    return true
+  } catch (error) {
+    console.error("Document ready email service error:", error)
+    return false
+  }
 }
 
 /**
