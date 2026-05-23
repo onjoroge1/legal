@@ -33,6 +33,10 @@ export const config = {
     "/api/notifications/:path*",
     "/api/permissions/:path*",
     "/api/user/:path*",
-    "/api/payment/:path*",
+    // NOTE: /api/payment/create-checkout is intentionally PUBLIC — it supports
+    // guest checkout (P4). Only the webhook is public by necessity (Stripe signs it).
+    // No other payment sub-routes exist that need user-only protection,
+    // so the entire /api/payment/* wildcard is removed.
+    // If you add authenticated-only payment endpoints in the future, list them explicitly here.
   ],
 }
