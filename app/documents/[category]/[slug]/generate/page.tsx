@@ -14,6 +14,8 @@ import {
   ArrowRight,
   Info,
   Eye,
+  Download,
+  Lock,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { getDocumentBySlug } from "@/lib/document-catalog"
@@ -296,6 +298,44 @@ export default function GeneratePage() {
       }
     } catch {}
     return draftDocumentId
+  }
+
+  const [isDownloading, setIsDownloading] = useState<"pdf" | "docx" | null>(null)
+
+  const handleDownload = async (format: "pdf" | "docx") => {
+    // Non-subscribers go to checkout
+    if (!hasSubscription) {
+      router.push(`/documents/${category}/${slug}/checkout`)
+      return
+    }
+    if (!documentPreview || !doc) return
+    setIsDownloading(format)
+    try {
+      const res = await fetch("/api/documents/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentText: documentPreview,
+          documentTitle: doc.title,
+          format,
+        }),
+      })
+      if (!res.ok) throw new Error("Download failed")
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `${doc.title.replace(/[^a-zA-Z0-9\s-]/g, "").trim()}.${format}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      toast.success(`${format.toUpperCase()} downloaded!`)
+    } catch {
+      toast.error("Download failed. Please try again.")
+    } finally {
+      setIsDownloading(null)
+    }
   }
 
   const handleFormChange = (data: Record<string, any>) => {
@@ -674,7 +714,58 @@ export default function GeneratePage() {
                         <DocumentPreview template={documentPreview} watermark={!hasSubscription} />
                       </div>
                     </ScrollArea>
-                    <div className="bg-card/50 rounded-lg p-4 border border-border/40">
+                    {/* Primary CTA: Download */}
+                    <div className="rounded-xl border border-border/40 bg-card/60 p-5">
+                      <div className="mb-4">
+                        <h3 className="text-sm font-semibold text-foreground">Get Your Document</h3>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {hasSubscription
+                            ? "Download your document in any format."
+                            : "Subscribe or purchase to unlock your clean, watermark-free copy."}
+                        </p>
+                      </div>
+                      <div className="flex gap-3">
+                        <Button
+                          size="lg"
+                          className="flex-1 gap-2 shadow-md shadow-primary/20"
+                          onClick={() => handleDownload("pdf")}
+                          disabled={isDownloading !== null}
+                        >
+                          {isDownloading === "pdf" ? (
+                            <><Loader2 className="h-4 w-4 animate-spin" />Downloading...</>
+                          ) : hasSubscription ? (
+                            <><Download className="h-4 w-4" />Download PDF</>
+                          ) : (
+                            <><Lock className="h-4 w-4" />Download PDF</>
+                          )}
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="flex-1 gap-2"
+                          onClick={() => handleDownload("docx")}
+                          disabled={isDownloading !== null}
+                        >
+                          {isDownloading === "docx" ? (
+                            <><Loader2 className="h-4 w-4 animate-spin" />Downloading...</>
+                          ) : hasSubscription ? (
+                            <><Download className="h-4 w-4" />Download DOCX</>
+                          ) : (
+                            <><Lock className="h-4 w-4" />Download DOCX</>
+                          )}
+                        </Button>
+                      </div>
+                      {!hasSubscription && (
+                        <p className="mt-3 text-center text-xs text-muted-foreground">
+                          <Lock className="inline h-3 w-3 mr-1 align-middle" />
+                          Subscribe from $9.99/mo or pay $19.99 for this document only
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Secondary CTA: Sign & Send */}
+                    <div className="rounded-xl border border-border/40 bg-card/40 px-5 py-4">
+                      <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">Signing (Premium)</p>
                       <DocumentSigning
                         documentId={draftDocumentId || undefined}
                         documentTitle={doc.title}
