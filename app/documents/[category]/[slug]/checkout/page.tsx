@@ -318,7 +318,7 @@ export default function CheckoutPage() {
                     </div>
                     {/* Fixed-height scrollable preview with bottom fade */}
                     <div className="relative max-h-72 overflow-hidden">
-                      <div className="overflow-y-auto max-h-72 p-4">
+                      <div className="overflow-y-auto max-h-72 bg-white px-6 py-5">
                         <DocumentPreview template={previewContent} watermark={true} />
                       </div>
                       {/* Bottom gradient fade */}

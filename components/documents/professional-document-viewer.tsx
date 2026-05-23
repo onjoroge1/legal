@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { format } from "date-fns"
 
 interface ProfessionalDocumentViewerProps {
@@ -22,7 +22,7 @@ export default function ProfessionalDocumentViewer({
     if (!content) return []
 
     const lines = content.split('\n')
-    const elements: JSX.Element[] = []
+    const elements: React.ReactElement[] = []
     let currentParagraph: string[] = []
     let hasTitle = false
 
@@ -137,7 +137,7 @@ export default function ProfessionalDocumentViewer({
         flushParagraph()
         // Process markdown bold
         const parts = trimmed.split(/(\*\*[^*]+\*\*)/g)
-        const processedParts: (string | JSX.Element)[] = []
+        const processedParts: (string | React.ReactElement)[] = []
         
         parts.forEach((part, partIndex) => {
           if (part.startsWith('**') && part.endsWith('**')) {

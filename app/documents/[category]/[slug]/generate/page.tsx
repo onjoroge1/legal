@@ -710,7 +710,14 @@ export default function GeneratePage() {
                 {isFormValid && documentPreview ? (
                   <div className="space-y-4">
                     <ScrollArea className="h-[calc(100vh-350px)]">
-                      <div className="bg-white shadow-xl rounded-lg p-8 md:p-12 max-w-4xl mx-auto border border-gray-200">
+                      {/* Paper-style document container — mimics a printed letter-size page */}
+                      <div
+                        className="bg-white mx-auto border border-gray-200 px-14 py-12"
+                        style={{
+                          maxWidth: "720px",
+                          boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
+                        }}
+                      >
                         <DocumentPreview template={documentPreview} watermark={!hasSubscription} />
                       </div>
                     </ScrollArea>
