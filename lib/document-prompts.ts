@@ -14,7 +14,8 @@ export function getDocumentPrompt(slug: string, intentId?: string | null): strin
     case "non-disclosure-agreement":
       return `
 Ensure the NDA includes clear definitions, confidentiality obligations, exclusions, term, return of materials, remedies, and governing law.
-Include a signature block for both parties. ${intentText}`.trim()
+Include a signature block for both parties. ${intentText}
+IMPORTANT: Use ONLY the party names, addresses, entity types, and states of formation provided in the form data. If any of these are missing, use blank underlines (___) rather than inventing values. Never assume a party is incorporated in Delaware or any other state unless explicitly stated in the form data.`.trim()
 
     case "llc-operating-agreement":
       return `
@@ -156,12 +157,14 @@ Include a dispute resolution clause and what happens if one party fails to compl
     case "mutual-non-disclosure-agreement":
       return `
 This is a MUTUAL (bilateral) NDA — both parties have confidentiality obligations. Include mutual definitions of confidential information, mutual obligations of confidentiality and limited use, exclusions (public domain, independent development, legal compulsion), term and duration, return or destruction of materials, remedies including injunctive relief, and governing law.
-Make clear in the recitals that BOTH parties are disclosing and receiving confidential information. Include a signature block for both authorized representatives. ${intentText}`.trim()
+Make clear in the recitals that BOTH parties are disclosing and receiving confidential information. Include a signature block for both authorized representatives. ${intentText}
+IMPORTANT: Use ONLY the party names, addresses, entity types, and states of formation provided in the form data. If any of these are missing, use blank underlines (___) rather than inventing values. Never assume a party is incorporated in Delaware or any other state unless explicitly stated in the form data.`.trim()
 
     case "unilateral-non-disclosure-agreement":
       return `
 This is a UNILATERAL (one-way) NDA — only the receiving party has confidentiality obligations. Identify the disclosing party and the receiving party clearly. Include definition of confidential information, one-directional confidentiality obligation on the receiving party only, permitted use limited to the stated purpose, exclusions, term and duration, return or destruction of materials, and remedies.
-The disclosing party retains freedom to use its own information as it chooses. Include signature block for both parties. ${intentText}`.trim()
+The disclosing party retains freedom to use its own information as it chooses. Include signature block for both parties. ${intentText}
+IMPORTANT: Use ONLY the party names, addresses, entity types, and states of formation provided in the form data. If any of these are missing, use blank underlines (___) rather than inventing values. Never assume a party is incorporated in Delaware or any other state unless explicitly stated in the form data.`.trim()
 
     case "single-member-llc-operating-agreement":
       return `
@@ -202,7 +205,8 @@ Be explicit about which expenses are included in and excluded from the tenant's 
     case "employee-non-disclosure-agreement":
       return `
 This is an EMPLOYEE NDA signed at onboarding. Include the employee's name, title, and start date. Define confidential information broadly to cover trade secrets, client lists, pricing, software, and business strategy. State that the obligation survives termination of employment and specify the duration (typically indefinite for trade secrets or 2–5 years for other confidential information). Include a non-disparagement clause, IP assignment clause, and remedies including injunctive relief.
-Do NOT include non-compete restrictions — keep this focused on confidentiality. ${intentText}`.trim()
+Do NOT include non-compete restrictions — keep this focused on confidentiality. ${intentText}
+IMPORTANT: Use ONLY the party names, addresses, entity types, and states of formation provided in the form data. If any of these are missing, use blank underlines (___) rather than inventing values. Never assume a party is incorporated in Delaware or any other state unless explicitly stated in the form data.`.trim()
 
     case "asset-purchase-agreement":
       return `

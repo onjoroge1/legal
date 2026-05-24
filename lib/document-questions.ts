@@ -79,7 +79,11 @@ const DOCUMENT_QUESTIONS: Record<string, FormQuestion[]> = {
   "non-disclosure-agreement": [
     Q.state(),
     Q.text("disclosingPartyName", "Disclosing Party Name", "Parties", { placeholder: "Acme Corp or John Smith" }),
+    Q.select("disclosingPartyType", "Disclosing Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("disclosingPartyAddress", "Disclosing Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., San Francisco, California" }),
     Q.text("receivingPartyName", "Receiving Party Name", "Parties", { placeholder: "Beta LLC or Jane Doe" }),
+    Q.select("receivingPartyType", "Receiving Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("receivingPartyAddress", "Receiving Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., Austin, Texas" }),
     Q.radio("ndaType", "NDA Type", "Agreement Terms", ["Mutual (both share info)", "One-way (only one party shares)"], {}),
     Q.textarea("confidentialInfo", "What confidential information is covered?", "Agreement Terms", {
       required: true,
@@ -98,7 +102,11 @@ const DOCUMENT_QUESTIONS: Record<string, FormQuestion[]> = {
   "mutual-non-disclosure-agreement": [
     Q.state(),
     Q.text("party1Name", "First Party Name", "Parties", { placeholder: "Acme Corp" }),
+    Q.select("party1Type", "First Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("party1Address", "First Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., San Francisco, California" }),
     Q.text("party2Name", "Second Party Name", "Parties", { placeholder: "Beta LLC" }),
+    Q.select("party2Type", "Second Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("party2Address", "Second Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., Austin, Texas" }),
     Q.textarea("confidentialInfo", "What confidential information will be shared?", "Agreement Terms", {
       required: true,
       placeholder: "e.g., product roadmaps, pricing strategies, technical specifications, customer data...",
@@ -108,14 +116,17 @@ const DOCUMENT_QUESTIONS: Record<string, FormQuestion[]> = {
       required: true,
       placeholder: "e.g., Exploring a joint venture in the healthcare sector",
     }),
-    Q.state("governingState", "Governing State", true),
   ],
 
   // ── UNILATERAL NDA ────────────────────────────────────────────────────────
   "unilateral-non-disclosure-agreement": [
     Q.state(),
     Q.text("disclosingPartyName", "Disclosing Party (shares information)", "Parties", { placeholder: "Acme Corp" }),
+    Q.select("disclosingPartyType", "Disclosing Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("disclosingPartyAddress", "Disclosing Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., San Francisco, California" }),
     Q.text("receivingPartyName", "Receiving Party (must keep secret)", "Parties", { placeholder: "John Smith" }),
+    Q.select("receivingPartyType", "Receiving Party Entity Type", "Parties", ["Corporation", "LLC", "Limited Partnership", "Sole Proprietor / Individual"], { required: false }),
+    Q.text("receivingPartyAddress", "Receiving Party Address (City, State)", "Parties", { required: false, placeholder: "e.g., Austin, Texas" }),
     Q.textarea("confidentialInfo", "What information must be kept confidential?", "Agreement Terms", {
       required: true,
       placeholder: "e.g., proprietary software, financial projections, customer lists...",
@@ -357,6 +368,7 @@ const DOCUMENT_QUESTIONS: Record<string, FormQuestion[]> = {
   "employee-non-disclosure-agreement": [
     Q.state(),
     Q.text("employerName", "Employer Name", "Parties", { placeholder: "Acme Corp" }),
+    Q.text("employerAddress", "Employer Business Address", "Parties", { required: false, placeholder: "e.g., 123 Main St, Austin, TX 78701" }),
     Q.text("employeeName", "Employee Name", "Parties", { placeholder: "Jane Smith" }),
     Q.text("jobTitle", "Employee's Position", "Parties", { placeholder: "e.g., Software Engineer" }),
     Q.textarea("confidentialInfo", "Types of Confidential Information", "Confidentiality", {

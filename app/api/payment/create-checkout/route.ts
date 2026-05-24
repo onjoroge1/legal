@@ -94,14 +94,10 @@ export async function POST(request: Request) {
 
     let checkoutSession
 
-    // Pre-fill Stripe's email field so guests don't retype it
-    const stripeEmailPrefill = !session?.user?.email ? { customer_email: emailToUse } : {}
-
     if (paymentType === "subscription") {
       // Recurring subscription
       checkoutSession = await stripe.checkout.sessions.create({
         customer: stripeCustomerId,
-        ...stripeEmailPrefill,
         mode: "subscription",
         line_items: [{ price: PRICE_IDS.professional, quantity: 1 }],
         success_url: `${appUrl}/dashboard/documents/${pendingDoc.id}?payment=success`,
@@ -121,7 +117,6 @@ export async function POST(request: Request) {
       const unitAmount = Math.round((docInfo.price || 19) * 100) // price in cents
       checkoutSession = await stripe.checkout.sessions.create({
         customer: stripeCustomerId,
-        ...stripeEmailPrefill,
         mode: "payment",
         line_items: [
           {

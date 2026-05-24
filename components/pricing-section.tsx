@@ -6,13 +6,13 @@ const plans = [
   {
     name: "Starter",
     description: "Perfect for individuals with occasional legal document needs.",
-    price: "$9",
+    price: "$19.99",
     period: "per document",
     features: [
       "Single document generation",
       "State-specific compliance",
       "PDF & Word download",
-      "Email support",
+      "Email delivery",
       "Basic AI review",
     ],
     cta: "Get Started",
@@ -21,7 +21,7 @@ const plans = [
   {
     name: "Professional",
     description: "Ideal for small businesses and frequent document needs.",
-    price: "$49",
+    price: "$9.99",
     period: "per month",
     features: [
       "Unlimited document generation",

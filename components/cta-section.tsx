@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Shield } from "lucide-react"
 
@@ -34,13 +35,17 @@ export function CtaSection() {
                 for professional, state-compliant legal documentation.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-                  Get Started Free
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="lg" className="bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
-                  Schedule a Demo
-                </Button>
+                <Link href="/documents">
+                  <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
+                    Get Started Free
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/documents">
+                  <Button variant="outline" size="lg" className="bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
+                    Schedule a Demo
+                  </Button>
+                </Link>
               </div>
               <p className="mt-7 text-sm text-muted-foreground">
                 No credit card required. Your first document is free.

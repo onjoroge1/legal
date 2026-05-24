@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -63,13 +64,17 @@ export function HeroSection() {
           </p>
 
           <div className="animate-slide-up stagger-3 mt-12 flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-              Start Creating Documents
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="lg" className="gap-2 bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
-              View Document Library
-            </Button>
+            <Link href="/documents">
+              <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
+                Start Creating Documents
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/documents">
+              <Button variant="outline" size="lg" className="gap-2 bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
+                View Document Library
+              </Button>
+            </Link>
           </div>
 
           {/* Trust indicators with icons */}

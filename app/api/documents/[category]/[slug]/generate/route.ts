@@ -201,11 +201,12 @@ ${documentContent}
 
 Instructions:
 1. Replace any remaining placeholder variables with appropriate language or leave blanks for manual completion
-2. Add all jurisdiction-required clauses and citations listed above
-3. Ensure the document is compliant with the restrictions listed above
-4. Apply professional legal formatting with proper section numbering
-5. Include a complete signature block
-6. Follow these document-specific guidelines: ${documentSpecificInstructions}
+2. Use blank underlines "___" for any party addresses, states of incorporation/formation, or entity types NOT explicitly provided in the form data above. NEVER invent these details.
+3. Add all jurisdiction-required clauses and citations listed above
+4. Ensure the document is compliant with the restrictions listed above
+5. Apply professional legal formatting with proper section numbering
+6. Include a complete signature block
+7. Follow these document-specific guidelines: ${documentSpecificInstructions}
 
 Output ONLY the enhanced document. No preamble, no commentary.`,
       })
@@ -243,7 +244,8 @@ Document Requirements:
 - Use precise legal language appropriate for ${jurisdiction}
 - Include all standard sections for a ${doc.title}
 - Include a complete execution/signature block at the end
-- Make it ready to sign with no placeholder text remaining (use blanks like "___" where info not provided)
+- Use blank underlines "___" for any party addresses, states of incorporation/formation, or entity types NOT explicitly provided in the form data above. NEVER invent these details.
+- Make it ready to sign with no remaining placeholder variables; use "___" only for genuinely unknown info
 - Follow these document-specific guidelines: ${documentSpecificInstructions}
 
 Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
