@@ -28,9 +28,9 @@ const steps = [
   {
     step: "04",
     icon: Download,
-    title: "Download & Use",
+    title: "Download & Review",
     description:
-      "Receive your professionally formatted, legally compliant document ready for signing. Available in PDF, Word, and editable formats.",
+      "Receive your professionally formatted draft ready for attorney review. Available as an editable Word file or PDF.",
     color: "accent" as const,
   },
 ]
@@ -49,11 +49,11 @@ export function HowItWorksSection() {
             How It Works
           </p>
           <h2 className="mt-3 text-balance font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            Four Simple Steps to <span className="gradient-text">Legal Documents</span>
+            Four Simple Steps to <span className="gradient-text">Your First Draft</span>
           </h2>
           <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-            Creating legally compliant documents has never been easier.
-            Our AI handles the complexity so you don&apos;t have to.
+            Compile a strong starting draft in minutes. Our AI handles the heavy
+            lifting; you and your attorney handle the rest.
           </p>
         </div>
 

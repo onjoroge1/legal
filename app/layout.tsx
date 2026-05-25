@@ -18,9 +18,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'LegalLawDocs.com | AI-Powered Legal Document Generation',
+  title: 'LegalLawDocs.com | AI-Powered Legal Document Drafting',
   description:
-    'Generate professional, legally compliant documents using advanced AI technology. State-specific compliance, affordable pricing, and instant delivery.',
+    'Compile professional legal document drafts in minutes with AI-assembled, state-aware templates. Not a law firm — drafts are a starting point you should review with an attorney before signing.',
 }
 
 export const viewport: Viewport = {

@@ -72,7 +72,7 @@ const sections = [
     faqs: [
       {
         q: "Are LegalLawDocs documents legally binding?",
-        a: "Our documents are drafted on attorney-reviewed frameworks and are designed to be legally valid when properly completed and executed. However, enforceability depends on correct completion, proper signing procedures, and compliance with your specific state's laws. We recommend having any document reviewed by a licensed attorney before use in high-stakes situations.",
+        a: "Our AI compiles drafts from state-aware templates that are structured to be legally valid when properly completed, signed, and executed in your jurisdiction. Whether a specific draft is enforceable depends on correct completion, proper signing procedures, and your state's laws — none of which we can verify on your behalf. We are not a law firm, and we strongly recommend having any draft reviewed by a licensed attorney before signing, especially for higher-stakes matters.",
       },
       {
         q: "Can I edit my document after downloading it?",

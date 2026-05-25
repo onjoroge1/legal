@@ -188,7 +188,8 @@ export default function PreviewPage() {
               Generating Your {doc.title}
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Our AI is crafting a legally compliant document tailored to your specifications.
+              Our AI is compiling your draft from a state-aware template. Always review with a
+              qualified attorney before signing.
             </p>
             <div className="mt-8 space-y-3 text-left">
               {generationSteps.map((step, i) => (

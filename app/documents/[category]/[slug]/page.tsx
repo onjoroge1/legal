@@ -59,11 +59,10 @@ const statesCovered = [
   "All 50 States",
 ]
 
-const reviews = [
-  { name: "Sarah Chen", role: "Startup Founder", rating: 5, text: "Generated a state-compliant agreement in under 5 minutes. My attorney reviewed it and confirmed it was solid. Saved me hundreds in legal fees." },
-  { name: "Marcus Johnson", role: "Business Consultant", rating: 5, text: "I use LegalLawDocs for client documents across multiple states. The questions are on point and the output is thorough." },
-  { name: "Emily Rodriguez", role: "Freelance Designer", rating: 5, text: "Finally, an affordable way to protect my work and relationships. The document covered everything I needed." },
-]
+// Customer reviews removed for YMYL/E-E-A-T compliance — unverifiable
+// testimonials are a Google quality-rater red flag for legal sites.
+// When real, named, consenting customer quotes (with verifiable LinkedIn
+// or case-study sources) are available, they can be reinstated here.
 
 interface PageProps {
   params: Promise<{ category: string; slug: string }>
@@ -982,11 +981,8 @@ export default async function DocumentDetailPage({ params }: PageProps) {
       priceCurrency: "USD",
     },
     operatingSystem: "Web",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: String(reviews.length),
-    },
+    // aggregateRating removed for YMYL compliance — was based on fictional
+    // reviews. Reinstate only when real, verifiable customer ratings exist.
   }
 
   // Prefer cross-category related docs from catalog field; fall back to same-category
@@ -1051,8 +1047,13 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   <Badge className="gap-1 border-primary/30 bg-primary/10 text-primary" variant="outline">
                     <Sparkles className="h-3 w-3" />AI-Powered
                   </Badge>
+                  {/* Upfront AI disclosure — YMYL requirement: users must know they're getting
+                      AI-assembled output before they engage with the funnel, not after checkout. */}
+                  <Badge className="gap-1 border-amber-500/40 bg-amber-500/10 text-amber-700" variant="outline">
+                    <Sparkles className="h-3 w-3" />AI-Drafted
+                  </Badge>
                   <Badge className="gap-1 border-accent/30 bg-accent/10 text-accent" variant="outline">
-                    <Shield className="h-3 w-3" />Legally Compliant
+                    <Shield className="h-3 w-3" />State-Aware Template
                   </Badge>
                   {doc.popular && (
                     <Badge className="gap-1 border-border bg-secondary text-secondary-foreground" variant="outline">
@@ -1069,7 +1070,10 @@ export default async function DocumentDetailPage({ params }: PageProps) {
 
                 <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
                   {docContent.description}{" "}
-                  Our AI asks smart questions to customize every clause to your situation and state requirements.
+                  Our AI asks smart questions and compiles a state-aware draft you can review and edit before signing.
+                </p>
+                <p className="mt-2 max-w-xl text-xs leading-relaxed text-muted-foreground/70">
+                  LegalLawDocs is not a law firm. Drafts are AI-generated and should be reviewed by a qualified attorney before execution.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -1404,9 +1408,10 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               <div className="w-full shrink-0 lg:w-80">
                 <div className="rounded-2xl border border-accent/20 bg-accent/5 p-6">
                   <Shield className="h-8 w-8 text-accent" />
-                  <h3 className="mt-4 text-lg font-semibold text-foreground">State-Specific Compliance</h3>
+                  <h3 className="mt-4 text-lg font-semibold text-foreground">State-Aware Templates</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Every state has unique requirements, and we cover them all with proper legal citations and compliance verification.
+                    Drafts reference the statutes and provisions relevant to each U.S. state. We
+                    don&apos;t verify compliance — your attorney should before you sign.
                   </p>
                   <div className="mt-5 space-y-2.5">
                     {["Trade secret statutes", "Non-compete restrictions", "Injunctive relief rules", "Statute of limitations"].map((item) => (
@@ -1422,31 +1427,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Reviews */}
-        <section className="border-b border-border/40 py-16 lg:py-24">
-          <div className="mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Trusted By Thousands</p>
-              <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">What Our Users Say</h2>
-            </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {reviews.map((review) => (
-                <div key={review.name} className="rounded-2xl border border-border/50 bg-card/60 p-6">
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{`"${review.text}"`}</p>
-                  <div className="mt-4 border-t border-border/40 pt-4">
-                    <p className="text-sm font-semibold text-foreground">{review.name}</p>
-                    <p className="text-xs text-muted-foreground">{review.role}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Reviews section removed for YMYL compliance (was fictional). */}
 
         {/* CTA */}
         <section className="py-16 lg:py-24">
@@ -1456,9 +1437,9 @@ export default async function DocumentDetailPage({ params }: PageProps) {
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
               {hasActiveSubscription ? (
-                <>Answer a few AI-powered questions and download your professionally crafted, legally compliant document in minutes. <span className="text-accent font-semibold">Free with your subscription!</span></>
+                <>Answer a few AI-powered questions and download your professionally compiled draft in minutes. <span className="text-accent font-semibold">Free with your subscription!</span></>
               ) : (
-                <>Answer a few AI-powered questions, pay ${doc.price}.99, and download your professionally crafted, legally compliant document in minutes.</>
+                <>Answer a few AI-powered questions, pay ${doc.price}.99, and download your professionally compiled draft in minutes.</>
               )}
             </p>
             <Link href={generatePath} className="mt-8 inline-block">
