@@ -116,6 +116,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   // Send "document ready" email with PDF attached (fire-and-forget — never block the webhook)
   if (user?.email && finalizedDoc?.content && documentId) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://legallawdocs.com"
+    // Only Professional-tier subscribers get the Sign CTA in the email
+    // (matches the gating on the post-purchase landing page).
+    const canSign = paymentType === "subscription"
     sendDocumentReadyEmail({
       userEmail: user.email,
       userName: user.name || user.email.split("@")[0],
@@ -123,6 +126,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       documentContent: finalizedDoc.content,
       documentId,
       isGuest: isGuest === "true",
+      canSign,
       appUrl,
     }).catch((err) => console.error("sendDocumentReadyEmail failed:", err))
   }

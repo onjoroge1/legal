@@ -26,7 +26,7 @@ export function CtaSection() {
               </div>
 
               <h2 className="text-balance font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
-                <span className="text-foreground">Start Creating Legal</span>
+                <span className="text-foreground">Start Drafting Legal</span>
                 <br />
                 <span className="gradient-text">Documents Today</span>
               </h2>

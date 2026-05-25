@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { parseStatePageSlug } from "@/lib/state-pages"
 import { parseInternationalPageSlug } from "@/lib/international-pages"
@@ -85,6 +86,7 @@ export default function GeneratePage() {
   const MAX_RETRIES = 2
   const [generationAttempts, setGenerationAttempts] = useState(0)
   const [generationFailed, setGenerationFailed] = useState(false)
+  const [understoodDisclaimer, setUnderstoodDisclaimer] = useState(false)
   // Draft restore banner
   const [draftRestore, setDraftRestore] = useState<{ content: string; savedAt: string } | null>(null)
   // Generation progress animation
@@ -689,21 +691,46 @@ export default function GeneratePage() {
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    onClick={handleGenerateDocument}
-                    disabled={!isFormValid || isGenerating}
-                    className="w-full"
-                    size="lg"
-                    variant={generationFailed ? "outline" : "default"}
-                  >
-                    {isGenerating ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</>
-                    ) : generationFailed ? (
-                      <><ArrowRight className="mr-2 h-4 w-4" />Try Again ({MAX_RETRIES - generationAttempts} left)</>
-                    ) : (
-                      <>Generate Document<ArrowRight className="ml-2 h-4 w-4" /></>
-                    )}
-                  </Button>
+                  <>
+                    {/* Hard "I Understand" acceptance gate — must be checked before Compile */}
+                    <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 p-3">
+                      <Checkbox
+                        id="disclaimer-ack"
+                        checked={understoodDisclaimer}
+                        onCheckedChange={(c) => setUnderstoodDisclaimer(c === true)}
+                        className="mt-0.5"
+                      />
+                      <label
+                        htmlFor="disclaimer-ack"
+                        className="text-xs leading-relaxed text-muted-foreground cursor-pointer select-none"
+                      >
+                        I understand this tool generates an AI-assembled draft based on patterns,
+                        does not provide legal advice, and does not create an attorney-client
+                        relationship.
+                      </label>
+                    </div>
+                    <Button
+                      onClick={handleGenerateDocument}
+                      disabled={!isFormValid || isGenerating || !understoodDisclaimer}
+                      className="w-full"
+                      size="lg"
+                      variant={generationFailed ? "outline" : "default"}
+                    >
+                      {isGenerating ? (
+                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Compiling draft...</>
+                      ) : generationFailed ? (
+                        <><ArrowRight className="mr-2 h-4 w-4" />Try Again ({MAX_RETRIES - generationAttempts} left)</>
+                      ) : (
+                        <>Compile Initial Draft<ArrowRight className="ml-2 h-4 w-4" /></>
+                      )}
+                    </Button>
+                    {/* Persistent "not a law firm" microcopy — always visible under the CTA */}
+                    <p className="text-xs text-muted-foreground text-center leading-relaxed px-2">
+                      LegalLawDocs is an AI-powered drafting tool, not a law firm. AI can make
+                      mistakes. This output is a starting point and should be reviewed by a
+                      qualified attorney in your jurisdiction.
+                    </p>
+                  </>
                 )}
                 {!isFormValid && generationAttempts === 0 && (
                   <p className="text-xs text-muted-foreground text-center">
@@ -749,7 +776,7 @@ export default function GeneratePage() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <FileText className="h-5 w-5 text-primary" />
-                    <h3 className="text-lg font-semibold">Document Preview</h3>
+                    <h3 className="text-lg font-semibold">Draft Preview</h3>
                   </div>
                   {isGenerating ? (
                     <Badge variant="outline" className="gap-1.5 border-primary/30 bg-primary/5 text-primary">
@@ -882,13 +909,13 @@ export default function GeneratePage() {
                         <DocumentPreview template={documentPreview} watermark={!hasSubscription} />
                       </div>
                     </ScrollArea>
-                    {/* Primary CTA: Download */}
+                    {/* Primary CTA: Download — DOCX is primary (editable, reinforces draft framing) */}
                     <div className="rounded-xl border border-border/40 bg-card/60 p-5">
                       <div className="mb-4">
-                        <h3 className="text-sm font-semibold text-foreground">Get Your Document</h3>
+                        <h3 className="text-sm font-semibold text-foreground">Get Your Draft</h3>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {hasSubscription
-                            ? "Download your document in any format."
+                            ? "Download in Word for editing, or PDF for sharing."
                             : "Subscribe or purchase to unlock your clean, watermark-free copy."}
                         </p>
                       </div>
@@ -896,6 +923,21 @@ export default function GeneratePage() {
                         <Button
                           size="lg"
                           className="flex-1 gap-2 shadow-md shadow-primary/20"
+                          onClick={() => handleDownload("docx")}
+                          disabled={isDownloading !== null}
+                        >
+                          {isDownloading === "docx" ? (
+                            <><Loader2 className="h-4 w-4 animate-spin" />Downloading...</>
+                          ) : hasSubscription ? (
+                            <><Download className="h-4 w-4" />Download Word (.docx)</>
+                          ) : (
+                            <><Lock className="h-4 w-4" />Download Word (.docx)</>
+                          )}
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="flex-1 gap-2"
                           onClick={() => handleDownload("pdf")}
                           disabled={isDownloading !== null}
                         >
@@ -907,21 +949,6 @@ export default function GeneratePage() {
                             <><Lock className="h-4 w-4" />Download PDF</>
                           )}
                         </Button>
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          className="flex-1 gap-2"
-                          onClick={() => handleDownload("docx")}
-                          disabled={isDownloading !== null}
-                        >
-                          {isDownloading === "docx" ? (
-                            <><Loader2 className="h-4 w-4 animate-spin" />Downloading...</>
-                          ) : hasSubscription ? (
-                            <><Download className="h-4 w-4" />Download DOCX</>
-                          ) : (
-                            <><Lock className="h-4 w-4" />Download DOCX</>
-                          )}
-                        </Button>
                       </div>
                       {!hasSubscription && (
                         <p className="mt-3 text-center text-xs text-muted-foreground">
@@ -929,11 +956,20 @@ export default function GeneratePage() {
                           Subscribe from $9.99/mo or pay $19.99 for this document only
                         </p>
                       )}
+                      <p className="mt-2 text-center text-[11px] text-muted-foreground leading-snug">
+                        Word (.docx) is editable — recommended so you and your attorney can revise before signing.
+                      </p>
                     </div>
 
-                    {/* Secondary CTA: Sign & Send */}
+                    {/* Secondary CTA: Sign & Send Your Draft */}
                     <div className="rounded-xl border border-border/40 bg-card/40 px-5 py-4">
-                      <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">Signing (Premium)</p>
+                      <p className="mb-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Sign &amp; Send Your Draft (Professional)
+                      </p>
+                      <p className="mb-3 text-xs text-muted-foreground leading-relaxed">
+                        Once you&apos;re ready, sign your draft electronically or send it to another party for
+                        signature. Included with the Professional plan.
+                      </p>
                       <DocumentSigning
                         documentId={draftDocumentId || undefined}
                         documentTitle={doc.title}

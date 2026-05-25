@@ -54,19 +54,19 @@ export function HeroSection() {
           <h1 className="animate-slide-up stagger-1 max-w-5xl font-serif text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
             <span className="text-foreground">Professional Legal</span>
             <br />
-            <span className="gradient-text">Documents in Minutes</span>
+            <span className="gradient-text">Document Drafts in Minutes</span>
           </h1>
 
           <p className="animate-slide-up stagger-2 mt-8 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Generate legally compliant documents using advanced AI technology.
-            Our platform automatically adapts to your state&apos;s legal requirements,
-            ensuring every document meets compliance standards.
+            Compile professional document drafts in minutes. Our AI assembles state-aware
+            templates as a starting point &mdash; always review with a qualified attorney
+            before signing.
           </p>
 
           <div className="animate-slide-up stagger-3 mt-12 flex flex-col gap-4 sm:flex-row">
             <Link href="/documents">
               <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-                Start Creating Documents
+                Start Drafting
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

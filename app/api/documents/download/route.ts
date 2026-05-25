@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { generatePDF } from "@/lib/pdf-generator"
+import { prisma } from "@/lib/prisma"
 
 export const runtime = "nodejs"
 
@@ -81,8 +82,17 @@ export async function POST(request: Request) {
 
     const safeTitle = (documentTitle || "document").replace(/[^a-zA-Z0-9\s-]/g, "").trim()
 
+    // Check subscription tier — paid users get a watermark-free PDF.
+    // Footer disclaimer is still shown for everyone (legal protection).
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { subscriptionTier: true, subscriptionStatus: true },
+    })
+    const isPaidUser =
+      user?.subscriptionTier === "professional" && user.subscriptionStatus === "active"
+
     if (format === "pdf") {
-      const buffer = await generatePDF(documentText, safeTitle)
+      const buffer = await generatePDF(documentText, safeTitle, { isWatermarked: !isPaidUser })
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/pdf",

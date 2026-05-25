@@ -49,7 +49,22 @@ function classify(trimmed: string, seenTitle: boolean): LineKind {
   return "paragraph"
 }
 
-export async function generatePDF(content: string, title: string): Promise<Buffer> {
+/**
+ * Generate the PDF.
+ *
+ * @param content - The plain-text document body from the AI
+ * @param title - Document title (shown in header + PDF metadata)
+ * @param options.isWatermarked - When true (the default), stamps a diagonal
+ *   "DRAFT" watermark across every page. Paid subscribers should pass `false`
+ *   to suppress the watermark. The "AI-generated draft" footer is ALWAYS
+ *   present regardless of this flag — legal defensibility requires it.
+ */
+export async function generatePDF(
+  content: string,
+  title: string,
+  options: { isWatermarked?: boolean } = {}
+): Promise<Buffer> {
+  const isWatermarked = options.isWatermarked !== false // default true (safer)
   const PDFDocument = (await import("pdfkit")).default
 
   return new Promise((resolve, reject) => {
@@ -57,6 +72,7 @@ export async function generatePDF(content: string, title: string): Promise<Buffe
       margin: 72, // 1-inch margins — standard legal doc
       size: "LETTER",
       info: { Title: title, Creator: "LegalLawDocs.com" },
+      bufferPages: true, // required so we can iterate pages and add overlays at the end
     })
 
     const chunks: Buffer[] = []
@@ -271,6 +287,66 @@ export async function generatePDF(content: string, title: string): Promise<Buffe
     }
 
     flushParagraph()
+
+    // ── Per-page overlay pass: footer disclaimer (always) + diagonal DRAFT watermark (conditional) ──
+    // bufferedPageRange() includes every page rendered above. We switch to each
+    // page and draw on top without affecting the content flow.
+    const range = doc.bufferedPageRange()
+    for (let i = range.start; i < range.start + range.count; i++) {
+      doc.switchToPage(i)
+
+      // Diagonal "DRAFT" watermark — drawn first so the footer text stays crisp on top.
+      if (isWatermarked) {
+        doc.save()
+        const cx = doc.page.width / 2
+        const cy = doc.page.height / 2
+        doc.rotate(-30, { origin: [cx, cy] })
+        doc
+          .font("Times-Bold")
+          .fontSize(130)
+          .fillColor("#000")
+          .opacity(0.06)
+          .text("DRAFT", 0, cy - 70, {
+            width: doc.page.width,
+            align: "center",
+            lineBreak: false,
+          })
+        doc.opacity(1)
+        doc.restore()
+        doc.fillColor("#000")
+      }
+
+      // Footer disclaimer — always shown, even for paid users.
+      const footerY = doc.page.height - 48
+      doc
+        .font("Times-Italic")
+        .fontSize(8)
+        .fillColor("#666")
+        .text(
+          "AI-generated draft for informational purposes. Requires legal review prior to execution. — LegalLawDocs.com",
+          72,
+          footerY,
+          {
+            width: doc.page.width - 144,
+            align: "center",
+            lineBreak: false,
+          }
+        )
+
+      // Page number (bottom-right)
+      doc
+        .font("Times-Roman")
+        .fontSize(8)
+        .fillColor("#888")
+        .text(`Page ${i + 1} of ${range.count}`, doc.page.width - 144, footerY + 14, {
+          width: 72,
+          align: "right",
+          lineBreak: false,
+        })
+
+      doc.fillColor("#000")
+    }
+
     doc.end()
   })
 }

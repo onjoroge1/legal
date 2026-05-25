@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Download, Edit, Share2, PenTool, Send, ArrowLeft, Loader2, FileText } from "lucide-react"
+import { Download, Edit, ArrowLeft, Loader2, FileText, CheckCircle2, Sparkles, X } from "lucide-react"
 import { format } from "date-fns"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import DocumentSigning from "@/components/documents/document-signing"
@@ -39,18 +39,40 @@ interface Document {
 export default function DocumentView() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { data: session } = useSession()
   const documentId = params?.id as string
-  
+
   const [document, setDocument] = useState<Document | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Payment-success banner — visible immediately after successful checkout.
+  // Dismissible; persists until the user clicks X.
+  const [showSuccessBanner, setShowSuccessBanner] = useState(
+    searchParams?.get("payment") === "success"
+  )
+
+  // Scroll target for the signing card so /dashboard/documents/[id]#sign
+  // (the link in the post-purchase email) lands the user there.
+  const signingCardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (documentId) {
       fetchDocument()
     }
   }, [documentId])
+
+  // Auto-scroll to the signing card when the URL hash is #sign (from email CTA).
+  // We wait for the document to finish loading so the card is in the DOM.
+  useEffect(() => {
+    if (!loading && typeof window !== "undefined" && window.location.hash === "#sign") {
+      // Small delay lets the layout settle so scroll math is accurate
+      setTimeout(() => {
+        signingCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 100)
+    }
+  }, [loading])
 
   const fetchDocument = async () => {
     try {
@@ -87,14 +109,15 @@ export default function DocumentView() {
     }
   }
 
-  const handleDownload = async () => {
+  const handleDownload = async (fmt: "pdf" | "docx" = "docx") => {
     try {
       const response = await fetch(`/api/documents/download`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          documentId: documentId,
-          format: "pdf",
+          documentText: document?.content,
+          documentTitle: document?.title,
+          format: fmt,
         }),
       })
 
@@ -106,13 +129,13 @@ export default function DocumentView() {
       const url = window.URL.createObjectURL(blob)
       const a = window.document.createElement("a")
       a.href = url
-      a.download = `${document?.title || "document"}.pdf`
+      a.download = `${document?.title || "document"}.${fmt}`
       window.document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
       window.document.body.removeChild(a)
-      
-      toast.success("Document downloaded successfully")
+
+      toast.success(`Downloaded as ${fmt.toUpperCase()}`)
     } catch (error) {
       console.error("Download error:", error)
       toast.error("Failed to download document")
@@ -190,8 +213,36 @@ export default function DocumentView() {
       <div className="flex-1 flex overflow-hidden">
         {/* Document Content */}
         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
-          {/* Action Bar */}
-          <div className="mb-4 flex items-center justify-between">
+          {/* Payment-success banner — shown immediately after Stripe redirect */}
+          {showSuccessBanner && (
+            <div className="mb-6 rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-5 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100">
+                  <Sparkles className="h-5 w-5 text-green-700" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base font-semibold text-green-900">
+                    Payment confirmed — your draft is ready
+                  </h3>
+                  <p className="mt-0.5 text-sm text-green-800/80">
+                    Download the editable Word file to review with your attorney, or jump straight to
+                    signing if you&apos;re ready. A copy was also emailed to you.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSuccessBanner(false)}
+                  className="text-green-700/60 hover:text-green-900 transition-colors"
+                  aria-label="Dismiss"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Action Bar — DOCX is now primary (matches the generate-page framing) */}
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-semibold flex items-center gap-2">
                 <FileText className="h-5 w-5" />
@@ -202,9 +253,13 @@ export default function DocumentView() {
               </p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleDownload}>
+              <Button size="sm" onClick={() => handleDownload("docx")}>
                 <Download className="mr-2 h-4 w-4" />
-                Download
+                Download Word
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => handleDownload("pdf")}>
+                <Download className="mr-2 h-4 w-4" />
+                PDF
               </Button>
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="mr-2 h-4 w-4" />
@@ -232,12 +287,13 @@ export default function DocumentView() {
             </ScrollArea>
           </div>
 
-          {/* Signing Actions */}
-          <Card className="mt-6">
+          {/* Signing Actions — anchor target for #sign deep-link from email CTA */}
+          <Card className="mt-6 scroll-mt-20" id="sign" ref={signingCardRef}>
             <CardHeader>
-              <CardTitle>Document Actions</CardTitle>
+              <CardTitle>Sign &amp; Send Your Draft</CardTitle>
               <CardDescription>
-                Sign this document or send it to someone else for signature
+                Once you&apos;ve reviewed and (if needed) edited the draft, sign electronically or
+                send to another party for signature. Included with the Professional plan.
               </CardDescription>
             </CardHeader>
             <CardContent>

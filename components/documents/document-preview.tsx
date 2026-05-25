@@ -34,25 +34,41 @@ function isAllUppercase(s: string): boolean {
 }
 
 /**
- * Replace raw ___+ sequences in text with a styled underline span so blanks
- * look like actual fill-in lines rather than literal underscores.
+ * Replace raw ___+ sequences with styled underline spans, AND highlight
+ * [BRACKETED_PLACEHOLDER] tokens in amber so users actively notice variables
+ * the AI left for them to fill. Drives the "AI assembles a draft, you finish it"
+ * positioning.
  */
 function renderWithBlanks(text: string): React.ReactNode {
-  const parts = text.split(/(_{3,})/g)
+  // Split on either a run of underscores OR a bracketed placeholder like
+  // [PARTY_A_ADDRESS], [Date of Execution], etc. (1-60 chars inside, no nesting)
+  const parts = text.split(/(_{3,}|\[[A-Za-z0-9 _\-/]{1,60}\])/g)
   if (parts.length === 1) return text
-  return parts.map((part, i) =>
-    /^_{3,}$/.test(part) ? (
-      <span
-        key={i}
-        className="inline-block border-b border-gray-500 min-w-[100px] mx-0.5 align-bottom"
-        style={{ marginBottom: "-1px" }}
-      >
-        {" "}
-      </span>
-    ) : (
-      <React.Fragment key={i}>{part}</React.Fragment>
-    )
-  )
+  return parts.map((part, i) => {
+    if (/^_{3,}$/.test(part)) {
+      return (
+        <span
+          key={i}
+          className="inline-block border-b border-gray-500 min-w-[100px] mx-0.5 align-bottom"
+          style={{ marginBottom: "-1px" }}
+        >
+          {" "}
+        </span>
+      )
+    }
+    if (/^\[[A-Za-z0-9 _\-/]{1,60}\]$/.test(part)) {
+      return (
+        <span
+          key={i}
+          className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-amber-900 font-medium text-[12px] mx-0.5"
+          title="Fill this in before signing"
+        >
+          {part}
+        </span>
+      )
+    }
+    return <React.Fragment key={i}>{part}</React.Fragment>
+  })
 }
 
 /** Field-label prefixes that appear before a colon at the start of a line */

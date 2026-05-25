@@ -182,6 +182,7 @@ export async function sendDocumentReadyEmail({
   documentContent,
   documentId,
   isGuest = false,
+  canSign = false,
   appUrl,
 }: {
   userEmail: string
@@ -190,6 +191,8 @@ export async function sendDocumentReadyEmail({
   documentContent: string
   documentId: string
   isGuest?: boolean
+  /** True when the buyer is on the Professional plan and can use e-signing. */
+  canSign?: boolean
   appUrl: string
 }): Promise<boolean> {
   if (!resend) {
@@ -198,12 +201,14 @@ export async function sendDocumentReadyEmail({
   }
 
   const dashboardUrl = `${appUrl}/dashboard/documents/${documentId}`
+  const signUrl = `${appUrl}/dashboard/documents/${documentId}#sign`
   const safeTitle = documentTitle.replace(/[^a-zA-Z0-9\s-]/g, "").trim()
 
-  // Generate PDF attachment
+  // Generate PDF attachment. Pro users get a clean PDF; everyone else gets
+  // the diagonal DRAFT watermark. The footer disclaimer is present on every PDF.
   let pdfBuffer: Buffer | null = null
   try {
-    pdfBuffer = await generatePDF(documentContent, documentTitle)
+    pdfBuffer = await generatePDF(documentContent, documentTitle, { isWatermarked: !canSign })
   } catch (err) {
     console.error("PDF generation failed for document email:", err)
     // Continue — send the email without attachment rather than failing entirely
@@ -236,9 +241,23 @@ export async function sendDocumentReadyEmail({
       <h1 style="margin:0 0 8px; font-size:22px; font-weight:700; color:#111827;">Your document is ready 🎉</h1>
       <p style="margin:0 0 24px; font-size:15px; color:#6b7280;">Hi ${userName}, your <strong>${documentTitle}</strong> has been generated and attached to this email as a PDF.</p>
       ${pdfBuffer ? `<p style="margin:0 0 24px; font-size:14px; color:#374151;">📎 <strong>${safeTitle}.pdf</strong> is attached below.</p>` : ""}
-      <a href="${dashboardUrl}" style="display:inline-block; background:#6366f1; color:#ffffff; font-weight:600; font-size:14px; padding:12px 24px; border-radius:8px; text-decoration:none; margin-bottom:24px;">
-        View &amp; Download in Dashboard →
-      </a>
+      <table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+        <tr>
+          <td style="padding-right:8px;">
+            <a href="${dashboardUrl}" style="display:inline-block; background:#6366f1; color:#ffffff; font-weight:600; font-size:14px; padding:12px 22px; border-radius:8px; text-decoration:none;">
+              View &amp; Download →
+            </a>
+          </td>
+          ${canSign ? `<td>
+            <a href="${signUrl}" style="display:inline-block; background:#111827; color:#ffffff; font-weight:600; font-size:14px; padding:12px 22px; border-radius:8px; text-decoration:none;">
+              Sign Your Document →
+            </a>
+          </td>` : ""}
+        </tr>
+      </table>
+      ${!canSign ? `<p style="margin:0 0 20px; padding:12px 16px; background:#fefce8; border-left:3px solid #ca8a04; border-radius:4px; font-size:13px; color:#374151;">
+        <strong>Want to e-sign and send for signature?</strong> Upgrade to the Professional plan ($9.99/mo) from your dashboard to unlock electronic signing.
+      </p>` : ""}
       ${guestNote}
       <hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
       <p style="margin:0; font-size:12px; color:#9ca3af;">
