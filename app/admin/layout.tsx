@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
-import { Scale, Users } from "lucide-react"
+import { Scale, Users, ShieldCheck } from "lucide-react"
 
 async function getIsAdmin(email: string): Promise<boolean> {
   try {
@@ -49,6 +49,13 @@ export default async function AdminLayout({
           >
             <Users className="h-4 w-4 text-muted-foreground" />
             Lawyers
+          </Link>
+          <Link
+            href="/admin/facts"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-foreground hover:bg-muted transition-colors"
+          >
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            Verified Facts
           </Link>
         </nav>
         <div className="px-5 py-4 border-t border-border">

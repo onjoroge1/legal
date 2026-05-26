@@ -57,6 +57,7 @@ model User {
   teamMemberships         TeamMember[]
   ownedTeams              Team[]           @relation("OwnedTeams")
   sentInvitations         TeamInvitation[] @relation("SentInvitations")
+  verifiedFactsReviewed   VerifiedFact[]   @relation("VerifiedFactReviewer")
 }
 
 model Account {
@@ -378,4 +379,40 @@ model LawyerListing {
   @@index([stateAbbr])
   @@index([featured])
   @@index([tier])
+}
+
+
+/// Externally-sourced legal facts (statutes, requirements, restrictions) that have
+/// been pulled from an authoritative source (OpenStates, Cornell LII, etc.) and
+/// gated by human admin review before being injected into the AI prompt context.
+///
+/// The full pipeline lives in lib/sources/* and the admin review UI is at /admin/facts.
+/// Approved facts are queried from lib/verified-facts.ts at document-generation time
+/// and appended to the prompt's stateContext (see buildStateContext in
+/// app/api/documents/[category]/[slug]/generate/route.ts).
+model VerifiedFact {
+  id                String   @id @default(cuid())
+  jurisdiction      String   // slug form: "california" | "us" | "uk"
+  jurisdictionType  String   // "state" | "country" | "city"
+  documentSlug      String   // catalog slug: "residential-lease-agreement"
+  factType          String   // "requirement" | "restriction" | "notice" | "citation"
+  content           String   // verbatim sentence as it will be injected into the prompt
+  citation          String?  // "Cal. Civil Code § 1954.603", if applicable
+  source            String   // "openstates" | "cornell-lii" | "manual"
+  sourceUrl         String   // canonical URL on the source site for verification
+  status            String   @default("pending") // "pending" | "approved" | "rejected" | "superseded"
+  rejectionReason   String?
+  reviewedById      String?
+  reviewedAt        DateTime?
+  /// sha256(jurisdiction + documentSlug + content) — used by the unique index so that
+  /// re-ingesting the same fact does not create a duplicate pending row.
+  contentHash       String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  reviewer          User?    @relation("VerifiedFactReviewer", fields: [reviewedById], references: [id])
+
+  @@unique([jurisdiction, documentSlug, contentHash])
+  @@index([jurisdiction, documentSlug, status])
+  @@index([status])
 }

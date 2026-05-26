@@ -27,7 +27,7 @@ import { parseInternationalPageSlug } from "@/lib/international-pages"
 import { parseCityPageSlug } from "@/lib/city-pages"
 import { useSession } from "next-auth/react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import DocumentPreview from "@/components/documents/document-preview"
+import DocumentPreview, { type VerifiedCitationMeta } from "@/components/documents/document-preview"
 import DocumentSigning from "@/components/documents/document-signing"
 import { toast } from "@/lib/safe-toast"
 import DocumentForm from "@/components/documents/document-form"
@@ -90,6 +90,9 @@ export default function GeneratePage() {
   // Citation-validator result returned by /api/.../generate. Drives the
   // "X verified · Y needs review" badge in the Draft Preview header.
   const [citationStats, setCitationStats] = useState<{ verified: number; flagged: number } | null>(null)
+  // Per-citation source attribution for the inline tooltip on each verified
+  // citation in the Draft Preview (Workstream D Phase D0).
+  const [verifiedCitations, setVerifiedCitations] = useState<VerifiedCitationMeta[]>([])
   // Draft restore banner
   const [draftRestore, setDraftRestore] = useState<{ content: string; savedAt: string } | null>(null)
   // Generation progress animation
@@ -463,6 +466,10 @@ export default function GeneratePage() {
         citations && typeof citations === "object"
           ? { verified: citations.verified ?? 0, flagged: citations.flagged ?? 0 }
           : null
+      )
+      // Per-citation source attribution (D0 — drives the inline green tooltip).
+      setVerifiedCitations(
+        citations && Array.isArray(citations.list) ? citations.list : []
       )
 
       // Show preview in the right panel immediately + switch mobile tab
@@ -942,7 +949,11 @@ export default function GeneratePage() {
                           boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
                         }}
                       >
-                        <DocumentPreview template={documentPreview} watermark={!hasSubscription} />
+                        <DocumentPreview
+                          template={documentPreview}
+                          watermark={!hasSubscription}
+                          verifiedCitations={verifiedCitations}
+                        />
                       </div>
                     </ScrollArea>
                     {/* Primary CTA: Download — DOCX is primary (editable, reinforces draft framing) */}

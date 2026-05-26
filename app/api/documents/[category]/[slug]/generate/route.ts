@@ -29,30 +29,99 @@ async function getTemplateByLegacySlug(legacySlug: string) {
 }
 
 /**
- * Build a state-law context block to inject into AI prompts.
- * Pulls from STATE_DOC_NOTES so the model gets the same accurate
- * requirements/restrictions shown on the public SEO landing pages.
+ * Per-fact summary returned alongside the prompt context so the citation
+ * validator can attribute each output citation back to its source for the
+ * per-citation tooltip in the Draft Preview.
  */
-function buildStateContext(stateSlug: string, docSlug: string, stateName: string): string {
+export interface VerifiedFactSummary {
+  /** "AB 1482" — the canonical citation string we look for in AI output. */
+  citation: string | null
+  /** "openstates" | "cornell-lii" | "manual" */
+  source: string
+  /** Canonical URL on the source site for verification. */
+  sourceUrl: string
+  /** ISO timestamp when an admin approved this fact. */
+  reviewedAt: string | null
+  /** The full content sentence (used for substring matching as a fallback). */
+  content: string
+}
+
+/**
+ * Build a state-law context block to inject into AI prompts.
+ *
+ * Combines:
+ *   1. The hand-curated `STATE_DOC_NOTES` for the (state, docSlug) combo
+ *      (used by the public SEO landing pages too).
+ *   2. Any externally-verified facts that an admin has approved in the
+ *      VerifiedFact table — these come from authoritative sources
+ *      (OpenStates etc.) and are gated by human review before going live.
+ *
+ * Returns both the prompt string AND the verified-facts metadata so the
+ * citation validator can attribute each match back to its source.
+ *
+ * Async because (2) hits the DB.
+ */
+async function buildStateContext(
+  stateSlug: string,
+  docSlug: string,
+  stateName: string
+): Promise<{ text: string; verifiedFacts: VerifiedFactSummary[] }> {
   const notes = STATE_DOC_NOTES[stateSlug]?.[docSlug]
-  if (!notes) return `Jurisdiction: ${stateName}. Apply ${stateName} law throughout.`
 
-  const lines: string[] = [
-    `JURISDICTION: ${stateName}`,
-    `Apply ${stateName}-specific law throughout. Cite real ${stateName} statutes.`,
-    ``,
-    `${stateName.toUpperCase()} LEGAL REQUIREMENTS FOR THIS DOCUMENT:`,
-    ...notes.requirements.map((r) => `• ${r}`),
-    ``,
-    `${stateName.toUpperCase()} RESTRICTIONS AND LIMITATIONS:`,
-    ...notes.restrictions.map((r) => `• ${r}`),
-  ]
+  // Pull approved externally-verified facts (Workstream D Phase D0).
+  // Use the same slug shape we ingest with ("california", "residential-lease-agreement").
+  const dbFacts = await prisma.verifiedFact.findMany({
+    where: { jurisdiction: stateSlug, documentSlug: docSlug, status: "approved" },
+    select: {
+      citation: true,
+      source: true,
+      sourceUrl: true,
+      reviewedAt: true,
+      content: true,
+    },
+  })
 
-  if (notes.noticeRequirements) {
+  const verifiedFacts: VerifiedFactSummary[] = dbFacts.map((f) => ({
+    citation: f.citation,
+    source: f.source,
+    sourceUrl: f.sourceUrl,
+    reviewedAt: f.reviewedAt?.toISOString() ?? null,
+    content: f.content,
+  }))
+
+  // Start with curated requirements/restrictions. If none, the prompt still
+  // gets a jurisdiction line so the model knows which state to target.
+  const lines: string[] = notes
+    ? [
+        `JURISDICTION: ${stateName}`,
+        `Apply ${stateName}-specific law throughout. Cite real ${stateName} statutes.`,
+        ``,
+        `${stateName.toUpperCase()} LEGAL REQUIREMENTS FOR THIS DOCUMENT:`,
+        ...notes.requirements.map((r) => `• ${r}`),
+        ``,
+        `${stateName.toUpperCase()} RESTRICTIONS AND LIMITATIONS:`,
+        ...notes.restrictions.map((r) => `• ${r}`),
+      ]
+    : [`Jurisdiction: ${stateName}. Apply ${stateName} law throughout.`]
+
+  if (notes?.noticeRequirements) {
     lines.push(``, `NOTICE REQUIREMENTS: ${notes.noticeRequirements}`)
   }
 
-  return lines.join("\n")
+  // Append the externally-verified block if we have any approved facts.
+  // The block is clearly labelled so the AI knows these come from external,
+  // human-approved sources (and the validator's substring check finds them).
+  if (verifiedFacts.length > 0) {
+    lines.push(
+      ``,
+      `EXTERNALLY-VERIFIED ${stateName.toUpperCase()} FACTS`,
+      `(Sourced from official legal databases, reviewed and approved by our team. ` +
+        `You MUST treat these as authoritative.):`,
+      ...verifiedFacts.map((f) => `• ${f.content}${f.citation ? ` (${f.citation})` : ""}`)
+    )
+  }
+
+  return { text: lines.join("\n"), verifiedFacts }
 }
 
 /**
@@ -142,12 +211,20 @@ export async function POST(
     // Generic doc-type instructions (structure, sections, intent)
     const documentSpecificInstructions = getDocumentPrompt(doc.slug, intent)
 
-    // State/jurisdiction-specific law context (requirements + restrictions from STATE_DOC_NOTES)
+    // State/jurisdiction-specific law context (requirements + restrictions from
+    // STATE_DOC_NOTES + any admin-approved VerifiedFact rows from Workstream D).
     const jurisdiction = stateName || "the applicable jurisdiction"
-    const stateContext = cityContextOverride
-      ?? (stateSlug
-        ? buildStateContext(stateSlug, doc.slug, stateName)
-        : `JURISDICTION: ${jurisdiction}\nApply ${jurisdiction} law and cite applicable statutes throughout.`)
+    let stateContext: string
+    let verifiedFacts: VerifiedFactSummary[] = []
+    if (cityContextOverride) {
+      stateContext = cityContextOverride
+    } else if (stateSlug) {
+      const built = await buildStateContext(stateSlug, doc.slug, stateName)
+      stateContext = built.text
+      verifiedFacts = built.verifiedFacts
+    } else {
+      stateContext = `JURISDICTION: ${jurisdiction}\nApply ${jurisdiction} law and cite applicable statutes throughout.`
+    }
 
     // ── Template-based generation (with AI enhancement) ─────────────────────
     if (template && typeof template === "object" && "content" in template && template.content) {
@@ -221,10 +298,12 @@ ANTI-HALLUCINATION RULES (CRITICAL):
 Output ONLY the enhanced document. No preamble, no commentary.`,
       })
 
-      // Post-process: validate every citation against the curated jurisdiction data.
-      // Any unverified citation gets swapped for a [NEEDS_LEGAL_REVIEW: ...] marker
-      // so users see exactly what we couldn't ground.
-      const validated = validateAndCleanCitations(enhanced.text, stateContext)
+      // Post-process: validate every citation against the curated jurisdiction
+      // data + any admin-approved external verified facts (Workstream D).
+      // Unverified citations get swapped for [NEEDS_LEGAL_REVIEW: ...] markers
+      // so users see exactly what we couldn't ground. Per-citation source
+      // metadata is returned so the Draft Preview can render attribution tooltips.
+      const validated = validateAndCleanCitations(enhanced.text, stateContext, verifiedFacts)
       if (validated.flaggedCount > 0) {
         console.warn(
           `[citation-validator] ${doc.title} (${jurisdiction}): ` +
@@ -234,7 +313,11 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
       }
       return Response.json({
         document: validated.cleaned,
-        citations: { verified: validated.verifiedCount, flagged: validated.flaggedCount },
+        citations: {
+          verified: validated.verifiedCount,
+          flagged: validated.flaggedCount,
+          list: validated.verifiedCitations,
+        },
       })
     }
 
@@ -284,8 +367,9 @@ ANTI-HALLUCINATION RULES (CRITICAL):
 Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     })
 
-    // Post-process: validate every citation against the curated jurisdiction data.
-    const validated = validateAndCleanCitations(result.text, stateContext)
+    // Post-process: validate every citation against the curated jurisdiction
+    // data + any admin-approved external verified facts (Workstream D).
+    const validated = validateAndCleanCitations(result.text, stateContext, verifiedFacts)
     if (validated.flaggedCount > 0) {
       console.warn(
         `[citation-validator] ${doc.title} (${jurisdiction}): ` +
@@ -295,7 +379,11 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     }
     return Response.json({
       document: validated.cleaned,
-      citations: { verified: validated.verifiedCount, flagged: validated.flaggedCount },
+      citations: {
+        verified: validated.verifiedCount,
+        flagged: validated.flaggedCount,
+        list: validated.verifiedCitations,
+      },
     })
   } catch (error) {
     console.error("Document generation error:", error)

@@ -114,51 +114,131 @@ function extractCitations(text: string): string[] {
   return [...found]
 }
 
+/**
+ * Per-citation attribution returned to the frontend so the Draft Preview can
+ * render a green underline + tooltip ("✓ Verified against OpenStates on Nov
+ * 25, 2026") on each citation that came from an admin-approved external
+ * source. Citations that only match the curated state-pages.ts data are also
+ * "verified" in the sense that they didn't get flagged — but they have no
+ * external source URL, so the tooltip is simpler ("✓ Matched our curated
+ * state requirements").
+ */
+export interface VerifiedCitationMeta {
+  /** The verbatim citation string that appeared in the AI output. */
+  citation: string
+  /** "openstates" | "cornell-lii" | "manual" | "curated" */
+  source: string
+  /** Canonical URL on the source site (omitted for curated-only matches). */
+  sourceUrl?: string
+  /** ISO timestamp when this fact was admin-approved (omitted for curated). */
+  reviewedAt?: string
+}
+
+/**
+ * Minimal shape of an externally-verified fact, as returned by
+ * `buildStateContext` in the generate route. Imported there from this module
+ * to keep the types consistent.
+ */
+export interface VerifiedFactInput {
+  citation: string | null
+  source: string
+  sourceUrl: string
+  reviewedAt: string | null
+  content: string
+}
+
 export interface CitationValidationResult {
   /** Output text with every unverified citation swapped for a review marker. */
   cleaned: string
-  /** Count of citations that appeared in the curated verified set. */
+  /** Count of citations that appeared in either the curated or verified set. */
   verifiedCount: number
   /** Count of citations that did NOT appear, and were therefore replaced. */
   flaggedCount: number
   /** Original-citation strings that got flagged — useful for triage logging. */
   flagged: string[]
+  /** Per-citation attribution for the Draft Preview tooltip (Phase D0). */
+  verifiedCitations: VerifiedCitationMeta[]
 }
 
 /**
- * Validate every citation in `text` against the curated `stateContext` data.
+ * Validate every citation in `text` against the curated `stateContext` data
+ * AND any admin-approved external `verifiedFacts`.
  *
- * Any citation in `text` that does NOT also appear (as a substring, after
- * whitespace+case normalization) in `stateContext` is replaced in the output
- * with a `[NEEDS_LEGAL_REVIEW: <original>]` marker.
- *
- * @param text - the AI's generated document body
- * @param stateContext - the curated jurisdiction string injected into the prompt
+ * Match priority:
+ *   1. If a citation in the output matches an externally-verified fact
+ *      (by `citation` string or by appearing in the `content` substring),
+ *      attribute it to that source with the source URL + verified-at date.
+ *   2. Else if it appears in the curated `stateContext` haystack, attribute
+ *      it as "curated".
+ *   3. Else, replace with `[NEEDS_LEGAL_REVIEW: <original>]`.
  */
 export function validateAndCleanCitations(
   text: string,
-  stateContext: string
+  stateContext: string,
+  verifiedFacts: VerifiedFactInput[] = []
 ): CitationValidationResult {
   if (!text) {
-    return { cleaned: "", verifiedCount: 0, flaggedCount: 0, flagged: [] }
+    return {
+      cleaned: "",
+      verifiedCount: 0,
+      flaggedCount: 0,
+      flagged: [],
+      verifiedCitations: [],
+    }
   }
 
-  const verifiedHaystack = normalize(stateContext || "")
+  const curatedHaystack = normalize(stateContext || "")
   const outputCitations = extractCitations(text)
 
-  const verifiedSet = new Set<string>()
+  // Pre-normalize verified facts for substring matching against output citations.
+  const factEntries = verifiedFacts.map((f) => ({
+    citation: f.citation,
+    citationNorm: f.citation ? normalize(f.citation) : null,
+    contentNorm: normalize(f.content),
+    source: f.source,
+    sourceUrl: f.sourceUrl,
+    reviewedAt: f.reviewedAt,
+  }))
+
+  const verifiedCitations: VerifiedCitationMeta[] = []
   const flagged: string[] = []
+  const verifiedSet = new Set<string>()
 
   for (const citation of outputCitations) {
     const norm = normalize(citation)
-    // Match is generous — we accept if the verified context contains the
-    // citation as a substring. This handles "§ 1954.603" being a substring
-    // of "Civil Code § 1954.603" in the context.
-    if (norm.length >= 4 && verifiedHaystack.includes(norm)) {
-      verifiedSet.add(citation)
-    } else {
-      flagged.push(citation)
+    if (norm.length < 4) {
+      // Skip too-short matches to avoid false attributions
+      continue
     }
+
+    // (1) External-source match wins — most authoritative attribution.
+    const factMatch = factEntries.find(
+      (f) =>
+        (f.citationNorm && f.citationNorm === norm) ||
+        (f.citationNorm && norm.includes(f.citationNorm)) ||
+        f.contentNorm.includes(norm)
+    )
+
+    if (factMatch) {
+      verifiedSet.add(citation)
+      verifiedCitations.push({
+        citation,
+        source: factMatch.source,
+        sourceUrl: factMatch.sourceUrl,
+        reviewedAt: factMatch.reviewedAt ?? undefined,
+      })
+      continue
+    }
+
+    // (2) Curated match — appears in the hand-curated state-pages.ts data.
+    if (curatedHaystack.includes(norm)) {
+      verifiedSet.add(citation)
+      verifiedCitations.push({ citation, source: "curated" })
+      continue
+    }
+
+    // (3) Otherwise it's a hallucination.
+    flagged.push(citation)
   }
 
   // Replace each flagged citation in the output with the review marker.
@@ -177,5 +257,6 @@ export function validateAndCleanCitations(
     verifiedCount: verifiedSet.size,
     flaggedCount: flagged.length,
     flagged,
+    verifiedCitations,
   }
 }

@@ -2,9 +2,26 @@
 
 import React from "react"
 
+/**
+ * Per-citation attribution from the validator (lib/citation-validator.ts).
+ * When provided, the preview wraps each matching citation in the document
+ * body with a green underline and a tooltip explaining where it was verified.
+ */
+export interface VerifiedCitationMeta {
+  citation: string
+  source: string
+  sourceUrl?: string
+  reviewedAt?: string
+}
+
 interface DocumentPreviewProps {
   template: string
   watermark?: boolean
+  /**
+   * Verified citations to highlight inline with a green underline + tooltip.
+   * Comes from the API response (`citations.list`) on /api/.../generate.
+   */
+  verifiedCitations?: VerifiedCitationMeta[]
 }
 
 /* ─── Watermark ──────────────────────────────────────────────────────────── */
@@ -34,15 +51,76 @@ function isAllUppercase(s: string): boolean {
 }
 
 /**
- * Replace raw ___+ sequences with styled underline spans, AND highlight
- * [BRACKETED_PLACEHOLDER] tokens in amber so users actively notice variables
- * the AI left for them to fill. Drives the "AI assembles a draft, you finish it"
- * positioning.
+ * Render-helper context that gets built once per <DocumentPreview /> render
+ * and passed into `renderWithBlanks` for every line. Encapsulates the
+ * verified-citation lookup so we don't rebuild the regex on every line.
  */
-function renderWithBlanks(text: string): React.ReactNode {
-  // Split on either a run of underscores OR a bracketed placeholder like
-  // [PARTY_A_ADDRESS], [Date of Execution], etc. (1-60 chars inside, no nesting)
-  const parts = text.split(/(_{3,}|\[[A-Za-z0-9 _\-/]{1,60}\])/g)
+interface RenderContext {
+  /** Regex matching ANY verified citation in the body text. Anchored to the
+   *  union of all `citation` strings; null when no verified citations. */
+  verifiedRe: RegExp | null
+  /** Lookup: normalized citation -> its attribution metadata for tooltips. */
+  verifiedLookup: Map<string, VerifiedCitationMeta>
+}
+
+const EMPTY_RENDER_CONTEXT: RenderContext = { verifiedRe: null, verifiedLookup: new Map() }
+
+/** Build the per-render verified-citation context. */
+function buildRenderContext(verifiedCitations?: VerifiedCitationMeta[]): RenderContext {
+  if (!verifiedCitations || verifiedCitations.length === 0) return EMPTY_RENDER_CONTEXT
+  const lookup = new Map<string, VerifiedCitationMeta>()
+  const escapedParts: string[] = []
+  for (const v of verifiedCitations) {
+    if (!v.citation) continue
+    const key = v.citation.trim().toLowerCase()
+    if (!key || lookup.has(key)) continue
+    lookup.set(key, v)
+    escapedParts.push(v.citation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+  }
+  if (escapedParts.length === 0) return EMPTY_RENDER_CONTEXT
+  // Longest first so multi-word citations win over substrings.
+  escapedParts.sort((a, b) => b.length - a.length)
+  return {
+    verifiedRe: new RegExp(`(${escapedParts.join("|")})`, "g"),
+    verifiedLookup: lookup,
+  }
+}
+
+/** Format the tooltip string shown on hover over a verified citation. */
+function verifiedTooltip(meta: VerifiedCitationMeta): string {
+  if (meta.source === "curated") {
+    return "✓ Matched our curated state-law data"
+  }
+  const sourceLabel =
+    meta.source === "openstates"
+      ? "OpenStates"
+      : meta.source === "cornell-lii"
+        ? "Cornell LII"
+        : meta.source
+  const date = meta.reviewedAt
+    ? new Date(meta.reviewedAt).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null
+  return `✓ Verified against ${sourceLabel}${date ? ` on ${date}` : ""}`
+}
+
+/**
+ * Replace raw ___+ sequences with styled underline spans, highlight
+ * [BRACKETED_PLACEHOLDER] tokens in amber, AND when verified-citation
+ * metadata is provided, wrap each matching citation in a green-underlined
+ * tooltip span (Workstream D Phase D0 — per-citation source attribution).
+ */
+function renderWithBlanks(text: string, ctx: RenderContext = EMPTY_RENDER_CONTEXT): React.ReactNode {
+  // Build the split pattern dynamically so it includes verified citations
+  // (if any) alongside underscores and bracketed placeholders.
+  const verifiedSource = ctx.verifiedRe?.source ?? null
+  const splitRe = verifiedSource
+    ? new RegExp(`(_{3,}|\\[[A-Za-z0-9 _\\-/]{1,60}\\]|${verifiedSource.slice(1, -1)})`, "g")
+    : /(_{3,}|\[[A-Za-z0-9 _\-/]{1,60}\])/g
+  const parts = text.split(splitRe)
   if (parts.length === 1) return text
   return parts.map((part, i) => {
     if (/^_{3,}$/.test(part)) {
@@ -52,7 +130,7 @@ function renderWithBlanks(text: string): React.ReactNode {
           className="inline-block border-b border-gray-500 min-w-[100px] mx-0.5 align-bottom"
           style={{ marginBottom: "-1px" }}
         >
-          {" "}
+          {" "}
         </span>
       )
     }
@@ -62,6 +140,19 @@ function renderWithBlanks(text: string): React.ReactNode {
           key={i}
           className="inline-block rounded bg-amber-100 px-1.5 py-0.5 text-amber-900 font-medium text-[12px] mx-0.5"
           title="Fill this in before signing"
+        >
+          {part}
+        </span>
+      )
+    }
+    // Verified citation -> wrap with green underline + tooltip
+    const meta = ctx.verifiedLookup.get(part.trim().toLowerCase())
+    if (meta) {
+      return (
+        <span
+          key={i}
+          className="border-b-2 border-green-400/60 text-green-900/90 cursor-help"
+          title={verifiedTooltip(meta)}
         >
           {part}
         </span>
@@ -77,11 +168,19 @@ const FIELD_LABEL_RE =
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
 
-export default function DocumentPreview({ template, watermark = false }: DocumentPreviewProps) {
+export default function DocumentPreview({
+  template,
+  watermark = false,
+  verifiedCitations,
+}: DocumentPreviewProps) {
   const elements: React.ReactElement[] = []
   const lines = template.split("\n")
   let seenTitle = false
   let currentParagraph: string[] = []
+
+  // Build the verified-citation lookup once per render (cheap; just a Map+regex).
+  // Every renderWithBlanks call below receives this context.
+  const ctx = buildRenderContext(verifiedCitations)
 
   /* Flush accumulated paragraph lines into a <p> element */
   const flushParagraph = () => {
@@ -95,7 +194,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
         className="mb-3 text-[13px] leading-[1.9] text-gray-800"
         style={{ textAlign: "justify" }}
       >
-        {renderWithBlanks(text)}
+        {renderWithBlanks(text, ctx)}
       </p>
     )
   }
@@ -141,7 +240,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
           </span>
           <div className="flex-1 border-b border-gray-400" style={{ minWidth: "140px" }}>
             {value && (
-              <span className="text-[12px] text-gray-800 px-1">{renderWithBlanks(value)}</span>
+              <span className="text-[12px] text-gray-800 px-1">{renderWithBlanks(value, ctx)}</span>
             )}
           </div>
         </div>
@@ -160,7 +259,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
           style={{ textAlign: "justify" }}
         >
           <strong className="not-italic font-bold">WHEREAS</strong>
-          {renderWithBlanks(body)}
+          {renderWithBlanks(body, ctx)}
         </p>
       )
       return
@@ -174,7 +273,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
           key={`transition-${idx}`}
           className="mt-5 mb-3 text-[13px] leading-[1.9] text-gray-900 font-semibold"
         >
-          {renderWithBlanks(trimmed)}
+          {renderWithBlanks(trimmed, ctx)}
         </p>
       )
       return
@@ -199,7 +298,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
           {rest && (
             <>
               {" "}
-              {isSubHeader ? rest : renderWithBlanks(rest)}
+              {isSubHeader ? rest : renderWithBlanks(rest, ctx)}
             </>
           )}
         </p>
@@ -234,7 +333,7 @@ export default function DocumentPreview({ template, watermark = false }: Documen
               className="mt-8 mb-3 text-[13px] leading-[1.9] text-gray-800"
               style={{ textAlign: "justify" }}
             >
-              <strong>{num}</strong> {renderWithBlanks(rest)}
+              <strong>{num}</strong> {renderWithBlanks(rest, ctx)}
             </p>
           )
         }
