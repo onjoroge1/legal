@@ -1,12 +1,51 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Shield, Lock, Globe, Users, Lightbulb, Heart } from "lucide-react"
+import { Shield, Lock, Globe, Users, Lightbulb, Heart, Linkedin } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "About LegalLawDocs.com — AI-Powered Legal Documents",
+  title: "About LegalLawDocs.com — AI-Powered Legal Document Drafting",
   description:
-    "Learn how LegalLawDocs.com was built to make legal protection accessible to everyone — without the expensive attorney fees. Our mission, team, and values.",
+    "Learn how LegalLawDocs.com was built to make legal document drafting accessible without expensive attorney fees. Meet founder Obadiah Kimani and our mission.",
+}
+
+/**
+ * Structured data — adds verifiable Organization + founder Person entities
+ * for Google's E-E-A-T signals on this YMYL page. Renders inline below.
+ */
+const aboutPageJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.legallawdocs.com/#organization",
+      name: "LegalLawDocs.com",
+      url: "https://www.legallawdocs.com",
+      description:
+        "AI-powered legal document drafting platform. Not a law firm — drafts should be reviewed by a qualified attorney before signing.",
+      founder: {
+        "@id": "https://www.legallawdocs.com/about#founder",
+      },
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.legallawdocs.com/about#founder",
+      name: "Obadiah Kimani",
+      jobTitle: "Founder",
+      worksFor: {
+        "@id": "https://www.legallawdocs.com/#organization",
+      },
+      sameAs: ["https://www.linkedin.com/in/obadiah-njoroge-93103246/"],
+    },
+    {
+      "@type": "AboutPage",
+      url: "https://www.legallawdocs.com/about",
+      isPartOf: {
+        "@id": "https://www.legallawdocs.com/#organization",
+      },
+    },
+  ],
 }
 
 const trustSignals = [
@@ -51,6 +90,11 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen">
+      {/* Structured data: Organization + founder Person — improves YMYL E-E-A-T signals */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
+      />
       <Header />
       <main>
         {/* Hero */}
@@ -159,21 +203,77 @@ export default function AboutPage() {
             <div className="mt-6 space-y-4 leading-relaxed text-muted-foreground">
               <p>
                 LegalLawDocs.com was founded with one clear belief: that access to basic legal
-                protection is a right, not a privilege. The founding team had seen firsthand how
+                document drafting is a right, not a privilege. The founder had seen firsthand how
                 costly it was for small business owners, freelancers, landlords, and families to
-                get even the most routine documents drafted.
+                get even the most routine documents put together.
               </p>
               <p>
                 A freelance designer who signed a client contract without an NDA lost a six-figure
                 concept to a larger company. A first-time landlord who used a generic template
-                found it unenforceable in their state. A family that put off estate planning lost
+                found it unenforceable in their state. A family that put off estate planning paid
                 thousands in probate fees that could have been avoided with a simple will.
               </p>
               <p>
                 We built LegalLawDocs.com to be the answer to those situations — affordable,
-                fast, state-specific, and backed by real legal expertise. We're proud to have
-                helped thousands of individuals and businesses protect what matters most.
+                fast, and state-aware. We&apos;re a software tool, not a law firm, and we&apos;ll
+                always recommend a licensed attorney review anything important before you sign.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Meet the founder — adds real, verifiable E-E-A-T signal for YMYL */}
+        <section className="border-t border-border/40 bg-card/30">
+          <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-20">
+            <div className="mx-auto max-w-3xl">
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                  Meet the founder
+                </p>
+                <h2 className="mt-3 font-serif text-3xl font-bold text-foreground">
+                  Built and run by Obadiah Kimani
+                </h2>
+              </div>
+
+              <div className="mt-10 rounded-2xl border border-border/50 bg-card/60 p-6 sm:p-10">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                  {/* Avatar placeholder — initials in a circle (swap for a real headshot when available) */}
+                  <div className="mx-auto sm:mx-0 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-2xl font-bold text-primary">
+                    OK
+                  </div>
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="font-serif text-2xl font-bold text-foreground">
+                      Obadiah Kimani
+                    </h3>
+                    <p className="mt-1 text-sm font-medium text-primary">
+                      Founder, LegalLawDocs.com
+                    </p>
+                    <p className="mt-4 leading-relaxed text-muted-foreground">
+                      Obadiah built LegalLawDocs to make professional document drafting accessible
+                      to people who can&apos;t justify $500&ndash;$2,000 in attorney fees just to get
+                      a first draft on paper. He runs the product, engineering, and customer side
+                      personally &mdash; every email goes to a human.
+                    </p>
+                    <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+                      <Link
+                        href="https://www.linkedin.com/in/obadiah-njoroge-93103246/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border border-border/60 bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        <Linkedin className="h-4 w-4 text-[#0a66c2]" />
+                        Connect on LinkedIn
+                      </Link>
+                      <Link
+                        href="/contact"
+                        className="inline-flex items-center gap-2 rounded-lg border border-border/60 bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        Get in touch
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
