@@ -6,6 +6,7 @@ import { getDocumentPrompt } from "@/lib/document-prompts"
 import { parseStatePageSlug, STATE_DOC_NOTES } from "@/lib/state-pages"
 import { parseInternationalPageSlug } from "@/lib/international-pages"
 import { parseCityPageSlug, CITY_DOC_NOTES, CITY_DOC_SLUG } from "@/lib/city-pages"
+import { validateAndCleanCitations } from "@/lib/citation-validator"
 
 export const maxDuration = 60
 
@@ -210,10 +211,31 @@ Instructions:
 7. Include a complete signature block (use bracketed placeholders for missing names/dates/titles)
 8. Follow these document-specific guidelines: ${documentSpecificInstructions}
 
+ANTI-HALLUCINATION RULES (CRITICAL):
+1. You may ONLY cite statutes, code sections, dollar amounts, percentages, dates, and agency names that appear VERBATIM in the JURISDICTION REQUIREMENTS or RESTRICTIONS listed above. Do not invent, guess, paraphrase, or update any citation.
+2. If a clause genuinely needs a citation that is NOT in the curated list above, write: "[NEEDS_LEGAL_REVIEW: <one-line description of what citation should go here>]" — for example: "[NEEDS_LEGAL_REVIEW: applicable security-deposit cap in this state]".
+3. Do NOT use the phrase "as required by applicable law" or "in accordance with state law" as a way to skirt a citation. Either cite from the list, or mark it for review.
+4. Do NOT invent statute section numbers (e.g., "§ 1234"), act names, regulation numbers, case citations, or agency names. If unsure, use [NEEDS_LEGAL_REVIEW: ...].
+5. Numeric values (wage minimums, deposit caps, notice periods) MUST come from the list above. If not in the list, use [NEEDS_LEGAL_REVIEW: <description>] — never guess.
+
 Output ONLY the enhanced document. No preamble, no commentary.`,
       })
 
-      return Response.json({ document: enhanced.text })
+      // Post-process: validate every citation against the curated jurisdiction data.
+      // Any unverified citation gets swapped for a [NEEDS_LEGAL_REVIEW: ...] marker
+      // so users see exactly what we couldn't ground.
+      const validated = validateAndCleanCitations(enhanced.text, stateContext)
+      if (validated.flaggedCount > 0) {
+        console.warn(
+          `[citation-validator] ${doc.title} (${jurisdiction}): ` +
+            `flagged ${validated.flaggedCount} unverified citation(s):`,
+          validated.flagged
+        )
+      }
+      return Response.json({
+        document: validated.cleaned,
+        citations: { verified: validated.verifiedCount, flagged: validated.flaggedCount },
+      })
     }
 
     // ── Pure AI generation (no template in DB yet) ──────────────────────────
@@ -252,10 +274,29 @@ Document Requirements:
 - NEVER invent party addresses, states of incorporation, entity types, or any other factual detail not present in the form data.
 - Follow these document-specific guidelines: ${documentSpecificInstructions}
 
+ANTI-HALLUCINATION RULES (CRITICAL):
+1. You may ONLY cite statutes, code sections, dollar amounts, percentages, dates, and agency names that appear VERBATIM in the JURISDICTION REQUIREMENTS or RESTRICTIONS listed above. Do not invent, guess, paraphrase, or update any citation.
+2. If a clause genuinely needs a citation that is NOT in the curated list above, write: "[NEEDS_LEGAL_REVIEW: <one-line description of what citation should go here>]" — for example: "[NEEDS_LEGAL_REVIEW: applicable security-deposit cap in this state]".
+3. Do NOT use the phrase "as required by applicable law" or "in accordance with state law" as a way to skirt a citation. Either cite from the list, or mark it for review.
+4. Do NOT invent statute section numbers (e.g., "§ 1234"), act names, regulation numbers, case citations, or agency names. If unsure, use [NEEDS_LEGAL_REVIEW: ...].
+5. Numeric values (wage minimums, deposit caps, notice periods) MUST come from the list above. If not in the list, use [NEEDS_LEGAL_REVIEW: <description>] — never guess.
+
 Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     })
 
-    return Response.json({ document: result.text })
+    // Post-process: validate every citation against the curated jurisdiction data.
+    const validated = validateAndCleanCitations(result.text, stateContext)
+    if (validated.flaggedCount > 0) {
+      console.warn(
+        `[citation-validator] ${doc.title} (${jurisdiction}): ` +
+          `flagged ${validated.flaggedCount} unverified citation(s):`,
+        validated.flagged
+      )
+    }
+    return Response.json({
+      document: validated.cleaned,
+      citations: { verified: validated.verifiedCount, flagged: validated.flaggedCount },
+    })
   } catch (error) {
     console.error("Document generation error:", error)
     return Response.json({ error: "Internal server error" }, { status: 500 })

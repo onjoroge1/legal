@@ -87,6 +87,9 @@ export default function GeneratePage() {
   const [generationAttempts, setGenerationAttempts] = useState(0)
   const [generationFailed, setGenerationFailed] = useState(false)
   const [understoodDisclaimer, setUnderstoodDisclaimer] = useState(false)
+  // Citation-validator result returned by /api/.../generate. Drives the
+  // "X verified · Y needs review" badge in the Draft Preview header.
+  const [citationStats, setCitationStats] = useState<{ verified: number; flagged: number } | null>(null)
   // Draft restore banner
   const [draftRestore, setDraftRestore] = useState<{ content: string; savedAt: string } | null>(null)
   // Generation progress animation
@@ -448,11 +451,19 @@ export default function GeneratePage() {
         return
       }
 
-      const { document: content } = await genRes.json()
+      const { document: content, citations } = await genRes.json()
 
       // Success — reset retry counter
       setGenerationAttempts(0)
       setGenerationFailed(false)
+
+      // Capture citation-validator stats so the badge can show "X verified · Y needs review".
+      // Older API responses without a `citations` field just clear the badge.
+      setCitationStats(
+        citations && typeof citations === "object"
+          ? { verified: citations.verified ?? 0, flagged: citations.flagged ?? 0 }
+          : null
+      )
 
       // Show preview in the right panel immediately + switch mobile tab
       setDocumentPreview(content)
@@ -778,21 +789,46 @@ export default function GeneratePage() {
                     <FileText className="h-5 w-5 text-primary" />
                     <h3 className="text-lg font-semibold">Draft Preview</h3>
                   </div>
-                  {isGenerating ? (
-                    <Badge variant="outline" className="gap-1.5 border-primary/30 bg-primary/5 text-primary">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Generating…
-                    </Badge>
-                  ) : documentPreview ? (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      <CheckCircle2 className="h-3 w-3 mr-1" />
-                      Ready
-                    </Badge>
-                  ) : isFormValid ? (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      Ready to Generate
-                    </Badge>
-                  ) : null}
+                  <div className="flex items-center gap-2 flex-wrap justify-end">
+                    {isGenerating ? (
+                      <Badge variant="outline" className="gap-1.5 border-primary/30 bg-primary/5 text-primary">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Generating…
+                      </Badge>
+                    ) : documentPreview ? (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        Ready
+                      </Badge>
+                    ) : isFormValid ? (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        Ready to Generate
+                      </Badge>
+                    ) : null}
+                    {/* Citation-validator result. Green when nothing needs review,
+                        amber when the AI tried to cite something we couldn't verify
+                        against the curated state/country data and we swapped it
+                        for a [NEEDS_LEGAL_REVIEW: ...] marker. */}
+                    {citationStats && documentPreview && (
+                      <Badge
+                        variant="outline"
+                        className={`gap-1.5 ${
+                          citationStats.flagged === 0
+                            ? "border-green-200 bg-green-50 text-green-700"
+                            : "border-amber-300 bg-amber-50 text-amber-800"
+                        }`}
+                        title={
+                          citationStats.flagged === 0
+                            ? "Every legal citation in this draft matched our curated state/country data."
+                            : `${citationStats.flagged} citation${citationStats.flagged === 1 ? "" : "s"} couldn't be verified against our curated data and ${citationStats.flagged === 1 ? "was" : "were"} replaced with a [NEEDS_LEGAL_REVIEW] marker. Have your attorney verify these before signing.`
+                        }
+                      >
+                        <ShieldCheck className="h-3 w-3" />
+                        {citationStats.verified} verified
+                        {citationStats.flagged > 0 && ` · ${citationStats.flagged} needs review`}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
 
                 {isGenerating ? (
