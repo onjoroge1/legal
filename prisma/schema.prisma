@@ -416,3 +416,36 @@ model VerifiedFact {
   @@index([jurisdiction, documentSlug, status])
   @@index([status])
 }
+
+/// Cron-driven ingest schedule for the verified-facts pipeline.
+///
+/// Each row represents one (jurisdiction × documentSlug × source) combo the
+/// cron should periodically re-ingest. The cursor `lastIngestedAt` lets us
+/// pick the N oldest-processed entries on each run, so a small daily quota
+/// (e.g. 10 calls/day on OpenStates free tier) rotates through the full
+/// registry naturally over multiple days.
+///
+/// Seeded from lib/sources/registry.ts via either the admin UI button or
+/// the cron auto-seed-on-empty path. See app/api/cron/ingest-facts/route.ts.
+model IngestSchedule {
+  id               String   @id @default(cuid())
+  jurisdiction     String   // "california"
+  jurisdictionType String   // "state" | "country" | "city"
+  documentSlug     String   // catalog slug
+  source           String   // "openstates" | "cornell-lii" | "manual"
+  /// JSON config for the source — e.g. { "subjects": ["Housing","Landlord and Tenant"] }
+  sourceConfig     Json
+  /// Cursor used by the cron job: rows are picked oldest-first.
+  /// NULL = never ingested → highest priority.
+  lastIngestedAt   DateTime?
+  /// Last run summary for ops debugging:
+  /// { "fetched": N, "newlyPending": M, "alreadyKnown": K, "error"?: string }
+  lastResult       Json?
+  /// Toggle without deleting if a (state, doc) combo proves consistently empty.
+  enabled          Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([jurisdiction, documentSlug, source])
+  @@index([enabled, lastIngestedAt])
+}

@@ -66,6 +66,7 @@ export default function FactsReviewPage() {
   const [data, setData] = useState<ListResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [isIngesting, setIsIngesting] = useState(false)
+  const [isSeeding, setIsSeeding] = useState(false)
   const [actingOnId, setActingOnId] = useState<string | null>(null)
   const [rejectTarget, setRejectTarget] = useState<VerifiedFact | null>(null)
   const [rejectReason, setRejectReason] = useState("")
@@ -88,6 +89,32 @@ export default function FactsReviewPage() {
   useEffect(() => {
     fetchFacts()
   }, [fetchFacts])
+
+  /**
+   * Populate the IngestSchedule table from the static registry
+   * (top 5 docs × 50 states = 250 entries). Idempotent: existing rows are
+   * updated, cursors preserved. Only needed once after deploy — the cron
+   * job auto-seeds on its first run anyway.
+   */
+  const seedSchedule = useCallback(async () => {
+    setIsSeeding(true)
+    try {
+      const res = await fetch("/api/admin/schedule/seed", { method: "POST" })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err?.error || `HTTP ${res.status}`)
+      }
+      const result = await res.json()
+      toast.success(
+        `Schedule seeded: ${result.inserted} new entries, ${result.updated} updated`
+      )
+    } catch (err) {
+      console.error(err)
+      toast.error(err instanceof Error ? err.message : "Seed failed")
+    } finally {
+      setIsSeeding(false)
+    }
+  }, [])
 
   const runIngest = useCallback(async () => {
     setIsIngesting(true)
@@ -193,19 +220,34 @@ export default function FactsReviewPage() {
             cites a fact that hasn&apos;t been approved here.
           </p>
         </div>
-        <Button onClick={runIngest} disabled={isIngesting}>
-          {isIngesting ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
-              Ingesting…
-            </>
-          ) : (
-            <>
-              <RefreshCw className="h-4 w-4 mr-1.5" />
-              Run California Lease Ingest
-            </>
-          )}
-        </Button>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={seedSchedule} disabled={isSeeding} variant="outline">
+            {isSeeding ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                Seeding…
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1.5" />
+                Seed Schedule (250 entries)
+              </>
+            )}
+          </Button>
+          <Button onClick={runIngest} disabled={isIngesting}>
+            {isIngesting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                Ingesting…
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1.5" />
+                Run CA Lease Ingest
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Tabs */}

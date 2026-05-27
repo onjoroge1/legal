@@ -22,9 +22,6 @@ const OPENSTATES_API_BASE = "https://v3.openstates.org"
 /** Politely pause between API calls to respect OpenStates rate limits. */
 const REQUEST_GAP_MS = 250
 
-/** Subjects on OpenStates that map to residential-lease law. */
-const CA_LEASE_SUBJECTS = ["Housing", "Landlord and Tenant"] as const
-
 /** Shape an ingest pipeline understands. */
 export interface RawFact {
   jurisdiction: string
@@ -114,11 +111,20 @@ function getEnactedDate(bill: OpenStatesBill): string | null {
 }
 
 /**
- * Fetch California-enacted bills under landlord-tenant / housing subjects from
- * the last ~2 years. We deliberately constrain to "passed" classifications so
- * the returned facts represent currently-enacted law, not pending proposals.
+ * Generic OpenStates fetcher. Takes a 2-letter jurisdiction code (e.g. "ca",
+ * "ny") and a list of controlled-vocabulary subjects, returns the raw bill
+ * payloads. Used by the cron pipeline to ingest any (state × doc-type) combo.
+ *
+ * Each subject in the list = one API call. Results are concatenated; the
+ * caller dedupes by bill identifier.
+ *
+ * Returns [] (and warns) on missing API key or HTTP errors — never throws,
+ * so a failure on one entry doesn't kill the whole batch.
  */
-async function fetchCaliforniaLeaseBills(): Promise<OpenStatesBill[]> {
+async function fetchEnactedBillsFromOpenStates(opts: {
+  openstatesCode: string
+  subjects: string[]
+}): Promise<OpenStatesBill[]> {
   const apiKey = process.env.OPENSTATES_API_KEY
   if (!apiKey) {
     console.warn("[openstates] OPENSTATES_API_KEY not set — returning empty result.")
@@ -127,10 +133,10 @@ async function fetchCaliforniaLeaseBills(): Promise<OpenStatesBill[]> {
 
   const collected: OpenStatesBill[] = []
 
-  for (const subject of CA_LEASE_SUBJECTS) {
+  for (const subject of opts.subjects) {
     try {
       const url = new URL(`${OPENSTATES_API_BASE}/bills`)
-      url.searchParams.set("jurisdiction", "ca")
+      url.searchParams.set("jurisdiction", opts.openstatesCode)
       url.searchParams.set("subject", subject)
       url.searchParams.set("classification", "bill")
       url.searchParams.set("sort", "updated_desc")
@@ -143,13 +149,13 @@ async function fetchCaliforniaLeaseBills(): Promise<OpenStatesBill[]> {
 
       const res = await fetch(url.toString(), {
         headers: { "X-API-KEY": apiKey, Accept: "application/json" },
-        // Don't cache — we want fresh data on each manual trigger
+        // Don't cache — we want fresh data on each cron run
         cache: "no-store",
       })
 
       if (!res.ok) {
         console.warn(
-          `[openstates] subject="${subject}" returned ${res.status} ${res.statusText}; skipping`
+          `[openstates] ${opts.openstatesCode}/${subject} returned ${res.status} ${res.statusText}; skipping`
         )
         continue
       }
@@ -159,7 +165,7 @@ async function fetchCaliforniaLeaseBills(): Promise<OpenStatesBill[]> {
 
       await sleep(REQUEST_GAP_MS)
     } catch (err) {
-      console.warn(`[openstates] fetch error for subject="${subject}":`, err)
+      console.warn(`[openstates] fetch error for ${opts.openstatesCode}/${subject}:`, err)
       // Keep going with the other subjects
     }
   }
@@ -168,17 +174,29 @@ async function fetchCaliforniaLeaseBills(): Promise<OpenStatesBill[]> {
 }
 
 /**
- * Public entry point for Phase D0. Returns RawFacts derived from California
- * landlord-tenant bills, ready to be upserted as `status="pending"` by the
- * ingest pipeline.
+ * Generic public entry point — used by the cron pipeline for any
+ * (jurisdiction × document × subjects) combo. Returns RawFacts ready for
+ * the ingest pipeline to upsert as pending.
  *
- * Each bill is mapped to a single fact whose content reads as a one-line
- * jurisdiction note (e.g., "California AB 1482 — Tenant Protection Act of
- * 2019: limits annual rent increases to 5% + CPI."). The human reviewer
- * approves, rejects, or edits the content before it flows into the prompt.
+ * Each bill becomes one fact: content is a one-line "Jurisdiction CITATION —
+ * <abstract or title>" string. The human reviewer approves/rejects/edits.
+ *
+ * The bill is hard-filtered to enacted-only — anything still in committee,
+ * introduced, vetoed, or pending is dropped here so the reviewer only sees
+ * actual law.
  */
-export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]> {
-  const bills = await fetchCaliforniaLeaseBills()
+export async function fetchEnactedFactsFromOpenStates(opts: {
+  jurisdiction: string // our internal slug, e.g. "california"
+  jurisdictionType: "state" | "country" | "city"
+  jurisdictionName: string // display name, e.g. "California"
+  openstatesCode: string // 2-letter OpenStates code, e.g. "ca"
+  documentSlug: string
+  subjects: string[]
+}): Promise<RawFact[]> {
+  const bills = await fetchEnactedBillsFromOpenStates({
+    openstatesCode: opts.openstatesCode,
+    subjects: opts.subjects,
+  })
 
   // De-duplicate by bill identifier — OpenStates can return the same bill under
   // multiple subjects.
@@ -191,8 +209,6 @@ export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]>
     seen.add(bill.identifier)
 
     // Hard filter: only keep bills that have actually been enacted into law.
-    // Anything still "introduced", "in committee", "passed one chamber", or
-    // "vetoed" gets dropped here so the human reviewer only sees real law.
     const enactedAt = getEnactedDate(bill)
     if (!enactedAt) {
       skippedNotEnacted++
@@ -205,10 +221,12 @@ export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]>
     if (!summary) continue
 
     // Pick the most authoritative URL we can find for the fact:
-    //   1. the bill's primary source (legislature.ca.gov)
+    //   1. the bill's primary source (state legislature site)
     //   2. OpenStates' own bill page
     const sourceUrl =
-      bill.sources?.[0]?.url || bill.openstates_url || `https://openstates.org/ca/bills/${bill.id}`
+      bill.sources?.[0]?.url ||
+      bill.openstates_url ||
+      `https://openstates.org/${opts.openstatesCode}/bills/${bill.id}`
 
     // NB: don't bake enactedAt into `content` — the dedup hash relies on
     // a stable content string. Re-ingests would otherwise produce duplicate
@@ -216,12 +234,11 @@ export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]>
     void enactedAt
 
     facts.push({
-      jurisdiction: "california",
-      jurisdictionType: "state",
-      documentSlug: "residential-lease-agreement",
+      jurisdiction: opts.jurisdiction,
+      jurisdictionType: opts.jurisdictionType,
+      documentSlug: opts.documentSlug,
       factType: "requirement",
-      // Compose a one-line, prompt-ready content string.
-      content: `California ${bill.identifier} — ${summary}`,
+      content: `${opts.jurisdictionName} ${bill.identifier} — ${summary}`,
       citation: bill.identifier, // e.g., "AB 1482"
       source: "openstates",
       sourceUrl,
@@ -230,9 +247,25 @@ export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]>
 
   if (skippedNotEnacted > 0) {
     console.info(
-      `[openstates] skipped ${skippedNotEnacted} bill(s) that were not yet enacted (introduced, in committee, vetoed, etc.)`
+      `[openstates] ${opts.openstatesCode}/${opts.documentSlug}: skipped ${skippedNotEnacted} not-yet-enacted bill(s)`
     )
   }
 
   return facts
+}
+
+/**
+ * Backwards-compat wrapper for the original Phase D0 manual-trigger button.
+ * The admin "Run California Lease Ingest" button still calls this. Phase D1+
+ * code should use `fetchEnactedFactsFromOpenStates` directly.
+ */
+export async function fetchCaliforniaResidentialLeaseFacts(): Promise<RawFact[]> {
+  return fetchEnactedFactsFromOpenStates({
+    jurisdiction: "california",
+    jurisdictionType: "state",
+    jurisdictionName: "California",
+    openstatesCode: "ca",
+    documentSlug: "residential-lease-agreement",
+    subjects: ["Housing", "Landlord and Tenant"],
+  })
 }
