@@ -34,7 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Check, ExternalLink, Loader2, RefreshCw, X } from "lucide-react"
+import { Check, ExternalLink, Loader2, RefreshCw, RotateCcw, X } from "lucide-react"
 import { toast } from "@/lib/safe-toast"
 
 type Status = "pending" | "approved" | "rejected"
@@ -123,6 +123,29 @@ export default function FactsReviewPage() {
       } catch (err) {
         console.error(err)
         toast.error("Approve failed")
+      } finally {
+        setActingOnId(null)
+      }
+    },
+    [fetchFacts]
+  )
+
+  /**
+   * Flip a fact back to "pending" — used when an admin wants to undo their
+   * own approval (or rejection) and have the fact reviewed again. Works on
+   * approved + rejected rows.
+   */
+  const revert = useCallback(
+    async (id: string) => {
+      setActingOnId(id)
+      try {
+        const res = await fetch(`/api/admin/facts/${id}/revert`, { method: "POST" })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        toast.success("Moved back to pending")
+        fetchFacts()
+      } catch (err) {
+        console.error(err)
+        toast.error("Revert failed")
       } finally {
         setActingOnId(null)
       }
@@ -266,43 +289,95 @@ export default function FactsReviewPage() {
                   </Link>
                 </TableCell>
                 <TableCell className="text-right">
-                  {status === "pending" ? (
+                  {/* Each tab shows the actions appropriate to that lifecycle stage:
+                      pending  → Approve  + Reject
+                      approved → Reject  + Revert (to pending)
+                      rejected → Revert (to pending) */}
+                  <div className="flex flex-col items-end gap-1.5">
                     <div className="flex gap-2 justify-end">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => approve(f.id)}
-                        disabled={actingOnId === f.id}
-                      >
-                        <Check className="h-4 w-4 mr-1" />
-                        Approve
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => {
-                          setRejectTarget(f)
-                          setRejectReason("")
-                        }}
-                        disabled={actingOnId === f.id}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        Reject
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">
-                      {status === "approved" && f.reviewer?.email
-                        ? `by ${f.reviewer.email.split("@")[0]}`
-                        : status === "rejected" && f.rejectionReason
-                          ? `Reason: ${f.rejectionReason}`
-                          : ""}
-                      {f.reviewedAt && (
-                        <div>{new Date(f.reviewedAt).toLocaleDateString()}</div>
+                      {status === "pending" && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => approve(f.id)}
+                            disabled={actingOnId === f.id}
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => {
+                              setRejectTarget(f)
+                              setRejectReason("")
+                            }}
+                            disabled={actingOnId === f.id}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            Reject
+                          </Button>
+                        </>
+                      )}
+                      {status === "approved" && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => {
+                              setRejectTarget(f)
+                              setRejectReason("")
+                            }}
+                            disabled={actingOnId === f.id}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => revert(f.id)}
+                            disabled={actingOnId === f.id}
+                            title="Move back to pending for re-review"
+                          >
+                            <RotateCcw className="h-4 w-4 mr-1" />
+                            Revert
+                          </Button>
+                        </>
+                      )}
+                      {status === "rejected" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => revert(f.id)}
+                          disabled={actingOnId === f.id}
+                          title="Move back to pending for re-review"
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1" />
+                          Revert to Pending
+                        </Button>
                       )}
                     </div>
-                  )}
+                    {/* Audit footer — who reviewed + when + (for rejects) why */}
+                    {status !== "pending" && (
+                      <div className="text-xs text-muted-foreground text-right max-w-[200px]">
+                        {f.reviewer?.email && (
+                          <div>by {f.reviewer.email.split("@")[0]}</div>
+                        )}
+                        {status === "rejected" && f.rejectionReason && (
+                          <div className="italic truncate" title={f.rejectionReason}>
+                            “{f.rejectionReason}”
+                          </div>
+                        )}
+                        {f.reviewedAt && (
+                          <div>{new Date(f.reviewedAt).toLocaleDateString()}</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
