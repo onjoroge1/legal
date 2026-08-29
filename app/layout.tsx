@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from 'next/font/google'
 import { SessionProvider } from '@/components/session-provider'
 import { QueryProvider } from '@/components/query-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { SitewideLegalNotice } from '@/components/legal/sitewide-legal-notice'
 
 import './globals.css'
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <QueryProvider>
           <SessionProvider>
             {children}
+            <SitewideLegalNotice />
             <Toaster />
           </SessionProvider>
         </QueryProvider>

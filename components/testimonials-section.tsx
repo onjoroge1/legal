@@ -13,23 +13,23 @@ import { Shield, MapPin, FileCheck, Zap } from "lucide-react"
 const reasons = [
   {
     icon: MapPin,
-    title: "All 50 states covered",
+    title: "Choose your jurisdiction",
     body:
-      "Templates incorporate state-specific statutes and clauses for every U.S. jurisdiction. We update them as state law changes.",
+      "Select a U.S. state so the drafting workflow can surface jurisdiction-aware questions and reference material for review.",
     color: "primary" as const,
   },
   {
     icon: FileCheck,
     title: "Draft → review → sign",
     body:
-      "We don't replace your attorney — we compile a strong first draft so the conversation with one starts from a much better place.",
+      "Compile a structured first draft, review every term and source, then ask a licensed attorney whether it fits your facts before signing.",
     color: "accent" as const,
   },
   {
     icon: Zap,
-    title: "Minutes, not weeks",
+    title: "A guided starting point",
     body:
-      "A draft NDA, lease, or operating agreement takes under five minutes. Editable Word output means you can iterate however you want.",
+      "Plain-language questions reduce blank-page work, and editable Word output lets you revise the draft after professional review.",
     color: "primary" as const,
   },
 ]
@@ -50,7 +50,7 @@ export function TestimonialsSection() {
           </h2>
           <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
             LegalLawDocs is an AI-powered document assembly tool. We&apos;re not a law firm and
-            we don&apos;t pretend to be. We just produce really good first drafts.
+            do not provide legal advice. Draft quality depends on your inputs and requires review.
           </p>
         </div>
 

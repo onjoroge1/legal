@@ -18,70 +18,42 @@ import {
 export const metadata: Metadata = {
   title: "Advertise to Legal Document Users — LegalLawDocs.com",
   description:
-    "List your law firm or legal services on LegalLawDocs.com and reach high-intent users actively generating legal documents. Fixed monthly rates, no pay-per-click.",
+    "Apply for the LegalLawDocs directory pilot. Listing availability, placement, pricing, review criteria, and terms are confirmed in writing before publication.",
 }
 
 const valueProps = [
   {
     icon: TrendingUp,
-    title: "High-intent audience",
+    title: "Contextual discovery",
     description:
-      "Users on LegalLawDocs.com are actively generating legal documents right now. They already know they have a legal need — they're not browsing, they're acting. That puts them at the bottom of the funnel before they ever see your listing.",
+      "Approved directory profiles may be shown near relevant document categories. Placement and traffic depend on availability and are not guaranteed.",
   },
   {
     icon: MapPin,
     title: "Contextual placement",
     description:
-      "Your listing appears alongside the documents most relevant to your practice area. An estate planning attorney gets featured near wills and power of attorney pages. A landlord-tenant specialist appears next to lease agreements. Relevance, not randomness.",
+      "Profiles can be tagged by practice area and location so users can browse relevant listings. Listings are advertising profiles, not endorsements.",
   },
   {
     icon: Zap,
-    title: "No pay-per-click waste",
+    title: "No performance promise",
     description:
-      "Fixed monthly listing fee. Unlimited impressions. No bidding wars, no surprise bills at the end of the month, no clicks from people who had no intention of hiring anyone. Just your firm in front of the right people, every day.",
+      "We do not promise impressions, clicks, leads, clients, exclusivity, or a return on spend. Any pilot price and included reporting are disclosed before acceptance.",
   },
 ]
 
 const tiers = [
   {
-    name: "Basic Directory Listing",
-    price: "$49",
-    period: "/mo",
+    name: "Directory Pilot",
+    price: "Contact us",
+    period: "subject to written pilot terms",
     featured: false,
-    description: "Get found in our growing lawyers directory.",
+    description: "Apply for a reviewed advertising profile in the directory.",
     features: [
       "Name, practice area & location",
-      "Website link",
-      "Listed in the /lawyers directory",
-      "Basic dashboard stats",
-    ],
-  },
-  {
-    name: "Featured Listing",
-    price: "$149",
-    period: "/mo",
-    featured: true,
-    description: "Stand out with a rich, complete profile.",
-    features: [
-      "Everything in Basic",
-      "Priority placement in directory",
-      "Professional photo",
-      "Bio up to 200 words",
-      "Phone number & email link",
-      "Basic dashboard stats",
-    ],
-  },
-  {
-    name: "Premium Partner",
-    price: "$349",
-    period: "/mo",
-    featured: false,
-    description: "Maximum visibility — on the directory and on document pages.",
-    features: [
-      "Everything in Featured",
-      "Contextual placement on relevant document pages",
-      '"Reviewed by [Name]" badge on generated docs',
-      "Monthly analytics report (impressions + clicks)",
+      "Website and contact links when approved",
+      "Clearly labeled profile",
+      "No guaranteed traffic or leads",
     ],
   },
 ]
@@ -95,15 +67,15 @@ const steps = [
   },
   {
     step: "02",
-    title: "Review within 24 hours",
+    title: "Administrative review",
     description:
-      "Our team verifies your credentials and bar membership before your listing goes live. We keep the directory high-quality so every lead is worth your time.",
+      "We review the submitted profile and may request supporting information. Applicants remain responsible for accurate claims and active credentials.",
   },
   {
     step: "03",
-    title: "Go live and start getting leads",
+    title: "Confirm terms before publication",
     description:
-      "Your listing is published and immediately visible to users generating documents in your practice area and geography.",
+      "If accepted, placement, price, duration, cancellation terms, and available reporting are confirmed in writing before a profile is published.",
   },
 ]
 
@@ -118,19 +90,19 @@ const audiences = [
 const faqs = [
   {
     q: "Is my listing reviewed before going live?",
-    a: "Yes. Every listing is manually reviewed by our team within 24 hours of submission. We verify practice area claims and bar membership where applicable to keep the directory trustworthy for users and valuable for advertisers.",
+    a: "Applications receive an administrative review, but LegalLawDocs does not guarantee independent verification of every credential or claim. Applicants must provide accurate information, and users are told to confirm license status with the relevant authority.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes. All plans are month-to-month with no long-term commitment. You can cancel before your next billing cycle and your listing will remain active until the end of the period you've already paid for.",
+    a: "Cancellation and renewal terms depend on the written pilot agreement presented before publication. Do not rely on this page as a binding offer.",
   },
   {
     q: "What practice areas do you support?",
-    a: "All of them. Our document library spans family law, estate planning, business formation, employment, real estate, intellectual property, and more. Whatever your specialty, there are users generating documents in your area right now.",
+    a: "Applications can identify supported practice-area tags. Acceptance and placement depend on directory coverage and available categories.",
   },
   {
     q: "How do I track performance?",
-    a: "Premium Partners receive a monthly analytics email with impression and click data for their listing and document-page placements. Basic and Featured listings have access to a simple dashboard showing profile views and link clicks.",
+    a: "No reporting is promised on this page. If metrics are available for a pilot, the exact measures and delivery schedule will be described in the written terms.",
   },
 ]
 
@@ -147,19 +119,18 @@ export default function AdvertisePage() {
                 Advertise on LegalLawDocs.com
               </div>
               <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
-                Reach clients when they need{" "}
-                <span className="text-primary">legal help most</span>
+                Apply for a clearly labeled{" "}
+                <span className="text-primary">directory profile</span>
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                LegalLawDocs.com serves 50,000+ document generations per month. Every one of those
-                users has already identified a legal need and is actively doing something about it.
-                List your firm in our lawyers directory and put your name in front of that audience —
-                at the exact moment they realize they need professional help.
+                Apply for a pilot listing in the LegalLawDocs directory. We will confirm eligibility,
+                available placement, labeling, pricing, duration, and reporting in writing before
+                anything is published. We do not guarantee traffic, leads, or clients.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 <Button asChild size="lg">
                   <Link href="/contact?subject=Advertise+on+LegalLawDocs">
-                    Get Listed Now <ArrowRight className="ml-2 h-4 w-4" />
+                    Apply for the Pilot <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
@@ -177,8 +148,8 @@ export default function AdvertisePage() {
               Why advertise here?
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Most legal advertising puts your ad in front of people who might someday need a
-              lawyer. We put you in front of people who need one right now.
+              Directory profiles can help users discover professionals by location and practice area.
+              Results vary, and every profile is presented as advertising rather than an endorsement.
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -207,10 +178,11 @@ export default function AdvertisePage() {
                 Advertising options
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Three tiers to match your goals and budget. All plans are month-to-month.
+                The directory is in a pilot stage. This page is an invitation to apply, not a binding
+                offer or a promise of placement.
               </p>
             </div>
-            <div className="mt-12 grid gap-6 lg:grid-cols-3 lg:items-start">
+            <div className="mx-auto mt-12 grid max-w-lg gap-6">
               {tiers.map((tier) => (
                 <div
                   key={tier.name}
@@ -265,7 +237,8 @@ export default function AdvertisePage() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="font-serif text-3xl font-bold text-foreground">How it works</h2>
             <p className="mt-3 text-muted-foreground">
-              From submission to live listing in as little as one business day.
+              Applications are reviewed in sequence. Timing depends on the completeness of the
+              submission and available directory capacity.
             </p>
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-3">
@@ -288,8 +261,8 @@ export default function AdvertisePage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-serif text-3xl font-bold text-foreground">Who this is for</h2>
               <p className="mt-3 text-muted-foreground">
-                Any licensed or credentialed legal professional or service provider is welcome to
-                apply.
+                Licensed or credentialed legal professionals and service providers may apply.
+                Submission does not guarantee acceptance.
               </p>
             </div>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -332,13 +305,13 @@ export default function AdvertisePage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-serif text-3xl font-bold text-foreground">Ready to get listed?</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                Join attorneys and legal service providers already reaching high-intent clients on
-                LegalLawDocs.com. Choose your tier and submit your listing today.
+                Submit an application for the directory pilot. We will provide the proposed terms
+                before asking you to approve or pay for a listing.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 <Button asChild size="lg">
                   <Link href="/contact?subject=Advertise+on+LegalLawDocs">
-                    Get Listed Now <ArrowRight className="ml-2 h-4 w-4" />
+                    Apply for the Pilot <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">

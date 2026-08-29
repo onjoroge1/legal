@@ -257,7 +257,7 @@ export async function sendDocumentReadyEmail({
         </tr>
       </table>
       ${!canSign ? `<p style="margin:0 0 20px; padding:12px 16px; background:#fefce8; border-left:3px solid #ca8a04; border-radius:4px; font-size:13px; color:#374151;">
-        <strong>Want to e-sign and send for signature?</strong> Upgrade to the Professional plan ($9.99/mo) from your dashboard to unlock electronic signing.
+        <strong>Electronic signing may require a different plan and may be unavailable during launch review.</strong> Check the billing dashboard for current availability and review the exact price before payment.
       </p>` : ""}
       ${guestNote}
       <p style="margin:20px 0 0; padding:12px 16px; background:#fffbeb; border-left:3px solid #d97706; border-radius:4px; font-size:12px; line-height:1.6; color:#4b5563;">
@@ -337,6 +337,5 @@ export async function sendMarketingEmail(
     html,
   })
 }
-
 
 

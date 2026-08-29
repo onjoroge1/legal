@@ -168,7 +168,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const seo = getDocumentSeo(slug)
   const canonical = getCanonicalUrlByParts(category, slug)
   const title = seo?.title || `${doc.title} Template — Create Online | LegalLawDocs.com`
-  const description = seo?.description || `Create a ${doc.title} online with state‑specific compliance, instant PDF & DOCX download.`
+  const description = seo?.description || `Create an AI-assisted ${doc.title} draft with state-aware inputs and PDF or DOCX download. Attorney review required before use.`
 
   return {
     title,
@@ -263,7 +263,9 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                         {pageTitle}
                       </h1>
                       <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                        Generate a residential lease agreement that complies with {city.name}&apos;s local ordinances — including rent control rules, just-cause eviction requirements, and mandatory disclosures that go beyond {city.state} state law.
+                        Prepare a residential lease draft with {city.name}-specific questions and
+                        reference notes. Local requirements change; confirm every ordinance and
+                        disclosure with current official sources and a licensed attorney.
                       </p>
                       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                         <Button size="lg" className="gap-2" asChild>
@@ -277,8 +279,8 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                         </Button>
                       </div>
                       <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.name} ordinance compliant</div>
-                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.state} state law included</div>
+                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.name} reference notes</div>
+                        <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{city.state} jurisdiction selected</div>
                         <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />Instant PDF & DOCX</div>
                       </div>
                     </div>
@@ -287,7 +289,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                       <h2 className="font-serif text-xl font-bold text-foreground">{pageTitle}</h2>
                       <p className="mt-1 text-xs text-muted-foreground">{city.name}, {city.state}</p>
                       <div className="mt-4 space-y-2">
-                        {["Local ordinance compliant", `${city.state} state law included`, "Customized to your situation", "Instant PDF & DOCX download"].map((item) => (
+                        {["Local ordinance review prompts", `${city.state} jurisdiction selected`, "Built from your answers", "PDF & DOCX download"].map((item) => (
                           <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
                             {item}
@@ -480,7 +482,9 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                       </p>
                     )}
                     <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-                      Generate a {localName.toLowerCase()} tailored to {country.name} law. Our AI incorporates {country.name}-specific statutory requirements, disclosure obligations, and legal standards into every clause.
+                      Prepare a {localName.toLowerCase()} draft with {country.name}-specific questions
+                      and reference notes. Confirm current statutory, disclosure, and execution
+                      requirements with a locally licensed professional before use.
                     </p>
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                       <Button asChild size="lg">
@@ -494,7 +498,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                       </Button>
                     </div>
                     <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{country.name} law compliant</div>
+                      <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{country.name} reference notes</div>
                       <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />Instant PDF & DOCX</div>
                       <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{country.legalSystem}</div>
                     </div>
@@ -507,7 +511,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     )}
                     <div className="mt-4 space-y-2">
                       {[
-                        `Compliant with ${country.name} law`,
+                        `${country.name} jurisdiction selected`,
                         `${country.legalSystem}`,
                         "Customised to your situation",
                         "Instant PDF & DOCX download",
@@ -603,7 +607,8 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   Ready to Create Your {country.name} {localName}?
                 </h2>
                 <p className="mt-4 text-muted-foreground">
-                  Our AI generates a {country.name}-compliant {localName.toLowerCase()} in minutes — incorporating the statutory requirements above into every clause.
+                  Use the guided questions to assemble a {country.name}-aware draft, then have a
+                  locally licensed professional confirm the current requirements and review every clause.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <Button asChild size="lg">
@@ -658,6 +663,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
 
     const siblings = getSiblingStatePages(parsed.docSlug, parsed.stateSlug)
     const { state, doc: stateDoc, pageTitle, notes, statutes } = stateData
+    const stateCatalogDoc = getDocumentBySlug(stateDoc.slug)
     const generateUrl = `/documents/${category}/${slug}/generate`
     const parentDocUrl = `/documents/${stateDoc.category}/${stateDoc.slug}`
 
@@ -710,7 +716,9 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     {pageTitle}
                   </h1>
                   <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                    Generate a {stateDoc.title.toLowerCase()} tailored to {state.name} law. Our AI incorporates {state.abbr}-specific statutory requirements, disclosure obligations, and legal standards into every document.
+                    Prepare a {stateDoc.title.toLowerCase()} draft with {state.name}-specific questions
+                    and reference notes. Confirm current statutory, disclosure, and execution requirements
+                    with a licensed attorney before use.
                   </p>
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Button size="lg" className="gap-2" asChild>
@@ -724,8 +732,8 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     </Button>
                   </div>
                   <div className="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{state.name} law compliant</div>
-                    <div className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" />Ready in minutes</div>
+                    <div className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" />{state.name} jurisdiction selected</div>
+                    <div className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" />Guided drafting workflow</div>
                     <div className="flex items-center gap-1.5"><Download className="h-4 w-4 text-primary" />PDF & DOCX</div>
                   </div>
                 </div>
@@ -735,15 +743,17 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   <div className="rounded-2xl border border-border/60 bg-card/80 p-8 shadow-xl backdrop-blur-sm">
                     <div className="text-center">
                       <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">State-Specific Document</div>
-                      <div className="text-5xl font-bold text-foreground">$7<span className="text-2xl text-muted-foreground">.99</span></div>
-                      <p className="mt-2 text-sm text-muted-foreground">One-time · instant download</p>
+                      <div className="text-5xl font-bold text-foreground">
+                        {stateCatalogDoc ? `$${stateCatalogDoc.price}` : "See document page"}
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">One-time document price</p>
                     </div>
                     <ul className="mt-6 space-y-3">
                       {[
-                        `${state.name} statutory requirements`,
+                        `${state.name} drafting references`,
                         "AI-powered Q&A generation",
-                        "Instant PDF & DOCX",
-                        "Attorney-reviewed framework",
+                        "PDF & DOCX download",
+                        "Attorney review required",
                         "30-day re-download access",
                       ].map((feature) => (
                         <li key={feature} className="flex items-center gap-2.5 text-sm">
@@ -872,7 +882,8 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 Ready to Create Your {state.name} {stateDoc.title}?
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Our AI generates a {state.abbr}-compliant {stateDoc.title.toLowerCase()} in minutes — incorporating the statutory requirements above into every clause.
+                Use the guided questions to assemble a {state.abbr}-aware draft, then have a
+                licensed attorney confirm current requirements and review every clause before use.
               </p>
               <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button size="lg" className="gap-2" asChild>
@@ -959,7 +970,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     operatingSystem: "Any",
     offers: {
       "@type": "Offer",
-      price: `${doc.price}.99`,
+      price: `${doc.price}`,
       priceCurrency: "USD",
     },
     description: doc.longDescription,
@@ -1080,7 +1091,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   <Link href={generatePath}>
                     <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
                       {hasActiveSubscription ? (
-                        <>Generate Free {doc.title.split(" ")[0]}<Crown className="h-4 w-4" /></>
+                        <>Generate Included {doc.title.split(" ")[0]}<Crown className="h-4 w-4" /></>
                       ) : (
                         <>Generate My {doc.title.split(" ")[0]}<ArrowRight className="h-4 w-4" /></>
                       )}
@@ -1088,15 +1099,15 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   </Link>
                   {hasActiveSubscription ? (
                     <Badge className="gap-1 border-accent/30 bg-accent/10 text-accent text-base px-4 py-2" variant="outline">
-                      <Crown className="h-4 w-4" />Free with Subscription
+                      <Crown className="h-4 w-4" />Included with Active Subscription
                     </Badge>
                   ) : (
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold text-foreground">{doc.price}.99</span>
+                      <span className="text-2xl font-bold text-foreground">${doc.price}</span>
                       <span className="text-sm text-muted-foreground">per document</span>
                       <span className="text-sm text-muted-foreground">or</span>
-                      <span className="text-lg font-semibold text-primary">{doc.subscriptionPrice}.99/mo</span>
+                      <span className="text-sm font-semibold text-primary">subscription price shown at checkout</span>
                     </div>
                   )}
                 </div>
@@ -1104,7 +1115,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-accent" />
-                    <span className="text-sm text-muted-foreground">Ready in ~5 minutes</span>
+                    <span className="text-sm text-muted-foreground">Guided questionnaire</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Download className="h-4 w-4 text-accent" />
@@ -1112,7 +1123,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   </div>
                   <div className="flex items-center gap-2">
                     <Lock className="h-4 w-4 text-accent" />
-                    <span className="text-sm text-muted-foreground">Bank-level encryption</span>
+                    <span className="text-sm text-muted-foreground">Attorney review required</span>
                   </div>
                 </div>
               </div>
@@ -1137,9 +1148,9 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                       {[
                         { icon: Zap, text: "AI-customized clauses", color: "text-primary" },
                         { icon: MapPin, text: "State-specific provisions", color: "text-accent" },
-                        { icon: Shield, text: "Compliance verification", color: "text-primary" },
+                        { icon: Shield, text: "Review flags surfaced", color: "text-primary" },
                         { icon: Users, text: "Multiple format options", color: "text-accent" },
-                        { icon: Lock, text: "Digital signature ready", color: "text-primary" },
+                        { icon: Lock, text: "Signature fields available", color: "text-primary" },
                         { icon: Download, text: "PDF & DOCX formats", color: "text-accent" },
                       ].map((item) => (
                         <div key={item.text} className="flex items-center gap-3">
@@ -1155,14 +1166,14 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     <div className="flex items-center justify-between">
                       <div>
                         {hasActiveSubscription ? (
-                          <><p className="text-xs text-muted-foreground">Included in subscription</p><p className="text-2xl font-bold text-accent">Free</p></>
+                          <><p className="text-xs text-muted-foreground">Included in active subscription</p><p className="text-2xl font-bold text-accent">Included</p></>
                         ) : (
-                          <><p className="text-xs text-muted-foreground">One-time payment</p><p className="text-2xl font-bold text-foreground">${doc.price}.99</p></>
+                          <><p className="text-xs text-muted-foreground">One-time payment</p><p className="text-2xl font-bold text-foreground">${doc.price}</p></>
                         )}
                       </div>
                       <Link href={generatePath}>
                         <Button className="gap-2 shadow-md shadow-primary/20">
-                          {hasActiveSubscription ? (<>Generate Free<Crown className="h-4 w-4" /></>) : (<>Get Started<ArrowRight className="h-4 w-4" /></>)}
+                          {hasActiveSubscription ? (<>Generate Included Draft<Crown className="h-4 w-4" /></>) : (<>Get Started<ArrowRight className="h-4 w-4" /></>)}
                         </Button>
                       </Link>
                     </div>
@@ -1203,7 +1214,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                 <div className="mx-auto max-w-2xl text-center">
                   <p className="text-sm font-semibold uppercase tracking-widest text-accent">Key Sections Explained</p>
                   <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">What Your {doc.title} Should Cover</h2>
-                  <p className="mt-4 text-muted-foreground">These core sections make the document enforceable, clear, and easier to administer.</p>
+                  <p className="mt-4 text-muted-foreground">These core sections make the draft clearer to review. They do not establish enforceability.</p>
                 </div>
                 <div className="mt-12 grid gap-6 md:grid-cols-2">
                   {detailContent.keySections.map((section) => (
@@ -1220,7 +1231,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               <div className="mx-auto max-w-7xl px-4 lg:px-8">
                 <div className="mx-auto max-w-2xl text-center">
                   <p className="text-sm font-semibold uppercase tracking-widest text-primary">Step-by-Step</p>
-                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">How to Create a Valid {doc.title}</h2>
+                  <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">How to Prepare a {doc.title} Draft</h2>
                 </div>
                 <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {detailContent.process.map((step, index) => (
@@ -1392,10 +1403,11 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               <div className="flex-1">
                 <p className="text-sm font-semibold uppercase tracking-widest text-primary">Nationwide Coverage</p>
                 <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl">
-                  Compliant Across <span className="gradient-text">All 50 States</span>
+                  State-Aware Options for <span className="gradient-text">All 50 States</span>
                 </h2>
                 <p className="mt-4 max-w-lg text-muted-foreground leading-relaxed">
-                  Our AI automatically adapts your document to include state-specific provisions, referencing the correct statutes and compliance requirements for your jurisdiction.
+                  Select a state to surface jurisdiction-aware prompts and reference material. The
+                  software does not determine whether those sources are current, complete, or applicable.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {statesCovered.map((state) => (
@@ -1437,15 +1449,15 @@ export default async function DocumentDetailPage({ params }: PageProps) {
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
               {hasActiveSubscription ? (
-                <>Answer a few AI-powered questions and download your professionally compiled draft in minutes. <span className="text-accent font-semibold">Free with your subscription!</span></>
+                <>Answer guided questions and download a draft for review. <span className="text-accent font-semibold">Included with your active subscription.</span></>
               ) : (
-                <>Answer a few AI-powered questions, pay ${doc.price}.99, and download your professionally compiled draft in minutes.</>
+                <>Answer guided questions, review the exact ${doc.price} one-time price, and download a draft for attorney review.</>
               )}
             </p>
             <Link href={generatePath} className="mt-8 inline-block">
               <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
                 {hasActiveSubscription ? (
-                  <>Generate Free {doc.title.split(" ")[0]} Now<Crown className="h-4 w-4" /></>
+                  <>Generate Included {doc.title.split(" ")[0]} Now<Crown className="h-4 w-4" /></>
                 ) : (
                   <>Generate My {doc.title.split(" ")[0]} Now<ArrowRight className="h-4 w-4" /></>
                 )}
@@ -1510,10 +1522,10 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                         <div className="mt-3 flex items-center gap-2 text-sm">
                           {hasActiveSubscription ? (
                             <Badge variant="outline" className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent">
-                              <Crown className="h-3 w-3" />Free
+                              <Crown className="h-3 w-3" />Included
                             </Badge>
                           ) : (
-                            <span className="font-semibold text-foreground">${relatedDoc.price}.99</span>
+                            <span className="font-semibold text-foreground">${relatedDoc.price}</span>
                           )}
                         </div>
                       </div>

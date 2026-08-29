@@ -129,7 +129,7 @@ export default async function CategoryHubPage({ params }: PageProps) {
                   {docs.length} Document{docs.length !== 1 ? "s" : ""} Available
                 </Badge>
                 <Badge variant="outline" className="gap-1 border-border/60 text-muted-foreground">
-                  All 50 States
+                  50 State Selections
                 </Badge>
               </div>
             </div>
@@ -196,10 +196,10 @@ export default async function CategoryHubPage({ params }: PageProps) {
                           <div>
                             {hasActiveSubscription ? (
                               <Badge variant="outline" className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent">
-                                <Crown className="h-3 w-3" />Free with Subscription
+                                <Crown className="h-3 w-3" />Included with Subscription
                               </Badge>
                             ) : (
-                              <span className="text-sm font-semibold text-foreground">${doc.price}.99</span>
+                              <span className="text-sm font-semibold text-foreground">${doc.price}</span>
                             )}
                           </div>
                           <div className="flex items-center gap-1 text-sm text-primary opacity-0 transition-all duration-200 group-hover:opacity-100">

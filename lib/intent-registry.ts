@@ -77,7 +77,7 @@ const ndaIntents: DocumentIntent[] = [
     description: "Both parties share confidential information",
     seoTitle: "Mutual NDA Template — Create Online | LegalLawDocs.com",
     metaDescription:
-      "Create a mutual non-disclosure agreement online. Both parties share confidential information under equal protection. State-compliant with instant PDF & DOCX download.",
+      "Create a mutual non-disclosure agreement draft online for information shared in both directions. State-aware inputs with PDF and DOCX download.",
     h1: "Mutual Non-Disclosure Agreement",
     shortDescription:
       "A Mutual NDA (also called a bilateral NDA) binds both parties to keep each other's confidential information private. Used when two companies or individuals are sharing sensitive information in both directions — during joint ventures, partnerships, or merger discussions.",
@@ -175,7 +175,7 @@ const ndaIntents: DocumentIntent[] = [
     description: "NDA for investor due diligence situations",
     seoTitle: "Investor NDA Template | LegalLawDocs.com",
     metaDescription:
-      "Create an investor NDA online. Protect confidential business information shared during fundraising and investor due diligence. State-compliant with instant PDF download.",
+      "Create an investor NDA draft for confidential information shared during fundraising and due diligence. State-aware inputs with PDF download.",
     h1: "Investor Non-Disclosure Agreement",
     shortDescription:
       "An investor NDA protects confidential business information — financials, projections, product roadmaps — shared with potential investors during due diligence. It sets clear expectations before you open your books to angel investors, VCs, or strategic partners.",
@@ -224,7 +224,7 @@ const ndaIntents: DocumentIntent[] = [
     description: "NDA with a vendor or supplier",
     seoTitle: "Vendor NDA Template — Supplier Confidentiality Agreement | LegalLawDocs.com",
     metaDescription:
-      "Create a vendor NDA online. Protect confidential information shared with suppliers and vendors. State-compliant one-way or mutual NDA with instant PDF download.",
+      "Create a vendor NDA draft for information shared with suppliers and vendors. Choose a one-way or mutual structure and download a PDF for review.",
     h1: "Vendor Non-Disclosure Agreement",
     shortDescription:
       "A vendor NDA protects confidential business information shared with suppliers, vendors, and service providers during the procurement process. It prevents vendors from sharing your specifications, pricing, or processes with competitors.",
@@ -273,7 +273,7 @@ const ndaIntents: DocumentIntent[] = [
     description: "NDA when hiring a freelancer or contractor",
     seoTitle: "Freelancer NDA Template — Contractor Confidentiality Agreement | LegalLawDocs.com",
     metaDescription:
-      "Create a freelancer NDA online. Protect confidential information shared with independent contractors and freelancers. State-compliant with instant PDF download.",
+      "Create a freelancer NDA draft for information shared with independent contractors. State-aware inputs with PDF download.",
     h1: "Freelancer Non-Disclosure Agreement",
     shortDescription:
       "A freelancer NDA protects confidential business information shared with independent contractors and freelancers during a project engagement. It ensures contractors do not disclose your trade secrets, client data, or proprietary processes.",
@@ -620,7 +620,7 @@ const employmentContractIntents: DocumentIntent[] = [
     description: "Hourly rate employment contract with overtime provisions",
     seoTitle: "Hourly Employee Contract Template | LegalLawDocs.com",
     metaDescription:
-      "Create an hourly employee contract online. Define hourly rate, overtime, scheduling, and FLSA compliance for non-exempt employees. State-compliant instant download.",
+      "Create an hourly employee contract draft covering hourly rate, overtime, scheduling, and FLSA review prompts for non-exempt employees.",
     h1: "Hourly Employee Employment Contract",
     shortDescription:
       "An hourly employee contract documents employment for non-exempt workers paid on an hourly basis. It defines the hourly rate, overtime eligibility, scheduling expectations, and FLSA compliance provisions critical for properly classified hourly workers.",
@@ -819,7 +819,7 @@ const residentialLeaseIntents: DocumentIntent[] = [
     name: "Single Tenant",
     description: "Lease agreement for one tenant",
     seoTitle: "Single Tenant Lease Agreement | LegalLawDocs.com",
-    metaDescription: "Create a residential lease for a single tenant. State-compliant with all required disclosures.",
+    metaDescription: "Create a residential lease draft for a single tenant with state-aware disclosure review prompts.",
     h1: "Single Tenant Residential Lease",
     shortDescription: "A single-tenant residential lease covers one individual or family renting a property.",
     whenToUse: "Use when renting to one person or a family unit on a single lease.",
@@ -909,7 +909,7 @@ const residentialLeaseIntents: DocumentIntent[] = [
     description: "Flexible rolling lease with no fixed end date",
     seoTitle: "Month-to-Month Lease Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create a month-to-month lease agreement online. State-compliant rolling lease with correct notice periods and termination provisions.",
+      "Create a month-to-month lease draft with state-aware notice-period and termination review prompts.",
     h1: "Month-to-Month Lease Agreement",
     shortDescription:
       "A month-to-month lease automatically renews each month until either party gives notice. More flexible than a fixed-term lease, but either party can end it with proper notice (typically 30 days).",
@@ -1924,7 +1924,7 @@ const poaIntents: DocumentIntent[] = [
     description: "Broad authority over financial and legal matters",
     seoTitle: "General Power of Attorney Form | LegalLawDocs.com",
     metaDescription:
-      "Create a general power of attorney online. Grant broad financial and legal authority to an agent with state-compliant witness and notarization requirements.",
+      "Create a general power-of-attorney draft with state-aware witness and notarization review prompts.",
     h1: "General Power of Attorney",
     shortDescription:
       "A general power of attorney grants broad authority to an agent to handle financial and legal matters on the principal's behalf — typically used when the principal is temporarily unavailable or incapacitated.",
@@ -2012,7 +2012,7 @@ const poaIntents: DocumentIntent[] = [
     description: "Authority over healthcare decisions",
     seoTitle: "Healthcare Power of Attorney Form | LegalLawDocs.com",
     metaDescription:
-      "Create a healthcare power of attorney online. Designate someone to make medical decisions on your behalf if you cannot. State-compliant with witness requirements.",
+      "Create a healthcare power-of-attorney draft naming a medical decision-maker with state-aware witness review prompts.",
     h1: "Healthcare Power of Attorney",
     shortDescription:
       "A healthcare power of attorney designates an agent to make medical and healthcare decisions on your behalf if you are unable to do so. Also called a healthcare proxy or medical POA.",
@@ -2061,7 +2061,7 @@ const poaIntents: DocumentIntent[] = [
     description: "Power of attorney for elder care situations",
     seoTitle: "Elder Care Power of Attorney Form | LegalLawDocs.com",
     metaDescription:
-      "Create an elder care power of attorney online. Grant a trusted agent comprehensive authority to manage affairs for an aging parent or senior family member. State-compliant instant download.",
+      "Create an elder-care power-of-attorney draft describing an agent's proposed authority, with state-aware review prompts.",
     h1: "Elder Care Power of Attorney",
     shortDescription:
       "An elder care POA grants a trusted family member or caregiver comprehensive authority to manage an aging person's financial, legal, and healthcare affairs. Typically combined with durable and healthcare POA provisions to create a complete elder care plan.",
@@ -2110,7 +2110,7 @@ const poaIntents: DocumentIntent[] = [
     description: "Power of attorney for real estate transactions",
     seoTitle: "Real Estate Power of Attorney Form | LegalLawDocs.com",
     metaDescription:
-      "Create a real estate power of attorney online. Authorize an agent to sign closing documents, deeds, or manage real property on your behalf. State-compliant instant download.",
+      "Create a real-estate power-of-attorney draft addressing closing documents, deeds, or property management authority.",
     h1: "Real Estate Power of Attorney",
     shortDescription:
       "A real estate POA authorizes an agent to sign closing documents, execute deeds, and handle real estate transactions on the principal's behalf — commonly used when the property owner cannot attend a closing in person.",
@@ -2159,7 +2159,7 @@ const poaIntents: DocumentIntent[] = [
     description: "Power of attorney for vehicle title transfer",
     seoTitle: "Vehicle Power of Attorney Form — Title Transfer | LegalLawDocs.com",
     metaDescription:
-      "Create a vehicle power of attorney online. Authorize someone to sign a vehicle title transfer, registration, or DMV documents on your behalf. State-compliant instant download.",
+      "Create a vehicle power-of-attorney draft addressing title transfer, registration, or DMV paperwork, with state-aware review prompts.",
     h1: "Vehicle Power of Attorney",
     shortDescription:
       "A vehicle POA authorizes an agent to sign vehicle title transfer documents, DMV paperwork, and registration documents on the principal's behalf — used when the vehicle owner cannot be present at the title transfer.",
@@ -2376,7 +2376,7 @@ const lastWillIntents: DocumentIntent[] = [
       {
         question: "Do I need a lawyer to make a will?",
         answer:
-          "Not legally required in most states. A properly drafted, signed, and witnessed will is legally valid without attorney involvement. Our AI generates a state-compliant will with the correct execution requirements.",
+          "Requirements vary by jurisdiction and circumstances. The software can surface state-aware execution prompts but cannot determine whether a will is valid. Ask a licensed estate-planning attorney to review it before execution.",
       },
       {
         question: "What should I do with my will after I sign it?",
@@ -2448,7 +2448,7 @@ const lastWillIntents: DocumentIntent[] = [
     description: "Will with real property to transfer",
     seoTitle: "Homeowner's Last Will & Testament Template | LegalLawDocs.com",
     metaDescription:
-      "Create a homeowner's last will and testament online. Transfer your home and real property to named beneficiaries with a state-compliant will that avoids intestacy. Instant download.",
+      "Create a homeowner last-will draft addressing a home, other real property, and named beneficiaries. State-aware inputs; estate-planning attorney review required.",
     h1: "Homeowner's Last Will and Testament",
     shortDescription:
       "A homeowner's will specifically addresses the transfer of real property — your home, land, or investment properties — to named beneficiaries. It ensures property transfers through the probate process as you intend, rather than by default intestacy rules.",
@@ -3462,7 +3462,7 @@ const nonCompeteIntents: DocumentIntent[] = [
     description: "Restrictions tied to employment",
     seoTitle: "Employee Non-Compete Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create an employee non-compete agreement online. Restrict former employees from competing, with state-compliant geographic and time limitations.",
+      "Create an employee non-compete draft with geographic and time-limit review prompts. Enforceability varies sharply by jurisdiction.",
     h1: "Employee Non-Compete Agreement",
     shortDescription:
       "An employee non-compete restricts an employee from working for competitors or starting a competing business after leaving. Enforceability varies significantly by state.",
@@ -3550,7 +3550,7 @@ const nonCompeteIntents: DocumentIntent[] = [
     description: "Non-compete agreement for executive employees",
     seoTitle: "Executive Non-Compete Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create an executive non-compete agreement online. Protect trade secrets and strategic plans from senior executives who leave for competitors. State-compliant instant download.",
+      "Create an executive non-compete draft addressing trade secrets and post-employment restrictions. Attorney review required because enforceability varies.",
     h1: "Executive Non-Compete Agreement",
     shortDescription:
       "An executive non-compete restricts senior executives — C-suite, VPs, directors — from joining competitors or starting competing businesses after leaving. Because executives have access to the most sensitive business intelligence, their non-compete terms are typically broader and longer.",
@@ -3599,7 +3599,7 @@ const nonCompeteIntents: DocumentIntent[] = [
     description: "Non-compete for sales employees with customer relationship protection",
     seoTitle: "Sales Employee Non-Compete Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create a sales employee non-compete agreement online. Protect customer relationships and territory from departing sales employees. State-compliant instant download.",
+      "Create a sales-employee non-compete draft addressing customer relationships and territory. Attorney review required because enforceability varies.",
     h1: "Sales Employee Non-Compete Agreement",
     shortDescription:
       "A sales employee non-compete protects customer relationships and sales territory from employees who leave to join competitors. It typically includes non-solicitation of customers and employees, in addition to competitive activity restrictions.",
@@ -3648,7 +3648,7 @@ const nonCompeteIntents: DocumentIntent[] = [
     description: "Non-compete in business sale or partnership dissolution",
     seoTitle: "Business Partner Non-Compete Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create a business partner non-compete agreement online. Protect the buyer in a business sale or prevent a departing partner from competing. State-compliant instant download.",
+      "Create a business-partner non-compete draft for a business sale or partner departure. Attorney review required because enforceability varies.",
     h1: "Business Partner Non-Compete Agreement",
     shortDescription:
       "A business partner non-compete restricts a seller of a business or a departing partner from starting a competing business after the sale or dissolution. These are typically more enforceable than employment non-competes because the seller has received substantial consideration.",
@@ -4035,7 +4035,7 @@ const landlordNoticeIntents: DocumentIntent[] = [
     description: "Notice to vacate due to unpaid rent",
     seoTitle: "Pay or Quit Notice (Non-Payment) | LegalLawDocs.com",
     metaDescription:
-      "Create a pay-or-quit notice for non-payment of rent. State-compliant with correct notice period and required statutory language.",
+      "Create a pay-or-quit notice draft with state-aware notice-period and statutory-language review prompts.",
     h1: "Notice to Vacate for Non-Payment of Rent",
     shortDescription:
       "A pay-or-quit notice demands that a tenant pay overdue rent within the state-required notice period or vacate the property. The first step in the eviction process for non-payment.",
@@ -4831,7 +4831,7 @@ const noticeOfBreachIntents: DocumentIntent[] = [
     description: "Notice of breach of a residential or commercial lease",
     seoTitle: "Lease Agreement Breach Notice Template | LegalLawDocs.com",
     metaDescription:
-      "Create a lease agreement breach notice online. Notify a tenant of lease violations and set a cure deadline before eviction proceedings. State-compliant instant download.",
+      "Create a lease-breach notice draft describing alleged violations and a proposed cure deadline. Verify current eviction requirements before sending.",
     h1: "Notice of Breach of Lease Agreement",
     shortDescription:
       "A lease agreement breach notice formally notifies a tenant of specific lease violations — non-payment, unauthorized pets, subletting, property damage, or other breaches — and sets a cure deadline before the landlord exercises remedies including eviction.",
@@ -5176,7 +5176,7 @@ const loanAgreementIntents: DocumentIntent[] = [
     description: "Loan agreement backed by collateral",
     seoTitle: "Secured Loan Agreement Template | LegalLawDocs.com",
     metaDescription:
-      "Create a secured loan agreement online. Document a collateral-backed loan with security interest, lien rights, and default remedies. State-compliant instant download.",
+      "Create a secured-loan agreement draft addressing collateral, security interests, lien rights, and default remedies for attorney review.",
     h1: "Secured Loan Agreement",
     shortDescription:
       "A secured loan agreement documents a loan backed by specific collateral — real estate, vehicles, equipment, or other assets — giving the lender the right to claim the collateral if the borrower defaults.",
@@ -5313,7 +5313,7 @@ const affidavitIntents: DocumentIntent[] = [
     description: "Sworn statement establishing proof of residence",
     seoTitle: "Affidavit of Address — Proof of Residence Template | LegalLawDocs.com",
     metaDescription:
-      "Create an affidavit of address online. Sworn proof of residence for government agencies, banks, schools, or legal proceedings. Notarized and state-compliant instant download.",
+      "Create an affidavit-of-address draft for proof-of-residence requests, with state-aware notarization and execution review prompts.",
     h1: "Affidavit of Address (Proof of Residence)",
     shortDescription:
       "An affidavit of address is a sworn statement establishing your residence — used when standard documents (utility bills, bank statements) are unavailable or insufficient. Accepted by government agencies, courts, schools, and financial institutions.",
@@ -5346,7 +5346,7 @@ const affidavitIntents: DocumentIntent[] = [
     description: "Affidavit for family court proceedings",
     seoTitle: "Family Court Affidavit Template | LegalLawDocs.com",
     metaDescription:
-      "Create a family court affidavit online. Sworn statement of facts for child custody, divorce, or other family law proceedings. State-compliant instant download.",
+      "Create a family-court affidavit draft for attorney review. Court rules, required forms, and filing requirements vary by jurisdiction.",
     h1: "Family Court Affidavit",
     shortDescription:
       "A family court affidavit is a sworn statement of facts submitted in custody, divorce, child support, or other family law proceedings. It provides the court with firsthand factual information relevant to the matter.",
@@ -5417,7 +5417,7 @@ const releaseOfLiabilityIntents: DocumentIntent[] = [
     description: "Release of liability for event participants",
     seoTitle: "Event Liability Release Form Template | LegalLawDocs.com",
     metaDescription:
-      "Create an event liability release form online. Protect event organizers from participant injury claims with a state-compliant release and waiver. Instant download.",
+      "Create an event liability release draft addressing participant risks and waiver language. Enforceability varies; attorney review required.",
     h1: "Event Liability Release and Waiver",
     shortDescription:
       "An event liability release protects event organizers, venues, and sponsors from injury or damage claims by participants. Commonly used for community events, fundraisers, concerts, races, and any gathering with physical activity or risk.",
@@ -5524,7 +5524,7 @@ const vehicleBillOfSaleIntents: DocumentIntent[] = [
       "Create a car bill of sale online. DMV-ready private party car sale record with VIN, odometer disclosure, and state-specific requirements. Instant download.",
     h1: "Car Bill of Sale",
     shortDescription:
-      "A car bill of sale records a private-party automobile sale with all information required for DMV title transfer: VIN, odometer reading, sale price, condition, and buyer/seller identification. State-compliant with federal odometer disclosure.",
+      "A car bill of sale draft records a private-party vehicle sale, including VIN, odometer reading, price, condition, and party information. Confirm current DMV and federal disclosure requirements before use.",
     whenToUse:
       "Use whenever you buy or sell a car privately — not through a dealership — to create a legal record of the transaction and facilitate DMV title transfer.",
     keyDifferences: [

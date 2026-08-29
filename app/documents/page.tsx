@@ -14,7 +14,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Legal Document Templates — Create Online | LegalLawDocs.com",
   description:
-    "Browse 50+ AI-powered legal document templates across 7 categories — business, employment, real estate, estate planning, and more. State-compliant, instant download.",
+    "Browse 52 AI-assisted document drafting workflows across 7 categories. State-aware inputs, PDF and DOCX output, and attorney review required before use.",
   keywords: [
     "legal document templates",
     "create legal documents online",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     url: "https://legallawdocs.com/documents",
     title: "Legal Document Templates — LegalLawDocs.com",
     description:
-      "50+ AI-powered legal document templates. State-compliant, instant download. Business, employment, real estate, estate planning, and more.",
+      "Browse 52 AI-assisted drafting workflows across business, employment, real estate, estate planning, and more. Not legal advice.",
     siteName: "LegalLawDocs.com",
   },
 }
@@ -68,8 +68,8 @@ export default async function DocumentsPage() {
                 Legal Document <span className="gradient-text">Templates</span>
               </h1>
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                AI-powered legal documents across 7 categories — business, employment, real estate, estate planning, and more.
-                State-compliant, instantly downloadable, professionally drafted.
+                AI-assisted document drafts across 7 categories — business, employment, real estate,
+                estate planning, and more. State-aware inputs do not replace review by a licensed attorney.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Badge variant="outline" className="gap-1 border-primary/30 bg-primary/10 text-primary">
@@ -79,7 +79,7 @@ export default async function DocumentsPage() {
                   {documentCatalog.length}+ Documents
                 </Badge>
                 <Badge variant="outline" className="gap-1 border-border/60 text-muted-foreground">
-                  All 50 States
+                  50 State Selections
                 </Badge>
               </div>
             </div>
@@ -166,10 +166,10 @@ export default async function DocumentsPage() {
                       <div className="mt-3">
                         {hasActiveSubscription ? (
                           <Badge variant="outline" className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent">
-                            <Crown className="h-3 w-3" />Free
+                            <Crown className="h-3 w-3" />Included
                           </Badge>
                         ) : (
-                          <span className="text-sm font-semibold text-foreground">${doc.price}.99</span>
+                          <span className="text-sm font-semibold text-foreground">${doc.price}</span>
                         )}
                       </div>
                     </div>

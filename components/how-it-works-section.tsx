@@ -6,7 +6,7 @@ const steps = [
     icon: ClipboardList,
     title: "Choose Your Document",
     description:
-      "Select from our library of 50+ legal document templates. Each template is designed by legal professionals and optimized for AI generation.",
+      "Select from 52 guided drafting workflows across common business, property, employment, estate, financial, and personal needs.",
     color: "primary" as const,
   },
   {
@@ -14,15 +14,15 @@ const steps = [
     icon: Cpu,
     title: "Answer Simple Questions",
     description:
-      "Our guided questionnaire collects the key details. No legal jargon needed - we translate your answers into proper legal language automatically.",
+      "The questionnaire collects names, dates, choices, and terms in plain language, then places your answers into a structured draft.",
     color: "accent" as const,
   },
   {
     step: "03",
     icon: CheckCircle2,
-    title: "AI Compliance Review",
+    title: "Inspect Review Flags",
     description:
-      "Our AI engine cross-references your document against your state's current legal requirements, flagging and adjusting any compliance issues.",
+      "Check every placeholder, source, and warning. A surfaced source is a review aid, not a legal conclusion or guarantee.",
     color: "primary" as const,
   },
   {
@@ -30,7 +30,7 @@ const steps = [
     icon: Download,
     title: "Download & Review",
     description:
-      "Receive your professionally formatted draft ready for attorney review. Available as an editable Word file or PDF.",
+      "Download the draft as Word or PDF and have a licensed attorney in your jurisdiction review it before you rely on or sign it.",
     color: "accent" as const,
   },
 ]

@@ -36,12 +36,9 @@ function getPracticeLabel(area: string): string {
 export function SponsoredLegalServicesBlock({
   documentTitle,
   practiceAreas,
-  monetizationTier,
 }: SponsoredLegalServicesBlockProps) {
   const areaLabels = practiceAreas.map(getPracticeLabel)
   const primaryArea = areaLabels[0] ?? "legal"
-  const tier = monetizationTier
-
   return (
     <section className="border-t border-border/40 py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -62,9 +59,9 @@ export function SponsoredLegalServicesBlock({
                 Need a {primaryArea} Attorney?
               </h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                Our AI-generated {documentTitle} is a great starting point, but complex situations may
-                benefit from a licensed attorney&apos;s review. Connect with experienced{" "}
-                {areaLabels.join(", ")} attorneys in your area.
+                The AI-generated {documentTitle} is a self-help draft and should be reviewed by a
+                licensed attorney. Browse submitted {areaLabels.join(", ")} profiles, then independently
+                confirm identity, license status, experience, fees, and fit before hiring anyone.
               </p>
 
               <div className="mt-6 space-y-3">
@@ -97,13 +94,9 @@ export function SponsoredLegalServicesBlock({
                   Are you a {primaryArea} Attorney?
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Advertise your services to clients actively searching for{" "}
-                  {areaLabels.join(" and ")} help.{" "}
-                  {tier === "premium"
-                    ? "High-intent clients. Premium placement available."
-                    : tier === "high-value"
-                    ? "Targeted placement for serious clients."
-                    : "Reach clients at the moment they need legal help."}
+                  Apply for a clearly labeled directory profile related to{" "}
+                  {areaLabels.join(" and ")} topics. Placement, pricing, traffic, and reporting are
+                  subject to written pilot terms; no leads or clients are guaranteed.
                 </p>
                 <Link href="/contact?type=lawyer-listing" className="mt-5 block">
                   <Button variant="outline" className="w-full gap-2 border-primary/30 text-primary hover:bg-primary/5">
@@ -111,7 +104,7 @@ export function SponsoredLegalServicesBlock({
                   </Button>
                 </Link>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  No commitment. Cancel anytime.
+                  Application does not guarantee acceptance or placement.
                 </p>
               </div>
             </div>

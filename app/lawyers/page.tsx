@@ -21,7 +21,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Find a Lawyer — Attorney Directory | LegalLawDocs.com",
   description:
-    "Browse verified attorneys by practice area and state. Find a lawyer for business contracts, estate planning, real estate, employment law, and more.",
+    "Browse submitted attorney advertising profiles by practice area and state. Independently verify credentials, license status, fees, and fit before hiring.",
   keywords: [
     "find a lawyer",
     "attorney directory",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: "https://legallawdocs.com/lawyers",
     title: "Find a Lawyer — Attorney Directory | LegalLawDocs.com",
     description:
-      "Browse verified attorneys by practice area and state. Connect with a lawyer who can help with your legal documents.",
+      "Browse submitted attorney advertising profiles. LegalLawDocs does not recommend, endorse, or guarantee any listed professional.",
     siteName: "LegalLawDocs.com",
   },
 }
@@ -148,9 +148,8 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                 Find a <span className="gradient-text">Lawyer</span>
               </h1>
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                Connect with verified attorneys across all practice areas.
-                Browse profiles, review credentials, and get the legal help you
-                need.
+                Browse advertising profiles submitted for the directory. Confirm credentials and
+                license status with the relevant bar or licensing authority before hiring anyone.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Badge
@@ -158,20 +157,20 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                   className="gap-1 border-primary/30 bg-primary/10 text-primary"
                 >
                   <ShieldCheck className="h-3 w-3" />
-                  Verified Attorneys
+                  Advertising Profiles
                 </Badge>
                 <Badge
                   variant="outline"
                   className="gap-1 border-border/60 text-muted-foreground"
                 >
-                  All 50 States
+                  Filter by Location
                 </Badge>
                 <Badge
                   variant="outline"
                   className="gap-1 border-border/60 text-muted-foreground"
                 >
                   <Briefcase className="h-3 w-3" />
-                  17 Practice Areas
+                  Filter by Practice Area
                 </Badge>
               </div>
             </div>
@@ -217,7 +216,7 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                         {lawyer.verified && (
                           <Badge className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent" variant="outline">
                             <ShieldCheck className="h-2.5 w-2.5" />
-                            Verified
+                            Profile Reviewed
                           </Badge>
                         )}
                       </div>
@@ -342,13 +341,12 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                   </Badge>
                 </div>
                 <h2 className="font-serif text-3xl font-bold text-foreground">
-                  Grow your practice with{" "}
-                  <span className="gradient-text">LegalLawDocs</span>
+                  Apply for the{" "}
+                  <span className="gradient-text">directory pilot</span>
                 </h2>
                 <p className="mt-4 text-muted-foreground">
-                  Get in front of clients who are already engaged with legal
-                  documents in your practice area. Verified listings, qualified
-                  leads.
+                  Apply for a clearly labeled directory profile. Acceptance, placement, pricing,
+                  traffic, and reporting are subject to written pilot terms. Leads are not guaranteed.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <Button asChild size="lg">

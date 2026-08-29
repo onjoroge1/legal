@@ -7,7 +7,7 @@ import { HelpCircle, CreditCard, FileText, MessageCircle } from "lucide-react"
 export const metadata: Metadata = {
   title: "Help Center — LegalLawDocs.com",
   description:
-    "Find answers to common questions about creating documents, billing, subscriptions, and whether LegalLawDocs documents are legally binding.",
+    "Find answers about LegalLawDocs drafting workflows, billing, subscriptions, data handling, and the limits of AI-generated drafts.",
 }
 
 const sections = [
@@ -18,7 +18,7 @@ const sections = [
     faqs: [
       {
         q: "How do I create a document?",
-        a: "Choose a document type from our library, answer a series of plain-language questions about your specific situation, and we'll generate a professionally formatted document tailored to your needs. The process typically takes 5–10 minutes. You can then download your document as a PDF or Word file.",
+        a: "Choose a document type, answer the plain-language questions, inspect the assembled draft, and correct any placeholders or flagged citations. You can then download a PDF or Word file for attorney review.",
       },
       {
         q: "What file formats do you offer?",
@@ -26,7 +26,7 @@ const sections = [
       },
       {
         q: "Is my data secure?",
-        a: "Yes. All data is encrypted in transit using 256-bit SSL and encrypted at rest. We are SOC 2 compliant and GDPR ready. Your document content is never shared with third parties except as required to process payments (Stripe) or as required by law. See our Privacy Policy for full details.",
+        a: "We use account access controls and third-party service providers described in our Privacy Policy. Payment card entry occurs on Stripe-hosted checkout when payments are enabled. No online service can guarantee absolute security, so avoid entering information the document does not require.",
       },
       {
         q: "Do I need an account to create a document?",
@@ -34,7 +34,7 @@ const sections = [
       },
       {
         q: "What states do you cover?",
-        a: "Our documents cover all 50 U.S. states. During the document creation process, you'll be asked to specify your state, and the generated document will reflect state-specific requirements and terminology where applicable.",
+        a: "The workflow lets you select any U.S. state and may surface jurisdiction-aware questions, terminology, and reference material. That selection does not establish that the resulting draft satisfies current state or local law.",
       },
     ],
   },
@@ -45,23 +45,23 @@ const sections = [
     faqs: [
       {
         q: "What is the one-time price for a document?",
-        a: "Individual documents are available for a one-time purchase with no recurring fees. Pricing varies by document type and is displayed on each document page before you begin. Most documents range from $9.99 to $29.99.",
+        a: "Catalog prices currently range from $14–$29 per document. The applicable one-time price is displayed on the document page and again before you authorize payment.",
       },
       {
         q: "What does a subscription include?",
-        a: "Our subscription plan gives you unlimited document access — generate as many documents as you need, across all categories, for one flat monthly or annual fee. Subscribers also get priority support, re-download access to all past documents, and early access to new templates.",
+        a: "The Professional option is a recurring plan for ongoing drafting access. The checkout page is the source of truth for the current price, billing interval, and included features. Review those terms before authorizing payment.",
       },
       {
         q: "How do I cancel my subscription?",
-        a: "You can cancel at any time from your account dashboard under Settings → Subscription. Your access continues until the end of your current billing period — there are no cancellation fees and no questions asked.",
+        a: "Use the billing dashboard to request cancellation. The timing of cancellation and continued access is governed by the subscription terms shown before purchase and the Terms of Service.",
       },
       {
         q: "What payment methods do you accept?",
-        a: "We accept all major credit and debit cards (Visa, Mastercard, American Express, Discover) via Stripe. All transactions are processed securely. We do not store your full card details on our servers.",
+        a: "When payments are enabled, Stripe Checkout displays the payment methods available for your transaction. Card details are entered on Stripe's hosted page, and LegalLawDocs does not receive your full card number.",
       },
       {
         q: "Can I get a refund?",
-        a: "If you experience a technical issue that prevents you from downloading your document, contact us within 7 days and we'll resolve it or issue a full refund. Because documents are delivered digitally and immediately upon payment, we generally do not offer refunds for completed purchases where the document was successfully delivered.",
+        a: "Completed digital purchases and commenced subscription periods are generally final, except where law requires otherwise. If a verified technical failure prevents delivery, contact support within 7 days so we can resolve the issue or consider a credit. See the Terms for the controlling policy.",
       },
     ],
   },
@@ -71,8 +71,8 @@ const sections = [
     title: "Documents & Legal",
     faqs: [
       {
-        q: "Are LegalLawDocs documents legally binding?",
-        a: "Our AI compiles drafts from state-aware templates that are structured to be legally valid when properly completed, signed, and executed in your jurisdiction. Whether a specific draft is enforceable depends on correct completion, proper signing procedures, and your state's laws — none of which we can verify on your behalf. We are not a law firm, and we strongly recommend having any draft reviewed by a licensed attorney before signing, especially for higher-stakes matters.",
+        q: "Does LegalLawDocs determine whether a draft is enforceable?",
+        a: "No. Enforceability depends on current law, the document terms, your facts, and proper execution. LegalLawDocs is a self-help drafting tool and does not provide a legal opinion. Consult a licensed attorney in your jurisdiction before relying on or signing any draft.",
       },
       {
         q: "Can I edit my document after downloading it?",
@@ -80,11 +80,11 @@ const sections = [
       },
       {
         q: "Do I need a lawyer to use these documents?",
-        a: "For many common legal situations — standard NDAs, simple lease agreements, basic employment offer letters — our documents are sufficient on their own. However, for complex transactions, high-value contracts, business acquisitions, or estate planning involving significant assets, we strongly recommend consulting a licensed attorney in addition to using our documents.",
+        a: "You may use the software to prepare a draft, but you should consult a licensed attorney before relying on, signing, filing, or sending it. Professional review is especially important for deadlines, disputes, regulated matters, significant assets, or unfamiliar terms.",
       },
       {
         q: "Are the documents up to date with current law?",
-        a: "Our legal team regularly reviews and updates document templates to reflect changes in federal and state law. The date of the last update is displayed on each document template page. If you're concerned about a recent legal change, please contact our support team.",
+        a: "Do not assume so. Laws, forms, agency guidance, and local rules change, and software updates may lag. Check current official sources and ask a licensed attorney to confirm which requirements apply before use.",
       },
       {
         q: "Who owns the documents I create?",
@@ -190,7 +190,7 @@ export default function HelpPage() {
             </div>
             <h3 className="font-serif text-xl font-bold text-foreground">Still have questions?</h3>
             <p className="mt-2 text-muted-foreground">
-              Our support team typically responds within 24 hours on business days.
+              Email support for product, account, billing, or technical questions. Response times vary.
             </p>
             <Link
               href="/contact"

@@ -104,14 +104,14 @@ export default function GeneratePage() {
 
   const GENERATION_STATUSES = [
     "Analyzing your requirements…",
-    "Researching applicable state laws…",
+    "Reviewing selected jurisdiction notes…",
     "Drafting legal clauses…",
-    "Applying compliance requirements…",
+    "Checking required placeholders…",
     "Structuring the agreement…",
-    "Adding jurisdiction-specific language…",
-    "Cross-referencing statute citations…",
-    "Reviewing legal provisions…",
-    "Finalizing your document…",
+    "Adding selected jurisdiction context…",
+    "Scanning citations for review…",
+    "Flagging unresolved terms…",
+    "Finalizing your draft…",
   ]
 
   // Drive the fake progress bar while the AI call is in-flight
@@ -756,20 +756,21 @@ export default function GeneratePage() {
                 )}
               </div>
 
-              {/* YMYL trust signal — honest statement of compliance basis */}
+              {/* YMYL trust signal — honest statement of the reference basis */}
               <div className="mt-6 rounded-xl border border-border/50 bg-card/60 p-3 space-y-2">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-xs font-medium text-foreground">State-Law Compliance</span>
+                  <span className="text-xs font-medium text-foreground">State-Law Reference Basis</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Generated documents incorporate{" "}
+                  Generated drafts may incorporate reference material associated with{" "}
                   {formData.state ? (
                     <span className="font-medium text-foreground">{formData.state}</span>
                   ) : (
                     "your selected state's"
                   )}{" "}
-                  statutory requirements. This is not legal advice.{" "}
+                  statutory requirements. References may be incomplete, outdated, or inapplicable.
+                  This is not legal advice.{" "}
                   <Link href="/lawyers" className="text-primary hover:underline">
                     Consult a licensed attorney
                   </Link>{" "}
@@ -919,7 +920,7 @@ export default function GeneratePage() {
                     <div className="flex items-center gap-3 text-[11px]">
                       <div className="flex items-center gap-1 text-green-600 font-medium">
                         <CheckCircle2 className="h-3.5 w-3.5" />
-                        Laws applied
+                        Jurisdiction context loaded
                       </div>
                       <div className="h-px w-5 bg-border" />
                       <div className={`flex items-center gap-1 font-medium transition-colors ${generationProgress >= 35 ? "text-green-600" : "text-muted-foreground"}`}>
@@ -933,7 +934,7 @@ export default function GeneratePage() {
                         {generationProgress >= 78
                           ? <CheckCircle2 className="h-3.5 w-3.5" />
                           : <div className="h-3.5 w-3.5 rounded-full border-2 border-muted shrink-0" />}
-                        Compliance check
+                        Review flags checked
                       </div>
                     </div>
                   </div>
@@ -999,7 +1000,7 @@ export default function GeneratePage() {
                       {!hasSubscription && (
                         <p className="mt-3 text-center text-xs text-muted-foreground">
                           <Lock className="inline h-3 w-3 mr-1 align-middle" />
-                          Subscribe from $9.99/mo or pay $19.99 for this document only
+                          Pay ${doc.price} for this document or review the recurring price at checkout
                         </p>
                       )}
                       <p className="mt-2 text-center text-[11px] text-muted-foreground leading-snug">

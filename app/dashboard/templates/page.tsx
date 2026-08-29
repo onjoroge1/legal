@@ -172,7 +172,7 @@ export default function TemplatesPage() {
                         className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent"
                       >
                         <Crown className="h-2.5 w-2.5" />
-                        Free
+                        Included
                       </Badge>
                     )}
                     {doc.popular && (
@@ -206,13 +206,13 @@ export default function TemplatesPage() {
             Unlock Unlimited Documents
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Get unlimited access to all document templates for just $9.99/month
+            Review the current recurring price and billing interval at Stripe Checkout before payment.
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {[
               "Unlimited document generation",
-              "All 28 document templates",
-              "Priority AI support",
+              "All 52 document types",
+              "Saved dashboard access",
             ].map((benefit) => (
               <div key={benefit} className="flex items-center justify-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-accent" />
@@ -244,4 +244,3 @@ export default function TemplatesPage() {
     </div>
   )
 }
-

@@ -47,7 +47,7 @@ export function HeroSection() {
             className="animate-slide-up mb-8 gap-2 border-primary/40 bg-primary/10 px-5 py-2 text-sm text-primary"
           >
             <Zap className="h-3.5 w-3.5" />
-            AI-Powered Legal Documents
+            AI-Assisted Document Drafting
             <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-accent" />
           </Badge>
 
@@ -81,15 +81,15 @@ export function HeroSection() {
           <div className="animate-slide-up stagger-4 mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             <div className="flex items-center gap-2.5 rounded-full border border-border/50 bg-card/60 px-4 py-2">
               <Shield className="h-4 w-4 text-accent" />
-              <span className="text-sm text-muted-foreground">State-Specific Compliance</span>
+              <span className="text-sm text-muted-foreground">Jurisdiction-Aware Questions</span>
             </div>
             <div className="flex items-center gap-2.5 rounded-full border border-border/50 bg-card/60 px-4 py-2">
               <FileText className="h-4 w-4 text-primary" />
-              <span className="text-sm text-muted-foreground">50+ Document Templates</span>
+              <span className="text-sm text-muted-foreground">52 Document Types</span>
             </div>
             <div className="flex items-center gap-2.5 rounded-full border border-border/50 bg-card/60 px-4 py-2">
-              <Zap className="h-4 w-4 text-primary" />
-              <span className="text-sm text-muted-foreground">Generated in Under 2 Minutes</span>
+              <Scale className="h-4 w-4 text-primary" />
+              <span className="text-sm text-muted-foreground">Attorney Review Required</span>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export function HeroSection() {
               <div className="flex items-center gap-2">
                 <Badge className="border-accent/30 bg-accent/15 text-xs text-accent" variant="outline">
                   <CheckCircle2 className="mr-1 h-3 w-3" />
-                  CA Compliant
+                  California Draft
                 </Badge>
                 <div className="hidden items-center gap-1.5 rounded-md border border-border/50 bg-muted/40 px-2.5 py-1.5 sm:flex">
                   <Eye className="h-3 w-3 text-muted-foreground" />
@@ -194,7 +194,7 @@ export function HeroSection() {
                   <div className="mt-8 rounded-lg border border-dashed border-primary/25 bg-primary/5 px-5 py-4">
                     <div className="flex items-center gap-2">
                       <Lock className="h-4 w-4 text-primary" />
-                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">Digital Signature Block</span>
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">Signature Fields</span>
                     </div>
                     <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:gap-8">
                       <div className="flex-1">
@@ -234,17 +234,17 @@ export function HeroSection() {
                   </div>
                 </div>
 
-                {/* Compliance checklist */}
+                {/* Drafting checklist */}
                 <h4 className="mt-8 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                  Compliance Checks
+                  Drafting Checks
                 </h4>
                 <div className="mt-4 space-y-2.5">
                   {[
-                    "CA Trade Secrets Act",
-                    "Bus. & Prof. Code \u00A716600",
-                    "CCPA Data Standards",
-                    "Digital Signature Valid",
-                    "Non-Compete Compliant",
+                    "State selection: California",
+                    "Reference review enabled",
+                    "Placeholders highlighted",
+                    "Signature fields included",
+                    "Attorney review required",
                   ].map((item) => (
                     <div key={item} className="flex items-center gap-2.5">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" />
@@ -253,17 +253,17 @@ export function HeroSection() {
                   ))}
                 </div>
 
-                {/* AI confidence score */}
+                {/* Review status */}
                 <div className="mt-8 rounded-lg border border-accent/20 bg-accent/5 p-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-accent">AI Confidence</span>
-                    <span className="text-lg font-bold text-accent">98%</span>
+                    <span className="text-xs font-medium text-accent">Review Status</span>
+                    <span className="text-sm font-bold text-accent">Pending</span>
                   </div>
                   <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full w-[98%] rounded-full bg-accent" />
+                    <div className="h-full w-1/2 rounded-full bg-accent" />
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    All California-specific provisions verified
+                    A licensed attorney has not reviewed this draft
                   </p>
                 </div>
               </div>
@@ -274,7 +274,7 @@ export function HeroSection() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
                   <div className="h-2 w-2 rounded-full bg-accent" />
-                  <span className="text-xs text-muted-foreground">All checks passed</span>
+                  <span className="text-xs text-muted-foreground">Draft assembled</span>
                 </div>
                 <span className="hidden text-xs text-muted-foreground/50 sm:inline">|</span>
                 <span className="hidden text-xs text-muted-foreground sm:inline">3 pages</span>
@@ -283,7 +283,7 @@ export function HeroSection() {
               </div>
               <div className="flex items-center gap-1.5">
                 <Lock className="h-3 w-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">AES-256 Encrypted</span>
+                <span className="text-xs text-muted-foreground">Attorney review pending</span>
               </div>
             </div>
           </div>

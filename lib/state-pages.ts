@@ -12634,7 +12634,7 @@ export function getStatePageData(stateSlug: string, docSlug: string) {
 
   const pageTitle = `${state.name} ${doc.title}`
   const seoTitle = `${state.name} ${doc.title} Template | LegalLawDocs.com`
-  const metaDescription = `Create a ${state.name} ${doc.title.toLowerCase()} online. AI-generated, state-compliant with ${state.abbr} law requirements. Instant PDF & DOCX download.`
+  const metaDescription = `Create an AI-assisted ${state.name} ${doc.title.toLowerCase()} draft with state-aware inputs and PDF or DOCX download. Attorney review required before use.`
 
   return {
     state,

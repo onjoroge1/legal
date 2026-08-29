@@ -2,12 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Shield, Lock, Globe, Users, Lightbulb, Heart, Linkedin } from "lucide-react"
+import { FileText, MapPin, Scale, Users, Lightbulb, Heart, Linkedin } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "About LegalLawDocs.com — AI-Powered Legal Document Drafting",
   description:
-    "Learn how LegalLawDocs.com was built to make legal document drafting accessible without expensive attorney fees. Meet founder Obadiah Kimani and our mission.",
+    "Learn about LegalLawDocs.com, its self-help document drafting mission, its founder, and the limits of its AI-assisted drafts.",
 }
 
 /**
@@ -19,30 +19,30 @@ const aboutPageJsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.legallawdocs.com/#organization",
+      "@id": "https://legallawdocs.com/#organization",
       name: "LegalLawDocs.com",
-      url: "https://www.legallawdocs.com",
+      url: "https://legallawdocs.com",
       description:
         "AI-powered legal document drafting platform. Not a law firm — drafts should be reviewed by a qualified attorney before signing.",
       founder: {
-        "@id": "https://www.legallawdocs.com/about#founder",
+        "@id": "https://legallawdocs.com/about#founder",
       },
     },
     {
       "@type": "Person",
-      "@id": "https://www.legallawdocs.com/about#founder",
+      "@id": "https://legallawdocs.com/about#founder",
       name: "Obadiah Kimani",
       jobTitle: "Founder",
       worksFor: {
-        "@id": "https://www.legallawdocs.com/#organization",
+        "@id": "https://legallawdocs.com/#organization",
       },
       sameAs: ["https://www.linkedin.com/in/obadiah-njoroge-93103246/"],
     },
     {
       "@type": "AboutPage",
-      url: "https://www.legallawdocs.com/about",
+      url: "https://legallawdocs.com/about",
       isPartOf: {
-        "@id": "https://www.legallawdocs.com/#organization",
+        "@id": "https://legallawdocs.com/#organization",
       },
     },
   ],
@@ -50,34 +50,34 @@ const aboutPageJsonLd = {
 
 const trustSignals = [
   {
-    icon: Lock,
-    label: "256-bit SSL",
-    description: "All data encrypted in transit and at rest.",
+    icon: FileText,
+    label: "52 document types",
+    description: "Guided workflows across seven common categories.",
   },
   {
-    icon: Shield,
-    label: "SOC 2 Compliant",
-    description: "Independently audited security controls.",
+    icon: MapPin,
+    label: "State-aware inputs",
+    description: "Select a jurisdiction to surface relevant drafting notes.",
   },
   {
-    icon: Globe,
-    label: "GDPR Ready",
-    description: "Your data rights respected globally.",
+    icon: Scale,
+    label: "Attorney review required",
+    description: "The software does not provide legal advice or representation.",
   },
 ]
 
 const values = [
   {
     icon: Users,
-    title: "Accessible Justice",
+    title: "Accessible Starting Points",
     description:
-      "Legal protection shouldn't be a luxury. We believe every individual and small business deserves access to professionally structured legal documents — regardless of budget.",
+      "We believe individuals and small businesses should have a clearer way to organize information and prepare a first draft before professional review.",
   },
   {
     icon: Lightbulb,
     title: "AI-Powered Document Assembly",
     description:
-      "Our AI compiles drafts from state-aware templates and is updated as state and federal law evolves. We give you a strong first draft — your attorney can take it from there.",
+      "Our AI compiles drafts from state-aware questions and reference material. The result may be incomplete or outdated, so your attorney must take it from there.",
   },
   {
     icon: Heart,
@@ -105,13 +105,12 @@ export default function AboutPage() {
                 Our Story
               </div>
               <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
-                Legal protection for everyone,{" "}
-                <span className="text-primary">not just the privileged few</span>
+                A clearer start to document drafting,{" "}
+                <span className="text-primary">with the limits stated upfront</span>
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                LegalLawDocs.com was built by a team who watched friends, family, and small business
-                owners get burned — not because they ignored legal protection, but because they
-                couldn't afford it. We set out to change that.
+                LegalLawDocs.com was built to reduce blank-page work when people organize the facts
+                and terms needed for a common document draft. It is software, not legal counsel.
               </p>
             </div>
           </div>
@@ -123,20 +122,20 @@ export default function AboutPage() {
             <div>
               <h2 className="font-serif text-3xl font-bold text-foreground">Our mission</h2>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                A standard attorney consultation costs $250–$500 per hour. A simple NDA or lease
-                agreement can run $500–$2,000 to have drafted. For a freelancer, startup founder, or
-                landlord managing a single property, that's simply out of reach.
+                Starting a document can be confusing: users must identify the parties, dates,
+                obligations, jurisdiction, and execution details before professional review can be
+                productive.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Our mission is to close that gap. By combining advanced AI with state-aware document
-                templates, we compile professional first drafts in minutes — for a fraction of
-                traditional legal costs. We&apos;re a software tool, not a law firm, and we always
+                templates, we compile structured first drafts from the details a user supplies.
+                We&apos;re a software tool, not a law firm, and we always
                 recommend you have an attorney review anything important before signing.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Every template on our platform is built from publicly available legal frameworks
-                and statutory references, updated as law evolves, and structured to give you a
-                strong starting point for your situation.
+                and statutory references. Those sources may be incomplete or become outdated, so
+                they are review aids rather than a representation that a draft satisfies current law.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
@@ -162,7 +161,7 @@ export default function AboutPage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-serif text-3xl font-bold text-foreground">How it works</h2>
               <p className="mt-3 text-muted-foreground">
-                Professional documents in three steps — no legal expertise required.
+                A guided first draft in three steps — followed by careful legal review.
               </p>
             </div>
             <div className="mt-12 grid gap-8 sm:grid-cols-3">
@@ -171,19 +170,19 @@ export default function AboutPage() {
                   step: "01",
                   title: "Choose your document",
                   description:
-                    "Browse over 100 state-aware document templates across business, employment, real estate, estate planning, and more.",
+                    "Browse 52 state-aware drafting workflows across business, employment, real estate, estate planning, and more.",
                 },
                 {
                   step: "02",
                   title: "Answer simple questions",
                   description:
-                    "Our AI walks you through a guided questionnaire. Plain-language questions, no legal jargon. Takes 5–10 minutes.",
+                    "Our AI walks you through a guided questionnaire with plain-language prompts. Work at your own pace and verify every answer.",
                 },
                 {
                   step: "03",
-                  title: "Download and use",
+                  title: "Download and review",
                   description:
-                    "Receive a professionally formatted document in PDF and DOCX formats, ready to sign or customize further.",
+                    "Receive a structured PDF and DOCX draft to revise and take to a licensed attorney before use.",
                 },
               ].map((item) => (
                 <div key={item.step} className="relative rounded-2xl border border-border/50 bg-card/60 p-6">
@@ -204,18 +203,17 @@ export default function AboutPage() {
               <p>
                 LegalLawDocs.com was founded with one clear belief: that access to basic legal
                 document drafting is a right, not a privilege. The founder had seen firsthand how
-                costly it was for small business owners, freelancers, landlords, and families to
-                get even the most routine documents put together.
+                difficult it can be for small business owners, freelancers, landlords, and families
+                to organize the information needed for routine document drafting.
               </p>
               <p>
-                A freelance designer who signed a client contract without an NDA lost a six-figure
-                concept to a larger company. A first-time landlord who used a generic template
-                found it unenforceable in their state. A family that put off estate planning paid
-                thousands in probate fees that could have been avoided with a simple will.
+                The product focuses on a narrower, verifiable job: asking structured questions,
+                assembling the answers into a first draft, and making the draft available for
+                human review. It does not decide what rights a user has or what terms they should accept.
               </p>
               <p>
-                We built LegalLawDocs.com to be the answer to those situations — affordable,
-                fast, and state-aware. We&apos;re a software tool, not a law firm, and we&apos;ll
+                LegalLawDocs.com is designed as a state-aware drafting aid. We&apos;re a software tool,
+                not a law firm, and we&apos;ll
                 always recommend a licensed attorney review anything important before you sign.
               </p>
             </div>
@@ -250,9 +248,9 @@ export default function AboutPage() {
                     </p>
                     <p className="mt-4 leading-relaxed text-muted-foreground">
                       Obadiah built LegalLawDocs to make professional document drafting accessible
-                      to people who can&apos;t justify $500&ndash;$2,000 in attorney fees just to get
-                      a first draft on paper. He runs the product, engineering, and customer side
-                      personally &mdash; every email goes to a human.
+                      to people who want to organize their facts and terms before speaking with an
+                      attorney. He leads the product and engineering work and is accountable for the
+                      limitations described throughout the service.
                     </p>
                     <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
                       <Link

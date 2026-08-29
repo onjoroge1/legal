@@ -276,9 +276,9 @@ export default function BillingPage() {
                     {subscription?.tier === "free"
                       ? "Free"
                       : subscription?.tier === "starter"
-                      ? "$9 per document"
+                      ? "Per-document access"
                       : subscription?.tier === "professional"
-                      ? "$49/month"
+                      ? "Recurring plan"
                       : "Free"}
                   </p>
                   {subscription?.endDate && subscription?.tier === "professional" && (
@@ -392,7 +392,7 @@ export default function BillingPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="mb-4">
-                        <span className="text-3xl font-bold">$9</span>
+                        <span className="text-3xl font-bold">$14–$29</span>
                         <span className="text-muted-foreground ml-2">per document</span>
                       </div>
                       <ul className="space-y-2 text-sm mb-4">
@@ -402,7 +402,7 @@ export default function BillingPage() {
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>State-specific compliance</span>
+                          <span>State-aware questions and references</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
@@ -414,7 +414,7 @@ export default function BillingPage() {
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Basic AI review</span>
+                          <span>Review flags and placeholders</span>
                         </li>
                       </ul>
                       <Button
@@ -434,14 +434,13 @@ export default function BillingPage() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Professional</CardTitle>
-                        <Badge className="bg-primary">Most Popular</Badge>
+                        <Badge className="bg-primary">Recurring</Badge>
                       </div>
                       <CardDescription>Ideal for small businesses and frequent document needs</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="mb-4">
-                        <span className="text-3xl font-bold">$49</span>
-                        <span className="text-muted-foreground ml-2">per month</span>
+                        <span className="text-xl font-bold">Price confirmed by Stripe</span>
                       </div>
                       <ul className="space-y-2 text-sm mb-4">
                         <li className="flex items-start gap-2">
@@ -450,11 +449,11 @@ export default function BillingPage() {
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>All 50+ document templates</span>
+                          <span>All 52 document types</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Priority AI compliance review</span>
+                          <span>State-aware drafting and review flags</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
@@ -462,11 +461,11 @@ export default function BillingPage() {
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Priority email & chat support</span>
+                          <span>Saved dashboard access</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Custom branding on documents</span>
+                          <span>Cancel from the billing dashboard</span>
                         </li>
                       </ul>
                       <Button
@@ -477,7 +476,7 @@ export default function BillingPage() {
                       >
                         {subscription?.tier === "professional"
                           ? "Current Plan"
-                          : "Start Free Trial"}
+                          : "Review at Checkout"}
                       </Button>
                     </CardContent>
                   </Card>
@@ -635,4 +634,3 @@ export default function BillingPage() {
     </div>
   )
 }
-

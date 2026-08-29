@@ -189,7 +189,7 @@ export default async function LawyerProfilePage({ params }: PageProps) {
                       className="gap-1 border-accent/30 bg-accent/10 text-xs text-accent"
                     >
                       <ShieldCheck className="h-2.5 w-2.5" />
-                      Verified Attorney
+                      Profile Reviewed
                     </Badge>
                   )}
                 </div>
@@ -212,6 +212,12 @@ export default async function LawyerProfilePage({ params }: PageProps) {
                     {lawyer.tagline}
                   </p>
                 )}
+                <p className="mt-4 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+                  This is an advertising profile. &ldquo;Profile Reviewed&rdquo; means the listing
+                  received an administrative review; it is not an endorsement or a guarantee of
+                  identity, licensing, experience, availability, outcome, or fees. Verify directly
+                  with the relevant licensing authority before hiring.
+                </p>
               </div>
             </div>
           </div>
