@@ -262,7 +262,7 @@ export async function canGenerateDocument(userEmail: string): Promise<{
       return {
         allowed: false,
         reason: "Free plan does not include document generation",
-        upgradeMessage: "Upgrade to Starter ($9 per document) or Professional ($49/month) to generate documents",
+        upgradeMessage: "Review the current Starter and Professional prices at checkout to generate documents",
       }
     }
 
@@ -287,7 +287,6 @@ export async function canGenerateDocument(userEmail: string): Promise<{
     }
   }
 }
-
 
 
 

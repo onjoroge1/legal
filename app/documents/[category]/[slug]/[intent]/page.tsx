@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   FileText,
   Sparkles,
-  Lock,
   Zap,
   Shield,
   ChevronRight,
@@ -168,7 +167,7 @@ export default async function IntentPage({ params }: PageProps) {
     operatingSystem: "Any",
     offers: {
       "@type": "Offer",
-      price: `${doc.price}.99`,
+      price: `${doc.price}`,
       priceCurrency: "USD",
     },
     description: intent.shortDescription,
@@ -239,7 +238,7 @@ export default async function IntentPage({ params }: PageProps) {
                     variant="outline"
                   >
                     <Shield className="h-3 w-3" />
-                    Lawyer-Reviewed
+                    Review Required
                   </Badge>
                 </div>
 
@@ -257,7 +256,7 @@ export default async function IntentPage({ params }: PageProps) {
                 <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    Attorney-drafted template
+                    AI-assisted first draft
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -265,11 +264,11 @@ export default async function IntentPage({ params }: PageProps) {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    State-compliant
+                    State-aware questions
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Lock className="h-4 w-4 text-green-500" />
-                    256-bit SSL encrypted
+                    <Scale className="h-4 w-4 text-green-500" />
+                    Attorney review required
                   </span>
                 </div>
 
@@ -293,21 +292,20 @@ export default async function IntentPage({ params }: PageProps) {
               <div className="w-full shrink-0 lg:w-80">
                 <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/80 shadow-xl">
                   <div className="border-b border-border/40 bg-secondary/40 px-6 py-4">
-                    <p className="text-sm font-medium text-muted-foreground">Starting at</p>
+                    <p className="text-sm font-medium text-muted-foreground">One-time price</p>
                     <div className="mt-1 flex items-baseline gap-1">
                       <span className="font-serif text-4xl font-bold text-foreground">
                         ${doc.price}
                       </span>
-                      <span className="text-muted-foreground">.99</span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">One-time · No subscription</p>
                   </div>
                   <div className="space-y-3 px-6 py-5">
                     {[
                       "AI-customised to your situation",
-                      "Ready in under 5 minutes",
+                      "Guided questionnaire",
                       "PDF & DOCX included",
-                      "All 50 states supported",
+                      "50 state selections",
                       "Unlimited revisions",
                     ].map((f) => (
                       <div key={f} className="flex items-center gap-2.5">

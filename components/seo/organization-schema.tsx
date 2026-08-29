@@ -10,18 +10,8 @@ export function OrganizationSchema() {
         "@id": "https://legallawdocs.com/#organization",
         name: "LegalLawDocs.com",
         url: "https://legallawdocs.com",
-        logo: {
-          "@type": "ImageObject",
-          url: "https://legallawdocs.com/images/logo.png",
-          width: 200,
-          height: 60,
-        },
         description:
-          "AI-powered legal document generator. Create state-compliant NDAs, leases, contracts, and more in minutes.",
-        sameAs: [
-          "https://twitter.com/legallawdocs",
-          "https://linkedin.com/company/legallawdocs",
-        ],
+          "Self-help, AI-assisted document drafting software with state-aware inputs. Not a law firm and not legal advice; attorney review is required before use.",
       },
       {
         "@type": "WebSite",

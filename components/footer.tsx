@@ -51,20 +51,13 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              AI-powered legal document generation with state-specific compliance. Professional
-              documents without expensive attorney fees.
+              AI-assisted, state-aware document drafting for self-help users. Drafts are starting
+              points and require careful review before use.
             </p>
-            <div className="mt-6 flex items-center gap-3">
-              <div className="rounded-lg border border-border/50 bg-secondary/50 px-3 py-1.5">
-                <span className="text-xs font-medium text-muted-foreground">SOC 2</span>
-              </div>
-              <div className="rounded-lg border border-border/50 bg-secondary/50 px-3 py-1.5">
-                <span className="text-xs font-medium text-muted-foreground">256-bit SSL</span>
-              </div>
-              <div className="rounded-lg border border-border/50 bg-secondary/50 px-3 py-1.5">
-                <span className="text-xs font-medium text-muted-foreground">GDPR</span>
-              </div>
-            </div>
+            <p className="mt-5 max-w-xs text-xs leading-relaxed text-muted-foreground">
+              We do not review your facts, represent you, or determine whether a draft is suitable
+              or enforceable for your situation.
+            </p>
           </div>
 
           {/* Link columns */}
@@ -91,10 +84,7 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} LegalLawDocs.com. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            LegalLawDocs provides self-help services at your specific direction.
-            We are not a law firm or a substitute for an attorney&apos;s advice.
-          </p>
+          <p className="text-xs text-muted-foreground">Self-help drafting software. No legal advice.</p>
         </div>
       </div>
     </footer>

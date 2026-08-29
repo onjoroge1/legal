@@ -261,11 +261,10 @@ export async function canAccessTemplate(
  */
 export function getUpgradeMessage(feature: string, currentTier: string): string {
   if (currentTier === "free") {
-    return `Upgrade to Starter plan ($9 per document) to ${feature}`
+    return `Review the current Starter document price at checkout to ${feature}`
   } else if (currentTier === "starter") {
-    return `Upgrade to Professional plan ($49/month) to ${feature}`
+    return `Review the current Professional recurring price at checkout to ${feature}`
   }
   
   return `This feature requires a higher plan`
 }
-

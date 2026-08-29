@@ -22,7 +22,7 @@ export default function PrivacyPage() {
             </div>
             <h1 className="font-serif text-4xl font-bold text-foreground">Privacy Policy</h1>
             <p className="mt-3 text-muted-foreground">
-              Last updated: <span className="text-foreground font-medium">May 1, 2026</span>
+              Last updated: <span className="text-foreground font-medium">August 29, 2026</span>
             </p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
               This Privacy Policy describes how LegalLawDocs.com (&ldquo;LegalLawDocs,&rdquo; &ldquo;we,&rdquo;
@@ -86,15 +86,13 @@ export default function PrivacyPage() {
                 ))}
               </ul>
 
-              <h3 className="mt-5 font-semibold text-foreground">Information collected automatically</h3>
+              <h3 className="mt-5 font-semibold text-foreground">Information processed automatically</h3>
               <ul className="mt-3 space-y-2">
                 {[
-                  "IP address and approximate geographic location",
-                  "Browser type and version",
-                  "Device type and operating system",
-                  "Pages visited and time spent on each page",
-                  "Referring URLs",
-                  "Document types generated (but not the content, unless stored in your account)",
+                  "IP address and request metadata processed by hosting and security providers",
+                  "Browser, device, and operating-system information included in operational logs",
+                  "Requested routes, request timing, status codes, and application errors",
+                  "Authentication, security, and disclaimer-acceptance cookie data",
                 ].map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
@@ -117,10 +115,8 @@ export default function PrivacyPage() {
                   "Generate and store legal documents on your behalf",
                   "Respond to support inquiries and provide customer service",
                   "Send transactional emails (password resets, subscription notices)",
-                  "Send optional product updates and legal news (you may unsubscribe at any time)",
                   "Detect and prevent fraud, abuse, and security incidents",
                   "Comply with applicable laws and legal obligations",
-                  "Analyze usage patterns to improve our platform (using aggregated, anonymized data)",
                 ].map((item) => (
                   <li key={item} className="flex gap-3">
                     <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
@@ -170,14 +166,14 @@ export default function PrivacyPage() {
                 4. How we share your information
               </h2>
               <p className="leading-relaxed">
-                We do not sell your personal information. We share your information only in the
-                following limited circumstances:
+                We do not sell your personal information. Information may be disclosed in the
+                following circumstances:
               </p>
               <ul className="mt-3 space-y-3">
                 {[
                   {
                     title: "Service providers",
-                    desc: "We share data with trusted third-party service providers who assist us in operating our platform (e.g., cloud hosting, email delivery, payment processing). These providers are contractually obligated to use your data only to provide services to us.",
+                    desc: "Hosting, database, AI, email, and payment providers process data as needed to operate the features you use. Their handling is also governed by their applicable service and privacy terms.",
                   },
                   {
                     title: "Legal requirements",
@@ -185,7 +181,7 @@ export default function PrivacyPage() {
                   },
                   {
                     title: "Business transfers",
-                    desc: "If LegalLawDocs.com is involved in a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction. We will notify you before your data is transferred and subject to a different privacy policy.",
+                    desc: "If LegalLawDocs.com is involved in a merger, acquisition, financing, reorganisation, bankruptcy, or sale of assets, information may be transferred subject to applicable law.",
                   },
                   {
                     title: "With your consent",
@@ -207,31 +203,33 @@ export default function PrivacyPage() {
                 5. Data retention
               </h2>
               <p className="leading-relaxed">
-                We retain your personal information for as long as necessary to provide our services
-                and comply with legal obligations:
+                Retention depends on the record type, account status, operational needs, and legal
+                obligations. We do not currently promise an automatic deletion deadline:
               </p>
               <ul className="mt-3 space-y-2">
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span>
-                    <strong className="text-foreground">Account data:</strong> Retained for the life
-                    of your account. Upon account deletion, your personal information is deleted or
-                    anonymized within 30 days, except where retention is required by law.
+                    <strong className="text-foreground">Account data:</strong> Retained while the
+                    account is active and as reasonably needed for security, dispute, and legal purposes.
+                    Send a deletion request to the privacy address below; requests may require manual processing.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span>
                     <strong className="text-foreground">Generated documents:</strong> Stored in your
-                    account until you delete them. You may download and delete your documents at
-                    any time from your dashboard.
+                    account until removed through available controls or a verified deletion request.
+                    Removal from the dashboard may not immediately remove backups, logs, or records
+                    that must be retained for security or legal reasons.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span>
-                    <strong className="text-foreground">Transaction records:</strong> Retained for
-                    a minimum of 7 years to comply with financial record-keeping obligations.
+                    <strong className="text-foreground">Transaction records:</strong> Retained as
+                    reasonably needed for payment, accounting, fraud prevention, disputes, and
+                    applicable legal obligations.
                   </span>
                 </li>
               </ul>
@@ -242,10 +240,10 @@ export default function PrivacyPage() {
                 6. Security
               </h2>
               <p className="leading-relaxed">
-                We implement industry-standard security measures to protect your information,
-                including 256-bit SSL/TLS encryption for all data in transit, encryption of
-                sensitive data at rest, SOC 2 compliance, regular security audits, and strict
-                access controls limiting employee access to personal data.
+                We use technical and organisational safeguards intended to reduce unauthorised
+                access, disclosure, alteration, or loss. Safeguards include account access controls
+                and protections supplied by our hosting, database, email, and payment providers.
+                We do not claim a security certification or audit that we have not completed.
               </p>
               <p className="mt-3 leading-relaxed">
                 While we take these measures seriously, no method of transmission over the internet
@@ -304,7 +302,7 @@ export default function PrivacyPage() {
                 >
                   privacy@legallawdocs.com
                 </a>
-                . We will respond within 30 days (or as required by applicable law).
+                . We will respond within the period required by applicable law.
               </p>
             </section>
 

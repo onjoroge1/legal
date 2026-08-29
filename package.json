@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs",
+    "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs && node scripts/check-marketing-claims.mjs",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
     "check:routes": "node scripts/check-routes.mjs",
     "check:security": "node scripts/check-sensitive-files.mjs",
     "check:legal": "node scripts/check-legal-disclaimer.mjs",
+    "check:claims": "node scripts/check-marketing-claims.mjs",
     "smoke": "node scripts/smoke-tests.mjs"
   },
   "prisma": {

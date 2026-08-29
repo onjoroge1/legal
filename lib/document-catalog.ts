@@ -195,7 +195,7 @@ export const documentCatalog: CatalogDocument[] = [
     legacySlug: "purchase_agreement",
     category: "business",
     icon: Handshake,
-    description: "Legally binding purchase agreements for goods and services.",
+    description: "Structured purchase agreement drafts for goods and services.",
     longDescription:
       "A Purchase Agreement documents the sale of goods, assets, or services — including price, payment schedule, closing conditions, representations, and warranties. Essential for any significant transaction.",
     popular: false,
@@ -464,7 +464,7 @@ export const documentCatalog: CatalogDocument[] = [
     legacySlug: "residential_lease_agreement",
     category: "real-estate",
     icon: Home,
-    description: "Legally binding lease agreements compliant with local tenant laws.",
+    description: "Lease agreement drafts with local tenant-law review prompts.",
     longDescription:
       "A Residential Lease Agreement sets rent, lease term, security deposit, maintenance responsibilities, and tenant/landlord rights. Our AI incorporates your state's mandatory disclosures and habitability standards.",
     popular: true,
@@ -611,7 +611,7 @@ export const documentCatalog: CatalogDocument[] = [
     legacySlug: "last_will_testament",
     category: "estate-planning",
     icon: Scale,
-    description: "Protect your legacy with a state-compliant will document.",
+    description: "Prepare a state-aware will draft for licensed attorney review.",
     longDescription:
       "A Last Will & Testament specifies how your assets are distributed, who serves as executor, and (if applicable) who cares for minor children. Our AI ensures state-specific witness and signature requirements are met.",
     popular: false,
@@ -881,7 +881,7 @@ export const documentCatalog: CatalogDocument[] = [
     icon: Home,
     description: "Formally notify a tenant to vacate the property by a specific date.",
     longDescription:
-      "A Landlord Notice to Vacate formally informs a tenant that they must leave the property, whether due to lease expiration, non-payment, or lease violations. Our AI generates state-compliant notices with correct notice periods and required statutory language.",
+      "A Landlord Notice to Vacate formally informs a tenant that they must leave the property, whether due to lease expiration, non-payment, or lease violations. The AI assembles state-aware notice drafts with prompts to review notice periods and statutory language.",
     popular: false,
     color: "primary",
     price: 19,
@@ -910,7 +910,7 @@ export const documentCatalog: CatalogDocument[] = [
     legacySlug: "promissory_note",
     category: "financial",
     icon: Receipt,
-    description: "Document a loan with a legally binding promise to repay.",
+    description: "Document a loan with structured repayment terms for attorney review.",
     longDescription:
       "A Promissory Note is a written promise to repay a specific amount by a certain date or on demand. Our AI includes all required terms: principal, interest rate, payment schedule, late fees, and default provisions.",
     popular: true,

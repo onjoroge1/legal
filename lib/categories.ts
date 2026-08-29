@@ -36,7 +36,7 @@ export const categories: CategoryMeta[] = [
     color: "primary",
     seoTitle: "Business Legal Documents — Create Online | LegalLawDocs.com",
     seoDescription:
-      "Create business legal documents online — NDAs, LLC operating agreements, service agreements, purchase agreements, and partnership contracts. AI-powered, state-compliant, instant download.",
+      "Create AI-assisted business document drafts online — NDAs, LLC operating agreements, service agreements, purchase agreements, and partnership contracts. State-aware inputs; attorney review required.",
     keywords: [
       "business legal documents",
       "business contracts online",
@@ -52,7 +52,7 @@ export const categories: CategoryMeta[] = [
     shortLabel: "Employment",
     heading: "Employment Legal Documents",
     description:
-      "Employment contracts, independent contractor agreements, and non-compete agreements with state-specific compliance built in.",
+      "Employment contract, independent contractor, and non-compete drafts with state-aware questions and review notes.",
     icon: Briefcase,
     color: "accent",
     seoTitle: "Employment Legal Documents — Create Online | LegalLawDocs.com",
@@ -76,7 +76,7 @@ export const categories: CategoryMeta[] = [
     color: "primary",
     seoTitle: "Real Estate Legal Documents — Create Online | LegalLawDocs.com",
     seoDescription:
-      "Create real estate legal documents online — residential and commercial lease agreements with state-compliant terms, mandatory disclosures, and instant download.",
+      "Create real estate document drafts online — residential and commercial lease workflows with state-aware questions and disclosure review notes.",
     keywords: [
       "residential lease agreement",
       "commercial lease agreement",
@@ -114,7 +114,7 @@ export const categories: CategoryMeta[] = [
     color: "primary",
     seoTitle: "Legal Letters & Notices — Create Online | LegalLawDocs.com",
     seoDescription:
-      "Create professional legal letters online — cease-and-desist letters, demand letters, and breach-of-contract notices. AI-powered, state-compliant, instant download.",
+      "Create AI-assisted legal-letter drafts online — cease-and-desist letters, demand letters, and breach-of-contract notices. Attorney review required before sending.",
     keywords: [
       "cease and desist letter",
       "demand letter template",
@@ -152,7 +152,7 @@ export const categories: CategoryMeta[] = [
     color: "primary",
     seoTitle: "Personal Legal Documents — Create Online | LegalLawDocs.com",
     seoDescription:
-      "Create personal legal documents online — roommate agreements, bill of sale, and other individual legal forms. AI-powered, state-compliant, instant download.",
+      "Create AI-assisted personal document drafts online — roommate agreements, bills of sale, and other individual forms. State-aware inputs; attorney review required.",
     keywords: [
       "roommate agreement template",
       "bill of sale",

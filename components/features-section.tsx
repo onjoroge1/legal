@@ -10,44 +10,44 @@ import {
 const features = [
   {
     icon: Brain,
-    title: "AI-Powered Generation",
+    title: "AI-Assisted Drafting",
     description:
-      "Our advanced AI understands legal terminology and structure, generating documents that read like they were drafted by experienced attorneys.",
+      "The drafting assistant organizes your answers into a structured first draft. It can make mistakes, so review every clause and citation.",
     color: "primary" as const,
   },
   {
     icon: Shield,
-    title: "State-Specific Compliance",
+    title: "Jurisdiction-Aware Questions",
     description:
-      "Every document automatically adapts to your state's legal requirements. From California to New York, we keep up with changing regulations.",
+      "Select a state to surface relevant prompts and drafting notes. This does not establish that the result satisfies current law.",
     color: "accent" as const,
   },
   {
     icon: Clock,
-    title: "Ready in Minutes",
+    title: "Guided Workflow",
     description:
-      "No more waiting days for document preparation. Answer a few simple questions and receive your professionally formatted document instantly.",
+      "Answer plain-language questions, preview the assembled draft, and correct details before downloading it for review.",
     color: "primary" as const,
   },
   {
     icon: Globe,
-    title: "All 50 States Covered",
+    title: "52 Document Types",
     description:
-      "Our legal database covers all 50 US states, ensuring your documents comply with local, state, and federal requirements wherever you operate.",
+      "Browse business, employment, real estate, estate planning, financial, personal, and legal-letter drafting workflows.",
     color: "accent" as const,
   },
   {
     icon: Lock,
-    title: "Bank-Level Security",
+    title: "Stripe-Hosted Payments",
     description:
-      "Your sensitive legal information is protected with 256-bit encryption, SOC 2 compliance, and strict data privacy protocols.",
+      "When payments are enabled, card entry occurs on Stripe-hosted checkout. LegalLawDocs does not receive your full card number.",
     color: "primary" as const,
   },
   {
     icon: RefreshCw,
-    title: "Always Up-to-Date",
+    title: "Visible Review Flags",
     description:
-      "Our legal team continuously updates templates to reflect the latest legislative changes, ensuring ongoing compliance for all documents.",
+      "The generator marks unresolved placeholders and citations that need attention instead of presenting them as confirmed legal conclusions.",
     color: "accent" as const,
   },
 ]
@@ -67,11 +67,11 @@ export function FeaturesSection() {
             Platform Features
           </p>
           <h2 className="mt-3 text-balance font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            Built for <span className="gradient-text">Legal Precision</span>
+            Built for a <span className="gradient-text">Clear Drafting Workflow</span>
           </h2>
           <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-            Every feature is designed to make legal document creation faster,
-            more accurate, and fully compliant.
+            Use the software to assemble and revise a draft, then have a licensed attorney
+            determine whether it is accurate and appropriate for your situation.
           </p>
         </div>
 

@@ -18,7 +18,6 @@ import {
   Sparkles,
   Loader2,
   Crown,
-  Zap,
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
@@ -132,7 +131,6 @@ export default function CheckoutPage() {
   if (!doc) return null
 
   const singlePrice = doc.price
-  const subscriptionPrice = doc.subscriptionPrice
 
   return (
     <LegalDisclaimerAcceptanceGate>
@@ -149,7 +147,7 @@ export default function CheckoutPage() {
           </Link>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Lock className="h-4 w-4 text-accent" />
-            Secure Checkout
+            Stripe Checkout
           </div>
         </div>
       </header>
@@ -173,7 +171,7 @@ export default function CheckoutPage() {
               <p className="mt-2 text-muted-foreground">
                 {session?.user?.email
                   ? `Signed in as ${session.user.email}.`
-                  : "No account needed — just your email."}
+                  : "Enter your email. Checkout may create an account for delivery and future access."}
               </p>
 
               {/* Plan selection */}
@@ -187,7 +185,7 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-2">
                         <CardTitle className="text-lg">Monthly Subscription</CardTitle>
                         <Badge variant="outline" className="border-primary/30 bg-primary/10 text-xs text-primary">
-                          <Crown className="mr-1 h-3 w-3" />Best Value
+                          <Crown className="mr-1 h-3 w-3" />Recurring
                         </Badge>
                       </div>
                       {paymentType === "subscription" && <CheckCircle2 className="h-5 w-5 text-primary" />}
@@ -195,11 +193,8 @@ export default function CheckoutPage() {
                     <CardDescription>Unlimited documents</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground">${subscriptionPrice}.99<span className="text-lg text-muted-foreground">/mo</span></div>
-                    <p className="mt-2 text-sm text-muted-foreground">Generate unlimited documents. Cancel anytime.</p>
-                    <div className="mt-3 flex items-center gap-1 text-xs text-primary">
-                      <Zap className="h-3 w-3" />Save ${singlePrice - subscriptionPrice} on this document
-                    </div>
+                    <div className="text-2xl font-bold text-foreground">Price shown by Stripe</div>
+                    <p className="mt-2 text-sm text-muted-foreground">Review the exact recurring price and billing interval before payment.</p>
                   </CardContent>
                 </Card>
 
@@ -215,8 +210,8 @@ export default function CheckoutPage() {
                     <CardDescription>One-time payment</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground">${singlePrice}.99</div>
-                    <p className="mt-2 text-sm text-muted-foreground">Download this document once. No subscription.</p>
+                    <div className="text-3xl font-bold text-foreground">${singlePrice}</div>
+                    <p className="mt-2 text-sm text-muted-foreground">Access this document with no recurring charge.</p>
                   </CardContent>
                 </Card>
               </div>
@@ -332,14 +327,14 @@ export default function CheckoutPage() {
                   {isProcessing ? (
                     <><Loader2 className="h-4 w-4 animate-spin" />Redirecting to payment...</>
                   ) : (
-                    <><Lock className="h-4 w-4" />{paymentType === "subscription" ? `Subscribe — $${subscriptionPrice}.99/month` : `Pay $${singlePrice}.99 & Download`}</>
+                    <><Lock className="h-4 w-4" />{paymentType === "subscription" ? "Continue — review price on Stripe" : `Pay $${singlePrice} & Download`}</>
                   )}
                 </Button>
 
                 <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1"><Lock className="h-3 w-3" />SSL Encrypted</div>
+                  <div className="flex items-center gap-1"><Lock className="h-3 w-3" />Stripe-hosted payment</div>
                   <span className="text-border">|</span>
-                  <div className="flex items-center gap-1"><Shield className="h-3 w-3" />PCI Compliant</div>
+                  <div className="flex items-center gap-1"><Shield className="h-3 w-3" />Card details handled by Stripe</div>
                   <span className="text-border">|</span>
                   <span>Terms and refund policy apply</span>
                 </div>
@@ -392,13 +387,13 @@ export default function CheckoutPage() {
                     <div className="mt-5 space-y-3 border-t border-border/40 pt-5">
                       {paymentType === "subscription" ? (
                         <>
-                          <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Monthly subscription</span><span className="text-foreground">${subscriptionPrice}.99/mo</span></div>
+                          <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Recurring subscription</span><span className="text-foreground">Confirmed by Stripe</span></div>
                           <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Unlimited documents</span><span className="text-accent">Included</span></div>
                           <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Cancel anytime</span><span className="text-accent">Yes</span></div>
                         </>
                       ) : (
                         <>
-                          <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Document generation</span><span className="text-foreground">${singlePrice}.99</span></div>
+                          <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Document generation</span><span className="text-foreground">${singlePrice}</span></div>
                           <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">State-aware drafting</span><span className="text-accent">Included</span></div>
                           <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">PDF & DOCX download</span><span className="text-accent">Included</span></div>
                         </>
@@ -408,8 +403,7 @@ export default function CheckoutPage() {
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-foreground">{paymentType === "subscription" ? "Monthly Total" : "Total"}</span>
                         <span className="text-xl font-bold text-foreground">
-                          ${paymentType === "subscription" ? subscriptionPrice : singlePrice}.99
-                          {paymentType === "subscription" && <span className="text-sm text-muted-foreground">/mo</span>}
+                          {paymentType === "subscription" ? "Shown by Stripe" : `$${singlePrice}`}
                         </span>
                       </div>
                     </div>
@@ -420,7 +414,7 @@ export default function CheckoutPage() {
                   <div className="space-y-3">
                     {[
                       { icon: Sparkles, text: "AI-powered customization", color: "text-primary" },
-                      { icon: Shield, text: "State statute citations included", color: "text-accent" },
+                      { icon: Shield, text: "Citations require independent review", color: "text-accent" },
                       { icon: CheckCircle2, text: "Instant PDF & DOCX download", color: "text-primary" },
                       { icon: Lock, text: "Secure account access", color: "text-accent" },
                     ].map((item) => (

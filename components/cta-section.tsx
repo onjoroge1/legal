@@ -31,24 +31,24 @@ export function CtaSection() {
                 <span className="gradient-text">Documents Today</span>
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-                Join thousands of businesses and individuals who trust LegalLawDocs
-                for professional, state-compliant legal documentation.
+                Use guided questions to assemble a first draft, then review it carefully with a
+                licensed attorney before relying on, signing, filing, or sending it.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link href="/documents">
                   <Button size="lg" className="gap-2 px-8 text-base shadow-lg shadow-primary/20">
-                    Get Started Free
+                    Browse Drafting Tools
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/documents">
+                <Link href="/disclaimer">
                   <Button variant="outline" size="lg" className="bg-transparent px-8 text-base border-border/80 hover:border-primary/40 hover:bg-primary/5">
-                    Schedule a Demo
+                    Read the Disclaimer
                   </Button>
                 </Link>
               </div>
               <p className="mt-7 text-sm text-muted-foreground">
-                No credit card required. Your first document is free.
+                LegalLawDocs is self-help software, not a law firm or a substitute for legal advice.
               </p>
             </div>
           </div>

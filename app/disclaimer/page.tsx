@@ -23,7 +23,7 @@ export default function DisclaimerPage() {
             </div>
             <h1 className="font-serif text-4xl font-bold text-foreground">Legal Disclaimer</h1>
             <p className="mt-3 text-muted-foreground">
-              Last updated: <span className="text-foreground font-medium">May 1, 2026</span>
+              Last updated: <span className="text-foreground font-medium">August 29, 2026</span>
             </p>
           </div>
 
@@ -66,14 +66,14 @@ export default function DisclaimerPage() {
             <section>
               <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Document limitations</h2>
               <p className="leading-relaxed">
-                The documents generated through our platform are based on attorney-reviewed templates
-                and are intended for common legal situations. However:
+                The documents generated through our platform are assembled by software from
+                structured templates, reference material, and information you provide. However:
               </p>
               <ul className="mt-4 space-y-3">
                 <li className="flex gap-3">
                   <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span className="leading-relaxed">
-                    <strong className="text-foreground">State-specific compliance:</strong> Laws vary
+                    <strong className="text-foreground">Jurisdiction-aware drafting:</strong> Laws vary
                     significantly by state and jurisdiction. While we include state-specific language
                     where possible, we cannot guarantee that every generated document complies with
                     all local ordinances, regulations, or court interpretations applicable to your

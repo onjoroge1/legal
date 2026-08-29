@@ -1,10 +1,10 @@
 import { Shield, Scale, FileCheck, Lock } from "lucide-react"
 
 const badges = [
-  { icon: Shield, label: "Attorney-Drafted Templates", color: "text-primary" },
-  { icon: Scale, label: "State-Compliant", color: "text-accent" },
-  { icon: FileCheck, label: "AI Compliance Review", color: "text-primary" },
-  { icon: Lock, label: "SOC 2 Type II Certified", color: "text-accent" },
+  { icon: Shield, label: "Self-Help Drafting Tool", color: "text-primary" },
+  { icon: Scale, label: "State-Aware Questions", color: "text-accent" },
+  { icon: FileCheck, label: "Review Flags Surfaced", color: "text-primary" },
+  { icon: Lock, label: "Attorney Review Required", color: "text-accent" },
 ]
 
 export function ComplianceBanner() {

@@ -1,10 +1,10 @@
-import { FileText, MapPin, ShieldCheck, Timer } from "lucide-react"
+import { Download, FileText, MapPin, Scale } from "lucide-react"
 
 const stats = [
-  { value: "500K+", label: "Documents Generated", icon: FileText, color: "text-primary" },
-  { value: "50", label: "State Jurisdictions", icon: MapPin, color: "text-accent" },
-  { value: "99.7%", label: "Compliance Rate", icon: ShieldCheck, color: "text-primary" },
-  { value: "<2 min", label: "Average Generation Time", icon: Timer, color: "text-accent" },
+  { value: "52", label: "Document Types", icon: FileText, color: "text-primary" },
+  { value: "50", label: "State Selections", icon: MapPin, color: "text-accent" },
+  { value: "PDF + DOCX", label: "Download Formats", icon: Download, color: "text-primary" },
+  { value: "Required", label: "Attorney Review", icon: Scale, color: "text-accent" },
 ]
 
 export function StatsSection() {

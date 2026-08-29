@@ -1,54 +1,40 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, Sparkles } from "lucide-react"
+import Link from "next/link"
 
 const plans = [
   {
     name: "Starter",
-    description: "Perfect for individuals with occasional legal document needs.",
-    price: "$19.99",
+    description: "A one-time purchase for a single document draft.",
+    price: "$14–$29",
     period: "per document",
     features: [
-      "Single document generation",
-      "State-specific compliance",
+      "Price shown on each document page",
+      "AI-assisted, state-aware draft",
       "PDF & Word download",
-      "Email delivery",
-      "Basic AI review",
+      "Review flags and placeholders",
+      "No recurring charge",
     ],
-    cta: "Get Started",
+    cta: "Browse Documents",
+    href: "/documents",
     popular: false,
   },
   {
     name: "Professional",
-    description: "Ideal for small businesses and frequent document needs.",
-    price: "$9.99",
-    period: "per month",
+    description: "A recurring plan for ongoing drafting workflows.",
+    price: "Monthly",
+    period: "price confirmed at checkout",
     features: [
-      "Unlimited document generation",
-      "All 50+ document templates",
-      "Priority AI compliance review",
+      "Access to all 52 document types",
+      "Saved drafts in your dashboard",
+      "PDF & Word downloads",
       "Document revision history",
-      "Priority email & chat support",
-      "Custom branding on documents",
+      "Cancel from the billing dashboard",
     ],
-    cta: "Start Free Trial",
+    cta: "View Account Plans",
+    href: "/dashboard/billing",
     popular: true,
-  },
-  {
-    name: "Enterprise",
-    description: "For organizations requiring volume and customization.",
-    price: "Custom",
-    period: "contact us",
-    features: [
-      "Everything in Professional",
-      "Custom document templates",
-      "API access for integrations",
-      "Dedicated account manager",
-      "Team collaboration tools",
-      "SLA & compliance reporting",
-    ],
-    cta: "Contact Sales",
-    popular: false,
   },
 ]
 
@@ -70,15 +56,15 @@ export function PricingSection() {
             Pricing
           </p>
           <h2 className="mt-3 text-balance font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            Affordable <span className="gradient-text">Legal Documents</span>
+            Clear <span className="gradient-text">Drafting Options</span>
           </h2>
           <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-            Save thousands compared to traditional attorney fees.
-            Choose the plan that fits your needs.
+            Choose a one-time draft or review the recurring option. The exact charge and billing
+            terms are shown before you authorize payment.
           </p>
         </div>
 
-        <div className="mt-20 grid gap-6 md:grid-cols-3">
+        <div className="mx-auto mt-20 grid max-w-4xl gap-6 md:grid-cols-2">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -128,15 +114,21 @@ export function PricingSection() {
                 ))}
               </ul>
               <Button
+                asChild
                 className={`mt-8 w-full ${plan.popular ? "shadow-lg shadow-primary/20" : ""}`}
                 variant={plan.popular ? "default" : "outline"}
                 size="lg"
               >
-                {plan.cta}
+                <Link href={plan.href}>{plan.cta}</Link>
               </Button>
             </div>
           ))}
         </div>
+        <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground">
+          Generated content is a self-help draft and not legal advice. Purchases are subject to the{" "}
+          <Link href="/terms#payment" className="underline underline-offset-2">payment terms</Link>{" "}
+          and <Link href="/terms#refunds" className="underline underline-offset-2">refund policy</Link>.
+        </p>
       </div>
     </section>
   )

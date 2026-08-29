@@ -785,7 +785,7 @@ export default function TermsPage() {
             <section id="contact">
               <H2 id="contact">27. Contact</H2>
               <p className="leading-relaxed">
-                For questions about these Terms, please contact our Legal Team:
+                For questions about these Terms, please contact support:
               </p>
               <div className="mt-4 rounded-2xl border border-border/50 bg-card/60 p-5 text-sm space-y-1.5">
                 <p className="font-semibold text-foreground">LegalLawDocs.com — Legal Department</p>

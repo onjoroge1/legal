@@ -20,9 +20,9 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Non-Compete / Non-Solicitation (where legal)",
       "Governing Law & Jurisdiction",
       "Digital Signature Block",
-      "State-Specific Compliance Addendum",
+      "State-Aware Drafting Addendum",
     ],
-    description: "Protect confidential information shared between parties with a legally binding agreement.",
+    description: "Prepare a confidentiality agreement draft for the parties to review.",
   },
   employment_contract: {
     included: [
@@ -52,7 +52,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "State Tenant Protection Laws",
       "Move-in/Move-out Inspection",
     ],
-    description: "Legally binding lease agreements compliant with local tenant laws and regulations.",
+    description: "Lease agreement drafts with local tenant-law questions and review notes.",
   },
   llc_operating_agreement: {
     included: [
@@ -127,7 +127,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Witness Requirements",
       "Revocation Clauses",
     ],
-    description: "Protect your legacy with a state-compliant will document.",
+    description: "Prepare a state-aware will draft for licensed attorney review.",
   },
   commercial_lease_agreement: {
     included: [
@@ -172,7 +172,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Warranties & Representations",
       "Closing Procedures",
     ],
-    description: "Legally binding purchase agreements for goods and services.",
+    description: "Structured purchase agreement drafts for goods and services.",
   },
   non_compete_agreement: {
     included: [
@@ -182,7 +182,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Prohibited Activities",
       "Consideration Provisions",
       "Enforceability Clauses",
-      "State-Specific Compliance",
+      "State-Aware Drafting Notes",
       "Remedies for Breach",
       "Severability Provisions",
       "Governing Law",
@@ -202,7 +202,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Reference to Prior Communications",
       "Professional Tone & Formatting",
       "Digital Signature Block",
-      "State-Specific Compliance",
+      "State-Aware Drafting Notes",
     ],
     description: "Formally demand payment or action before pursuing legal proceedings.",
   },
@@ -294,7 +294,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Grace Period Provisions (if applicable)",
       "Landlord Signature Block",
     ],
-    description: "State-compliant notice to vacate with correct notice periods and statutory language.",
+    description: "State-aware notice-to-vacate draft with notice-period and statutory-language review prompts.",
   },
 
   // ── Financial ─────────────────────────────────────────────────────────────
@@ -311,7 +311,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Governing Law",
       "Signature Block",
     ],
-    description: "Document a loan with a legally binding promise to repay.",
+    description: "Document a loan with structured repayment terms for attorney review.",
   },
   loan_agreement: {
     included: [
@@ -533,7 +533,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "Property Address & Unit Description",
       "Monthly Rent Amount & Due Date",
       "Security Deposit Terms",
-      "Notice Period Requirements (State-Compliant)",
+      "Notice Period Requirements (Confirm Current Law)",
       "Rent Increase Notification Requirements",
       "Tenant Maintenance Responsibilities",
       "Pet, Smoking & Guest Policies",
@@ -555,7 +555,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       "State-Specific At-Will Exceptions",
       "Digital Signature Block",
     ],
-    description: "Formalize at-will employment with clear compensation, policies, and state-specific compliance.",
+    description: "Prepare an at-will employment draft with clear compensation, policies, and state-aware review notes.",
   },
   triple_net_lease: {
     included: [
@@ -813,6 +813,6 @@ export function getDocumentContent(slug: string): DocumentContent {
       "Digital signature ready",
       "PDF & DOCX formats",
     ],
-    description: "Generate a professional, legally binding document tailored to your specific needs.",
+    description: "Generate a structured document draft from your answers for professional review.",
   }
 }

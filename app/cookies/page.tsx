@@ -22,7 +22,7 @@ export default function CookiesPage() {
             </div>
             <h1 className="font-serif text-4xl font-bold text-foreground">Cookie Policy</h1>
             <p className="mt-3 text-muted-foreground">
-              Last updated: <span className="text-foreground font-medium">May 1, 2026</span>
+              Last updated: <span className="text-foreground font-medium">August 29, 2026</span>
             </p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
               This Cookie Policy explains how LegalLawDocs.com (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or
@@ -69,6 +69,7 @@ export default function CookiesPage() {
                       <li><code className="text-primary">next-auth.session-token</code> — manages your login session</li>
                       <li><code className="text-primary">next-auth.csrf-token</code> — prevents cross-site request forgery</li>
                       <li><code className="text-primary">__Secure-next-auth.session-token</code> — secure session cookie</li>
+                      <li><code className="text-primary">legallawdocs_disclaimer_acceptance</code> — records signed acceptance of the current required notice</li>
                     </ul>
                   </div>
                 </div>
@@ -76,21 +77,19 @@ export default function CookiesPage() {
                 <div className="rounded-2xl border border-border/50 bg-card/60 p-5">
                   <h3 className="font-semibold text-foreground mb-2">Preference cookies</h3>
                   <p className="text-sm leading-relaxed">
-                    These cookies remember your settings and preferences to enhance your experience.
-                    For example, they remember your selected theme (light or dark mode), language
-                    preferences, and previously completed form steps so you don&apos;t need to restart
-                    a document from scratch.
+                    The application may use cookies or browser storage for settings and in-progress
+                    workflow data, such as a selected theme or a locally saved draft. Available
+                    preferences depend on the feature you use.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-border/50 bg-card/60 p-5">
                   <h3 className="font-semibold text-foreground mb-2">Analytics cookies</h3>
                   <p className="text-sm leading-relaxed">
-                    Analytics cookies help us understand how visitors interact with our website.
-                    We use aggregated, anonymized data to measure page views, popular document
-                    categories, and common user journeys. This information helps us improve our
-                    service. We process this data under legitimate interests and, where required
-                    by law, with your consent.
+                    LegalLawDocs does not currently claim to set optional analytics or advertising
+                    cookies. Hosting and security providers may process operational request logs as
+                    described in the Privacy Policy. If optional analytics are introduced, this
+                    policy and any required consent controls must be updated before activation.
                   </p>
                 </div>
               </div>
@@ -137,17 +136,17 @@ export default function CookiesPage() {
                 <li className="flex gap-3">
                   <span className="mt-1 flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span>
-                    <strong className="text-foreground">Opt-out tools:</strong> You can opt out of
-                    analytics tracking by enabling &ldquo;Do Not Track&rdquo; in your browser or using
-                    browser privacy extensions.
+                    <strong className="text-foreground">Privacy tools:</strong> Browser privacy
+                    extensions and tracking protections may restrict third-party requests, but can
+                    also affect site functionality.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-1 flex-shrink-0 h-2 w-2 rounded-full bg-primary/60 mt-2" />
                   <span>
-                    <strong className="text-foreground">Our cookie settings:</strong> Where required
-                    by law, we will present you with a cookie consent banner on your first visit,
-                    allowing you to accept or decline non-essential cookies.
+                    <strong className="text-foreground">Optional cookies:</strong> We do not currently
+                    offer an optional-cookie preference center because optional analytics and advertising
+                    cookies are not intentionally enabled. Required controls must be added before that changes.
                   </span>
                 </li>
               </ul>
