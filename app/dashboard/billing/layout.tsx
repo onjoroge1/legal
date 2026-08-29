@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import BillingPage from "./page"
 import StripeProvider from "@/components/dashboard/stripe-provider"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
 
 export const metadata: Metadata = {
   title: "Billing | LegalLawDocs.com",
@@ -9,8 +10,10 @@ export const metadata: Metadata = {
 
 export default function BillingLayout() {
   return (
-    <StripeProvider>
-      <BillingPage />
-    </StripeProvider>
+    <LegalDisclaimerAcceptanceGate>
+      <StripeProvider>
+        <BillingPage />
+      </StripeProvider>
+    </LegalDisclaimerAcceptanceGate>
   )
-} 
+}

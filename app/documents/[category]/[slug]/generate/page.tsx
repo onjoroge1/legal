@@ -36,6 +36,8 @@ import { getDocumentValidation } from "@/lib/document-validation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { getStateWarnings } from "@/lib/state-warnings"
 import { getDocumentQuestions } from "@/lib/document-questions"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 export default function GeneratePage() {
   const router = useRouter()
@@ -540,6 +542,7 @@ export default function GeneratePage() {
   }
 
   return (
+    <LegalDisclaimerAcceptanceGate>
     <div className="flex h-screen flex-col">
       <header className="shrink-0 border-b border-border/40 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
@@ -722,9 +725,7 @@ export default function GeneratePage() {
                         htmlFor="disclaimer-ack"
                         className="text-xs leading-relaxed text-muted-foreground cursor-pointer select-none"
                       >
-                        I understand this tool generates an AI-assembled draft based on patterns,
-                        does not provide legal advice, and does not create an attorney-client
-                        relationship.
+                        I accept: {LEGAL_DISCLAIMER_PRIMARY_COPY}
                       </label>
                     </div>
                     <Button
@@ -744,9 +745,7 @@ export default function GeneratePage() {
                     </Button>
                     {/* Persistent "not a law firm" microcopy — always visible under the CTA */}
                     <p className="text-xs text-muted-foreground text-center leading-relaxed px-2">
-                      LegalLawDocs is an AI-powered drafting tool, not a law firm. AI can make
-                      mistakes. This output is a starting point and should be reviewed by a
-                      qualified attorney in your jurisdiction.
+                      {LEGAL_DISCLAIMER_PRIMARY_COPY}
                     </p>
                   </>
                 )}
@@ -1036,7 +1035,7 @@ export default function GeneratePage() {
                     <div className="space-y-2 text-sm">
                       <p className="font-medium">What you'll get:</p>
                       <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
-                        <li>State-specific legal compliance</li>
+                        <li>State-aware drafting based on the information you provide</li>
                         <li>Professional formatting</li>
                         <li>All required legal sections</li>
                         <li>Customized clauses based on your needs</li>
@@ -1050,5 +1049,6 @@ export default function GeneratePage() {
         </div>
       </div>
     </div>
+    </LegalDisclaimerAcceptanceGate>
   )
 }

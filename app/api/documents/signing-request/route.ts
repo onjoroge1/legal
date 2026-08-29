@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 
 // Try to import Prisma
 let prisma: any
@@ -16,6 +18,14 @@ try {
  */
 export async function GET(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+    const featureError = requireEmergencyFeature(
+      "ENABLE_ELECTRONIC_SIGNING",
+      "Electronic signing"
+    )
+    if (featureError) return featureError
+
     const { searchParams } = new URL(request.url)
     const token = searchParams.get("token")
 
@@ -96,7 +106,6 @@ export async function GET(request: Request) {
     )
   }
 }
-
 
 
 

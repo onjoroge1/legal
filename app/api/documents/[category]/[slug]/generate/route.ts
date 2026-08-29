@@ -7,6 +7,12 @@ import { parseStatePageSlug, STATE_DOC_NOTES } from "@/lib/state-pages"
 import { parseInternationalPageSlug } from "@/lib/international-pages"
 import { parseCityPageSlug, CITY_DOC_NOTES, CITY_DOC_SLUG } from "@/lib/city-pages"
 import { validateAndCleanCitations } from "@/lib/citation-validator"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import {
+  LEGAL_DISCLAIMER_PRIMARY_COPY,
+  LEGAL_DISCLAIMER_VERSION,
+} from "@/lib/legal-disclaimer"
 
 export const maxDuration = 60
 
@@ -137,6 +143,15 @@ export async function POST(
   { params }: { params: Promise<{ category: string; slug: string }> }
 ) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+
+    const featureError = requireEmergencyFeature(
+      "ENABLE_AI_GENERATION",
+      "Document generation"
+    )
+    if (featureError) return featureError
+
     const { category, slug } = await params
     const { formData, intent } = await request.json()
     const isDryRun =
@@ -313,6 +328,10 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
       }
       return Response.json({
         document: validated.cleaned,
+        legalDisclaimer: {
+          version: LEGAL_DISCLAIMER_VERSION,
+          copy: LEGAL_DISCLAIMER_PRIMARY_COPY,
+        },
         citations: {
           verified: validated.verifiedCount,
           flagged: validated.flaggedCount,
@@ -379,6 +398,10 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     }
     return Response.json({
       document: validated.cleaned,
+      legalDisclaimer: {
+        version: LEGAL_DISCLAIMER_VERSION,
+        copy: LEGAL_DISCLAIMER_PRIMARY_COPY,
+      },
       citations: {
         verified: validated.verifiedCount,
         flagged: validated.flaggedCount,

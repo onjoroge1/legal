@@ -6,6 +6,11 @@ import { stripe, PRICE_IDS } from "@/lib/stripe"
 import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 import { randomBytes } from "crypto"
 import bcrypt from "bcryptjs"
+import {
+  getLegalDisclaimerAcceptance,
+  requireLegalDisclaimerAcceptance,
+} from "@/lib/legal-disclaimer-server"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 
 /**
  * POST /api/payment/create-checkout
@@ -18,6 +23,16 @@ import bcrypt from "bcryptjs"
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+
+    const featureError = requireEmergencyFeature(
+      "ENABLE_PAYMENTS",
+      "Checkout"
+    )
+    if (featureError) return featureError
+
+    const legalAcceptance = getLegalDisclaimerAcceptance(request)
     const session = await getServerSession(authOptions)
     const body = await request.json()
     const { paymentType, slug, formData, documentContent, intent, guestEmail, guestName } = body
@@ -86,6 +101,8 @@ export async function POST(request: Request) {
           intent: intent || null,
           paymentType,
           generatedAt: new Date().toISOString(),
+          legalDisclaimerVersion: legalAcceptance.version,
+          legalDisclaimerAcceptedAt: legalAcceptance.acceptedAt,
         },
       },
     })
@@ -107,9 +124,13 @@ export async function POST(request: Request) {
           documentId: pendingDoc.id,
           paymentType: "subscription",
           isGuest: session?.user?.email ? "false" : "true",
+          legalDisclaimerVersion: legalAcceptance.version,
         },
         subscription_data: {
-          metadata: { userId: user.id },
+          metadata: {
+            userId: user.id,
+            legalDisclaimerVersion: legalAcceptance.version,
+          },
         },
       })
     } else {
@@ -124,7 +145,7 @@ export async function POST(request: Request) {
               currency: "usd",
               product_data: {
                 name: docInfo.title,
-                description: "AI-generated legal document, state-compliant",
+                description: "AI-assisted, state-aware document draft",
               },
               unit_amount: unitAmount,
             },
@@ -138,6 +159,7 @@ export async function POST(request: Request) {
           documentId: pendingDoc.id,
           paymentType: "single",
           isGuest: session?.user?.email ? "false" : "true",
+          legalDisclaimerVersion: legalAcceptance.version,
         },
       })
     }

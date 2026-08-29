@@ -2,6 +2,9 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { sendEmail } from "@/lib/email-service"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 // Try to import Prisma
 let prisma: any
@@ -19,6 +22,14 @@ try {
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+    const featureError = requireEmergencyFeature(
+      "ENABLE_ELECTRONIC_SIGNING",
+      "Electronic signing"
+    )
+    if (featureError) return featureError
+
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
@@ -130,6 +141,9 @@ export async function POST(request: Request) {
               <p style="margin-top: 30px; color: #666; font-size: 12px;">
                 This signing link will expire in 30 days. If you didn't expect this request, you can safely ignore this email.
               </p>
+              <p style="margin-top: 16px; padding: 12px; background: #fffbeb; border-left: 3px solid #d97706; color: #4b5563; font-size: 12px;">
+                <strong>Legal notice:</strong> ${LEGAL_DISCLAIMER_PRIMARY_COPY}
+              </p>
             </div>
           </body>
         </html>
@@ -148,7 +162,5 @@ export async function POST(request: Request) {
     )
   }
 }
-
-
 
 

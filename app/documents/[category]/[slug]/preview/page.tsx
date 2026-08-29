@@ -20,8 +20,9 @@ import {
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
 
-export default function PreviewPage() {
+function PreviewPageContent() {
   const router = useRouter()
   const params = useParams()
   const category = params?.category as string
@@ -353,5 +354,13 @@ export default function PreviewPage() {
         </main>
       )}
     </div>
+  )
+}
+
+export default function PreviewPage() {
+  return (
+    <LegalDisclaimerAcceptanceGate>
+      <PreviewPageContent />
+    </LegalDisclaimerAcceptanceGate>
   )
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
 
 export const metadata: Metadata = {
   title: "View Document | LegalLawDocs.com",
@@ -10,5 +11,9 @@ export default function DocumentViewLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
-} 
+  return (
+    <LegalDisclaimerAcceptanceGate>
+      {children}
+    </LegalDisclaimerAcceptanceGate>
+  )
+}

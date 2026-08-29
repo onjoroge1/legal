@@ -7,6 +7,9 @@ import {
 import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
 import { getDocumentBySlug } from "@/lib/document-catalog"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 export const maxDuration = 60
 
@@ -55,6 +58,15 @@ export async function POST(
   { params }: { params: Promise<{ category: string; slug: string }> }
 ) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+
+    const featureError = requireEmergencyFeature(
+      "ENABLE_AI_GENERATION",
+      "Document assistant"
+    )
+    if (featureError) return featureError
+
     const { category, slug } = await params
     const { messages, intent } = await request.json()
 
@@ -87,7 +99,10 @@ export async function POST(
       })
       .join("\n\n")
 
-    const SYSTEM_PROMPT = `You are a legal document AI assistant for LegalLawDocs.com, specializing in generating ${doc.title}s. Your job is to ask the user smart, one-at-a-time questions to gather all the information needed to generate a customized, legally compliant ${doc.title}.
+    const SYSTEM_PROMPT = `You are a legal document drafting assistant for LegalLawDocs.com, specializing in ${doc.title} drafts. Your job is to ask the user smart, one-at-a-time questions to gather the information needed to generate a customized, state-aware ${doc.title} draft.
+
+REQUIRED USER NOTICE:
+${LEGAL_DISCLAIMER_PRIMARY_COPY}
 
 IMPORTANT RULES:
 - Ask ONE question at a time. Wait for the user's response before asking the next.
