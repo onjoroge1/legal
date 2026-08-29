@@ -142,14 +142,11 @@ export default function TemplatesPage() {
         ) : (
           filtered.map((doc) => {
             const isAccent = doc.color === "accent"
-            const hasSlug = doc.slug
-            const Wrapper = hasSlug ? Link : "div"
-            const wrapperProps = hasSlug ? { href: doc.slug } : {}
 
             return (
-              <Wrapper
+              <Link
                 key={doc.title}
-                {...(wrapperProps as Record<string, string>)}
+                href={doc.slug}
                 className="group flex cursor-pointer items-start gap-4 rounded-2xl border border-border/50 bg-card/60 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
                 <div
@@ -190,7 +187,7 @@ export default function TemplatesPage() {
                   </p>
                 </div>
                 <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary group-hover:opacity-100" />
-              </Wrapper>
+              </Link>
             )
           })
         )}

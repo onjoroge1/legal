@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   description: "AI-powered analysis and recommendations for your legal documents",
 }
 
+interface AssistantDocumentRecord {
+  id: string
+  title: string
+  type: string
+  updatedAt: Date
+}
+
 export default async function AIAssistantPage() {
   const session = await getServerSession(authOptions)
 
@@ -25,7 +32,7 @@ export default async function AIAssistantPage() {
       })
     : []
 
-  const serialized = documents.map((d) => ({
+  const serialized = documents.map((d: AssistantDocumentRecord) => ({
     id: d.id,
     title: d.title,
     type: d.type,

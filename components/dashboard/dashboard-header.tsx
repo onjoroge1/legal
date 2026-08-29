@@ -4,10 +4,10 @@ import { Bell, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { User } from "next-auth"
+import type { Session } from "next-auth"
 
 interface DashboardHeaderProps {
-  user: User
+  user: NonNullable<Session["user"]>
 }
 
 export default function DashboardHeader({ user }: DashboardHeaderProps) {
@@ -54,7 +54,6 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     </div>
   )
 }
-
 
 
 

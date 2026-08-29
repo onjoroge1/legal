@@ -46,7 +46,26 @@ interface PageProps {
   searchParams: Promise<{ q?: string; practiceArea?: string; state?: string }>
 }
 
-async function getLawyers(q: string, practiceArea: string, state: string) {
+interface LawyerCard {
+  id: string
+  slug: string
+  name: string
+  firmName: string | null
+  tagline: string | null
+  photoUrl: string | null
+  city: string | null
+  stateAbbr: string | null
+  practiceAreas: string[]
+  featured: boolean
+  verified: boolean
+  tier: string
+}
+
+async function getLawyers(
+  q: string,
+  practiceArea: string,
+  state: string
+): Promise<LawyerCard[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: Record<string, any> = { active: true }
 
@@ -200,7 +219,7 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                   {hasFilters ? "matching your search" : "in our directory"}
                 </p>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {lawyers.map((lawyer) => (
+                  {lawyers.map((lawyer: LawyerCard) => (
                     <div
                       key={lawyer.id}
                       className="group relative flex flex-col rounded-2xl border border-border/50 bg-card/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
@@ -259,7 +278,7 @@ export default async function LawyersPage({ searchParams }: PageProps) {
                       {/* Practice area badges */}
                       {lawyer.practiceAreas.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-1.5">
-                          {lawyer.practiceAreas.slice(0, 3).map((area) => (
+                          {lawyer.practiceAreas.slice(0, 3).map((area: string) => (
                             <Badge
                               key={area}
                               variant="outline"

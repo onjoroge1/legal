@@ -340,11 +340,11 @@ export default function CreateDocumentPage() {
 
       switch (downloadFormat) {
         case "pdf":
-          blob = await convertToPDF(generatedContent, title)
+          blob = await convertToPDF(generatedContent)
           filename += ".pdf"
           break
         case "docx":
-          blob = await convertToDOCX(generatedContent, title)
+          blob = await convertToDOCX(generatedContent)
           filename += ".docx"
           break
         default:
@@ -814,4 +814,3 @@ export default function CreateDocumentPage() {
     </div>
   )
 }
-

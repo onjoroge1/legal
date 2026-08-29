@@ -15,7 +15,6 @@ import { useSession } from "next-auth/react"
 import { useState, useCallback, use } from "react"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, Loader2 } from "lucide-react"
-import { TemplateField } from "@/types/template"
 import { useQuery } from '@tanstack/react-query'
 
 // Section order to ensure consistent sidebar ordering

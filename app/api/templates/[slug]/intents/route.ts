@@ -1,6 +1,22 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
+interface QuestionnaireIntentRecord {
+  id: string
+  name: string
+  description: string | null
+  metadata: unknown
+}
+
+function getMetadataIntents(metadata: unknown): unknown[] {
+  if (typeof metadata !== "object" || metadata === null || Array.isArray(metadata)) {
+    return []
+  }
+
+  const intents = (metadata as Record<string, unknown>).intents
+  return Array.isArray(intents) ? intents : []
+}
+
 /**
  * Get available intents for a document type by slug
  * GET /api/templates/[slug]/intents
@@ -30,8 +46,7 @@ export async function GET(
     }
 
     // Get intents from metadata or questionnaires
-    const metadata = template.metadata as any
-    const intents = metadata?.intents || []
+    const intents = getMetadataIntents(template.metadata)
 
     // If no intents in metadata, derive from questionnaires
     if (intents.length === 0) {
@@ -48,7 +63,7 @@ export async function GET(
       })
 
       // Map questionnaires to intents
-      const derivedIntents = questionnaires.map((q) => ({
+      const derivedIntents = questionnaires.map((q: QuestionnaireIntentRecord) => ({
         id: q.id,
         name: q.name,
         description: q.description || "",
@@ -67,4 +82,3 @@ export async function GET(
     )
   }
 }
-

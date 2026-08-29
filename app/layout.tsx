@@ -1,22 +1,11 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
 import { SessionProvider } from '@/components/session-provider'
 import { QueryProvider } from '@/components/query-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { SitewideLegalNotice } from '@/components/legal/sitewide-legal-notice'
 
 import './globals.css'
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-serif',
-})
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-})
 
 export const metadata: Metadata = {
   title: 'LegalLawDocs.com | AI-Powered Legal Document Drafting',
@@ -36,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en">
       <body className="font-sans antialiased">
         <QueryProvider>
           <SessionProvider>

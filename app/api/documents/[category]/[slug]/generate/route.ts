@@ -52,6 +52,10 @@ export interface VerifiedFactSummary {
   content: string
 }
 
+type ApprovedVerifiedFact = Omit<VerifiedFactSummary, "reviewedAt"> & {
+  reviewedAt: Date | null
+}
+
 /**
  * Build a state-law context block to inject into AI prompts.
  *
@@ -87,7 +91,7 @@ async function buildStateContext(
     },
   })
 
-  const verifiedFacts: VerifiedFactSummary[] = dbFacts.map((f) => ({
+  const verifiedFacts: VerifiedFactSummary[] = dbFacts.map((f: ApprovedVerifiedFact) => ({
     citation: f.citation,
     source: f.source,
     sourceUrl: f.sourceUrl,

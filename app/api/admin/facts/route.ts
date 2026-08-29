@@ -50,7 +50,10 @@ export async function GET(request: Request) {
     _count: { status: true },
   })
   const countsByStatus = Object.fromEntries(
-    counts.map((c) => [c.status, c._count.status])
+    counts.map((c: { status: string; _count: { status: number } }) => [
+      c.status,
+      c._count.status,
+    ])
   )
 
   return NextResponse.json({ facts, counts: countsByStatus })

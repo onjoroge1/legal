@@ -2,10 +2,12 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.19.0",
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs && node scripts/check-marketing-claims.mjs",
     "build": "prisma generate && next build",
+    "typecheck": "prisma generate && tsc --noEmit --incremental false",
     "start": "next start",
     "lint": "eslint .",
     "check:routes": "node scripts/check-routes.mjs",

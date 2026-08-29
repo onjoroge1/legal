@@ -11,12 +11,17 @@ try {
   // Prisma not available
 }
 
-export interface PlanChangeResult {
-  success: boolean
-  message: string
-  newTier?: string
-  error?: string
-}
+export type PlanChangeResult =
+  | {
+      success: true
+      message: string
+      newTier?: string
+    }
+  | {
+      success: false
+      error: string
+      message?: string
+    }
 
 /**
  * Upgrade user to a new plan
@@ -287,6 +292,5 @@ export async function canGenerateDocument(userEmail: string): Promise<{
     }
   }
 }
-
 
 
