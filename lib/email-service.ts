@@ -2,6 +2,7 @@
 // Install: npm install resend
 
 import { generatePDF } from "@/lib/pdf-generator"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 let Resend: any
 let resend: any
@@ -259,6 +260,9 @@ export async function sendDocumentReadyEmail({
         <strong>Want to e-sign and send for signature?</strong> Upgrade to the Professional plan ($9.99/mo) from your dashboard to unlock electronic signing.
       </p>` : ""}
       ${guestNote}
+      <p style="margin:20px 0 0; padding:12px 16px; background:#fffbeb; border-left:3px solid #d97706; border-radius:4px; font-size:12px; line-height:1.6; color:#4b5563;">
+        <strong>Legal notice:</strong> ${LEGAL_DISCLAIMER_PRIMARY_COPY}
+      </p>
       <hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
       <p style="margin:0; font-size:12px; color:#9ca3af;">
         You're receiving this because you purchased a document from LegalLawDocs. Questions? Reply to this email.
@@ -333,7 +337,6 @@ export async function sendMarketingEmail(
     html,
   })
 }
-
 
 
 

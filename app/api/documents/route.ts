@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 
 // Try to import Prisma - will be undefined if not set up yet
 let prisma: any
@@ -138,6 +139,9 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
@@ -243,4 +247,3 @@ export async function POST(request: Request) {
     )
   }
 }
-

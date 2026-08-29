@@ -3,6 +3,11 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { stripe, PRICE_IDS } from "@/lib/stripe"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import {
+  getLegalDisclaimerAcceptance,
+  requireLegalDisclaimerAcceptance,
+} from "@/lib/legal-disclaimer-server"
 
 /**
  * POST /api/subscription/change
@@ -40,6 +45,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Downgraded to free plan." })
     }
 
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+    const featureError = requireEmergencyFeature(
+      "ENABLE_PAYMENTS",
+      "Subscription changes"
+    )
+    if (featureError) return featureError
+    const legalAcceptance = getLegalDisclaimerAcceptance(request)
+
     // Upgrading — send to Stripe Checkout
     let stripeCustomerId = user.stripeCustomerId
     if (!stripeCustomerId) {
@@ -60,6 +74,10 @@ export async function POST(request: Request) {
         await stripe.subscriptions.update(user.stripeSubscriptionId, {
           items: [{ id: itemId, price: PRICE_IDS[tier as "starter" | "professional"] }],
           proration_behavior: "create_prorations",
+          metadata: {
+            ...subscription.metadata,
+            legalDisclaimerVersion: legalAcceptance.version,
+          },
         })
         await prisma.user.update({
           where: { id: user.id },
@@ -76,8 +94,17 @@ export async function POST(request: Request) {
       line_items: [{ price: PRICE_IDS[tier as "starter" | "professional"], quantity: 1 }],
       success_url: `${appUrl}/dashboard/billing?success=true&tier=${tier}`,
       cancel_url: `${appUrl}/dashboard/billing`,
-      metadata: { userId: user.id, paymentType: "subscription" },
-      subscription_data: { metadata: { userId: user.id } },
+      metadata: {
+        userId: user.id,
+        paymentType: "subscription",
+        legalDisclaimerVersion: legalAcceptance.version,
+      },
+      subscription_data: {
+        metadata: {
+          userId: user.id,
+          legalDisclaimerVersion: legalAcceptance.version,
+        },
+      },
     })
 
     return NextResponse.json({ url: checkoutSession.url })

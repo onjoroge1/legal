@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
@@ -35,6 +37,14 @@ const analysisSchema = z.object({
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+    const featureError = requireEmergencyFeature(
+      "ENABLE_AI_GENERATION",
+      "AI document analysis"
+    )
+    if (featureError) return featureError
+
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

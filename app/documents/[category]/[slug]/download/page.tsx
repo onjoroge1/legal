@@ -17,8 +17,9 @@ import {
 } from "lucide-react"
 import { getDocumentBySlug } from "@/lib/document-catalog"
 import { useSession } from "next-auth/react"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
 
-export default function DownloadPage() {
+function DownloadPageContent() {
   const router = useRouter()
   const params = useParams()
   const category = params?.category as string
@@ -253,5 +254,13 @@ export default function DownloadPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function DownloadPage() {
+  return (
+    <LegalDisclaimerAcceptanceGate>
+      <DownloadPageContent />
+    </LegalDisclaimerAcceptanceGate>
   )
 }

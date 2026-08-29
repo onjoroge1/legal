@@ -1,6 +1,11 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
+const nextAuthSecret = process.env.NEXTAUTH_SECRET
+if (process.env.NODE_ENV === "production" && !nextAuthSecret) {
+  throw new Error("NEXTAUTH_SECRET must be configured in production")
+}
+
 // Try to import Prisma and bcrypt - will be undefined if not set up yet
 let prisma: any
 let bcrypt: any
@@ -170,7 +175,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        const sessionUser = session.user as typeof session.user & { id: string }
+        sessionUser.id = token.id as string
         session.user.email = token.email as string
         session.user.name = token.name as string
         session.user.image = token.picture as string | undefined
@@ -179,7 +185,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-change-in-production",
+  secret: nextAuthSecret,
   
   // Add error handling
   debug: process.env.NODE_ENV === "development",
@@ -202,4 +208,3 @@ export const authOptions: NextAuthOptions = {
     },
   },
 }
-

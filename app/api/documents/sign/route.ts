@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { requireEmergencyFeature } from "@/lib/feature-flags"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 
 // Try to import Prisma
 let prisma: any
@@ -18,6 +20,14 @@ try {
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+    const featureError = requireEmergencyFeature(
+      "ENABLE_ELECTRONIC_SIGNING",
+      "Electronic signing"
+    )
+    if (featureError) return featureError
+
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
@@ -125,4 +135,3 @@ export async function POST(request: Request) {
     )
   }
 }
-

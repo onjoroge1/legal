@@ -6,6 +6,8 @@
  * professional legal-document typography using pdfkit.
  */
 
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
+
 const FIELD_LABEL_RE =
   /^(Name|Date|Title|Signature|Signed|Address|City|State(?:\s+of)?|Company|By|Phone|Email|Position|Role|Print(?:ed\s+Name)?|Witness|Notary|Tax\s*ID|EIN|Landlord|Tenant|Employer|Employee|Contractor|Client|Party|Attorney|Agent|Owner|Buyer|Seller|Licensor|Licensee)\s*:/i
 
@@ -109,7 +111,14 @@ export async function generatePDF(
     const titleY = doc.y
     doc.moveTo(cx, titleY).lineTo(cx + pageWidth, titleY).strokeColor("#999").lineWidth(0.5).stroke()
     doc.strokeColor("#000").lineWidth(1)
-    doc.moveDown(1.2)
+    doc.moveDown(0.6)
+    doc
+      .font("Times-Italic")
+      .fontSize(8)
+      .fillColor("#666")
+      .text(LEGAL_DISCLAIMER_PRIMARY_COPY, { align: "center", lineGap: 1 })
+    doc.fillColor("#000")
+    doc.moveDown(1)
 
     // ── Parse and render lines ─────────────────────────────────────────────
 

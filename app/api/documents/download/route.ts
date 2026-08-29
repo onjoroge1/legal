@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { generatePDF } from "@/lib/pdf-generator"
 import { prisma } from "@/lib/prisma"
+import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 export const runtime = "nodejs"
 
@@ -18,6 +20,20 @@ async function generateDOCX(content: string, title: string): Promise<Buffer> {
       children: [new TextRun({ text: title, bold: true, size: 32 })],
       alignment: AlignmentType.CENTER,
       spacing: { after: 400 },
+    })
+  )
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: LEGAL_DISCLAIMER_PRIMARY_COPY,
+          italics: true,
+          size: 16,
+          color: "666666",
+        }),
+      ],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 300 },
     })
   )
 
@@ -68,6 +84,9 @@ async function generateDOCX(content: string, title: string): Promise<Buffer> {
  */
 export async function POST(request: Request) {
   try {
+    const acceptanceError = requireLegalDisclaimerAcceptance(request)
+    if (acceptanceError) return acceptanceError
+
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

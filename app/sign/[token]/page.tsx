@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label"
 import { Loader2, CheckCircle2, XCircle, FileText, PenTool } from "lucide-react"
 import { toast } from "@/lib/safe-toast"
 import DocumentPreview from "@/components/documents/document-preview"
+import { LegalDisclaimerAcceptanceGate } from "@/components/legal/legal-disclaimer-acceptance-gate"
+import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
-export default function SignDocumentPage() {
+function SignDocumentContent() {
   const params = useParams()
   const router = useRouter()
   const token = params?.token as string
@@ -163,7 +165,7 @@ export default function SignDocumentPage() {
                 />
                 <p className="text-xs text-muted-foreground">
                   By typing your name above and clicking "Sign Document", you acknowledge that you have read, 
-                  understood, and agree to be bound by the terms of this document.
+                  understood, and agree to be bound by the terms of this document. {LEGAL_DISCLAIMER_PRIMARY_COPY}
                 </p>
               </div>
               <Button
@@ -192,6 +194,13 @@ export default function SignDocumentPage() {
   )
 }
 
+export default function SignDocumentPage() {
+  return (
+    <LegalDisclaimerAcceptanceGate>
+      <SignDocumentContent />
+    </LegalDisclaimerAcceptanceGate>
+  )
+}
 
 
 
