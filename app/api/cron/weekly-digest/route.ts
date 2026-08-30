@@ -89,7 +89,7 @@ export async function GET(request: Request) {
   // ── Render the digest HTML ────────────────────────────────────────────────
   const topJurList = topPendingByJurisdiction
     .map(
-      (j) =>
+      (j: { jurisdiction: string; _count: { jurisdiction: number } }) =>
         `<li style="margin:4px 0;"><strong style="text-transform:capitalize;">${j.jurisdiction}</strong> — ${j._count.jurisdiction} pending</li>`
     )
     .join("")

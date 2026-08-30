@@ -7,6 +7,18 @@ import { sendDocumentReadyEmail } from "@/lib/email-service"
 // Stripe requires the raw body for signature verification
 export const runtime = "nodejs"
 
+function getSubscriptionPeriod(subscription: Stripe.Subscription) {
+  const items = subscription.items.data
+  if (items.length === 0) {
+    throw new Error(`Stripe subscription ${subscription.id} has no billing-period items`)
+  }
+
+  return {
+    start: Math.min(...items.map((item) => item.current_period_start)),
+    end: Math.max(...items.map((item) => item.current_period_end)),
+  }
+}
+
 export async function POST(request: Request) {
   const body = await request.text()
   const signature = request.headers.get("stripe-signature")
@@ -100,15 +112,20 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   // For subscriptions, update user record when the session completes
   if (paymentType === "subscription" && session.subscription) {
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+    const subscriptionId =
+      typeof session.subscription === "string"
+        ? session.subscription
+        : session.subscription.id
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+    const period = getSubscriptionPeriod(subscription)
     await prisma.user.update({
       where: { id: userId },
       data: {
         subscriptionTier: "professional",
         subscriptionStatus: "active",
         stripeSubscriptionId: subscription.id,
-        subscriptionStartDate: new Date((subscription as any).current_period_start * 1000),
-        subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
+        subscriptionStartDate: new Date(period.start * 1000),
+        subscriptionEndDate: new Date(period.end * 1000),
       },
     })
   }
@@ -138,6 +155,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
   const isActive = subscription.status === "active" || subscription.status === "trialing"
   const tier = isActive ? "professional" : "free"
+  const period = getSubscriptionPeriod(subscription)
 
   await prisma.user.update({
     where: { id: userId },
@@ -145,8 +163,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       subscriptionTier: tier,
       subscriptionStatus: subscription.status,
       stripeSubscriptionId: subscription.id,
-      subscriptionStartDate: new Date((subscription as any).current_period_start * 1000),
-      subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
+      subscriptionStartDate: new Date(period.start * 1000),
+      subscriptionEndDate: new Date(period.end * 1000),
     },
   })
 }
@@ -174,14 +192,22 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
   const userId = (customer as Stripe.Customer).metadata?.userId
   if (!userId) return
 
-  // Renew subscription dates if this is a recurring invoice
-  if (invoice.subscription) {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string)
+  // Stripe's current API exposes the originating subscription under the
+  // invoice parent instead of the legacy top-level `subscription` field.
+  const subscriptionReference = invoice.parent?.subscription_details?.subscription
+  if (subscriptionReference) {
+    const subscriptionId =
+      typeof subscriptionReference === "string"
+        ? subscriptionReference
+        : subscriptionReference.id
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+    const period = getSubscriptionPeriod(subscription)
+
     await prisma.user.update({
       where: { id: userId },
       data: {
         subscriptionStatus: "active",
-        subscriptionEndDate: new Date((subscription as any).current_period_end * 1000),
+        subscriptionEndDate: new Date(period.end * 1000),
       },
     })
   }

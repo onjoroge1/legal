@@ -30,7 +30,26 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-async function getLawyer(slug: string) {
+interface LawyerProfile {
+  active: boolean
+  bio: string
+  city: string | null
+  email: string
+  featured: boolean
+  firmName: string | null
+  licensedStates: string[]
+  name: string
+  phone: string | null
+  photoUrl: string | null
+  practiceAreas: string[]
+  stateAbbr: string | null
+  tagline: string | null
+  verified: boolean
+  websiteUrl: string | null
+  yearsExperience: number | null
+}
+
+async function getLawyer(slug: string): Promise<LawyerProfile | null> {
   return prisma.lawyerListing.findUnique({
     where: { slug },
   })
@@ -235,7 +254,7 @@ export default async function LawyerProfilePage({ params }: PageProps) {
                     About
                   </h2>
                   <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed space-y-4">
-                    {lawyer.bio.split("\n\n").map((para, i) => (
+                    {lawyer.bio.split("\n\n").map((para: string, i: number) => (
                       <p key={i}>{para}</p>
                     ))}
                   </div>
@@ -249,7 +268,7 @@ export default async function LawyerProfilePage({ params }: PageProps) {
                       Practice Areas
                     </h2>
                     <div className="flex flex-wrap gap-2">
-                      {lawyer.practiceAreas.map((area) => (
+                      {lawyer.practiceAreas.map((area: string) => (
                         <Badge
                           key={area}
                           variant="outline"
@@ -270,7 +289,7 @@ export default async function LawyerProfilePage({ params }: PageProps) {
                       Licensed States
                     </h2>
                     <div className="flex flex-wrap gap-2">
-                      {lawyer.licensedStates.map((abbr) => (
+                      {lawyer.licensedStates.map((abbr: string) => (
                         <Badge
                           key={abbr}
                           variant="outline"

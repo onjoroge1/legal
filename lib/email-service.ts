@@ -1,18 +1,11 @@
 // Email service using Resend API
-// Install: npm install resend
-
+import { Resend, type CreateEmailOptions } from "resend"
 import { generatePDF } from "@/lib/pdf-generator"
 import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
-let Resend: any
-let resend: any
-
-try {
-  Resend = require("resend")
-  resend = new Resend(process.env.RESEND_API_KEY)
-} catch (error) {
-  console.log("Resend not installed or configured - run: npm install resend")
-}
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null
 
 interface EmailOptions {
   to: string
@@ -273,7 +266,7 @@ export async function sendDocumentReadyEmail({
 </html>`
 
   try {
-    const payload: Record<string, unknown> = {
+    const payload: CreateEmailOptions = {
       from: process.env.RESEND_FROM_EMAIL || "LegalLawDocs <noreply@legallawdocs.com>",
       to: userEmail,
       subject: `Your ${documentTitle} is ready`,
@@ -337,5 +330,3 @@ export async function sendMarketingEmail(
     html,
   })
 }
-
-

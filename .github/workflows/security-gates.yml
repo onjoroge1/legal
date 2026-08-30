@@ -30,3 +30,41 @@ jobs:
 
       - name: Verify route containment
         run: node scripts/check-routes.mjs
+
+      - name: Verify public marketing claims
+        run: node scripts/check-marketing-claims.mjs
+
+  production-build:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://build:example@127.0.0.1:5432/legal_build
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: build-only-secret-not-for-runtime
+      STRIPE_SECRET_KEY: sk_test_build_only
+      STRIPE_WEBHOOK_SECRET: whsec_build_only
+      ENABLE_AI_GENERATION: "false"
+      ENABLE_PAYMENTS: "false"
+      ENABLE_ELECTRONIC_SIGNING: "false"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm run typecheck
+
+      - name: Build production application
+        run: pnpm run build
