@@ -6,3 +6,5 @@ allowBuilds:
   "@prisma/engines": true
   prisma: true
   sharp: true
+  # Native resolver used by eslint-config-next's import analysis.
+  unrs-resolver: true

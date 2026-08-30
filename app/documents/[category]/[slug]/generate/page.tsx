@@ -66,6 +66,7 @@ export default function GeneratePage() {
 
   const { data: session } = useSession()
   const [hasSubscription, setHasSubscription] = useState(false)
+  const [draftAgeReferenceTime] = useState(() => Date.now())
 
   // ?intent=<id> pre-selects a specific intent variant (from intent landing pages)
   const preselectedIntentId = searchParams?.get("intent") ?? null
@@ -604,7 +605,7 @@ export default function GeneratePage() {
                   <p className="text-xs text-muted-foreground mb-3">
                     You generated this document{" "}
                     {(() => {
-                      const mins = Math.round((Date.now() - new Date(draftRestore.savedAt).getTime()) / 60000)
+                      const mins = Math.round((draftAgeReferenceTime - new Date(draftRestore.savedAt).getTime()) / 60000)
                       if (mins < 60) return `${mins}m ago`
                       const hrs = Math.round(mins / 60)
                       if (hrs < 24) return `${hrs}h ago`

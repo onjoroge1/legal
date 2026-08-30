@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -114,7 +115,7 @@ function SignDocumentContent() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <a href="/">Go to Homepage</a>
+              <Link href="/">Go to Homepage</Link>
             </Button>
           </CardContent>
         </Card>
@@ -201,6 +202,3 @@ export default function SignDocumentPage() {
     </LegalDisclaimerAcceptanceGate>
   )
 }
-
-
-

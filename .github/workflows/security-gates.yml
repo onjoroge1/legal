@@ -66,5 +66,8 @@ jobs:
       - name: Type-check
         run: pnpm run typecheck
 
+      - name: Lint blocking rules
+        run: pnpm run lint
+
       - name: Build production application
         run: pnpm run build
