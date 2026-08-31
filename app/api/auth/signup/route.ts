@@ -1,29 +1,13 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
+import bcrypt from "bcryptjs"
 import * as z from "zod"
-
-// Try to import Prisma - will be undefined if not set up yet
-let prisma: any
-let bcrypt: any
-
-try {
-  const prismaModule = require("@/lib/prisma")
-  prisma = prismaModule.prisma
-} catch (error) {
-  // Prisma not set up yet
-  console.log("Prisma not available - signup will work once database is configured")
-}
-
-try {
-  bcrypt = require("bcryptjs")
-} catch (error) {
-  // bcryptjs not installed yet
-  console.log("bcryptjs not available - install with: npm install bcryptjs")
-}
+import { prisma } from "@/lib/prisma"
 
 const signupSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  name: z.string().trim().min(1, "Name is required").max(200),
+  email: z.string().trim().email("Invalid email address").transform((value) => value.toLowerCase()),
+  password: z.string().min(8, "Password must be at least 8 characters").max(200),
 })
 
 /**
@@ -38,27 +22,6 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { name, email, password } = signupSchema.parse(body)
 
-    // Check if Prisma is available
-    if (!prisma) {
-      return NextResponse.json(
-        { 
-          error: "Database not configured. Please set up Prisma first.",
-          message: "See PRISMA_SETUP.md for instructions"
-        },
-        { status: 503 }
-      )
-    }
-
-    if (!bcrypt) {
-      return NextResponse.json(
-        { 
-          error: "bcryptjs not installed. Run: npm install bcryptjs",
-          message: "Password hashing library is required"
-        },
-        { status: 503 }
-      )
-    }
-
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -72,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 12)
 
     // Create user
     const user = await prisma.user.create({
@@ -109,6 +72,9 @@ export async function POST(request: Request) {
       )
     }
 
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return NextResponse.json({ error: "User with this email already exists" }, { status: 400 })
+    }
     console.error("Signup error:", error)
     return NextResponse.json(
       { error: "Internal server error" },
@@ -116,7 +82,6 @@ export async function POST(request: Request) {
     )
   }
 }
-
 
 
 

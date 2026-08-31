@@ -7,7 +7,7 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => !!token && token.revoked !== true,
     },
   }
 )
@@ -40,4 +40,3 @@ export const config = {
     // If you add authenticated-only payment endpoints in the future, list them explicitly here.
   ],
 }
-
