@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -89,9 +90,9 @@ export default function AIAssistantClient({ documents }: { documents: Doc[] }) {
           <Info className="h-4 w-4" />
           <AlertDescription>
             You don&apos;t have any documents yet.{" "}
-            <a href="/documents" className="underline">
+            <Link href="/documents" className="underline">
               Generate your first document
-            </a>{" "}
+            </Link>{" "}
             to get started.
           </AlertDescription>
         </Alert>
