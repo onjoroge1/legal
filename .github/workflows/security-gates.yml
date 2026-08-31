@@ -34,6 +34,9 @@ jobs:
       - name: Verify public marketing claims
         run: node scripts/check-marketing-claims.mjs
 
+      - name: Verify authentication security invariants
+        run: node scripts/check-auth-security.mjs
+
   production-build:
     runs-on: ubuntu-latest
     env:

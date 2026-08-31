@@ -3,16 +3,16 @@ import { ESLint } from "eslint"
 // Temporary ceilings for inherited warnings. A focused cleanup PR should
 // lower these values whenever it removes debt; new warning categories fail.
 const warningLimits = Object.freeze({
-  "@next/next/no-img-element": 3,
-  "@typescript-eslint/no-explicit-any": 81,
-  "@typescript-eslint/no-require-imports": 45,
-  "@typescript-eslint/no-unused-vars": 105,
+  "@next/next/no-img-element": 2,
+  "@typescript-eslint/no-explicit-any": 62,
+  "@typescript-eslint/no-require-imports": 29,
+  "@typescript-eslint/no-unused-vars": 87,
   "react-hooks/exhaustive-deps": 12,
   "react-hooks/immutability": 7,
   "react-hooks/refs": 2,
   "react-hooks/set-state-in-effect": 16,
   "react-hooks/static-components": 2,
-  "react/no-unescaped-entities": 20,
+  "react/no-unescaped-entities": 18,
 })
 
 const results = await new ESLint().lintFiles(["."])

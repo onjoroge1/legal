@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs && node scripts/check-marketing-claims.mjs",
+    "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs && node scripts/check-marketing-claims.mjs && node scripts/check-auth-security.mjs",
     "build": "prisma generate && next build",
     "typecheck": "prisma generate && tsc --noEmit --incremental false",
     "start": "next start",
@@ -15,6 +15,7 @@
     "check:security": "node scripts/check-sensitive-files.mjs",
     "check:legal": "node scripts/check-legal-disclaimer.mjs",
     "check:claims": "node scripts/check-marketing-claims.mjs",
+    "check:auth": "node scripts/check-auth-security.mjs",
     "smoke": "node scripts/smoke-tests.mjs"
   },
   "prisma": {

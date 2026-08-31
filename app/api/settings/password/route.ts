@@ -3,20 +3,12 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import bcrypt from "bcryptjs"
 import * as z from "zod"
-
-// Try to import Prisma
-let prisma: any
-
-try {
-  const prismaModule = require("@/lib/prisma")
-  prisma = prismaModule.prisma
-} catch (error) {
-  console.log("Prisma not available")
-}
+import { prisma } from "@/lib/prisma"
+import { parseActiveSessions, serializeActiveSessions } from "@/lib/session-tracker"
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: z.string().min(6, "New password must be at least 6 characters"),
+  newPassword: z.string().min(8, "New password must be at least 8 characters").max(200),
   confirmPassword: z.string().min(1, "Please confirm your new password"),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords don't match",
@@ -41,19 +33,13 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { currentPassword, newPassword } = changePasswordSchema.parse(body)
 
-    if (!prisma || !bcrypt) {
-      return NextResponse.json(
-        { error: "Database not configured" },
-        { status: 503 }
-      )
-    }
-
     // Get user with password
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: {
         id: true,
         password: true,
+        activeSessions: true,
       },
     })
 
@@ -75,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    const hashedPassword = await bcrypt.hash(newPassword, 12)
 
     // Update password
     await prisma.user.update({
@@ -83,6 +69,9 @@ export async function POST(request: Request) {
       data: {
         password: hashedPassword,
         lastPasswordChange: new Date(),
+        activeSessions: serializeActiveSessions(
+          parseActiveSessions(user.activeSessions).filter((item) => item.id === session.sessionId)
+        ),
       },
     })
 
@@ -104,7 +93,6 @@ export async function POST(request: Request) {
     )
   }
 }
-
 
 
 

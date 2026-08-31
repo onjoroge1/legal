@@ -15,7 +15,6 @@ import { Bell, Shield, User, Key, Globe } from "lucide-react"
 import { toast } from "@/lib/safe-toast"
 import { useSession } from "next-auth/react"
 import { AvatarUpload } from "@/components/settings/avatar-upload"
-import { TwoFactorSetup } from "@/components/settings/two-factor-setup"
 
 interface UserSettings {
   firstName: string
@@ -42,7 +41,6 @@ interface UserSettings {
     documentReminders: boolean
     teamActivity: boolean
   }
-  twoFactorEnabled: boolean
   activeSessions: Array<{
     id: string
     deviceName: string
@@ -90,7 +88,6 @@ export default function SettingsPage() {
       documentReminders: true,
       teamActivity: true
     },
-    twoFactorEnabled: false,
     activeSessions: []
   })
 
@@ -150,10 +147,12 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
+      const editableSettings: Partial<UserSettings> = { ...settings }
+      delete editableSettings.activeSessions
       const response = await fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings)
+        body: JSON.stringify(editableSettings)
       })
       
       if (!response.ok) throw new Error("Failed to save settings")
@@ -606,7 +605,7 @@ export default function SettingsPage() {
                 <Input 
                   id="new-password" 
                   type="password"
-                  placeholder="Enter new password (min. 6 characters)"
+                  placeholder="Enter new password (min. 8 characters)"
                   value={passwordFields.newPassword}
                   onChange={(e) => setPasswordFields(prev => ({ ...prev, newPassword: e.target.value }))}
                 />
@@ -647,8 +646,8 @@ export default function SettingsPage() {
                     return
                   }
 
-                  if (newPassword.length < 6) {
-                    toast.error("New password must be at least 6 characters")
+                  if (newPassword.length < 8) {
+                    toast.error("New password must be at least 8 characters")
                     return
                   }
 
@@ -685,58 +684,6 @@ export default function SettingsPage() {
                 disabled={isChangingPassword || !passwordFields.currentPassword || !passwordFields.newPassword || !passwordFields.confirmPassword}
               >
                 {isChangingPassword ? "Changing Password..." : "Change Password"}
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Two-Factor Authentication</CardTitle>
-              <CardDescription>Add an extra layer of security to your account</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Two-Factor Authentication</Label>
-                  <p className="text-sm text-muted-foreground">Require a verification code when signing in</p>
-                </div>
-                <Switch 
-                  checked={settings.twoFactorEnabled}
-                  onCheckedChange={(checked) => handleChange("twoFactorEnabled", "", checked)}
-                />
-              </div>
-
-              <div className="rounded-md border p-4 bg-muted/50">
-                <h3 className="text-sm font-medium mb-2">How Two-Factor Authentication Works</h3>
-                <p className="text-sm text-muted-foreground">
-                  When you sign in, you'll need to provide both your password and a verification code from your mobile
-                  device. This adds an extra layer of security to your account.
-                </p>
-              </div>
-              
-              <TwoFactorSetup
-                isEnabled={settings.twoFactorEnabled}
-                onSetupComplete={async () => {
-                  // Reload settings to get updated 2FA status
-                  const response = await fetch("/api/settings")
-                  if (response.ok) {
-                    const data = await response.json()
-                    setSettings(prev => ({ ...prev, twoFactorEnabled: data.twoFactorEnabled }))
-                  }
-                }}
-                onDisable={async () => {
-                  // Reload settings to get updated 2FA status
-                  const response = await fetch("/api/settings")
-                  if (response.ok) {
-                    const data = await response.json()
-                    setSettings(prev => ({ ...prev, twoFactorEnabled: data.twoFactorEnabled }))
-                  }
-                }}
-              />
-            </CardContent>
-            <CardFooter className="flex justify-end gap-2">
-              <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Settings"}
               </Button>
             </CardFooter>
           </Card>
@@ -842,4 +789,3 @@ export default function SettingsPage() {
     </div>
   )
 }
-
