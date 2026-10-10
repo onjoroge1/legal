@@ -7,8 +7,8 @@ const plans = [
   {
     name: "Starter",
     description: "A one-time purchase for a single document draft.",
-    price: "$14–$29",
-    period: "per document",
+    price: "One-time",
+    period: "price confirmed at checkout",
     features: [
       "Price shown on each document page",
       "AI-assisted, state-aware draft",

@@ -592,3 +592,29 @@ model BillingSubscription {
   updatedAt DateTime @updatedAt
   @@index([ownerId])
 }
+
+/// Immutable quote and identity snapshot; no guest email is resolved into a User.
+model CheckoutOrder {
+  id String @id
+  activeKey String? @unique
+  ownerId String?
+  draftId String?
+  versionId String?
+  contentHash String?
+  guestEmail String?
+  kind String
+  priceId String
+  amount Int
+  currency String
+  customerId String?
+  sessionId String? @unique
+  paymentIntentId String? @unique
+  subscriptionId String?
+  status String @default("pending")
+  disclaimerVersion String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, createdAt])
+  @@index([subscriptionId])
+}

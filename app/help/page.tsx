@@ -45,7 +45,7 @@ const sections = [
     faqs: [
       {
         q: "What is the one-time price for a document?",
-        a: "Catalog prices currently range from $14–$29 per document. The applicable one-time price is displayed on the document page and again before you authorize payment.",
+        a: "The current configured Stripe price is displayed at checkout before you authorize payment. A one-time purchase covers one saved document version.",
       },
       {
         q: "What does a subscription include?",

@@ -746,7 +746,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                     <div className="text-center">
                       <div className="mb-2 text-sm font-medium text-muted-foreground uppercase tracking-widest">State-Specific Document</div>
                       <div className="text-5xl font-bold text-foreground">
-                        {stateCatalogDoc ? `$${stateCatalogDoc.price}` : "See document page"}
+                        {"Price at checkout"}
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">One-time document price</p>
                     </div>
@@ -970,11 +970,6 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     url: canonicalUrl,
     applicationCategory: "LegalApplication",
     operatingSystem: "Any",
-    offers: {
-      "@type": "Offer",
-      price: `${doc.price}`,
-      priceCurrency: "USD",
-    },
     description: doc.longDescription,
     provider: {
       "@type": "Organization",
@@ -988,11 +983,6 @@ export default async function DocumentDetailPage({ params }: PageProps) {
     "@type": "SoftwareApplication",
     name: `${doc.title} Generator`,
     applicationCategory: "LegalApplication",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
     operatingSystem: "Web",
     // aggregateRating removed for YMYL compliance — was based on fictional
     // reviews. Reinstate only when real, verifiable customer ratings exist.
@@ -1106,7 +1096,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                   ) : (
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold text-foreground">${doc.price}</span>
+                      <span className="text-2xl font-bold text-foreground">Price at checkout</span>
                       <span className="text-sm text-muted-foreground">per document</span>
                       <span className="text-sm text-muted-foreground">or</span>
                       <span className="text-sm font-semibold text-primary">subscription price shown at checkout</span>
@@ -1170,7 +1160,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                         {hasActiveSubscription ? (
                           <><p className="text-xs text-muted-foreground">Included in active subscription</p><p className="text-2xl font-bold text-accent">Included</p></>
                         ) : (
-                          <><p className="text-xs text-muted-foreground">One-time payment</p><p className="text-2xl font-bold text-foreground">${doc.price}</p></>
+                          <><p className="text-xs text-muted-foreground">One-time payment</p><p className="text-2xl font-bold text-foreground">Price at checkout</p></>
                         )}
                       </div>
                       <Link href={generatePath}>
@@ -1453,7 +1443,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
               {hasActiveSubscription ? (
                 <>Answer guided questions and download a draft for review. <span className="text-accent font-semibold">Included with your active subscription.</span></>
               ) : (
-                <>Answer guided questions, review the exact ${doc.price} one-time price, and download a draft for attorney review.</>
+                <>Answer guided questions, review the one-time price at checkout, and download a draft for attorney review.</>
               )}
             </p>
             <Link href={generatePath} className="mt-8 inline-block">
@@ -1527,7 +1517,7 @@ export default async function DocumentDetailPage({ params }: PageProps) {
                               <Crown className="h-3 w-3" />Included
                             </Badge>
                           ) : (
-                            <span className="font-semibold text-foreground">${relatedDoc.price}</span>
+                            <span className="font-semibold text-foreground">Price at checkout</span>
                           )}
                         </div>
                       </div>

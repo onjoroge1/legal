@@ -26,6 +26,10 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
   const router = useRouter(); const query = useSearchParams(); const { data: session } = useSession()
   const category = params.category; const slug = params.slug; const versionId = query.get("version"); const draftId = query.get("draft")
   const resolved = useMemo(() => { try { return resolveDocument(category, slug, query.get("intent")) } catch { return null } }, [category, slug, query])
+  const [guestEmail, setGuestEmail] = useState("")
+  const [prices, setPrices] = useState<{ single: { amount: number; currency: string }; subscription: { amount: number; currency: string } } | null>(null)
+  useEffect(() => { if (mode === "checkout") fetch("/api/payment/prices").then(jsonResponse).then(setPrices).catch(() => setError("Prices are temporarily unavailable")) }, [mode])
+  const priceLabel = (kind: "single" | "subscription") => prices ? new Intl.NumberFormat("en-US", { style: "currency", currency: prices[kind].currency }).format(prices[kind].amount / 100) : "Loading price…"
   const [fields, setFields] = useState<Fields>({})
   const [intent, setIntent] = useState<string>(query.get("intent") ?? "")
   const [saved, setSaved] = useState<Saved | null>(null)
@@ -85,7 +89,7 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
     if (!saved || busy) return
     setBusy(true); setError("")
     try {
-      const data = await jsonResponse(await fetch("/api/payment/create-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ versionId: saved.id, paymentType }) }))
+      const data = await jsonResponse(await fetch("/api/payment/create-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ versionId: saved.id, paymentType, ...(!session?.user || guestEmail ? { guestEmail } : {}) }) }))
       const target = new URL(data.url)
       if (target.protocol !== "https:" || target.hostname !== "checkout.stripe.com") throw new Error("Invalid checkout destination")
       window.location.assign(target.href)
@@ -121,7 +125,7 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
       <div className="flex flex-wrap gap-3">
         <Button asChild variant="outline"><Link href={destination("generate")}>Edit inputs and create a new version</Link></Button>
         {mode === "preview" ? <><Button asChild><Link href={destination("checkout")}>Continue to purchase</Link></Button><Button asChild variant="outline"><Link href={destination("download")}>Download</Link></Button></> : null}
-        {mode === "checkout" ? session?.user ? <><Button disabled={busy} onClick={() => checkout("single")}>Buy document · ${resolved.doc.price}</Button><Button disabled={busy} variant="outline" onClick={() => checkout("subscription")}>Subscribe · ${resolved.doc.subscriptionPrice}/month</Button></> : <p>Purchases require a signed-in account. Guest account recovery is still being completed. Keep this page open to retain your draft.</p> : null}
+        {mode === "checkout" ? <><label>Receipt email (required for guest drafts)<input type="email" value={guestEmail} onChange={e => setGuestEmail(e.target.value)} className="block rounded border p-2" /></label><Button disabled={busy || !prices} onClick={() => checkout("single")}>Buy this version · {priceLabel("single")}</Button>{session?.user ? <Button disabled={busy || !prices} variant="outline" onClick={() => checkout("subscription")}>Subscribe · {priceLabel("subscription")}/month</Button> : <p>Sign in before creating a draft for subscription access. Guest purchases stay in this browser; keep this link.</p>}<p>One document purchase covers this saved version. Subscriptions renew monthly until canceled. See <Link className="underline" href="/terms#refunds">refund policy</Link>.</p></> : null}
         {mode === "download" ? <>{!saved.access?.canDownloadPDF ? <p>Purchase this version or activate a subscription to download. <Link className="underline" href={destination("checkout")}>Continue to purchase</Link></p> : null}<Button disabled={busy || !saved.access?.canDownloadPDF} onClick={() => download("pdf")}>Download PDF</Button><Button disabled={busy || !saved.access?.canDownloadDOCX} variant="outline" onClick={() => download("docx")}>Download Word</Button></> : null}
       </div>
       <section aria-label="Saved document" className="rounded border bg-card p-6"><pre className="whitespace-pre-wrap font-serif leading-relaxed">{saved.content}</pre></section>

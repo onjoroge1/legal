@@ -1,7 +1,14 @@
+import { createCheckout } from "@/lib/checkout"
+import { requestError } from "@/lib/request-guard"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
-// Legacy plan mutations cannot grant access. PR-08 supplies the billing checkout contract.
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 export async function POST(request: Request) {
-  const blocked = requireLegalDisclaimerAcceptance(request)
-  if (blocked) return blocked
-  return Response.json({ error: "Use billing checkout or cancellation" }, { status: 409 })
+  try {
+    const blocked = requireLegalDisclaimerAcceptance(request) ?? requireEmergencyFeature("ENABLE_PAYMENTS", "Checkout")
+    if (blocked) return blocked
+    const result = await createCheckout(request, true)
+    if (result.expired) return Response.json({ error: "Checkout expired. Try again to create a new checkout." }, { status: 409 })
+    if (result.processing || result.reconciliationRequired) return Response.json({ error: "Payment is being verified. Please do not pay again." }, { status: 409 })
+    return Response.json(result, { headers: { "Cache-Control": "no-store" } })
+  } catch (error) { return requestError(error) ?? Response.json({ error: "Checkout temporarily unavailable" }, { status: 503 }) }
 }

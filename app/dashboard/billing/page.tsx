@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -18,6 +19,7 @@ interface Subscription {
   tier: string
   status: string
   startDate: string | null
+  cancelAtPeriodEnd?: boolean
   endDate: string | null
 }
 
@@ -38,6 +40,7 @@ interface PaymentMethod {
 }
 
 export default function BillingPage() {
+  const router = useRouter()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [billingHistory, setBillingHistory] = useState<BillingHistory[]>([])
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
@@ -158,9 +161,10 @@ export default function BillingPage() {
   }
 
   const handleUpgrade = async (tier: string) => {
+    if (tier === "starter") { router.push("/documents"); return }
     try {
       setIsLoading(true)
-      const response = await fetch("/api/payment/create-checkout", {
+      const response = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -176,17 +180,10 @@ export default function BillingPage() {
 
       // If URL is provided, redirect to Stripe Checkout
       // Otherwise, refresh billing data (for development mode)
-      if (data.url && data.url.startsWith("https://")) {
+      if (data.url && new URL(data.url).protocol === "https:" && new URL(data.url).hostname === "checkout.stripe.com") {
         window.location.href = data.url
       } else {
-        // Development mode - just refresh the data
-        toast({
-          title: "Success",
-          description: `Successfully upgraded to ${tier} plan`,
-        })
-        await fetchBillingData()
-        // Reload page to show updated subscription
-        window.location.reload()
+        throw new Error("Checkout did not return a valid payment URL")
       }
     } catch (error) {
       console.error("Upgrade error:", error)
@@ -283,7 +280,7 @@ export default function BillingPage() {
                   </p>
                   {subscription?.endDate && subscription?.tier === "professional" && (
                     <p className="text-sm text-muted-foreground">
-                      Renews on {formatDate(subscription.endDate)}
+                      {subscription.cancelAtPeriodEnd ? "Access ends" : "Renews"} on {formatDate(subscription.endDate)}
                     </p>
                   )}
                   {subscription?.tier === "starter" && (
@@ -394,7 +391,7 @@ export default function BillingPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="mb-4">
-                        <span className="text-3xl font-bold">$14–$29</span>
+                        <span className="text-3xl font-bold">Price confirmed at checkout</span>
                         <span className="text-muted-foreground ml-2">per document</span>
                       </div>
                       <ul className="space-y-2 text-sm mb-4">

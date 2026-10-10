@@ -165,11 +165,6 @@ export default async function IntentPage({ params }: PageProps) {
     url: canonicalUrl,
     applicationCategory: "LegalApplication",
     operatingSystem: "Any",
-    offers: {
-      "@type": "Offer",
-      price: `${doc.price}`,
-      priceCurrency: "USD",
-    },
     description: intent.shortDescription,
     provider: {
       "@type": "Organization",
@@ -295,7 +290,7 @@ export default async function IntentPage({ params }: PageProps) {
                     <p className="text-sm font-medium text-muted-foreground">One-time price</p>
                     <div className="mt-1 flex items-baseline gap-1">
                       <span className="font-serif text-4xl font-bold text-foreground">
-                        ${doc.price}
+                        Price at checkout
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">One-time · No subscription</p>

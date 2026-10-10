@@ -115,12 +115,12 @@ if (catalogCount === 0 || !Number.isFinite(minPrice) || !Number.isFinite(maxPric
     failures.push(`Homepage document count does not match the ${catalogCount}-item catalog.`)
   }
 
-  const expectedRange = `$${minPrice}–$${maxPrice}`
+  // Commercial prices now come from configured Stripe prices, not catalog suggestions.
   for (const file of ["components/pricing-section.tsx", "app/dashboard/billing/page.tsx", "app/help/page.tsx"]) {
-    if (!read(file).includes(expectedRange)) {
-      failures.push(`${file}: expected the catalog price range ${expectedRange}.`)
-    }
+    if (/\$14[–-]\$29/.test(read(file))) failures.push(`${file}: stale catalog price range must not override configured checkout pricing.`)
+    if (!/checkout/i.test(read(file))) failures.push(`${file}: pricing must point to the checkout quote.`)
   }
+
 }
 
 if (!read("app/layout.tsx").includes("<SitewideLegalNotice />")) {
