@@ -29,6 +29,7 @@ export default defineConfig([
       ? { ...config, rules: { ...config.rules, ...typeScriptDebtRules } }
       : config
   ),
+  { files: ["tests/**/*.cjs"], rules: { "@typescript-eslint/no-require-imports": "off" } },
   globalIgnores([
     ".next/**",
     "out/**",

@@ -2,16 +2,11 @@ export type EmergencyFeature =
   | "ENABLE_AI_GENERATION"
   | "ENABLE_PAYMENTS"
   | "ENABLE_ELECTRONIC_SIGNING"
+  | "ENABLE_DOCUMENT_MUTATIONS"
 
-/**
- * Sensitive features fail closed in production until explicitly enabled.
- * Local development remains usable unless a flag is explicitly set to false.
- */
+/** Fail closed in every environment; only the exact string "true" opts in. */
 export function isEmergencyFeatureEnabled(feature: EmergencyFeature): boolean {
-  const configured = process.env[feature]
-  if (configured === "true") return true
-  if (configured === "false") return false
-  return process.env.NODE_ENV !== "production"
+  return process.env[feature] === "true"
 }
 
 export function requireEmergencyFeature(

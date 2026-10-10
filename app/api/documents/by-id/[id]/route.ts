@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -80,6 +81,11 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Temporary write freeze prevents every generic edit path from changing
+  // signed content or signature metadata. Reads and Stripe intake stay available.
+  const blocked = requireEmergencyFeature("ENABLE_DOCUMENT_MUTATIONS", "Document editing")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
 
