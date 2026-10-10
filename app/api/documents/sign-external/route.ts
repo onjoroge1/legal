@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 
 // Try to import Prisma
@@ -15,6 +16,9 @@ try {
  * POST /api/documents/sign-external
  */
 export async function POST(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_ELECTRONIC_SIGNING", "This feature")
+  if (blocked) return blocked
+
   try {
     if (!prisma) {
       return NextResponse.json(

@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
@@ -66,6 +67,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ category: string; slug: string }> }
 ) {
+  const blocked = requireEmergencyFeature("ENABLE_AI_GENERATION", "This feature")
+  if (blocked) return blocked
+
   try {
     const { category, slug } = await params
     const { formData, intent } = await request.json()

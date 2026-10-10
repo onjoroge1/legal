@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -17,6 +18,9 @@ import bcrypt from "bcryptjs"
  * Guests get a user record created silently; they set their password post-payment.
  */
 export async function POST(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_PAYMENTS", "This feature")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()

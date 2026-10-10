@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -137,6 +138,9 @@ export async function GET(request: Request) {
  * POST /api/documents
  */
 export async function POST(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_DOCUMENT_MUTATIONS", "This feature")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
 

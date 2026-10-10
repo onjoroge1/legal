@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 
 // Try to import Prisma
@@ -15,6 +16,9 @@ try {
  * GET /api/documents/signing-request?token=...
  */
 export async function GET(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_ELECTRONIC_SIGNING", "This feature")
+  if (blocked) return blocked
+
   try {
     const { searchParams } = new URL(request.url)
     const token = searchParams.get("token")

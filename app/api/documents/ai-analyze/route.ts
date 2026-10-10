@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -34,6 +35,9 @@ const analysisSchema = z.object({
  * Runs GPT-4o-mini analysis on a user document and returns structured results.
  */
 export async function POST(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_AI_GENERATION", "This feature")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {

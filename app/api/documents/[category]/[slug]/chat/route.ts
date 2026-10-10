@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import {
   consumeStream,
   convertToModelMessages,
@@ -54,6 +55,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ category: string; slug: string }> }
 ) {
+  const blocked = requireEmergencyFeature("ENABLE_AI_GENERATION", "This feature")
+  if (blocked) return blocked
+
   try {
     const { category, slug } = await params
     const { messages, intent } = await request.json()

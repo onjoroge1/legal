@@ -11,6 +11,23 @@ node_modules/
 .env
 .env.*
 .env*.local
+!.env.example
 .DS_Store
 .vercel
 .gstack/
+
+# Never commit credentials, databases, backups, or user uploads
+*.db
+*.db-*
+*.db.*
+*.sqlite
+*.sqlite3
+*.backup
+backups/
+prisma/backups/
+public/uploads/
+
+# Local agent/editor artifacts and generated TypeScript state
+.claude/worktrees/
+*.tsbuildinfo
+*.new

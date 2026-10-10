@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -18,6 +19,9 @@ try {
  * POST /api/documents/send-for-signature
  */
 export async function POST(request: Request) {
+  const blocked = requireEmergencyFeature("ENABLE_ELECTRONIC_SIGNING", "This feature")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
 

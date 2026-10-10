@@ -1,3 +1,4 @@
+import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -10,6 +11,9 @@ import { stripe } from "@/lib/stripe"
  * card details via Stripe Elements and attach them to the customer.
  */
 export async function POST() {
+  const blocked = requireEmergencyFeature("ENABLE_PAYMENTS", "This feature")
+  if (blocked) return blocked
+
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
