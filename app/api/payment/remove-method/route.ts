@@ -22,8 +22,8 @@ export async function POST(request: Request) {
     await stripe.paymentMethods.detach(paymentMethodId)
 
     return NextResponse.json({ message: "Payment method removed successfully" })
-  } catch (error) {
-    console.error("Remove payment method error:", error)
+  } catch {
+    console.error("Remove payment method error:")
     return NextResponse.json({ error: "Failed to remove payment method" }, { status: 500 })
   }
 }

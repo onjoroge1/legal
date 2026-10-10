@@ -1,3 +1,4 @@
+import { readJson, requestError } from "@/lib/request-guard"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { z } from "zod"
@@ -73,8 +74,8 @@ export async function GET() {
         ...item, isCurrent: item.id === session.sessionId,
       })),
     })
-  } catch (error) {
-    console.error("Settings API error:", error)
+  } catch {
+    console.error("Settings API error:")
     return NextResponse.json({ error: "Failed to load settings" }, { status: 500 })
   }
 }
@@ -84,7 +85,7 @@ export async function PATCH(request: Request) {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    const input = updateSettingsSchema.parse(await request.json())
+    const input = updateSettingsSchema.parse(await readJson(request, 8192))
     const currentUser = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: { firstName: true, lastName: true },
@@ -106,10 +107,12 @@ export async function PATCH(request: Request) {
     await prisma.user.update({ where: { email: session.user.email }, data })
     return NextResponse.json({ message: "Settings updated successfully" })
   } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid settings", details: error.errors }, { status: 400 })
     }
-    console.error("Settings API error:", error)
+    console.error("Settings API error:")
     return NextResponse.json({ error: "Failed to update settings" }, { status: 500 })
   }
 }

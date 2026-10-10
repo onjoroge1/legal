@@ -42,8 +42,8 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json(lawyers)
-  } catch (error) {
-    console.error("[GET /api/admin/lawyers]", error)
+  } catch {
+    console.error("[GET /api/admin/lawyers]")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(lawyer, { status: 201 })
   } catch (error: unknown) {
-    console.error("[POST /api/admin/lawyers]", error)
+    console.error("[POST /api/admin/lawyers]")
     // Unique constraint violation
     if (
       typeof error === "object" &&

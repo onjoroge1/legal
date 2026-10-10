@@ -7,7 +7,7 @@ let prisma: any
 try {
   const prismaModule = require("./prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not available
 }
 
@@ -25,7 +25,7 @@ export interface NotificationData {
  */
 export async function createNotification(data: NotificationData): Promise<void> {
   if (!prisma) {
-    console.warn("Prisma not available. Notification not created:", data.title)
+    console.warn("Prisma not available. Notification not created:")
     return
   }
 
@@ -42,9 +42,9 @@ export async function createNotification(data: NotificationData): Promise<void> 
         read: false,
       },
     })
-  } catch (error) {
+  } catch {
     // Notification model might not exist yet
-    console.warn("Notification model not found. Add it to Prisma schema:", error)
+    console.warn("Notification model not found. Add it to Prisma schema:")
   }
 }
 

@@ -74,8 +74,8 @@ export async function GET(
     }
 
     return NextResponse.json(intents)
-  } catch (error) {
-    console.error("Intents API error:", error)
+  } catch {
+    console.error("Intents API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

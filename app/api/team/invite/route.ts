@@ -10,7 +10,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -210,8 +210,8 @@ export async function POST(request: Request) {
         expiresAt: invitation.expiresAt,
       },
     })
-  } catch (error) {
-    console.error("Send invitation error:", error)
+  } catch {
+    console.error("Send invitation error:")
     return NextResponse.json(
       { error: "Failed to send invitation" },
       { status: 500 }

@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -57,12 +57,12 @@ export async function GET(request: Request) {
       })
 
       return NextResponse.json({ notifications })
-    } catch (error) {
+    } catch {
       // Notification model might not exist yet
       return NextResponse.json({ notifications: [] })
     }
-  } catch (error) {
-    console.error("Get notifications error:", error)
+  } catch {
+    console.error("Get notifications error:")
     return NextResponse.json(
       { error: "Failed to get notifications" },
       { status: 500 }
@@ -122,12 +122,12 @@ export async function PATCH(request: Request) {
       }
 
       return NextResponse.json({ message: "Notification updated" })
-    } catch (error) {
+    } catch {
       // Notification model might not exist yet
       return NextResponse.json({ message: "Notification updated" })
     }
-  } catch (error) {
-    console.error("Update notification error:", error)
+  } catch {
+    console.error("Update notification error:")
     return NextResponse.json(
       { error: "Failed to update notification" },
       { status: 500 }

@@ -35,8 +35,8 @@ export async function GET(
     }
 
     return NextResponse.json(lawyer)
-  } catch (error) {
-    console.error("[GET /api/admin/lawyers/[id]]", error)
+  } catch {
+    console.error("[GET /api/admin/lawyers/[id]]")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -95,7 +95,7 @@ export async function PATCH(
 
     return NextResponse.json(lawyer)
   } catch (error: unknown) {
-    console.error("[PATCH /api/admin/lawyers/[id]]", error)
+    console.error("[PATCH /api/admin/lawyers/[id]]")
     if (
       typeof error === "object" &&
       error !== null &&
@@ -138,7 +138,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error: unknown) {
-    console.error("[DELETE /api/admin/lawyers/[id]]", error)
+    console.error("[DELETE /api/admin/lawyers/[id]]")
     if (
       typeof error === "object" &&
       error !== null &&

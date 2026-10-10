@@ -7,7 +7,7 @@ let prisma: any
 try {
   const prismaModule = require("./prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not available
 }
 
@@ -83,8 +83,8 @@ export async function upgradePlan(
       message: `Successfully upgraded to ${newTier} plan`,
       newTier,
     }
-  } catch (error) {
-    console.error("Upgrade plan error:", error)
+  } catch {
+    console.error("Upgrade plan error:")
     return {
       success: false,
       error: "Failed to upgrade plan",
@@ -157,8 +157,8 @@ export async function downgradePlan(
         : `Successfully downgraded to ${newTier} plan`,
       newTier,
     }
-  } catch (error) {
-    console.error("Downgrade plan error:", error)
+  } catch {
+    console.error("Downgrade plan error:")
     return {
       success: false,
       error: "Failed to downgrade plan",
@@ -219,8 +219,8 @@ export async function changePlan(
         error: "Already on this plan",
       }
     }
-  } catch (error) {
-    console.error("Change plan error:", error)
+  } catch {
+    console.error("Change plan error:")
     return {
       success: false,
       error: "Failed to change plan",
@@ -284,8 +284,8 @@ export async function canGenerateDocument(userEmail: string): Promise<{
     return {
       allowed: true,
     }
-  } catch (error) {
-    console.error("Can generate document error:", error)
+  } catch {
+    console.error("Can generate document error:")
     return {
       allowed: false,
       reason: "Error checking permissions",

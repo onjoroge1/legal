@@ -11,7 +11,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -88,8 +88,8 @@ export async function POST(request: Request) {
           where: { email: session.user.email },
           data: { image: publicUrl },
         })
-      } catch (error) {
-        console.error("Database error:", error)
+      } catch {
+        console.error("Database error:")
         // File is already saved, so we continue
       }
     }
@@ -98,8 +98,8 @@ export async function POST(request: Request) {
       message: "Avatar uploaded successfully",
       url: publicUrl,
     })
-  } catch (error) {
-    console.error("Avatar upload error:", error)
+  } catch {
+    console.error("Avatar upload error:")
     return NextResponse.json(
       { error: "Failed to upload avatar" },
       { status: 500 }

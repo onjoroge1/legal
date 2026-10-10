@@ -48,6 +48,9 @@ model User {
   activeSessions          String?
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
+  legacyDocuments         Document[] @ignore
+  legacyCollaborations    DocumentCollaborator[] @ignore
+  legacySignatures        DocumentSignature[] @ignore
   accounts                Account[]
   sessions                Session[]
   userDocuments           UserDocument[]
@@ -102,6 +105,8 @@ model DocumentParty {
   userDocumentId String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  documentId     String?
+  legacyDocument Document? @relation(fields: [documentId], references: [id]) @ignore
   userDocument   UserDocument? @relation(fields: [userDocumentId], references: [id])
 }
 
@@ -180,6 +185,7 @@ model DocumentTemplate {
   deletedAt      DateTime?
   category       Category        @relation(fields: [categoryId], references: [id])
   questionnaires Questionnaire[]
+  legacyDocuments Document[] @ignore
   fields         TemplateField[]
 }
 
@@ -447,4 +453,68 @@ model IngestSchedule {
 
   @@unique([jurisdiction, documentSlug, source])
   @@index([enabled, lastIngestedAt])
+}
+
+// Retained from the immutable 20250419144420 migration. These tables may hold
+// customer documents/signature evidence. They are excluded from Prisma Client;
+// never drop them as a side effect of schema reconciliation.
+model Document {
+  id String @id @default(cuid())
+  title String
+  type String
+  description String?
+  status String
+  content String
+  state String?
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId String
+  templateId String?
+  deletedAt DateTime?
+  category String?
+  jurisdiction String?
+  user User @relation(fields: [userId], references: [id])
+  template DocumentTemplate? @relation(fields: [templateId], references: [id])
+  parties DocumentParty[]
+  collaborators DocumentCollaborator[]
+  signatures DocumentSignature[]
+  @@ignore
+}
+model DocumentCollaborator {
+  id String @id @default(cuid())
+  documentId String
+  userId String
+  role String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  metadata Json?
+  document Document @relation(fields: [documentId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  @@ignore
+}
+model DocumentSignature {
+  id String @id @default(cuid())
+  documentId String
+  userId String
+  signature String
+  signedAt DateTime @default(now())
+  document Document @relation(fields: [documentId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  @@unique([documentId, userId])
+  @@ignore
+}
+
+model RequestBudget {
+  key String @id
+  used Int
+  resetAt DateTime
+}
+
+model RequestLease {
+  id String @id
+  subject String
+  expiresAt DateTime
+  @@index([expiresAt])
+  @@index([subject])
 }

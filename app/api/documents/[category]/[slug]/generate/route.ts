@@ -1,3 +1,5 @@
+import { readJson, requestError, substituteLiteral, generationSchema } from "@/lib/request-guard"
+import { guardAI } from "@/lib/request-budget"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
@@ -157,7 +159,7 @@ export async function POST(
     if (featureError) return featureError
 
     const { category, slug } = await params
-    const { formData, intent } = await request.json()
+    const { formData, intent } = generationSchema.parse(await readJson(request))
     const isDryRun =
       request.headers.get("x-dry-run") === "1" ||
       new URL(request.url).searchParams.get("dryRun") === "1"
@@ -167,7 +169,7 @@ export async function POST(
     // and city-specific slug (e.g. "chicago-residential-lease-agreement").
     let doc = getDocumentBySlug(slug)
     let stateSlug: string | null = null
-    let stateName: string = formData.state || formData.STATE || ""
+    let stateName: string = String(formData.state || formData.STATE || "")
     let cityContextOverride: string | null = null  // built for city pages
 
     if (!doc) {
@@ -261,10 +263,10 @@ export async function POST(
 
       Object.entries(formData).forEach(([key, value]) => {
         const rawValue = String(value ?? "")
-        documentContent = documentContent.replace(new RegExp(`\\{${key}\\}`, "g"), rawValue)
+        documentContent = substituteLiteral(documentContent, key, rawValue)
         const mapped = inverseVariableMap[key]
         if (mapped) {
-          documentContent = documentContent.replace(new RegExp(`\\{${mapped}\\}`, "g"), rawValue)
+          documentContent = substituteLiteral(documentContent, mapped, rawValue)
         }
       })
 
@@ -277,7 +279,11 @@ export async function POST(
         return Response.json({ document: documentContent })
       }
 
-      const enhanced = await generateText({
+      await guardAI(request)
+    const enhanced = await generateText({
+      maxOutputTokens: 8192,
+      maxRetries: 0,
+      abortSignal: AbortSignal.timeout(55000),
         model: google("gemini-2.5-flash"),
         prompt: `You are a legal document expert. Enhance this legal document template to be fully compliant with the jurisdiction's law.
 
@@ -324,10 +330,7 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
       // metadata is returned so the Draft Preview can render attribution tooltips.
       const validated = validateAndCleanCitations(enhanced.text, stateContext, verifiedFacts)
       if (validated.flaggedCount > 0) {
-        console.warn(
-          `[citation-validator] ${doc.title} (${jurisdiction}): ` +
-            `flagged ${validated.flaggedCount} unverified citation(s):`,
-          validated.flagged
+        console.warn("Server operation failed; inspect request correlation and status metrics."
         )
       }
       return Response.json({
@@ -351,7 +354,11 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
       })
     }
 
+    await guardAI(request)
     const result = await generateText({
+      maxOutputTokens: 8192,
+      maxRetries: 0,
+      abortSignal: AbortSignal.timeout(55000),
       model: google("gemini-2.5-flash"),
       prompt: `You are a legal document expert. Generate a complete, professionally formatted, legally compliant ${doc.title}.
 
@@ -394,10 +401,7 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     // data + any admin-approved external verified facts (Workstream D).
     const validated = validateAndCleanCitations(result.text, stateContext, verifiedFacts)
     if (validated.flaggedCount > 0) {
-      console.warn(
-        `[citation-validator] ${doc.title} (${jurisdiction}): ` +
-          `flagged ${validated.flaggedCount} unverified citation(s):`,
-        validated.flagged
+      console.warn("Server operation failed; inspect request correlation and status metrics."
       )
     }
     return Response.json({
@@ -413,7 +417,9 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
       },
     })
   } catch (error) {
-    console.error("Document generation error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Document generation error:")
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 }

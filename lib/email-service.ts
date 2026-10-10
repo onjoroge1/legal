@@ -19,7 +19,7 @@ interface EmailOptions {
  */
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   if (!resend) {
-    console.warn("Email service not configured. Email not sent:", options.subject)
+    console.warn("Email service not configured. Email not sent:")
     return false
   }
 
@@ -32,13 +32,13 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     })
 
     if (result.error) {
-      console.error("Email send error:", result.error)
+      console.error("Email send error:")
       return false
     }
 
     return true
-  } catch (error) {
-    console.error("Email service error:", error)
+  } catch {
+    console.error("Email service error:")
     return false
   }
 }
@@ -190,7 +190,7 @@ export async function sendDocumentReadyEmail({
   appUrl: string
 }): Promise<boolean> {
   if (!resend) {
-    console.warn("Email service not configured. Document ready email not sent for:", documentTitle)
+    console.warn("Email service not configured. Document ready email not sent for:")
     return false
   }
 
@@ -203,8 +203,8 @@ export async function sendDocumentReadyEmail({
   let pdfBuffer: Buffer | null = null
   try {
     pdfBuffer = await generatePDF(documentContent, documentTitle, { isWatermarked: !canSign })
-  } catch (err) {
-    console.error("PDF generation failed for document email:", err)
+  } catch {
+    console.error("PDF generation failed for document email:")
     // Continue — send the email without attachment rather than failing entirely
   }
 
@@ -284,12 +284,12 @@ export async function sendDocumentReadyEmail({
 
     const result = await resend.emails.send(payload)
     if (result.error) {
-      console.error("Document ready email error:", result.error)
+      console.error("Document ready email error:")
       return false
     }
     return true
-  } catch (error) {
-    console.error("Document ready email service error:", error)
+  } catch {
+    console.error("Document ready email service error:")
     return false
   }
 }

@@ -36,8 +36,8 @@ export async function POST() {
   try {
     const result = await seedIngestSchedule()
     return NextResponse.json(result)
-  } catch (err) {
-    console.error("[admin/schedule/seed] failed:", err)
+  } catch {
+    console.error("[admin/schedule/seed] failed:")
     return NextResponse.json({ error: "Seed failed" }, { status: 500 })
   }
 }

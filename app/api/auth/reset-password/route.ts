@@ -1,3 +1,5 @@
+import { readJson, requestError } from "@/lib/request-guard"
+import { guardAccount } from "@/lib/request-budget"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
@@ -7,11 +9,12 @@ import { z } from "zod"
 const resetPasswordSchema = z.object({
   token: z.string().min(32).max(256),
   password: z.string().min(8, "Password must be at least 8 characters").max(200),
-})
+}).strict()
 
 export async function POST(request: Request) {
   try {
-    const { token, password } = resetPasswordSchema.parse(await request.json())
+    const { token, password } = resetPasswordSchema.parse(await readJson(request, 4096))
+    await guardAccount(request)
 
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
 
@@ -56,10 +59,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid reset request" }, { status: 400 })
     }
-    console.error("Reset password error:", error)
+    console.error("Reset password error:")
     return NextResponse.json({ error: "An error occurred" }, { status: 500 })
   }
 }

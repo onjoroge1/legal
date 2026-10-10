@@ -9,7 +9,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
   console.log("Prisma not available - categories will use constants")
 }
@@ -72,16 +72,16 @@ export async function GET(request: Request) {
         }))
 
         return NextResponse.json(formattedCategories)
-      } catch (error) {
-        console.error("Database error:", error)
+      } catch {
+        console.error("Database error:")
         // Fall through to constants
       }
     }
 
     // Return categories from constants (fallback)
     return NextResponse.json(TEMPLATE_CATEGORIES)
-  } catch (error) {
-    console.error("Categories API error:", error)
+  } catch {
+    console.error("Categories API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -36,8 +36,8 @@ export async function POST(request: Request) {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
-  } catch (err) {
-    console.error("Webhook signature verification failed:", err)
+  } catch {
+    console.error("Webhook signature verification failed:")
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
 
@@ -79,8 +79,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ received: true })
-  } catch (error) {
-    console.error(`Error handling webhook event ${event.type}:`, error)
+  } catch {
+    console.error("Server operation failed; inspect request correlation and status metrics.")
     return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 })
   }
 }
@@ -145,7 +145,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       isGuest: isGuest === "true",
       canSign,
       appUrl,
-    }).catch((err) => console.error("sendDocumentReadyEmail failed:", err))
+    }).catch(() => console.error("sendDocumentReadyEmail failed:"))
   }
 }
 

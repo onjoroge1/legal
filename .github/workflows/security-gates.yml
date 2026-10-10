@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
 
       - name: Check tracked files for sensitive material
         run: node scripts/check-sensitive-files.mjs
@@ -40,7 +40,7 @@ jobs:
   production-build:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgresql://build:example@127.0.0.1:5432/legal_build
+      DATABASE_URL: postgresql://build:example@127.0.0.1:5432/legal_test
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: build-only-secret-not-for-runtime
       STRIPE_SECRET_KEY: sk_test_build_only
@@ -48,6 +48,19 @@ jobs:
       ENABLE_AI_GENERATION: "false"
       ENABLE_PAYMENTS: "false"
       ENABLE_ELECTRONIC_SIGNING: "false"
+      ENABLE_DOCUMENT_MUTATIONS: "false"
+      NEXT_TELEMETRY_DISABLED: "1"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: build
+          POSTGRES_PASSWORD: example
+          POSTGRES_DB: legal_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U build -d legal_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -55,19 +68,39 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11.19.0
+          version: 11.25.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Containment regression tests
-        run: node --test tests/*.test.cjs
+      - name: Unit and route regression tests
+        run: pnpm exec prisma generate && pnpm run test
+
+      - name: Replay migrations and verify schema
+        run: |
+          pnpm exec prisma migrate deploy
+          pnpm exec prisma migrate deploy
+          pnpm run check:db
+          pnpm run test:seed
+
+      - name: Verify atomic shared request limits on PostgreSQL
+        run: node scripts/check-request-concurrency.mjs
+
+      - name: Rehearse PostgreSQL backup and restore with synthetic records
+        env:
+          PGPASSWORD: example
+        run: |
+          docker exec ${{ job.services.postgres.id }} pg_dump -U build -d legal_test --no-owner --no-acl > /tmp/legal-test.sql
+          docker exec ${{ job.services.postgres.id }} createdb -U build legal_test_restored
+          docker exec -i ${{ job.services.postgres.id }} psql -U build -d legal_test_restored -v ON_ERROR_STOP=1 < /tmp/legal-test.sql > /dev/null
+          DATABASE_URL=postgresql://build:example@127.0.0.1:5432/legal_test_restored pnpm run check:db
+          DATABASE_URL=postgresql://build:example@127.0.0.1:5432/legal_test_restored node scripts/check-restored-fixture.mjs
 
       - name: Type-check
         run: pnpm run typecheck
@@ -77,3 +110,17 @@ jobs:
 
       - name: Build production application
         run: pnpm run build
+
+      - name: Production route smoke
+        run: pnpm run smoke:ci
+
+      - name: Dependency audit
+        run: pnpm run check:dependencies
+
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-${{ github.sha }}
+          path: test-results/
+          retention-days: 14

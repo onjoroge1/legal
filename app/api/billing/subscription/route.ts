@@ -70,8 +70,8 @@ export async function GET() {
     }
 
     return NextResponse.json({ subscription, billingHistory, paymentMethods })
-  } catch (error) {
-    console.error("Billing API error:", error)
+  } catch {
+    console.error("Billing API error:")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
