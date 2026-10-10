@@ -162,8 +162,8 @@ export async function GET(request: Request) {
         html,
       })
       if (ok) sent++
-    } catch (err) {
-      console.warn(`[cron/weekly-digest] send failed for ${admin.email}:`, err)
+    } catch {
+      console.warn("Server operation failed; inspect request correlation and status metrics.")
     }
   }
 

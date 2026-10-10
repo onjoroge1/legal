@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
   console.log("Prisma not available - dashboard will return mock data")
 }
@@ -93,8 +93,8 @@ export async function GET(request: Request) {
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 5),
         })
-      } catch (error) {
-        console.error("Database error:", error)
+      } catch {
+        console.error("Database error:")
         // Fall through to mock data
       }
     }
@@ -113,8 +113,8 @@ export async function GET(request: Request) {
       },
       recentDocuments: [],
     })
-  } catch (error) {
-    console.error("Dashboard API error:", error)
+  } catch {
+    console.error("Dashboard API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

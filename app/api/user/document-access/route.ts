@@ -35,8 +35,8 @@ export async function GET(request: Request) {
       hasAccess: access,
       hasSubscription,
     })
-  } catch (error) {
-    console.error("Document access API error:", error)
+  } catch {
+    console.error("Document access API error:")
     return NextResponse.json(
       { hasAccess: false, error: "Internal server error" },
       { status: 500 }

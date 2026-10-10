@@ -51,8 +51,8 @@ export async function GET(
     }
 
     return NextResponse.json(template)
-  } catch (error) {
-    console.error("Template API error:", error)
+  } catch {
+    console.error("Template API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

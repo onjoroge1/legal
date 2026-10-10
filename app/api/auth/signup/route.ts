@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return NextResponse.json({ error: "User with this email already exists" }, { status: 400 })
     }
-    console.error("Signup error:", error)
+    console.error("Signup error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

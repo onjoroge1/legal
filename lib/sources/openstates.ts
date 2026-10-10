@@ -154,8 +154,7 @@ async function fetchEnactedBillsFromOpenStates(opts: {
       })
 
       if (!res.ok) {
-        console.warn(
-          `[openstates] ${opts.openstatesCode}/${subject} returned ${res.status} ${res.statusText}; skipping`
+        console.warn("Server operation failed; inspect request correlation and status metrics."
         )
         continue
       }
@@ -164,8 +163,8 @@ async function fetchEnactedBillsFromOpenStates(opts: {
       if (Array.isArray(data.results)) collected.push(...data.results)
 
       await sleep(REQUEST_GAP_MS)
-    } catch (err) {
-      console.warn(`[openstates] fetch error for ${opts.openstatesCode}/${subject}:`, err)
+    } catch {
+      console.warn("Server operation failed; inspect request correlation and status metrics.")
       // Keep going with the other subjects
     }
   }
@@ -246,8 +245,7 @@ export async function fetchEnactedFactsFromOpenStates(opts: {
   }
 
   if (skippedNotEnacted > 0) {
-    console.info(
-      `[openstates] ${opts.openstatesCode}/${opts.documentSlug}: skipped ${skippedNotEnacted} not-yet-enacted bill(s)`
+    console.info("Server operation failed; inspect request correlation and status metrics."
     )
   }
 

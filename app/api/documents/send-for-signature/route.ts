@@ -12,7 +12,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -154,8 +154,8 @@ export async function POST(request: Request) {
       message: "Document sent for signature successfully",
       signingToken,
     })
-  } catch (error) {
-    console.error("Send for signature error:", error)
+  } catch {
+    console.error("Send for signature error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

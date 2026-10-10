@@ -9,7 +9,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -139,8 +139,8 @@ export async function POST(request: Request) {
       id: draft.id,
       message: "Draft created successfully",
     })
-  } catch (error) {
-    console.error("Create draft error:", error)
+  } catch {
+    console.error("Create draft error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -239,8 +239,8 @@ export async function GET(request: Request) {
       status: draft.status,
       metadata: draft.metadata,
     })
-  } catch (error) {
-    console.error("Get draft error:", error)
+  } catch {
+    console.error("Get draft error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -33,8 +33,8 @@ export async function POST() {
     })
 
     return NextResponse.json({ message: "Subscription will be cancelled at the end of the billing period." })
-  } catch (error) {
-    console.error("Cancel subscription error:", error)
+  } catch {
+    console.error("Cancel subscription error:")
     return NextResponse.json({ error: "Failed to cancel subscription" }, { status: 500 })
   }
 }

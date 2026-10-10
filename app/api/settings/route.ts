@@ -73,8 +73,8 @@ export async function GET() {
         ...item, isCurrent: item.id === session.sessionId,
       })),
     })
-  } catch (error) {
-    console.error("Settings API error:", error)
+  } catch {
+    console.error("Settings API error:")
     return NextResponse.json({ error: "Failed to load settings" }, { status: 500 })
   }
 }
@@ -109,7 +109,7 @@ export async function PATCH(request: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid settings", details: error.errors }, { status: 400 })
     }
-    console.error("Settings API error:", error)
+    console.error("Settings API error:")
     return NextResponse.json({ error: "Failed to update settings" }, { status: 500 })
   }
 }

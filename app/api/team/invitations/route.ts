@@ -9,7 +9,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -103,8 +103,8 @@ export async function GET(request: Request) {
     return NextResponse.json({
       invitations: formattedInvitations,
     })
-  } catch (error) {
-    console.error("Get invitations error:", error)
+  } catch {
+    console.error("Get invitations error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -189,8 +189,8 @@ export async function DELETE(request: Request) {
     return NextResponse.json({
       message: "Invitation cancelled successfully",
     })
-  } catch (error) {
-    console.error("Cancel invitation error:", error)
+  } catch {
+    console.error("Cancel invitation error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -316,8 +316,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: "Invitation resent successfully",
     })
-  } catch (error) {
-    console.error("Resend invitation error:", error)
+  } catch {
+    console.error("Resend invitation error:")
     return NextResponse.json(
       { error: "Failed to resend invitation" },
       { status: 500 }

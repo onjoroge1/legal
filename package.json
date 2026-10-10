@@ -2,12 +2,12 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.19.0",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-routes.mjs && node scripts/check-sensitive-files.mjs && node scripts/check-legal-disclaimer.mjs && node scripts/check-marketing-claims.mjs && node scripts/check-auth-security.mjs",
     "build": "prisma generate && next build",
-    "typecheck": "prisma generate && tsc --noEmit --incremental false",
+    "typecheck": "prisma generate && next typegen && tsc --noEmit --incremental false",
     "start": "next start",
     "lint": "node scripts/check-lint.mjs",
     "lint:report": "eslint .",
@@ -16,7 +16,11 @@
     "check:legal": "node scripts/check-legal-disclaimer.mjs",
     "check:claims": "node scripts/check-marketing-claims.mjs",
     "check:auth": "node scripts/check-auth-security.mjs",
-    "smoke": "node scripts/smoke-tests.mjs"
+    "smoke": "node scripts/smoke-tests.mjs",
+    "test": "node --test tests/*.test.cjs",
+    "test:seed": "node scripts/seed-test-db.mjs",
+    "smoke:ci": "node scripts/run-smoke.mjs",
+    "check:dependencies": "node scripts/check-dependencies.mjs"
   },
   "prisma": {
     "seed": "node prisma/seed.cjs"
@@ -71,14 +75,14 @@
     "embla-carousel-react": "8.5.1",
     "input-otp": "1.4.1",
     "lucide-react": "^0.544.0",
-    "next": "16.1.6",
-    "next-auth": "^4.24.7",
+    "next": "16.4.0",
+    "next-auth": "^4.24.15",
     "next-themes": "^0.4.6",
     "pdfkit": "^0.18.0",
     "qrcode": "^1.5.4",
-    "react": "^19",
+    "react": "^19.3.0",
     "react-day-picker": "^9.4.4",
-    "react-dom": "^19",
+    "react-dom": "^19.3.0",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
@@ -92,6 +96,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22",
@@ -99,11 +104,15 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.39.5",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.4.0",
     "postcss": "^8.5",
     "prisma": "^5.20.0",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": "22.x",
+    "pnpm": "11.25.0"
   }
 }

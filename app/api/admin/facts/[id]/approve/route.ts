@@ -46,8 +46,8 @@ export async function POST(
       },
     })
     return NextResponse.json({ fact: updated })
-  } catch (err) {
-    console.error("[admin/facts/approve] failed:", err)
+  } catch {
+    console.error("[admin/facts/approve] failed:")
     return NextResponse.json({ error: "Approve failed" }, { status: 500 })
   }
 }

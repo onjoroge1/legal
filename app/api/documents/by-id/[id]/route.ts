@@ -64,8 +64,8 @@ export async function GET(
     }
 
     return NextResponse.json(document)
-  } catch (error) {
-    console.error("Get document error:", error)
+  } catch {
+    console.error("Get document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -137,8 +137,8 @@ export async function PATCH(
     }
 
     return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Update document error:", error)
+  } catch {
+    console.error("Update document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -108,8 +108,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ url: checkoutSession.url })
-  } catch (error) {
-    console.error("Change subscription error:", error)
+  } catch {
+    console.error("Change subscription error:")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
