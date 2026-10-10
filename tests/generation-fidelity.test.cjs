@@ -37,3 +37,10 @@ test('expired/missing scope review is never treated as launch approval',()=>{
  const {reviewedScope}=load('lib/reviewed-document-scopes.ts');assert.equal(reviewedScope('anything'),undefined);
  assert.equal(reviewedScope('fixture',new Date(),[{key:'fixture',reviewer:'Synthetic test',evidenceUrl:'https://example.invalid/review',reviewedAt:'2020-01-01',expiresAt:'2020-01-02'}]),undefined);
 });
+test('export rechecks source revocation/freshness instead of trusting a saved approval flag',async()=>{
+ const crypto=require('crypto');let status='approved';
+ const content='Synthetic source statement';const contentHash=crypto.createHash('sha256').update(content).digest('hex');
+ const {requireReviewedVersion}=load('lib/document-review.ts',{'./reviewed-document-scopes':{reviewedScope:()=>({evidenceUrl:'https://example.invalid/review'})},'./prisma':{prisma:{verifiedFact:{findMany:async()=>[{id:'f',content,status,reviewedById:'reviewer',reviewedAt:new Date(),sourceUrl:'https://example.gov/source'}]},documentReview:{findUnique:async()=>null}}}});
+ const version={id:'v',contentHash:'doc-hash',review:{readyForExport:true,scopeKey:'scope',scopeEvidenceUrl:'https://example.invalid/review',checkedAt:new Date().toISOString(),sourceSnapshot:[{id:'f',contentHash}]}};
+ await requireReviewedVersion(version);status='rejected';await assert.rejects(requireReviewedVersion(version),e=>e.status===409);
+});

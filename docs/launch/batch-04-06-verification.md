@@ -3,7 +3,7 @@
 Story: document route and user inputs → guarded generation → durable owned/guest version → exact saved preview → reviewed export/checkout reference.
 
 - 52 base catalog and 560 localized route mappings: passed exhaustive resolver fixtures.
-- 20 regression tests: passed locally, including migration replay/schema parity and legacy restore preservation, bounded malformed inputs, shared reservation rollback, ownership/guest expiry/content tampering, intent and numeric/date fidelity, source freshness, generation-to-save response and saved-only export.
+- 21 regression tests: passed locally, including migration replay/schema parity and legacy restore preservation, bounded malformed inputs, shared reservation rollback, ownership/guest expiry/content tampering, intent and numeric/date fidelity, source freshness, generation-to-save response and saved-only export.
 - Browser fixture test: production build rendered form, submitted mutual intent and fields, navigated to saved preview, preserved preview after reload, stored no document content in browser storage, and displayed a 409 download error without creating a file. No page errors. API responses were intercepted test fixtures, NOT live model/payment/database evidence.
 - Production build and static route/auth/disclaimer/claims gates: passed locally with synthetic configuration. Node on this executor is 24; CI is pinned to the repository's Node 22 toolchain.
 - Typecheck: passed. Lint remains ratcheted (no relaxed app rules).
