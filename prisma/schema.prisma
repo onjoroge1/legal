@@ -549,3 +549,13 @@ model DocumentVersion {
   createdAt DateTime @default(now())
   @@index([draftId, createdAt])
 }
+
+model DocumentReview {
+  versionId String @id
+  reviewerId String
+  contentHash String
+  evidenceUrl String
+  sourceUrls Json
+  reviewedAt DateTime @default(now())
+  expiresAt DateTime
+}

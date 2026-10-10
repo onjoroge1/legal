@@ -1,0 +1,7 @@
+{
+  "status": "awaiting-qualified-review",
+  "reviewer": null,
+  "approvedAt": null,
+  "cases": ["mutual-nda-georgia", "unilateral-nda-georgia", "georgia-residential-lease"],
+  "note": "Engineering regression examples are not attorney-reviewed golden documents. Add dated review evidence and reviewed scope configuration only after counsel approves actual outputs and source coverage."
+}

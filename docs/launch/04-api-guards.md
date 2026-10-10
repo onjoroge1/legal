@@ -9,3 +9,5 @@ AI_DAILY_BUDGET_CENTS defaults to 1000; AI_REQUEST_RESERVATION_CENTS defaults to
 CSP denies frames/objects and restricts connections/Stripe frames; inline scripts remain necessary for current static Next rendering (nonce migration is not claimed). Test real auth and Stripe in staging with headers before enabling features. Feature flags stay off. Mutation/signing fixes belong to their roadmap PRs.
 
 Verification: request abuse and shared-budget behavior tests, regression suite, migration replay and schema parity, typecheck/lint/build. Rollback: leave additive limit tables; roll code back only to a contained release with AI disabled.
+
+Follow-up guards: legacy document mutations accept only draft transitions and allowlisted metadata; signed/signing/version-bound records reject edits, and optimistic updatedAt matching closes the read/update race. Settings JSON is bounded. Actual PostgreSQL concurrency checks run in CI (two requests per subject, eight global, denied transactions leave counters unchanged). Vercel ingress reference: https://vercel.com/docs/headers/request-headers#x-vercel-forwarded-for

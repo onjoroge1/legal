@@ -121,7 +121,7 @@ export default function DocumentView() {
         }),
       })
 
-      if (!response.ok) {
+      if (!response.ok || !response.headers.get("content-type")?.startsWith(fmt === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
         throw new Error("Failed to download document")
       }
 
