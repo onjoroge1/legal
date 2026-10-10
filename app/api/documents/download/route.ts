@@ -1,3 +1,4 @@
+import { requireReviewedVersion } from "@/lib/document-review"
 import { z } from "zod"
 import { readVersion } from "@/lib/document-versions"
 import { readJson, requestError } from "@/lib/request-guard"
@@ -97,6 +98,7 @@ export async function POST(request: Request) {
 
     const { versionId, format } = z.object({ versionId: z.string().uuid(), format: z.enum(["pdf", "docx"]) }).strict().parse(await readJson(request, 2048))
     const { version } = await readVersion(request, versionId)
+    await requireReviewedVersion(version)
     const documentText = version.content
     const safeTitle = version.title.replace(/[^a-zA-Z0-9\s-]/g, "").trim() || "document"
 

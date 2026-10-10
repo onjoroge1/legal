@@ -1,3 +1,4 @@
+import { requireReviewedVersion } from "@/lib/document-review"
 import { z } from "zod"
 import { readJson, requestError } from "@/lib/request-guard"
 import { readVersion } from "@/lib/document-versions"
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
     const { paymentType, versionId } = z.object({ paymentType: z.enum(["single", "subscription"]), versionId: z.string().uuid() }).strict().parse(await readJson(request, 2048))
     if (!session?.user?.email) return NextResponse.json({ error: "Sign in to purchase this document. Guest purchases return in PR-08." }, { status: 401 })
     const { version, draft } = await readVersion(request, versionId)
+    await requireReviewedVersion(version)
     const docInfo = resolveDocument(draft.category, draft.sourceSlug, draft.intent).doc
     const slug = draft.sourceSlug
     const formData = version.formData

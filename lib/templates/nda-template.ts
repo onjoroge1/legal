@@ -37,7 +37,7 @@ RECITALS
 
 WHEREAS, the parties are engaged in discussions regarding ${data.relationship} (the "Purpose"); and
 
-WHEREAS, in connection with the Purpose, ${partyALabel} may disclose certain confidential and proprietary information to ${partyBLabel}; and
+WHEREAS, in connection with the Purpose, ${data.type === "mutual" ? "each party may disclose certain confidential and proprietary information to the other party" : `${partyALabel} may disclose certain confidential and proprietary information to ${partyBLabel}`}; and
 
 WHEREAS, the parties desire to protect the confidentiality of such information;
 
@@ -45,7 +45,7 @@ NOW, THEREFORE, in consideration of the mutual covenants and agreements containe
 
 1. DEFINITION OF CONFIDENTIAL INFORMATION
 
-For purposes of this Agreement, "Confidential Information" means all non-public, proprietary, or confidential information disclosed by ${partyALabel} to ${partyBLabel}, whether orally, in writing, or in any other form, including but not limited to:
+For purposes of this Agreement, "Confidential Information" means all non-public, proprietary, or confidential information disclosed by ${data.type === "mutual" ? "either party to the other party" : `${partyALabel} to ${partyBLabel}`}, whether orally, in writing, or in any other form, including but not limited to:
 
 ${data.confidentialInfo}
 
