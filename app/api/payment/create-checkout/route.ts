@@ -1,9 +1,12 @@
+import { z } from "zod"
+import { readJson, requestError } from "@/lib/request-guard"
+import { readVersion } from "@/lib/document-versions"
+import { resolveDocument } from "@/lib/document-resolver"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { stripe, PRICE_IDS } from "@/lib/stripe"
-import { getDocumentByLegacySlug } from "@/lib/document-catalog"
 import { randomBytes } from "crypto"
 import bcrypt from "bcryptjs"
 import {
@@ -34,12 +37,16 @@ export async function POST(request: Request) {
 
     const legalAcceptance = getLegalDisclaimerAcceptance(request)
     const session = await getServerSession(authOptions)
-    const body = await request.json()
-    const { paymentType, slug, formData, documentContent, intent, guestEmail, guestName } = body
-
-    if (!paymentType || !slug) {
-      return NextResponse.json({ error: "paymentType and slug are required" }, { status: 400 })
-    }
+    const { paymentType, versionId } = z.object({ paymentType: z.enum(["single", "subscription"]), versionId: z.string().uuid() }).strict().parse(await readJson(request, 2048))
+    if (!session?.user?.email) return NextResponse.json({ error: "Sign in to purchase this document. Guest purchases return in PR-08." }, { status: 401 })
+    const { version, draft } = await readVersion(request, versionId)
+    const docInfo = resolveDocument(draft.category, draft.sourceSlug, draft.intent).doc
+    const slug = draft.sourceSlug
+    const formData = version.formData
+    const documentContent = version.content
+    const intent = draft.intent
+    const guestEmail = undefined
+    const guestName = undefined
 
     // Resolve the user — authenticated session takes priority, then guest email
     const emailToUse = session?.user?.email ?? guestEmail
@@ -61,11 +68,6 @@ export async function POST(request: Request) {
           password: hashedPassword,
         },
       })
-    }
-
-    const docInfo = getDocumentByLegacySlug(slug)
-    if (!docInfo) {
-      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
     // Canonical document path for redirect URLs
@@ -101,6 +103,8 @@ export async function POST(request: Request) {
           intent: intent || null,
           paymentType,
           generatedAt: new Date().toISOString(),
+          versionId: version.id,
+          contentHash: version.contentHash,
           legalDisclaimerVersion: legalAcceptance.version,
           legalDisclaimerAcceptedAt: legalAcceptance.acceptedAt,
         },
@@ -122,6 +126,7 @@ export async function POST(request: Request) {
         metadata: {
           userId: user.id,
           documentId: pendingDoc.id,
+          versionId: version.id,
           paymentType: "subscription",
           isGuest: session?.user?.email ? "false" : "true",
           legalDisclaimerVersion: legalAcceptance.version,
@@ -157,6 +162,7 @@ export async function POST(request: Request) {
         metadata: {
           userId: user.id,
           documentId: pendingDoc.id,
+          versionId: version.id,
           paymentType: "single",
           isGuest: session?.user?.email ? "false" : "true",
           legalDisclaimerVersion: legalAcceptance.version,
@@ -165,7 +171,9 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ url: checkoutSession.url })
-  } catch {
+  } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     console.error("Checkout creation error:")
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
   }

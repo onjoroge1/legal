@@ -30,7 +30,7 @@ export async function readJson(request: Request, maxBytes = 32768): Promise<unkn
 }
 const value = z.union([z.string().max(4000), z.number().finite(), z.boolean(), z.null()])
 export const formSchema = z.record(z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]{0,79}$/).refine(k => !["constructor", "prototype", "__proto__"].includes(k)), value).refine(v => Object.keys(v).length <= 100)
-export const generationSchema = z.object({ formData: formSchema, intent: z.string().regex(/^[a-z0-9_-]{1,80}$/).nullable().optional() }).strict()
+export const generationSchema = z.object({ formData: formSchema, draftId: z.string().uuid().optional(), intent: z.string().regex(/^[a-z0-9_-]{1,80}$/).nullable().optional() }).strict()
 export const chatSchema = z.object({
   messages: z.array(z.object({ id: z.string().max(128), role: z.enum(["user", "assistant"]), parts: z.array(z.object({ type: z.literal("text"), text: z.string().max(8000) }).strict()).min(1).max(8) }).strict()).min(1).max(40),
   intent: z.string().regex(/^[a-z0-9_-]{1,80}$/).nullable().optional(),

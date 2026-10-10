@@ -8,7 +8,7 @@ import {
 } from "ai"
 import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
-import { getDocumentBySlug } from "@/lib/document-catalog"
+import { resolveDocument } from "@/lib/document-resolver"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
@@ -73,7 +73,7 @@ export async function POST(
     const { messages, intent } = chatSchema.parse(await readJson(request))
 
     // Resolve document by canonical slug and validate category
-    const doc = getDocumentBySlug(slug)
+    const doc = resolveDocument(category, slug, intent).doc
     if (!doc || doc.category !== category) {
       return Response.json({ error: "Document not found" }, { status: 404 })
     }
