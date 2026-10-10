@@ -618,3 +618,37 @@ model CheckoutOrder {
   @@index([status, createdAt])
   @@index([subscriptionId])
 }
+
+model StripeEvent {
+  id String @id
+  type String
+  objectId String
+  livemode Boolean
+  status String @default("pending")
+  attempts Int @default(0)
+  lastError String?
+  createdAt DateTime @default(now())
+  processedAt DateTime?
+  @@index([status, createdAt])
+}
+
+/// Committed in the same transaction as access. PR-10 owns dispatch and retries.
+model DeliveryOutbox {
+  id String @id
+  orderId String @unique
+  kind String
+  status String @default("pending")
+  attempts Int @default(0)
+  createdAt DateTime @default(now())
+  deliveredAt DateTime?
+  @@index([status, createdAt])
+}
+
+model PaymentHold {
+  id String @id
+  subscriptionId String?
+  invoiceId String?
+  status String
+  updatedAt DateTime @updatedAt
+  @@index([subscriptionId, status])
+}
