@@ -51,6 +51,8 @@ model User {
   legacyDocuments         Document[] @ignore
   legacyCollaborations    DocumentCollaborator[] @ignore
   legacySignatures        DocumentSignature[] @ignore
+  purchases               DocumentPurchase[]
+  billingSubscriptions    BillingSubscription[]
   accounts                Account[]
   sessions                Session[]
   userDocuments           UserDocument[]
@@ -547,6 +549,7 @@ model DocumentVersion {
   formData Json
   review Json
   createdAt DateTime @default(now())
+  purchases DocumentPurchase[]
   @@index([draftId, createdAt])
 }
 
@@ -558,4 +561,34 @@ model DocumentReview {
   sourceUrls Json
   reviewedAt DateTime @default(now())
   expiresAt DateTime
+}
+
+/// One purchase grants exactly one immutable version, never an account-wide tier.
+model DocumentPurchase {
+  id String @id
+  versionId String
+  version DocumentVersion @relation(fields: [versionId], references: [id], onDelete: Restrict)
+  ownerId String?
+  owner User? @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  checkoutId String @unique
+  status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([versionId, status])
+  @@index([ownerId])
+}
+
+model BillingSubscription {
+  id String @id
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  customerId String
+  priceId String
+  status String
+  paidThrough DateTime?
+  trialEndsAt DateTime?
+  cancelAtPeriodEnd Boolean @default(false)
+  blocked Boolean @default(false)
+  updatedAt DateTime @updatedAt
+  @@index([ownerId])
 }

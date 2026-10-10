@@ -92,47 +92,8 @@ export function getPermissionsForTier(tier: string): FeaturePermissions {
       }
       
     case "starter":
-      return {
-        // Document generation
-        canGenerateDocuments: true,
-        maxDocumentsPerMonth: null, // Pay per document, no monthly limit
-        canGenerateAdvancedDocuments: true,
-        
-        // Templates
-        canAccessBasicTemplates: true,
-        canAccessAdvancedTemplates: true,
-        canAccessAllTemplates: true,
-        
-        // Document features
-        canDownloadPDF: true,
-        canDownloadDOCX: true,
-        canDownloadBoth: true,
-        canPreviewDocuments: true,
-        canUseWatermarkedPreview: true,
-        
-        // AI features
-        canUseBasicAIReview: true,
-        canUsePriorityAIReview: false,
-        
-        // Support
-        hasCommunitySupport: true,
-        hasEmailSupport: true,
-        hasPrioritySupport: false,
-        
-        // Collaboration
-        canCollaborate: false,
-        canUseElectronicSignatures: false,
-        
-        // Customization
-        canUseBasicCustomization: true,
-        canUseAdvancedCustomization: false,
-        canUseCustomBranding: false,
-        
-        // Document management
-        canViewDocumentHistory: true,
-        canUseDocumentRevisionHistory: false,
-      }
-      
+      return getPermissionsForTier("free")
+
     case "professional":
       return {
         // Document generation
@@ -190,7 +151,7 @@ export async function getUserPermissions(userEmail?: string): Promise<FeaturePer
   }
   
   const subscriptionInfo = await getUserSubscriptionInfo(userEmail)
-  const tier = subscriptionInfo?.tier || "free"
+  const tier = subscriptionInfo?.isActive ? "professional" : "free"
   
   return getPermissionsForTier(tier)
 }

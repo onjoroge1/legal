@@ -3,10 +3,8 @@ import { z } from "zod"
 import { readVersion } from "@/lib/document-versions"
 import { readJson, requestError } from "@/lib/request-guard"
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { generatePDF } from "@/lib/pdf-generator"
-import { prisma } from "@/lib/prisma"
+import { requireVersionEntitlement } from "@/lib/entitlements"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
@@ -91,33 +89,22 @@ export async function POST(request: Request) {
     const acceptanceError = requireLegalDisclaimerAcceptance(request)
     if (acceptanceError) return acceptanceError
 
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const { versionId, format } = z.object({ versionId: z.string().uuid(), format: z.enum(["pdf", "docx"]) }).strict().parse(await readJson(request, 2048))
-    const { version } = await readVersion(request, versionId)
+    const { version, draft } = await readVersion(request, versionId)
     await requireReviewedVersion(version)
     const documentText = version.content
     const safeTitle = version.title.replace(/[^a-zA-Z0-9\s-]/g, "").trim() || "document"
 
-    // Check subscription tier — paid users get a watermark-free PDF.
-    // Footer disclaimer is still shown for everyone (legal protection).
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { subscriptionTier: true, subscriptionStatus: true },
-    })
-    const isPaidUser =
-      user?.subscriptionTier === "professional" && user.subscriptionStatus === "active"
+    const access = await requireVersionEntitlement(version.id, draft.ownerId)
 
     if (format === "pdf") {
-      const buffer = await generatePDF(documentText, safeTitle, { isWatermarked: !isPaidUser })
+      const buffer = await generatePDF(documentText, safeTitle, { isWatermarked: access.watermark })
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename="${safeTitle}.pdf"`,
           "Content-Length": String(buffer.length),
+          "Cache-Control": "private, no-store",
         },
       })
     }
@@ -129,6 +116,7 @@ export async function POST(request: Request) {
           "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           "Content-Disposition": `attachment; filename="${safeTitle}.docx"`,
           "Content-Length": String(buffer.length),
+          "Cache-Control": "private, no-store",
         },
       })
     }

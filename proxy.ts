@@ -19,7 +19,6 @@ export const config = {
     // see the generated document before being asked to sign up / pay (value-first flow).
     // Only protect save, download, signing, and AI-analyze (which accesses user data).
     "/api/documents/draft/:path*",
-    "/api/documents/download/:path*",
     "/api/documents/sign/:path*",
     "/api/documents/sign-external/:path*",
     "/api/documents/send-for-signature/:path*",

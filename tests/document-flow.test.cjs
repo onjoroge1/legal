@@ -18,7 +18,8 @@ test('generation validates before provider, saves exactly the checked text, retu
 test('export takes saved server text only and rejects client replacement content',async()=>{
  let exported;const route=load('app/api/documents/download/route.ts',{...baseMocks,
   '@/lib/document-review':{requireReviewedVersion:async()=>{}},
-  '@/lib/document-versions':{readVersion:async()=>({version:{id:'v',content:'Exact immutable reviewed content',title:'Fixture',contentHash:'h'}})},
+  '@/lib/entitlements':{requireVersionEntitlement:async()=>({watermark:false})},
+  '@/lib/document-versions':{readVersion:async()=>({draft:{ownerId:'owner'},version:{id:'v',content:'Exact immutable reviewed content',title:'Fixture',contentHash:'h'}})},
   '@/lib/pdf-generator':{generatePDF:async text=>{exported=text;return Buffer.from('%PDF-fixture')}},
   '@/lib/prisma':{prisma:{user:{findUnique:async()=>({subscriptionTier:'professional',subscriptionStatus:'active'})}}}
  });
