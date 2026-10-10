@@ -46,8 +46,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ clientSecret: setupIntent.client_secret })
-  } catch (error) {
-    console.error("Add payment method error:", error)
+  } catch {
+    console.error("Add payment method error:")
     return NextResponse.json({ error: "Failed to create setup intent" }, { status: 500 })
   }
 }

@@ -64,8 +64,8 @@ export async function POST(request: Request) {
     })
 
     return successResponse()
-  } catch (error) {
-    console.error("Forgot password error:", error)
+  } catch {
+    console.error("Forgot password error:")
     // Keep the public response identical so this endpoint cannot be used to
     // distinguish registered addresses from unregistered ones.
     return successResponse()

@@ -95,8 +95,8 @@ Be specific and constructive. Focus on real legal considerations.`,
     })
 
     return NextResponse.json({ analysis: object })
-  } catch (error) {
-    console.error("AI analyze error:", error)
+  } catch {
+    console.error("AI analyze error:")
     return NextResponse.json({ error: "Failed to analyze document" }, { status: 500 })
   }
 }

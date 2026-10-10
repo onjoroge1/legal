@@ -49,8 +49,8 @@ export async function POST(
       },
     })
     return NextResponse.json({ fact: updated })
-  } catch (err) {
-    console.error("[admin/facts/revert] failed:", err)
+  } catch {
+    console.error("[admin/facts/revert] failed:")
     return NextResponse.json({ error: "Revert failed" }, { status: 500 })
   }
 }

@@ -29,8 +29,8 @@ export async function GET() {
         isCurrent: item.id === session.sessionId,
       })),
     })
-  } catch (error) {
-    console.error("Get sessions error:", error)
+  } catch {
+    console.error("Get sessions error:")
     return NextResponse.json({ error: "Failed to get sessions" }, { status: 500 })
   }
 }
@@ -70,7 +70,7 @@ export async function DELETE(request: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }
-    console.error("Revoke session error:", error)
+    console.error("Revoke session error:")
     return NextResponse.json({ error: "Failed to revoke session" }, { status: 500 })
   }
 }

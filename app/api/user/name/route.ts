@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
   console.log("Prisma not available - user name will return session data")
 }
@@ -56,8 +56,8 @@ export async function GET(request: Request) {
             image: user.image,
           })
         }
-      } catch (error) {
-        console.error("Database error fetching user name:", error)
+      } catch {
+        console.error("Database error fetching user name:")
         // Fall through to session data
       }
     }
@@ -69,8 +69,8 @@ export async function GET(request: Request) {
       lastName: null,
       image: session.user.image || null,
     })
-  } catch (error) {
-    console.error("User name API error:", error)
+  } catch {
+    console.error("User name API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

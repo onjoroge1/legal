@@ -142,8 +142,8 @@ Start by greeting the user and asking your first question.`
       originalMessages: messages as UIMessage[],
       consumeSseStream: consumeStream,
     })
-  } catch (error) {
-    console.error("Document chat error:", error)
+  } catch {
+    console.error("Document chat error:")
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 }

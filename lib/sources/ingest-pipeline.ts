@@ -91,9 +91,9 @@ export async function ingestCaliforniaResidentialLease(): Promise<IngestResult> 
       const result = await upsertFact(fact)
       if (result === "new") newlyPending++
       else alreadyKnown++
-    } catch (err) {
+    } catch {
       // Don't let one bad row kill the batch — log and keep going
-      console.warn("[ingest-pipeline] upsert failed for fact:", fact.citation, err)
+      console.warn("[ingest-pipeline] upsert failed for fact:")
     }
   }
 
@@ -145,9 +145,7 @@ export async function ingestForSchedule(
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    console.warn(
-      `[ingest-pipeline] source error for ${entry.jurisdiction}/${entry.documentSlug}:`,
-      msg
+    console.warn("Server operation failed; inspect request correlation and status metrics."
     )
     return { fetched: 0, newlyPending: 0, alreadyKnown: 0, error: msg }
   }
@@ -160,8 +158,8 @@ export async function ingestForSchedule(
       const result = await upsertFact(fact)
       if (result === "new") newlyPending++
       else alreadyKnown++
-    } catch (err) {
-      console.warn("[ingest-pipeline] upsert failed for fact:", fact.citation, err)
+    } catch {
+      console.warn("[ingest-pipeline] upsert failed for fact:")
     }
   }
 

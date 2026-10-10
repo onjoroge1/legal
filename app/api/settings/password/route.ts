@@ -86,7 +86,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.error("Password change error:", error)
+    console.error("Password change error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

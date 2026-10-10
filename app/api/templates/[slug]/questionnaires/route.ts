@@ -59,8 +59,8 @@ export async function GET(
     })
 
     return NextResponse.json(questionnaires)
-  } catch (error) {
-    console.error("Questionnaires API error:", error)
+  } catch {
+    console.error("Questionnaires API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

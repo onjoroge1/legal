@@ -324,10 +324,7 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
       // metadata is returned so the Draft Preview can render attribution tooltips.
       const validated = validateAndCleanCitations(enhanced.text, stateContext, verifiedFacts)
       if (validated.flaggedCount > 0) {
-        console.warn(
-          `[citation-validator] ${doc.title} (${jurisdiction}): ` +
-            `flagged ${validated.flaggedCount} unverified citation(s):`,
-          validated.flagged
+        console.warn("Server operation failed; inspect request correlation and status metrics."
         )
       }
       return Response.json({
@@ -394,10 +391,7 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
     // data + any admin-approved external verified facts (Workstream D).
     const validated = validateAndCleanCitations(result.text, stateContext, verifiedFacts)
     if (validated.flaggedCount > 0) {
-      console.warn(
-        `[citation-validator] ${doc.title} (${jurisdiction}): ` +
-          `flagged ${validated.flaggedCount} unverified citation(s):`,
-        validated.flagged
+      console.warn("Server operation failed; inspect request correlation and status metrics."
       )
     }
     return Response.json({
@@ -412,8 +406,8 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
         list: validated.verifiedCitations,
       },
     })
-  } catch (error) {
-    console.error("Document generation error:", error)
+  } catch {
+    console.error("Document generation error:")
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 }

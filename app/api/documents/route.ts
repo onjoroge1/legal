@@ -10,7 +10,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
   console.log("Prisma not available - documents will return mock data")
 }
@@ -117,16 +117,16 @@ export async function GET(request: Request) {
         )
 
         return NextResponse.json(documentsWithParties)
-      } catch (error) {
-        console.error("Database error:", error)
+      } catch {
+        console.error("Database error:")
         // Fall through to mock data
       }
     }
 
     // Return mock data if Prisma is not available
     return NextResponse.json([])
-  } catch (error) {
-    console.error("Documents API error:", error)
+  } catch {
+    console.error("Documents API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -245,8 +245,8 @@ export async function POST(request: Request) {
       id: document.id,
       message: "Document created successfully",
     })
-  } catch (error) {
-    console.error("Create document error:", error)
+  } catch {
+    console.error("Create document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

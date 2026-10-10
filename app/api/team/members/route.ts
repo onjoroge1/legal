@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -149,8 +149,8 @@ export async function GET(request: Request) {
         ownerId: team.ownerId,
       },
     })
-  } catch (error) {
-    console.error("Get team members error:", error)
+  } catch {
+    console.error("Get team members error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -262,8 +262,8 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       message: "Member role updated successfully",
     })
-  } catch (error) {
-    console.error("Update team member error:", error)
+  } catch {
+    console.error("Update team member error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -365,8 +365,8 @@ export async function DELETE(request: Request) {
     return NextResponse.json({
       message: "Member removed successfully",
     })
-  } catch (error) {
-    console.error("Remove team member error:", error)
+  } catch {
+    console.error("Remove team member error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
