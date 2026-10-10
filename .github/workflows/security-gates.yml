@@ -82,10 +82,22 @@ jobs:
       - name: Unit and route regression tests
         run: pnpm run test
 
-      - name: Disposable fixture schema (replaced by migrations in PR-03)
+      - name: Replay migrations and verify schema
         run: |
-          pnpm exec prisma db push --skip-generate
+          pnpm exec prisma migrate deploy
+          pnpm exec prisma migrate deploy
+          pnpm run check:db
           pnpm run test:seed
+
+      - name: Rehearse PostgreSQL backup and restore with synthetic records
+        env:
+          PGPASSWORD: example
+        run: |
+          docker exec ${{ job.services.postgres.id }} pg_dump -U build -d legal_test --no-owner --no-acl > /tmp/legal-test.sql
+          docker exec ${{ job.services.postgres.id }} createdb -U build legal_test_restored
+          docker exec -i ${{ job.services.postgres.id }} psql -U build -d legal_test_restored -v ON_ERROR_STOP=1 < /tmp/legal-test.sql > /dev/null
+          DATABASE_URL=postgresql://build:example@127.0.0.1:5432/legal_test_restored pnpm run check:db
+          DATABASE_URL=postgresql://build:example@127.0.0.1:5432/legal_test_restored node scripts/check-restored-fixture.mjs
 
       - name: Type-check
         run: pnpm run typecheck

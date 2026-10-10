@@ -20,7 +20,9 @@
     "test": "node --test tests/*.test.cjs",
     "test:seed": "node scripts/seed-test-db.mjs",
     "smoke:ci": "node scripts/run-smoke.mjs",
-    "check:dependencies": "node scripts/check-dependencies.mjs"
+    "check:dependencies": "node scripts/check-dependencies.mjs",
+    "check:db": "node scripts/check-db-drift.mjs",
+    "test:migrations": "node --test tests/migrations.test.cjs"
   },
   "prisma": {
     "seed": "node prisma/seed.cjs"
