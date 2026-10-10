@@ -14,7 +14,7 @@ export function requestSubject(request: Request): string {
   return digest(ip || "shared-anonymous")
 }
 /** All routes share one atomic PostgreSQL budget. Reservations are never refunded on provider error. */
-export async function reserveRequest(group: "ai" | "account", subject: string, identity?: string): Promise<void> {
+export async function reserveRequest(group: "ai" | "account" | "mcp", subject: string, identity?: string): Promise<void> {
   const now = new Date(); const hour = new Date(now.getTime() + 3600000)
   try {
     await prisma.$transaction(async tx => {
@@ -25,7 +25,7 @@ export async function reserveRequest(group: "ai" | "account", subject: string, i
         if (used + amount > limit) throw new RequestError(429, "REQUEST_LIMIT_REACHED")
         await tx.requestBudget.upsert({ where: { key }, create: { key, used: amount, resetAt: until }, update: { used: used + amount, resetAt: used ? current!.resetAt : until } })
       }
-      await take(`${group}:${subject}`, 1, group === "ai" ? 12 : 20, hour)
+      await take(`${group}:${subject}`, 1, group === "ai" ? 12 : group === "mcp" ? 120 : 20, hour)
       if (identity) await take(`${group}:identity:${digest(identity.toLowerCase())}`, 1, 10, hour)
       if (group === "ai") {
         // Configure from a reviewed worst-case provider cost with input/output caps. Not actual billing.
