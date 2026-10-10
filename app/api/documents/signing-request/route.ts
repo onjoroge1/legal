@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -98,8 +98,8 @@ export async function GET(request: Request) {
         signerEmail: signingRequest.signerEmail,
       },
     })
-  } catch (error) {
-    console.error("Get signing request error:", error)
+  } catch {
+    console.error("Get signing request error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

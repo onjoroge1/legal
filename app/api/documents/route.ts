@@ -1,3 +1,5 @@
+import { documentMutationSchema, editableLegacyDocument } from "@/lib/document-mutation-schema"
+import { readJson, requestError } from "@/lib/request-guard"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
@@ -10,7 +12,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not set up yet
   console.log("Prisma not available - documents will return mock data")
 }
@@ -118,7 +120,9 @@ export async function GET(request: Request) {
 
         return NextResponse.json(documentsWithParties)
       } catch (error) {
-        console.error("Database error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+        console.error("Database error:")
         // Fall through to mock data
       }
     }
@@ -126,7 +130,9 @@ export async function GET(request: Request) {
     // Return mock data if Prisma is not available
     return NextResponse.json([])
   } catch (error) {
-    console.error("Documents API error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Documents API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -164,7 +170,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const body = await request.json()
+    const body = documentMutationSchema.parse(await readJson(request, 65536))
     const { id, title, type, category, content, status, metadata, jurisdiction, state, description } = body
 
     if (!title || !type || !content) {
@@ -196,15 +202,15 @@ export async function POST(request: Request) {
         },
       })
 
-      if (!existingDoc) {
+      if (!existingDoc || !editableLegacyDocument(existingDoc)) {
         return NextResponse.json(
           { error: "Document not found" },
           { status: 404 }
         )
       }
 
-      const updated = await prisma.userDocument.update({
-        where: { id },
+      const updated = await prisma.userDocument.updateMany({
+        where: { id, userId: user.id, status: "draft", updatedAt: existingDoc.updatedAt },
         data: {
           title,
           type,
@@ -219,8 +225,9 @@ export async function POST(request: Request) {
         },
       })
 
+      if (updated.count !== 1) return NextResponse.json({ error: "DOCUMENT_CHANGED" }, { status: 409 })
       return NextResponse.json({
-        id: updated.id,
+        id: id,
         message: "Document updated successfully",
       })
     }
@@ -246,7 +253,9 @@ export async function POST(request: Request) {
       message: "Document created successfully",
     })
   } catch (error) {
-    console.error("Create document error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Create document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

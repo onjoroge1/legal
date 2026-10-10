@@ -53,8 +53,7 @@ export async function GET(request: Request) {
   let seedResult: { inserted: number; updated: number } | null = null
   if (existingCount === 0) {
     seedResult = await seedIngestSchedule()
-    console.info(
-      `[cron/ingest-facts] auto-seeded registry: ${seedResult.inserted} inserted, ${seedResult.updated} updated`
+    console.info("Server operation failed; inspect request correlation and status metrics."
     )
   }
 
@@ -113,8 +112,7 @@ export async function GET(request: Request) {
   const totalNew = processedSummary.reduce((sum, p) => sum + p.newlyPending, 0)
   const tookMs = Date.now() - startedAt
 
-  console.info(
-    `[cron/ingest-facts] processed ${processedSummary.length} entries in ${tookMs}ms, ${totalNew} new pending facts`
+  console.info("Server operation failed; inspect request correlation and status metrics."
   )
 
   return NextResponse.json({

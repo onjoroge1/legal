@@ -31,3 +31,5 @@ public/uploads/
 .claude/worktrees/
 *.tsbuildinfo
 *.new
+
+test-results/

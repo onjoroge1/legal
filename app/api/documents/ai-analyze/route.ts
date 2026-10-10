@@ -1,3 +1,5 @@
+import { readJson, requestError } from "@/lib/request-guard"
+import { guardAI } from "@/lib/request-budget"
 import { NextResponse } from "next/server"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
@@ -50,7 +52,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { documentId } = await request.json()
+    const { documentId } = z.object({ documentId: z.string().min(1).max(128) }).strict().parse(await readJson(request))
     if (!documentId) {
       return NextResponse.json({ error: "documentId is required" }, { status: 400 })
     }
@@ -71,7 +73,11 @@ export async function POST(request: Request) {
       ? document.content.substring(0, 8000) + "\n\n[Content truncated for analysis...]"
       : document.content
 
+    await guardAI(request)
     const { object } = await generateObject({
+      maxOutputTokens: 8192,
+      maxRetries: 0,
+      abortSignal: AbortSignal.timeout(55000),
       model: google("gemini-2.5-flash"),
       schema: analysisSchema,
       prompt: `You are a legal document analyst. Analyze the following legal document and provide a structured analysis.
@@ -96,7 +102,9 @@ Be specific and constructive. Focus on real legal considerations.`,
 
     return NextResponse.json({ analysis: object })
   } catch (error) {
-    console.error("AI analyze error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("AI analyze error:")
     return NextResponse.json({ error: "Failed to analyze document" }, { status: 500 })
   }
 }

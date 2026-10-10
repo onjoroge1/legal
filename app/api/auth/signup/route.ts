@@ -1,3 +1,5 @@
+import { readJson, requestError } from "@/lib/request-guard"
+import { guardAccount } from "@/lib/request-budget"
 import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import bcrypt from "bcryptjs"
@@ -8,7 +10,7 @@ const signupSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),
   email: z.string().trim().email("Invalid email address").transform((value) => value.toLowerCase()),
   password: z.string().min(8, "Password must be at least 8 characters").max(200),
-})
+}).strict()
 
 /**
  * Signup API Route
@@ -19,8 +21,9 @@ const signupSchema = z.object({
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    const body = await readJson(request, 4096)
     const { name, email, password } = signupSchema.parse(body)
+    await guardAccount(request, email)
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -65,6 +68,8 @@ export async function POST(request: Request) {
       { status: 201 }
     )
   } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid input", details: error.errors },
@@ -75,7 +80,7 @@ export async function POST(request: Request) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return NextResponse.json({ error: "User with this email already exists" }, { status: 400 })
     }
-    console.error("Signup error:", error)
+    console.error("Signup error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

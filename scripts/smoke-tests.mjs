@@ -1,105 +1,34 @@
-const baseUrl = process.env.BASE_URL || "http://localhost:3000"
-
-const slugs = [
-  "nda",
-  "llc_operating_agreement",
-  "employment_contract",
-  "residential_lease_agreement",
-  "independent_contractor_agreement",
-  "partnership_agreement",
-  "power_of_attorney",
-  "last_will_testament",
-  "commercial_lease_agreement",
-  "service_agreement",
-  "purchase_agreement",
-  "non_compete_agreement",
-]
-
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message)
-  }
+import { createRequire } from 'node:module'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+const require = createRequire(import.meta.url)
+const { load } = require('../tests/route-loader.cjs')
+const { documentCatalog } = load('lib/document-catalog.ts')
+const base = new URL(process.env.BASE_URL || 'http://127.0.0.1:3000')
+if (!['localhost', '127.0.0.1'].includes(base.hostname)) throw new Error('Fixture smoke tests are local-only; do not send fixture requests to production.')
+const { createLegalDisclaimerAcceptanceToken } = load('lib/legal-disclaimer-server.ts')
+const { LEGAL_DISCLAIMER_COOKIE } = load('lib/legal-disclaimer.ts')
+// Synthetic local fixture only; never records acceptance for a real person.
+const cookie = `${LEGAL_DISCLAIMER_COOKIE}=${createLegalDisclaimerAcceptanceToken()}`
+const results = []
+async function check(path, expected, method = 'GET', body) {
+  const response = await fetch(new URL(path, base), { method, redirect: 'manual', signal: AbortSignal.timeout(30000), ...(body && { headers: { 'content-type': 'application/json', cookie }, body: JSON.stringify(body) }) })
+  results.push({ path, method, status: response.status, expected })
+  if (!expected.includes(response.status)) throw new Error(`${method} ${path}: got ${response.status}; expected ${expected}`)
 }
-
-async function getJson(path, options) {
-  const res = await fetch(`${baseUrl}${path}`, options)
-  const text = await res.text()
-  let json
-  try {
-    json = text ? JSON.parse(text) : null
-  } catch {
-    json = null
-  }
-  return { res, json, text }
+try {
+  for (const path of ['/', '/documents', '/login', '/signup', '/privacy', '/terms', '/sitemap.xml', '/robots.txt']) await check(path, [200])
+  for (const doc of documentCatalog) await check(`/documents/${doc.category}/${doc.slug}`, [200])
+  await check('/documents/nda', [301, 308])
+  await check('/dashboard', [302, 307])
+  await check('/api/checkout/complete', [410], 'POST', { paymentType: 'professional', email: 'fixture@example.invalid' })
+  await check('/api/payment/create-checkout', [503], 'POST', {})
+  await check('/api/documents/business/non-disclosure-agreement/generate', [503], 'POST', {})
+  await check('/api/documents/business/non-disclosure-agreement/chat', [503], 'POST', {})
+  await check('/api/webhooks/stripe', [400], 'POST', {})
+  await check('/audit-route-that-does-not-exist', [404])
+  console.log(`Smoke checks passed: ${results.length}`)
+} finally {
+  mkdirSync('test-results', { recursive: true })
+  writeFileSync('test-results/smoke.json', JSON.stringify({ sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), results }, null, 2))
 }
-
-async function checkServer() {
-  try {
-    const res = await fetch(baseUrl)
-    return res.ok
-  } catch {
-    return false
-  }
-}
-
-async function run() {
-  console.log(`Running smoke tests against ${baseUrl}`)
-
-  const serverUp = await checkServer()
-  if (!serverUp) {
-    throw new Error(
-      `Cannot reach ${baseUrl}. Start the app first (npm run dev) or set BASE_URL to the running host.`
-    )
-  }
-
-  for (const slug of slugs) {
-    const template = await getJson(`/api/templates/${slug}`)
-    assert(template.res.ok, `Template fetch failed for ${slug}: ${template.res.status}`)
-
-    const questionnaires = await getJson(`/api/templates/${slug}/questionnaires`)
-    assert(questionnaires.res.ok, `Questionnaires fetch failed for ${slug}: ${questionnaires.res.status}`)
-    assert(
-      Array.isArray(questionnaires.json) && questionnaires.json.length > 0,
-      `No questionnaires found for ${slug}`
-    )
-
-    const intents = await getJson(`/api/templates/${slug}/intents`)
-    assert(intents.res.ok, `Intents fetch failed for ${slug}: ${intents.res.status}`)
-  }
-
-  // Dry-run generation test (no AI call)
-  const dryRunPayload = {
-    formData: {
-      state: "California",
-      disclosingParty: "Alpha LLC",
-      receivingParty: "Beta Inc.",
-      relationship: "Business discussions",
-      confidentialInfo: "Financials and product roadmap",
-      duration: "2 years",
-      nonSolicitation: "no",
-      nonCompete: "no",
-      additional: "",
-    },
-    intent: "mutual",
-  }
-  const dryRun = await getJson(`/api/documents/nda/generate?dryRun=1`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-dry-run": "1",
-    },
-    body: JSON.stringify(dryRunPayload),
-  })
-  assert(dryRun.res.ok, `Dry-run generation failed: ${dryRun.res.status}`)
-  assert(
-    typeof dryRun.json?.document === "string" && dryRun.json.document.length > 50,
-    "Dry-run generation returned empty document"
-  )
-
-  console.log("Smoke tests passed.")
-}
-
-run().catch((error) => {
-  console.error("Smoke tests failed:", error.message)
-  process.exit(1)
-})

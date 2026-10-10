@@ -1,3 +1,5 @@
+import { documentMutationSchema, editableLegacyDocument } from "@/lib/document-mutation-schema"
+import { readJson, requestError } from "@/lib/request-guard"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
@@ -65,7 +67,9 @@ export async function GET(
 
     return NextResponse.json(document)
   } catch (error) {
-    console.error("Get document error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Get document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -97,7 +101,7 @@ export async function PATCH(
     }
 
     const { id } = await params
-    const body = await request.json()
+    const body = documentMutationSchema.parse(await readJson(request, 65536))
     const { content, title, status, metadata } = body
 
     // Get user
@@ -113,12 +117,17 @@ export async function PATCH(
       )
     }
 
+    const existingDoc = await prisma.userDocument.findFirst({ where: { id, userId: user.id, deletedAt: null } })
+    if (!existingDoc || !editableLegacyDocument(existingDoc)) return NextResponse.json({ error: "DOCUMENT_NOT_EDITABLE" }, { status: 409 })
+
     // Update document
     const document = await prisma.userDocument.updateMany({
       where: {
         id,
         userId: user.id,
         deletedAt: null,
+        status: "draft",
+        updatedAt: existingDoc.updatedAt,
       },
       data: {
         ...(content !== undefined && { content }),
@@ -138,7 +147,9 @@ export async function PATCH(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Update document error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Update document error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

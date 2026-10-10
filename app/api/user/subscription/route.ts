@@ -23,8 +23,8 @@ export async function GET(request: Request) {
     return NextResponse.json({
       subscription: subscriptionInfo,
     })
-  } catch (error) {
-    console.error("Subscription API error:", error)
+  } catch {
+    console.error("Subscription API error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

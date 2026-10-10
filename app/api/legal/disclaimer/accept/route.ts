@@ -15,8 +15,8 @@ export async function GET(request: Request) {
     return NextResponse.json(getLegalDisclaimerAcceptance(request), {
       headers: { "Cache-Control": "no-store" },
     })
-  } catch (error) {
-    console.error("Legal disclaimer verification error:", error)
+  } catch {
+    console.error("Legal disclaimer verification error:")
     return NextResponse.json(
       { error: "Unable to verify legal disclaimer acceptance." },
       { status: 503, headers: { "Cache-Control": "no-store" } }
@@ -61,8 +61,8 @@ export async function POST(request: Request) {
     response.headers.set("Cache-Control", "no-store")
 
     return response
-  } catch (error) {
-    console.error("Legal disclaimer acceptance error:", error)
+  } catch {
+    console.error("Legal disclaimer acceptance error:")
     return NextResponse.json(
       { error: "Unable to record legal disclaimer acceptance." },
       { status: 503 }

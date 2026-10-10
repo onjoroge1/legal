@@ -6,7 +6,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   // Prisma not available
 }
 
@@ -40,8 +40,8 @@ export async function isSubscriptionActive(userEmail?: string): Promise<boolean>
     const isNotExpired = !user.subscriptionEndDate || new Date(user.subscriptionEndDate) > new Date()
 
     return isActive && isNotExpired
-  } catch (error) {
-    console.error("Error checking subscription:", error)
+  } catch {
+    console.error("Error checking subscription:")
     return false
   }
 }
@@ -75,8 +75,8 @@ export async function getUserSubscriptionInfo(userEmail?: string): Promise<Subsc
       startDate: user.subscriptionStartDate ? new Date(user.subscriptionStartDate) : undefined,
       endDate: user.subscriptionEndDate ? new Date(user.subscriptionEndDate) : undefined,
     }
-  } catch (error) {
-    console.error("Error getting subscription info:", error)
+  } catch {
+    console.error("Error getting subscription info:")
     return null
   }
 }
@@ -109,8 +109,8 @@ export async function hasAccessToDocument(
     })
 
     return user?.userDocuments && user.userDocuments.length > 0
-  } catch (error) {
-    console.error("Error checking document access:", error)
+  } catch {
+    console.error("Error checking document access:")
     return false
   }
 }

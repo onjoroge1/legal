@@ -1,3 +1,5 @@
+import { readJson, requestError } from "@/lib/request-guard"
+import { guardAccount } from "@/lib/request-budget"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail } from "@/lib/email-service"
@@ -6,7 +8,7 @@ import { z } from "zod"
 
 const requestResetSchema = z.object({
   email: z.string().trim().email().transform((value) => value.toLowerCase()),
-})
+}).strict()
 
 const successResponse = () => NextResponse.json({ success: true })
 
@@ -18,7 +20,8 @@ function escapeHtml(value: string): string {
 
 export async function POST(request: Request) {
   try {
-    const { email } = requestResetSchema.parse(await request.json())
+    const { email } = requestResetSchema.parse(await readJson(request, 4096))
+    await guardAccount(request, email)
 
     const user = await prisma.user.findUnique({ where: { email } })
 
@@ -65,7 +68,9 @@ export async function POST(request: Request) {
 
     return successResponse()
   } catch (error) {
-    console.error("Forgot password error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Forgot password error:")
     // Keep the public response identical so this endpoint cannot be used to
     // distinguish registered addresses from unregistered ones.
     return successResponse()

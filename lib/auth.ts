@@ -1,3 +1,4 @@
+import { reserveRequest, requestSubject } from "./request-budget"
 import { randomUUID } from "crypto"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import bcrypt from "bcryptjs"
@@ -20,8 +21,9 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null
+      async authorize(credentials, req) {
+        if (!credentials?.email || !credentials.password || credentials.email.length > 254 || credentials.password.length > 200) return null
+        try { await reserveRequest("account", requestSubject(new Request("https://auth.invalid", { headers: req.headers as HeadersInit })), credentials.email.trim()) } catch { return null }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.trim().toLowerCase() },

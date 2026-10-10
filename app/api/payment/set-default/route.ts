@@ -39,8 +39,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ message: "Default payment method updated successfully" })
-  } catch (error) {
-    console.error("Set default payment method error:", error)
+  } catch {
+    console.error("Set default payment method error:")
     return NextResponse.json({ error: "Failed to set default payment method" }, { status: 500 })
   }
 }

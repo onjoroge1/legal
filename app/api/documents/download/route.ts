@@ -133,8 +133,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: "Invalid format. Use 'pdf' or 'docx'." }, { status: 400 })
-  } catch (error) {
-    console.error("Download API error:", error)
+  } catch {
+    console.error("Download API error:")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

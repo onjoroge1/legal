@@ -34,8 +34,8 @@ export async function POST() {
   try {
     const result = await ingestCaliforniaResidentialLease()
     return NextResponse.json(result)
-  } catch (err) {
-    console.error("[admin/facts/ingest] failed:", err)
+  } catch {
+    console.error("[admin/facts/ingest] failed:")
     return NextResponse.json({ error: "Ingest failed" }, { status: 500 })
   }
 }

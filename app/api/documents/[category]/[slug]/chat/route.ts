@@ -1,3 +1,5 @@
+import { readJson, requestError, chatSchema } from "@/lib/request-guard"
+import { guardAI } from "@/lib/request-budget"
 import {
   consumeStream,
   convertToModelMessages,
@@ -68,7 +70,7 @@ export async function POST(
     if (featureError) return featureError
 
     const { category, slug } = await params
-    const { messages, intent } = await request.json()
+    const { messages, intent } = chatSchema.parse(await readJson(request))
 
     // Resolve document by canonical slug and validate category
     const doc = getDocumentBySlug(slug)
@@ -131,11 +133,14 @@ After gathering ALL needed information, respond with EXACTLY this format (this i
 
 Start by greeting the user and asking your first question.`
 
+    await guardAI(request)
     const result = streamText({
+      maxOutputTokens: 8192,
+      maxRetries: 0,
       model: google("gemini-2.5-flash"),
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages as UIMessage[]),
-      abortSignal: request.signal,
+      abortSignal: AbortSignal.any([request.signal, AbortSignal.timeout(55000)]),
     })
 
     return result.toUIMessageStreamResponse({
@@ -143,7 +148,9 @@ Start by greeting the user and asking your first question.`
       consumeSseStream: consumeStream,
     })
   } catch (error) {
-    console.error("Document chat error:", error)
+    const rejected = requestError(error)
+    if (rejected) return rejected
+    console.error("Document chat error:")
     return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 }

@@ -8,7 +8,7 @@ let prisma: any
 try {
   const prismaModule = require("@/lib/prisma")
   prisma = prismaModule.prisma
-} catch (error) {
+} catch {
   console.log("Prisma not available")
 }
 
@@ -86,8 +86,8 @@ export async function GET(request: Request) {
         teamName: invitation.team.name || `${invitation.team.owner.name || invitation.team.owner.email}'s Team`,
       },
     })
-  } catch (error) {
-    console.error("Get invitation error:", error)
+  } catch {
+    console.error("Get invitation error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -225,8 +225,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: "Invitation accepted successfully",
     })
-  } catch (error) {
-    console.error("Accept invitation error:", error)
+  } catch {
+    console.error("Accept invitation error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

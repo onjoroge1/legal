@@ -1,3 +1,5 @@
+import { readJson, requestError } from "@/lib/request-guard"
+import { guardAccount } from "@/lib/request-budget"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -10,7 +12,7 @@ const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, "Current password is required"),
   newPassword: z.string().min(8, "New password must be at least 8 characters").max(200),
   confirmPassword: z.string().min(1, "Please confirm your new password"),
-}).refine((data) => data.newPassword === data.confirmPassword, {
+}).strict().refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 })
@@ -30,8 +32,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const body = await request.json()
+    const body = await readJson(request, 4096)
     const { currentPassword, newPassword } = changePasswordSchema.parse(body)
+    await guardAccount(request)
 
     // Get user with password
     const user = await prisma.user.findUnique({
@@ -79,6 +82,8 @@ export async function POST(request: Request) {
       message: "Password changed successfully",
     })
   } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid input", details: error.errors },
@@ -86,7 +91,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.error("Password change error:", error)
+    console.error("Password change error:")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
