@@ -518,3 +518,34 @@ model RequestLease {
   @@index([expiresAt])
   @@index([subject])
 }
+
+model DocumentDraft {
+  id String @id
+  ownerId String?
+  guestHash String?
+  guestExpiresAt DateTime?
+  category String
+  sourceSlug String
+  canonicalSlug String
+  intent String?
+  jurisdiction String?
+  formData Json
+  revision Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  versions DocumentVersion[]
+  @@index([ownerId])
+}
+
+model DocumentVersion {
+  id String @id
+  draftId String
+  draft DocumentDraft @relation(fields: [draftId], references: [id], onDelete: Restrict)
+  title String
+  content String
+  contentHash String
+  formData Json
+  review Json
+  createdAt DateTime @default(now())
+  @@index([draftId, createdAt])
+}

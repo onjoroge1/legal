@@ -1,13 +1,12 @@
+import { resolveDocument } from "@/lib/document-resolver"
+import { saveVersion, draftAccess } from "@/lib/document-versions"
 import { readJson, requestError, substituteLiteral, generationSchema } from "@/lib/request-guard"
 import { guardAI } from "@/lib/request-budget"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
 import { prisma } from "@/lib/prisma"
-import { getDocumentBySlug } from "@/lib/document-catalog"
 import { getDocumentPrompt } from "@/lib/document-prompts"
-import { parseStatePageSlug, STATE_DOC_NOTES } from "@/lib/state-pages"
-import { parseInternationalPageSlug } from "@/lib/international-pages"
-import { parseCityPageSlug, CITY_DOC_NOTES, CITY_DOC_SLUG } from "@/lib/city-pages"
+import { STATE_DOC_NOTES } from "@/lib/state-pages"
 import { validateAndCleanCitations } from "@/lib/citation-validator"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
@@ -159,63 +158,22 @@ export async function POST(
     if (featureError) return featureError
 
     const { category, slug } = await params
-    const { formData, intent } = generationSchema.parse(await readJson(request))
+    const { formData, intent, draftId } = generationSchema.parse(await readJson(request))
     const isDryRun =
       request.headers.get("x-dry-run") === "1" ||
       new URL(request.url).searchParams.get("dryRun") === "1"
 
-    // ── Resolve document ────────────────────────────────────────────────────
-    // Handles: plain catalog slug, state-page slug, international-page slug,
-    // and city-specific slug (e.g. "chicago-residential-lease-agreement").
-    let doc = getDocumentBySlug(slug)
-    let stateSlug: string | null = null
-    let stateName: string = String(formData.state || formData.STATE || "")
-    let cityContextOverride: string | null = null  // built for city pages
-
-    if (!doc) {
-      const parsedState = parseStatePageSlug(slug)
-      if (parsedState && parsedState.doc.category === category) {
-        doc = getDocumentBySlug(parsedState.doc.slug)
-        stateSlug = parsedState.state.slug
-        stateName = parsedState.state.name
-      }
-    }
-
-    if (!doc) {
-      const parsedIntl = parseInternationalPageSlug(slug)
-      if (parsedIntl && parsedIntl.doc.category === category) {
-        doc = getDocumentBySlug(parsedIntl.doc.slug)
-        stateName = parsedIntl.country.name
-      }
-    }
-
-    if (!doc) {
-      const parsedCity = parseCityPageSlug(slug)
-      if (parsedCity && category === "real-estate") {
-        doc = getDocumentBySlug(CITY_DOC_SLUG)
-        const { city } = parsedCity
-        stateName = `${city.name}, ${city.state}`
-        const cityNotes = CITY_DOC_NOTES[city.slug]
-        if (cityNotes) {
-          // Build city-specific context block (requirements + restrictions from local ordinances)
-          cityContextOverride = [
-            `JURISDICTION: ${city.name}, ${city.state}`,
-            `This lease must comply with BOTH ${city.state} state law AND ${city.name} local ordinances.`,
-            ``,
-            `${city.name.toUpperCase()} LOCAL ORDINANCE REQUIREMENTS:`,
-            ...cityNotes.requirements.map((r) => `• ${r}`),
-            ``,
-            `${city.name.toUpperCase()} LOCAL RESTRICTIONS:`,
-            ...cityNotes.restrictions.map((r) => `• ${r}`),
-            ``,
-            `NOTICE REQUIREMENTS: ${cityNotes.noticeRequirements}`,
-          ].join("\n")
-        }
-      }
-    }
-
-    if (!doc || doc.category !== category) {
-      return Response.json({ error: "Document not found" }, { status: 404 })
+    let resolved
+    try { resolved = resolveDocument(category, slug, intent, formData) } catch { return Response.json({ error: "INVALID_DOCUMENT_IDENTITY" }, { status: 422 }) }
+    const doc = resolved.doc
+    const stateSlug = resolved.state?.slug ?? null
+    const stateName = resolved.state?.name ?? resolved.country?.name ?? ""
+    const cityContextOverride: string | null = null
+    if (draftId) await draftAccess(request, draftId)
+    async function savedResponse(payload: { document: string; [key: string]: unknown }) {
+      const saved = await saveVersion(request, resolved!, formData, payload.document, {}, draftId)
+      const { cookie, ...identity } = saved
+      return Response.json({ ...payload, ...identity }, { headers: { "Cache-Control": "no-store", ...(cookie ? { "Set-Cookie": cookie } : {}) } })
     }
 
     // ── Template lookup ─────────────────────────────────────────────────────
@@ -333,7 +291,7 @@ Output ONLY the enhanced document. No preamble, no commentary.`,
         console.warn("Server operation failed; inspect request correlation and status metrics."
         )
       }
-      return Response.json({
+      return savedResponse({
         document: validated.cleaned,
         legalDisclaimer: {
           version: LEGAL_DISCLAIMER_VERSION,
@@ -404,7 +362,7 @@ Output ONLY the document text. No preamble, no commentary, no markdown fences.`,
       console.warn("Server operation failed; inspect request correlation and status metrics."
       )
     }
-    return Response.json({
+    return savedResponse({
       document: validated.cleaned,
       legalDisclaimer: {
         version: LEGAL_DISCLAIMER_VERSION,

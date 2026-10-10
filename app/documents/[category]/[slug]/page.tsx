@@ -1,3 +1,4 @@
+import { resolveDocument } from "@/lib/document-resolver"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -200,6 +201,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DocumentDetailPage({ params }: PageProps) {
   const { category, slug } = await params
+  try { resolveDocument(category, slug) } catch { notFound() }
   const doc = getDocumentBySlug(slug)
 
   // ── State page branch ─────────────────────────────────────────────────────

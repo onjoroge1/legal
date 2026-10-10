@@ -115,8 +115,8 @@ export default function DocumentView() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          documentText: document?.content,
-          documentTitle: document?.title,
+          versionId: document?.metadata?.versionId,
+          
           format: fmt,
         }),
       })

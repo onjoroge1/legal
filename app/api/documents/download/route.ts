@@ -1,3 +1,6 @@
+import { z } from "zod"
+import { readVersion } from "@/lib/document-versions"
+import { readJson, requestError } from "@/lib/request-guard"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -92,14 +95,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { documentText, documentTitle, format } = body
-
-    if (!documentText || !format) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
-    }
-
-    const safeTitle = (documentTitle || "document").replace(/[^a-zA-Z0-9\s-]/g, "").trim()
+    const { versionId, format } = z.object({ versionId: z.string().uuid(), format: z.enum(["pdf", "docx"]) }).strict().parse(await readJson(request, 2048))
+    const { version } = await readVersion(request, versionId)
+    const documentText = version.content
+    const safeTitle = version.title.replace(/[^a-zA-Z0-9\s-]/g, "").trim() || "document"
 
     // Check subscription tier — paid users get a watermark-free PDF.
     // Footer disclaimer is still shown for everyone (legal protection).
@@ -133,7 +132,9 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: "Invalid format. Use 'pdf' or 'docx'." }, { status: 400 })
-  } catch {
+  } catch (error) {
+    const rejected = requestError(error)
+    if (rejected) return rejected
     console.error("Download API error:")
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
