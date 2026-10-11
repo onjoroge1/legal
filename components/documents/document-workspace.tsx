@@ -26,6 +26,13 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
   const router = useRouter(); const query = useSearchParams(); const { data: session } = useSession()
   const category = params.category; const slug = params.slug; const versionId = query.get("version"); const draftId = query.get("draft")
   const resolved = useMemo(() => { try { return resolveDocument(category, slug, query.get("intent")) } catch { return null } }, [category, slug, query])
+  const [payment, setPayment] = useState<{ order: { id: string; status: string } | null; delivery: { status: string } | null } | null>(null)
+  useEffect(() => {
+    if (!versionId || mode !== "download") return
+    const abort = new AbortController()
+    fetch(`/api/payment/status?versionId=${versionId}`, { cache: "no-store", signal: abort.signal }).then(jsonResponse).then(setPayment).catch(() => {})
+    return () => abort.abort()
+  }, [versionId, mode])
   const [guestEmail, setGuestEmail] = useState("")
   const [prices, setPrices] = useState<{ single: { amount: number; currency: string }; subscription: { amount: number; currency: string } } | null>(null)
   useEffect(() => { if (mode === "checkout") fetch("/api/payment/prices").then(jsonResponse).then(setPrices).catch(() => setError("Prices are temporarily unavailable")) }, [mode])
@@ -121,6 +128,12 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
       <Button disabled={!valid || busy || (intents.length > 0 && !intent)} onClick={generate}>{busy ? "Generating and saving…" : "Generate and save draft"}</Button>
     </div> : null}
     {!loading && saved ? <>
+      {mode === "download" ? <div className="space-y-2 rounded border p-3">
+        {payment?.order ? <p>Order ID: {payment.order.id} · Payment: {payment.order.status}</p> : null}
+        {payment?.delivery ? <p>Email: {({ pending: "queued", processing: "preparing", retry: "retry scheduled", accepted: "accepted by email provider; delivery not yet confirmed", delivered: "delivered to your mail server", blocked: "needs support review", failed: "failed", bounced: "bounced", complained: "stopped after spam report", suppressed: "sending stopped for this address" } as Record<string, string>)[payment.delivery.status] ?? "status unavailable"}</p> : null}
+        <Button variant="outline" disabled={busy} onClick={() => window.location.reload()}>Refresh payment and delivery status</Button>
+        <p><Link className="underline" href="/recover-purchase">Recover a guest purchase on another device</Link>. Keep your order ID.</p>
+      </div> : null}
       {saved.review?.issues?.length ? <div role="status" className="rounded border border-amber-500 p-4">This draft needs review: {saved.review.issues.join(", ")}. Resolve these before final export.</div> : null}
       <div className="flex flex-wrap gap-3">
         <Button asChild variant="outline"><Link href={destination("generate")}>Edit inputs and create a new version</Link></Button>

@@ -1,3 +1,5 @@
+import { after } from "next/server"
+import { runDeliveryBatch } from "@/lib/delivery-worker"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import { processPaymentEvent, supportedEvents } from "@/lib/payment-fulfillment"
@@ -22,6 +24,9 @@ export async function POST(request: Request) {
   try {
     await prisma.stripeEvent.upsert({ where: { id: event.id }, create: { id: event.id, type: event.type, objectId: event.data.object.id, livemode: event.livemode }, update: {} })
     await processPaymentEvent(event.id)
+    if (process.env.ENABLE_PURCHASE_DELIVERY === "true") after(async () => {
+      try { await runDeliveryBatch(1) } catch { console.warn("PURCHASE_DELIVERY_WAKEUP_FAILED") }
+    })
     return Response.json({ received: true })
   } catch { return Response.json({ error: "Fulfillment retry required" }, { status: 503 }) }
 }

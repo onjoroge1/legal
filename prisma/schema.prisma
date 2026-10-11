@@ -541,6 +541,9 @@ model DocumentDraft {
 
 model DocumentVersion {
   id String @id
+  claimedOwnerId String?
+  recoveryHash String?
+  recoveryExpiresAt DateTime?
   draftId String
   draft DocumentDraft @relation(fields: [draftId], references: [id], onDelete: Restrict)
   title String
@@ -635,12 +638,24 @@ model StripeEvent {
 /// Committed in the same transaction as access. PR-10 owns dispatch and retries.
 model DeliveryOutbox {
   id String @id
-  orderId String @unique
+  orderId String
+  dedupeKey String @unique
   kind String
   status String @default("pending")
   attempts Int @default(0)
   createdAt DateTime @default(now())
   deliveredAt DateTime?
+  acceptedAt DateTime?
+  providerId String? @unique
+  recipientHash String?
+  payloadCipher String?
+  firstSendAt DateTime?
+  nextAttemptAt DateTime @default(now())
+  leaseId String?
+  leaseUntil DateTime?
+  lastError String?
+  @@index([orderId])
+  @@index([status, nextAttemptAt])
   @@index([status, createdAt])
 }
 
@@ -651,4 +666,27 @@ model PaymentHold {
   status String
   updatedAt DateTime @updatedAt
   @@index([subscriptionId, status])
+}
+
+model GuestPurchaseClaim {
+  orderId String @id
+  tokenHash String @unique
+  expiresAt DateTime
+  redeemedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model EmailDeliveryEvent {
+  id String @id
+  providerId String
+  type String
+  occurredAt DateTime
+  createdAt DateTime @default(now())
+  @@index([providerId])
+}
+
+model EmailSuppression {
+  recipientHash String @id
+  reason String
+  createdAt DateTime @default(now())
 }

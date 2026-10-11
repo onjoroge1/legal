@@ -36,7 +36,18 @@ export async function saveVersion(request: Request, resolved: ResolvedDocument, 
 export async function readVersion(request: Request, id: string) {
   const version = await prisma.documentVersion.findUnique({ where: { id } })
   if (!version) throw new RequestError(404, "DOCUMENT_NOT_FOUND")
-  const draft = await draftAccess(request, version.draftId)
+  let draft
+  if (version.claimedOwnerId) {
+    const session = await getServerSession(authOptions)
+    if (session?.user?.id !== version.claimedOwnerId) throw new RequestError(404, "DOCUMENT_NOT_FOUND")
+    const source = await prisma.documentDraft.findUniqueOrThrow({ where: { id: version.draftId } })
+    draft = { ...source, ownerId: version.claimedOwnerId }
+  } else {
+    const token = request.headers.get("cookie")?.split(";").map(v => v.trim()).find(v => v.startsWith(`version_${id}=`))?.split("=")[1]
+    if (token && version.recoveryHash && version.recoveryExpiresAt && version.recoveryExpiresAt > new Date() && hash(token) === version.recoveryHash) {
+      draft = await prisma.documentDraft.findUniqueOrThrow({ where: { id: version.draftId } })
+    } else draft = await draftAccess(request, version.draftId)
+  }
   if (hash(version.content) !== version.contentHash) throw new RequestError(409, "DOCUMENT_INTEGRITY_ERROR")
   return { version, draft }
 }

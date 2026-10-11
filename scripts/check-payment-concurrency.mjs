@@ -37,6 +37,12 @@ try {
  status='paid';await processPaymentEvent(await event())
  assert.equal((await prisma.documentPurchase.findUnique({where:{checkoutId:orderId}})).status,'paid')
  assert.equal(await prisma.deliveryOutbox.count({where:{orderId}}),1)
+ // A claimed guest purchase must never attach its original guest Stripe customer on replay.
+ await prisma.checkoutOrder.update({where:{id:orderId},data:{guestEmail:`${prefix}@example.invalid`}})
+ session.customer=`cus_guest_${prefix}`
+ await processPaymentEvent(await event())
+ assert.equal((await prisma.user.findUnique({where:{id:ownerId}})).stripeCustomerId,null)
+ session.customer=null
  // Unpaid completion is acknowledged without granting access; async success fulfills once.
  const delayedId=randomUUID()
  session.id=`cs_delayed_${prefix}`;session.client_reference_id=delayedId;session.metadata.orderId=delayedId;session.payment_status='unpaid'

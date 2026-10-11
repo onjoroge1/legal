@@ -13,7 +13,7 @@ export function operationsServer() {
   }
   tool("get_release_status", "Deployment identity, expected migration and containment switches; does not infer CI or database migration success.", async () => ({
     revision: /^[a-f0-9]{40}$/.test(process.env.VERCEL_GIT_COMMIT_SHA ?? "") ? process.env.VERCEL_GIT_COMMIT_SHA : "unavailable",
-    expectedMigration: "20261012020000_payment_ledger", appliedMigration: "unavailable", ciEvidence: "unavailable",
+    expectedMigration: "20261013000000_delivery_recovery", appliedMigration: "unavailable", ciEvidence: "unavailable",
     flags: Object.fromEntries(flags.map(f => [f, isEmergencyFeatureEnabled(f)])),
   }))
   tool("get_usage_budget", "Reserved AI budget and live leases. Reservations are not provider-billed spend.", async () => {
@@ -26,15 +26,17 @@ export function operationsServer() {
     return { pendingSourceReviews: pending, staleApprovedSources: stale, latency: "unavailable", generationFailures: "unavailable", generationSuccesses: "unavailable" }
   })
   tool("get_payment_health", "Aggregate webhook, checkout and delivery backlogs. No customer, payment or document identifiers.", async () => {
-    const [failedEvents, pendingEvents, pendingOrders, pendingDeliveries] = await Promise.all([
+    const [failedEvents, pendingEvents, pendingOrders, pendingDeliveries, blockedDeliveries, acceptedDeliveries, deliveredEmails] = await Promise.all([
       prisma.stripeEvent.count({ where: { status: "failed" } }), prisma.stripeEvent.count({ where: { status: "pending" } }),
-      prisma.checkoutOrder.count({ where: { status: "pending" } }), prisma.deliveryOutbox.count({ where: { status: "pending" } }),
+      prisma.checkoutOrder.count({ where: { status: "pending" } }), prisma.deliveryOutbox.count({ where: { status: { in: ["pending", "retry", "processing"] } } }),
+      prisma.deliveryOutbox.count({ where: { status: { in: ["blocked", "failed", "bounced", "complained", "suppressed"] } } }),
+      prisma.deliveryOutbox.count({ where: { status: "accepted" } }), prisma.deliveryOutbox.count({ where: { status: "delivered" } }),
     ])
-    return { failedEvents, pendingEvents, pendingOrders, pendingDeliveries, deliveryWorker: "not implemented; PR-10", providerReconciliationHealth: "unavailable" }
+    return { failedEvents, pendingEvents, pendingOrders, pendingDeliveries, blockedDeliveries, acceptedDeliveries, deliveredEmails, deliveryWorker: process.env.ENABLE_PURCHASE_DELIVERY === "true" ? "enabled; schedule and provider verification required" : "disabled", providerReconciliationHealth: "unavailable" }
   })
   tool("get_launch_backlog", "Code scope and outstanding release evidence. Does not claim that PRs are merged or deployed.", async () => ({
     work: [{ pr: "PR-07", auditIds: ["PAY-03", "PAY-07"] }, { pr: "PR-08", auditIds: ["PAY-04", "PAY-06", "PAY-08", "PAY-09"] }, { pr: "PR-09", auditIds: ["PAY-02"] }],
-    merged: "unavailable", deployedAndVerified: "unavailable", remaining: ["PR-10 delivery and guest recovery", "credential rotation", "real Stripe sandbox lifecycle validation", "production migration and historical payment reconciliation", "qualified legal review", "commercial and refund-policy approval"],
+    merged: "unavailable", deployedAndVerified: "unavailable", remaining: ["staging delivery, webhook and guest recovery verification", "credential rotation", "real Stripe sandbox lifecycle validation", "production migration and historical payment reconciliation", "qualified legal review", "commercial and refund-policy approval"],
   }))
   return server
 }
