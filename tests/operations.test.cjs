@@ -1,0 +1,10 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {load}=require('./route-loader.cjs');
+test('health thresholds distinguish healthy operation from actionable failure without customer data',()=>{
+ const {alertConditions}=load('lib/operational-health.ts',{'./prisma':{prisma:{}}});const healthy={paidMissingFulfillment:0,failedPayments:0,delayedDelivery:0,blockedDelivery:0,generationFailures:0,generationRunningTooLong:0,reservedCents:0,dailyBudgetCents:1000,staleSources:0,staleWorkers:[],privacyPending:0};assert.equal(JSON.stringify(alertConditions(healthy)),'{}');
+ const issues=alertConditions({...healthy,paidMissingFulfillment:1,reservedCents:800,staleWorkers:['payments'],generationFailures:3});assert.equal(issues.PAID_FULFILLMENT_GAP,1);assert.equal(issues.AI_BUDGET_THRESHOLD,1);assert.equal(issues.WORKER_HEARTBEAT_STALE,1);assert.equal(issues.GENERATION_FAILURES,3);
+});
+test('reconciliation rotates permanently failing orders and schedules failed events for later',async()=>{
+ const updates=[];const prisma={stripeEvent:{findMany:async()=>[{id:'event',attempts:2}],update:async q=>updates.push(q)},checkoutOrder:{findMany:async q=>{assert.equal(q.orderBy.lastReconciledAt.nulls,'first');return[{id:'order'}]},update:async q=>updates.push(q)}};
+ process.env.CRON_SECRET='fixture-secret-with-at-least-32-characters';const route=load('app/api/cron/reconcile-payments/route.ts',{'@/lib/prisma':{prisma},'@/lib/operations-telemetry':{trackedOperation:async(k,fn)=>fn()},'@/lib/payment-fulfillment':{processPaymentEvent:async()=>{throw Error('private')},reconcileOrder:async()=>{throw Error('private')}}});
+ const r=await route.GET(new Request('https://example.invalid',{headers:{Authorization:'Bearer fixture-secret-with-at-least-32-characters'}}));assert.equal(r.status,503);assert.equal(updates.length,2);assert.ok(updates[0].data.nextAttemptAt>new Date());assert.equal(updates[1].data.lastReconcileError,'RECONCILIATION_FAILED');assert.doesNotMatch(await r.text(),/private/);
+});
