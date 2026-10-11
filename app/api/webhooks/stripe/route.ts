@@ -1,228 +1,27 @@
-import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
-import Stripe from "stripe"
-import { sendDocumentReadyEmail } from "@/lib/email-service"
-
-// Stripe requires the raw body for signature verification
+import { processPaymentEvent, supportedEvents } from "@/lib/payment-fulfillment"
 export const runtime = "nodejs"
-
-function getSubscriptionPeriod(subscription: Stripe.Subscription) {
-  const items = subscription.items.data
-  if (items.length === 0) {
-    throw new Error(`Stripe subscription ${subscription.id} has no billing-period items`)
-  }
-
-  return {
-    start: Math.min(...items.map((item) => item.current_period_start)),
-    end: Math.max(...items.map((item) => item.current_period_end)),
-  }
-}
-
+export const maxDuration = 60
 export async function POST(request: Request) {
-  const body = await request.text()
   const signature = request.headers.get("stripe-signature")
-
-  if (!signature) {
-    return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 })
-  }
-
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
-    console.error("STRIPE_WEBHOOK_SECRET not configured")
-    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 500 })
-  }
-
-  let event: Stripe.Event
-
+  if (!signature) return Response.json({ error: "Missing signature" }, { status: 400 })
+  if (!process.env.STRIPE_WEBHOOK_SECRET) return Response.json({ error: "Webhook unavailable" }, { status: 503 })
+  const reader = request.body?.getReader()
+  if (!reader) return Response.json({ error: "Missing body" }, { status: 400 })
+  const chunks: Uint8Array[] = []; let size = 0
   try {
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
-  } catch {
-    console.error("Webhook signature verification failed:")
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
-  }
-
+    while (true) { const { value, done } = await reader.read(); if (done) break; size += value.byteLength; if (size > 262144) { await reader.cancel(); return Response.json({ error: "Body too large" }, { status: 413 }) } chunks.push(value) }
+  } finally { reader.releaseLock() }
+  let event
+  try { event = stripe.webhooks.constructEvent(Buffer.concat(chunks), signature, process.env.STRIPE_WEBHOOK_SECRET) }
+  catch { return Response.json({ error: "Invalid signature" }, { status: 400 }) }
+  if (event.livemode !== (process.env.STRIPE_MODE === "live")) return Response.json({ error: "Wrong payment mode" }, { status: 400 })
+  if (!supportedEvents.has(event.type)) return Response.json({ received: true })
+  if (!("id" in event.data.object) || typeof event.data.object.id !== "string") return Response.json({ error: "Invalid event object" }, { status: 400 })
   try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session
-        await handleCheckoutCompleted(session)
-        break
-      }
-
-      case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription
-        await handleSubscriptionUpdated(subscription)
-        break
-      }
-
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription
-        await handleSubscriptionDeleted(subscription)
-        break
-      }
-
-      case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice
-        await handleInvoicePaymentSucceeded(invoice)
-        break
-      }
-
-      case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice
-        await handleInvoicePaymentFailed(invoice)
-        break
-      }
-
-      default:
-        // Unhandled event — acknowledge receipt
-        break
-    }
-
-    return NextResponse.json({ received: true })
-  } catch {
-    console.error("Server operation failed; inspect request correlation and status metrics.")
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 })
-  }
-}
-
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  const { userId, documentId, paymentType, isGuest } = session.metadata || {}
-
-  if (!userId) {
-    console.error("checkout.session.completed missing userId in metadata")
-    return
-  }
-
-  // Fetch the user for email + name
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { email: true, name: true },
-  })
-
-  // Finalize the pending document and fetch its content for the email
-  let finalizedDoc: { title: string; content: string } | null = null
-  if (documentId) {
-    const doc = await prisma.userDocument.update({
-      where: { id: documentId },
-      data: { status: "completed" },
-      select: { title: true, content: true },
-    })
-    finalizedDoc = doc
-  }
-
-  // For subscriptions, update user record when the session completes
-  if (paymentType === "subscription" && session.subscription) {
-    const subscriptionId =
-      typeof session.subscription === "string"
-        ? session.subscription
-        : session.subscription.id
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-    const period = getSubscriptionPeriod(subscription)
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        subscriptionTier: "professional",
-        subscriptionStatus: "active",
-        stripeSubscriptionId: subscription.id,
-        subscriptionStartDate: new Date(period.start * 1000),
-        subscriptionEndDate: new Date(period.end * 1000),
-      },
-    })
-  }
-
-  // Send "document ready" email with PDF attached (fire-and-forget — never block the webhook)
-  if (user?.email && finalizedDoc?.content && documentId) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://legallawdocs.com"
-    // Only Professional-tier subscribers get the Sign CTA in the email
-    // (matches the gating on the post-purchase landing page).
-    const canSign = paymentType === "subscription"
-    sendDocumentReadyEmail({
-      userEmail: user.email,
-      userName: user.name || user.email.split("@")[0],
-      documentTitle: finalizedDoc.title,
-      documentContent: finalizedDoc.content,
-      documentId,
-      isGuest: isGuest === "true",
-      canSign,
-      appUrl,
-    }).catch(() => console.error("sendDocumentReadyEmail failed:"))
-  }
-}
-
-async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId
-  if (!userId) return
-
-  const isActive = subscription.status === "active" || subscription.status === "trialing"
-  const tier = isActive ? "professional" : "free"
-  const period = getSubscriptionPeriod(subscription)
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      subscriptionTier: tier,
-      subscriptionStatus: subscription.status,
-      stripeSubscriptionId: subscription.id,
-      subscriptionStartDate: new Date(period.start * 1000),
-      subscriptionEndDate: new Date(period.end * 1000),
-    },
-  })
-}
-
-async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId
-  if (!userId) return
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      subscriptionTier: "free",
-      subscriptionStatus: "cancelled",
-      stripeSubscriptionId: null,
-      subscriptionEndDate: new Date(),
-    },
-  })
-}
-
-async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
-  if (!invoice.customer) return
-  const customer = await stripe.customers.retrieve(invoice.customer as string)
-  if (customer.deleted) return
-
-  const userId = (customer as Stripe.Customer).metadata?.userId
-  if (!userId) return
-
-  // Stripe's current API exposes the originating subscription under the
-  // invoice parent instead of the legacy top-level `subscription` field.
-  const subscriptionReference = invoice.parent?.subscription_details?.subscription
-  if (subscriptionReference) {
-    const subscriptionId =
-      typeof subscriptionReference === "string"
-        ? subscriptionReference
-        : subscriptionReference.id
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-    const period = getSubscriptionPeriod(subscription)
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        subscriptionStatus: "active",
-        subscriptionEndDate: new Date(period.end * 1000),
-      },
-    })
-  }
-}
-
-async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
-  if (!invoice.customer) return
-  const customer = await stripe.customers.retrieve(invoice.customer as string)
-  if (customer.deleted) return
-
-  const userId = (customer as Stripe.Customer).metadata?.userId
-  if (!userId) return
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: { subscriptionStatus: "past_due" },
-  })
+    await prisma.stripeEvent.upsert({ where: { id: event.id }, create: { id: event.id, type: event.type, objectId: event.data.object.id, livemode: event.livemode }, update: {} })
+    await processPaymentEvent(event.id)
+    return Response.json({ received: true })
+  } catch { return Response.json({ error: "Fulfillment retry required" }, { status: 503 }) }
 }

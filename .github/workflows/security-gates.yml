@@ -92,6 +92,9 @@ jobs:
       - name: Verify atomic shared request limits on PostgreSQL
         run: node scripts/check-request-concurrency.mjs
 
+      - name: Verify transactional payment fulfillment on PostgreSQL
+        run: node scripts/check-payment-concurrency.mjs
+
       - name: Rehearse PostgreSQL backup and restore with synthetic records
         env:
           PGPASSWORD: example
