@@ -321,6 +321,8 @@ export default function BillingPage() {
                             try {
                               const response = await fetch("/api/billing/cancel", {
                                 method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: "{}",
                               })
                               if (response.ok) {
                                 toast({

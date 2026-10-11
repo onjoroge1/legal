@@ -1,3 +1,4 @@
+import { getUserSubscriptionInfo } from "@/lib/subscription"
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -27,13 +28,7 @@ export async function GET() {
       },
     })
 
-    const subscription = {
-      tier: user?.subscriptionTier || "free",
-      status: user?.subscriptionStatus || "inactive",
-      startDate: user?.subscriptionStartDate?.toISOString() || null,
-      endDate: user?.subscriptionEndDate?.toISOString() || null,
-      isActive: user?.subscriptionStatus === "active",
-    }
+    const subscription = await getUserSubscriptionInfo(session.user.email)
 
     // Fetch real Stripe data if the user has a customer record
     let billingHistory: object[] = []

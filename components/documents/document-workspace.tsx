@@ -13,7 +13,7 @@ import { getDocumentValidation } from "@/lib/document-validation"
 import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 type Fields = Record<string, string | number | boolean | null>
-type Saved = { id: string; draftId: string; content: string; title: string; formData: Fields; intent: string | null; category: string; sourceSlug: string; jurisdiction: string | null; review: { issues?: string[]; readyForExport?: boolean } }
+type Saved = { access?: { canDownloadPDF: boolean; canDownloadDOCX: boolean; source: string }; id: string; draftId: string; content: string; title: string; formData: Fields; intent: string | null; category: string; sourceSlug: string; jurisdiction: string | null; review: { issues?: string[]; readyForExport?: boolean } }
 async function jsonResponse(response: Response) {
   if (!response.headers.get("content-type")?.includes("application/json")) throw new Error("Unexpected server response. Please try again.")
   const data = await response.json()
@@ -122,7 +122,7 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
         <Button asChild variant="outline"><Link href={destination("generate")}>Edit inputs and create a new version</Link></Button>
         {mode === "preview" ? <><Button asChild><Link href={destination("checkout")}>Continue to purchase</Link></Button><Button asChild variant="outline"><Link href={destination("download")}>Download</Link></Button></> : null}
         {mode === "checkout" ? session?.user ? <><Button disabled={busy} onClick={() => checkout("single")}>Buy document · ${resolved.doc.price}</Button><Button disabled={busy} variant="outline" onClick={() => checkout("subscription")}>Subscribe · ${resolved.doc.subscriptionPrice}/month</Button></> : <p>Purchases require a signed-in account. Guest account recovery is still being completed. Keep this page open to retain your draft.</p> : null}
-        {mode === "download" ? <><Button disabled={busy} onClick={() => download("pdf")}>Download PDF</Button><Button disabled={busy} variant="outline" onClick={() => download("docx")}>Download Word</Button></> : null}
+        {mode === "download" ? <>{!saved.access?.canDownloadPDF ? <p>Purchase this version or activate a subscription to download. <Link className="underline" href={destination("checkout")}>Continue to purchase</Link></p> : null}<Button disabled={busy || !saved.access?.canDownloadPDF} onClick={() => download("pdf")}>Download PDF</Button><Button disabled={busy || !saved.access?.canDownloadDOCX} variant="outline" onClick={() => download("docx")}>Download Word</Button></> : null}
       </div>
       <section aria-label="Saved document" className="rounded border bg-card p-6"><pre className="whitespace-pre-wrap font-serif leading-relaxed">{saved.content}</pre></section>
       <p className="text-sm text-muted-foreground">This link opens the same saved version. Signed-in drafts are available on your other devices; guest access lasts seven days in this browser.</p>
