@@ -1,9 +1,10 @@
 import { prisma } from "./prisma"
-export type Health = { paidMissingFulfillment:number; failedPayments:number; delayedDelivery:number; blockedDelivery:number; generationFailures:number; generationRunningTooLong:number; reservedCents:number; dailyBudgetCents:number; staleSources:number; staleWorkers:string[]; privacyPending:number }
+export type Health = { paidMissingFulfillment:number; failedPayments:number; webhookBacklog:number; delayedDelivery:number; blockedDelivery:number; generationFailures:number; generationRunningTooLong:number; reservedCents:number; dailyBudgetCents:number; staleSources:number; staleWorkers:string[]; privacyPending:number }
 export function alertConditions(h:Health){
  const issues:Record<string,number>={}
  if(h.paidMissingFulfillment)issues.PAID_FULFILLMENT_GAP=h.paidMissingFulfillment
  if(h.failedPayments)issues.PAYMENT_RECONCILIATION_FAILED=h.failedPayments
+ if(h.webhookBacklog)issues.PAYMENT_WEBHOOK_BACKLOG=h.webhookBacklog
  if(h.delayedDelivery)issues.DELIVERY_QUEUE_DELAY=h.delayedDelivery
  if(h.blockedDelivery)issues.DELIVERY_BLOCKED=h.blockedDelivery
  if(h.generationFailures>=3)issues.GENERATION_FAILURES=h.generationFailures
@@ -16,9 +17,10 @@ export function alertConditions(h:Health){
 }
 export async function operationalHealth(){
  const now=new Date(),hour=new Date(Date.now()-3600000),day=new Date(Date.now()-86400000)
- const [gaps,failedPayments,delayedDelivery,blockedDelivery,generationFailures,generationRunningTooLong,budget,staleSources,privacyPending,metrics,migrations]=await Promise.all([
+ const [gaps,failedPayments,webhookBacklog,delayedDelivery,blockedDelivery,generationFailures,generationRunningTooLong,budget,staleSources,privacyPending,metrics,migrations]=await Promise.all([
   prisma.$queryRaw<{n:bigint}[]>`SELECT count(*) AS n FROM "CheckoutOrder" o LEFT JOIN "User" u ON u.id=o."ownerId" WHERE o.status='paid' AND (o."ownerId" IS NULL OR u."privacyState"='active') AND ((o.kind='single' AND NOT EXISTS (SELECT 1 FROM "DocumentPurchase" p WHERE p."checkoutId"=o.id AND p.status='paid')) OR NOT EXISTS (SELECT 1 FROM "DeliveryOutbox" d WHERE d."dedupeKey"='fulfillment:'||o.id))`,
   prisma.checkoutOrder.count({where:{lastReconcileError:{not:null}}}),
+  prisma.stripeEvent.count({where:{OR:[{status:"failed"},{status:"pending",createdAt:{lt:new Date(Date.now()-15*60000)}}]}}),
   prisma.deliveryOutbox.count({where:{status:{in:["pending","retry","processing"]},createdAt:{lt:new Date(Date.now()-15*60000)}}}),
   prisma.deliveryOutbox.count({where:{status:{in:["blocked","failed","bounced","complained","suppressed"]},OR:[{lastError:null},{lastError:{not:"PRIVACY_ERASURE"}}]}}),
   prisma.operationRun.count({where:{kind:"generation",status:"failed",startedAt:{gte:hour}}}),
@@ -34,6 +36,7 @@ export async function operationalHealth(){
   const latest=await prisma.operationRun.findFirst({where:{kind,status:"success"},orderBy:{startedAt:"desc"},select:{finishedAt:true}})
   if(!latest?.finishedAt||now.getTime()-latest.finishedAt.getTime()>maxAge)staleWorkers.push(kind)
  }
- const health:Health={paidMissingFulfillment:Number(gaps[0].n),failedPayments,delayedDelivery,blockedDelivery,generationFailures,generationRunningTooLong,reservedCents:budget&&budget.resetAt>now?budget.used:0,dailyBudgetCents:Number(process.env.AI_DAILY_BUDGET_CENTS??1000),staleSources,staleWorkers,privacyPending}
- return {health,issues:alertConditions(health),metrics,observedAt:now.toISOString(),revision:/^[a-f0-9]{40}$/.test(process.env.VERCEL_GIT_COMMIT_SHA??"")?process.env.VERCEL_GIT_COMMIT_SHA:"unavailable",appliedMigration:migrations[0]?.migration_name??"unavailable",alertDispatcherConfigured:!!process.env.OPERATIONS_ALERT_URL,providerBilledSpend:"unavailable"}
+ const health:Health={paidMissingFulfillment:Number(gaps[0].n),failedPayments,webhookBacklog,delayedDelivery,blockedDelivery,generationFailures,generationRunningTooLong,reservedCents:budget&&budget.resetAt>now?budget.used:0,dailyBudgetCents:Number(process.env.AI_DAILY_BUDGET_CENTS??1000),staleSources,staleWorkers,privacyPending}
+ const pendingAlerts=await prisma.operationsAlert.count({where:{sentAt:null}})
+ return {pendingAlerts,health,issues:alertConditions(health),metrics,observedAt:now.toISOString(),revision:/^[a-f0-9]{40}$/.test(process.env.VERCEL_GIT_COMMIT_SHA??"")?process.env.VERCEL_GIT_COMMIT_SHA:"unavailable",appliedMigration:migrations[0]?.migration_name??"unavailable",alertDispatcherConfigured:!!process.env.OPERATIONS_ALERT_URL,providerBilledSpend:"unavailable"}
 }

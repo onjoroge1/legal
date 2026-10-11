@@ -4,7 +4,7 @@
 
 `GET /api/admin/operations` requires a database administrator session. Read-only MCP `get_operational_health` exposes the same aggregate health, 24-hour counts/mean duration, actual applied migration and deployment SHA. No document text, email, prompt, provider payload or customer/order IDs are returned. Missing database/telemetry is unavailable, not healthy. AI budget is reserved cost, not provider-billed spend. Generation metrics cover the shared document generator after quota admission; other AI routes are not represented as fully instrumented.
 
-Monitor conditions: paid orders missing a paid entitlement or fulfillment outbox, failed order reconciliation, delivery older than 15 minutes, terminal delivery failures, at least three generation failures/hour, generation stuck over five minutes, 80% of reserved AI budget, source schedules stale over 45 days, overdue privacy requests over seven days, and missing successful worker heartbeats (payments/delivery 15 minutes, sources 48 hours). Delivery heartbeat is required only when dispatch is enabled. Review these initial thresholds against actual load. Daily means are not percentile latency or an SLO claim.
+Monitor conditions: paid orders missing a paid entitlement or fulfillment outbox, failed order reconciliation, failed or overdue webhook events, delivery older than 15 minutes, terminal delivery failures, at least three generation failures/hour, generation stuck over five minutes, 80% of reserved AI budget, source schedules stale over 45 days, overdue privacy requests over seven days, and missing successful worker heartbeats (payments/delivery 15 minutes, sources 48 hours). Delivery heartbeat is required only when dispatch is enabled. Review these initial thresholds against actual load. Daily means are not percentile latency or an SLO claim.
 
 Reconciliation retries due events with backoff and rotates orders by lastReconciledAt even on failure. A permanently bad record cannot monopolize every batch. Existing fulfillment checks still validate current provider state and enforce transactional entitlement/outbox updates. Worker leases exclude concurrent invocations for ten minutes; hard crashes expire, and individual payment/delivery operations remain idempotent.
 
@@ -21,7 +21,7 @@ Reconciliation retries due events with backoff and rotates orders by lastReconci
 
 | Code | Action |
 | --- | --- |
-| PAID_FULFILLMENT_GAP / PAYMENT_RECONCILIATION_FAILED | Keep signed Stripe intake open; inspect restricted order/event ledger; verify mode, quote and metadata; run reconciliation. Never manually grant access from a browser success URL. |
+| PAID_FULFILLMENT_GAP / PAYMENT_RECONCILIATION_FAILED / PAYMENT_WEBHOOK_BACKLOG | Keep signed Stripe intake open; inspect restricted order/event ledger; verify mode, quote and metadata; run reconciliation. Never manually grant access from a browser success URL. |
 | DELIVERY_QUEUE_DELAY / DELIVERY_BLOCKED | Verify flag, scheduler, sender and provider feedback. Retry only through PR10's fenced retry controls. Beyond 23 hours, reconcile provider acceptance before any new send. |
 | GENERATION_FAILURES / GENERATION_STALLED / AI_BUDGET_THRESHOLD | Disable new generation if needed; check static failure counts, reviewed sources and provider health/budget. Do not log prompts or contracts to debug. |
 | SOURCE_REFRESH_STALE | Verify source cron and upstream credentials; refresh/review sources. Fresh ingestion is not qualified legal approval. |
