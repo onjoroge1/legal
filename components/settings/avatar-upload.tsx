@@ -33,10 +33,10 @@ export function AvatarUpload({ currentImage, fallback, onUploadSuccess }: Avatar
       return
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024
+    // Validate file size (max 2MB)
+    const maxSize = 2 * 1024 * 1024
     if (file.size > maxSize) {
-      toast.error("File size exceeds 5MB limit")
+      toast.error("File size exceeds 2MB limit")
       return
     }
 
@@ -95,7 +95,7 @@ export function AvatarUpload({ currentImage, fallback, onUploadSuccess }: Avatar
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+        accept="image/jpeg,image/png,image/webp"
         onChange={handleFileSelect}
         className="hidden"
         id="avatar-upload"

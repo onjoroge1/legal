@@ -13,7 +13,7 @@ import { getDocumentValidation } from "@/lib/document-validation"
 import { LEGAL_DISCLAIMER_PRIMARY_COPY } from "@/lib/legal-disclaimer"
 
 type Fields = Record<string, string | number | boolean | null>
-type Saved = { access?: { canDownloadPDF: boolean; canDownloadDOCX: boolean; source: string }; id: string; draftId: string; content: string; title: string; formData: Fields; intent: string | null; category: string; sourceSlug: string; jurisdiction: string | null; review: { issues?: string[]; readyForExport?: boolean } }
+type Saved = { canReuseDraft?: boolean; access?: { canDownloadPDF: boolean; canDownloadDOCX: boolean; source: string }; id: string; draftId: string; content: string; title: string; formData: Fields; intent: string | null; category: string; sourceSlug: string; jurisdiction: string | null; review: { issues?: string[]; readyForExport?: boolean } }
 async function jsonResponse(response: Response) {
   if (!response.headers.get("content-type")?.includes("application/json")) throw new Error("Unexpected server response. Please try again.")
   const data = await response.json()
@@ -87,7 +87,7 @@ export default function DocumentWorkspace({ mode }: { mode: "generate" | "previe
     if (!valid || busy) return
     setBusy(true); setError("")
     try {
-      const data = await jsonResponse(await fetch(`/api/documents/${category}/${slug}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ formData: fields, intent: intent || undefined, ...(saved && saved.intent === (intent || null) && saved.jurisdiction === resolveDocument(category, slug, intent || null, fields).jurisdiction ? { draftId: saved.draftId } : {}) }) }))
+      const data = await jsonResponse(await fetch(`/api/documents/${category}/${slug}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ formData: fields, intent: intent || undefined, ...(draftId ? { draftId } : saved && saved.canReuseDraft !== false && saved.intent === (intent || null) && saved.jurisdiction === resolveDocument(category, slug, intent || null, fields).jurisdiction ? { draftId: saved.draftId } : {}) }) }))
       if (!data.versionId) throw new Error("The draft was not saved. Please try again.")
       router.push(`${path}/preview?version=${data.versionId}`)
     } catch (e) { setError(e instanceof Error ? e.message : "Generation failed") } finally { setBusy(false) }

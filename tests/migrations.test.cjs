@@ -48,9 +48,11 @@ test('populated legacy upgrade preserves data and a snapshot restores to the sam
 test('delivery migration preserves existing queued fulfillment jobs and backfills unique keys', async () => {
  const db = new PGlite();
  try {
-  for (const sql of migrations.slice(0, -1)) await db.exec(sql);
+  const deliveryIndex = migrations.findIndex(sql => sql.includes('ADD COLUMN     "dedupeKey"') || sql.includes('ADD COLUMN "dedupeKey"'));
+  assert.ok(deliveryIndex > 0);
+  for (const sql of migrations.slice(0, deliveryIndex)) await db.exec(sql);
   await db.exec(`INSERT INTO "DeliveryOutbox" (id,"orderId",kind) VALUES ('job-fixture','order-fixture','document_ready')`);
-  await db.exec(migrations.at(-1));
+  await db.exec(migrations[deliveryIndex]);
   const row = (await db.query(`SELECT "dedupeKey",status,attempts FROM "DeliveryOutbox" WHERE id='job-fixture'`)).rows[0];
   assert.deepEqual(row,{dedupeKey:'fulfillment:order-fixture',status:'pending',attempts:0});
  } finally { await db.close(); }
