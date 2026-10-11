@@ -98,6 +98,9 @@ jobs:
       - name: Verify durable delivery and recovery on PostgreSQL
         run: node scripts/check-delivery-concurrency.mjs
 
+      - name: Verify privacy lifecycle on PostgreSQL
+        run: node scripts/check-privacy-lifecycle.mjs
+
       - name: Rehearse PostgreSQL backup and restore with synthetic records
         env:
           PGPASSWORD: example

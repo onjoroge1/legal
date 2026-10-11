@@ -198,6 +198,12 @@ export default function PrivacyPage() {
               </ul>
             </section>
 
+            <section id="data-controls" className="rounded border p-5">
+              <h2 className="text-2xl font-bold">Export and deletion controls</h2>
+              <p>Signed-in customers can <Link className="underline" href="/dashboard/settings/privacy">download account data and request deletion</Link>. Deletion requests freeze account access and revoke sessions. Local erasure requires an approved retention policy and a minimum 24-hour wait; a request is not confirmation that all copies have been erased.</p>
+              <p>Active subscriptions, unsettled payments, shared records and signature evidence require review. Required payment evidence may remain restricted. Private avatar objects, provider-held copies and backup expiration are tracked separately before a request is marked complete.</p>
+              <p>Document generation uses Google Gemini when enabled. Other AI routes may use OpenAI. Resend processes transactional email, Stripe processes payments, and Vercel provides hosting and private avatar storage. Database hosting depends on the configured deployment. We do not promise zero provider retention or exclusion from training without verification of the applicable account settings and terms.</p>
+            </section>
             <section id="retention">
               <h2 className="font-serif text-2xl font-bold text-foreground mb-4">
                 5. Data retention

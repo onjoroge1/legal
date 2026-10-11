@@ -81,15 +81,17 @@ async function syncCheckout(tx: Tx, sessionId: string) {
   } else {
     await syncSubscription(tx, subscriptionId!)
   }
-  if (order.ownerId && customerId && !order.guestEmail) {
+  const privateOwner = order.ownerId ? await tx.user.findUnique({ where: { id: order.ownerId }, select: { privacyState: true } }) : null
+  const erased = privateOwner && privateOwner.privacyState !== "active"
+  if (!erased && order.ownerId && customerId && !order.guestEmail) {
     // Only the authenticated owner captured at checkout can acquire this customer.
     await tx.user.updateMany({ where: { id: order.ownerId, stripeCustomerId: null }, data: { stripeCustomerId: customerId } })
   }
-  if (status === "paid" && order.ownerId && order.versionId) {
+  if (!erased && status === "paid" && order.ownerId && order.versionId) {
     const version = await tx.documentVersion.findUniqueOrThrow({ where: { id: order.versionId }, include: { draft: true } })
     await tx.userDocument.upsert({ where: { id: order.id }, create: { id: order.id, userId: order.ownerId, title: version.title, type: version.title, category: version.draft.category, content: version.content, status: "completed", metadata: { versionId: version.id, contentHash: version.contentHash, orderId: order.id } }, update: {} })
   }
-  if (status === "paid") await tx.deliveryOutbox.upsert({ where: { dedupeKey: `fulfillment:${order.id}` }, create: { id: randomUUID(), orderId: order.id, dedupeKey: `fulfillment:${order.id}`, kind: order.versionId ? "document_ready" : "subscription_ready" }, update: {} })
+  if (!erased && status === "paid") await tx.deliveryOutbox.upsert({ where: { dedupeKey: `fulfillment:${order.id}` }, create: { id: randomUUID(), orderId: order.id, dedupeKey: `fulfillment:${order.id}`, kind: order.versionId ? "document_ready" : "subscription_ready" }, update: {} })
 }
 async function syncPayment(tx: Tx, paymentIntentId: string) {
   const { pi, status } = await paymentState(paymentIntentId)

@@ -43,6 +43,14 @@ try {
  await processPaymentEvent(await event())
  assert.equal((await prisma.user.findUnique({where:{id:ownerId}})).stripeCustomerId,null)
  session.customer=null
+ // Payment replays for an erased owner may reconcile money but cannot recreate content or mail.
+ await prisma.user.update({where:{id:ownerId},data:{privacyState:'erased'}})
+ await prisma.userDocument.deleteMany({where:{id:orderId}})
+ session.customer=`cus_guest_${prefix}`
+ await processPaymentEvent(await event())
+ assert.equal(await prisma.userDocument.count({where:{id:orderId}}),0)
+ await prisma.user.update({where:{id:ownerId},data:{privacyState:'active'}})
+ session.customer=null
  // Unpaid completion is acknowledged without granting access; async success fulfills once.
  const delayedId=randomUUID()
  session.id=`cs_delayed_${prefix}`;session.client_reference_id=delayedId;session.metadata.orderId=delayedId;session.payment_status='unpaid'

@@ -12,6 +12,7 @@ model User {
   name                    String
   email                   String                 @unique
   password                String
+  privacyState            String                 @default("active")
   emailVerified           DateTime?
   verificationToken       String?                @unique
   verificationTokenExpiry DateTime?
@@ -698,4 +699,18 @@ model StoredAvatar {
   status String @default("pending")
   createdAt DateTime @default(now())
   @@index([userId, status])
+}
+
+model PrivacyRequest {
+ id String @id
+ userId String @unique
+ status String @default("requested")
+ requestedAt DateTime @default(now())
+ eligibleAt DateTime
+ erasedAt DateTime?
+ completedAt DateTime?
+ policyVersion String?
+ evidenceRetentionUntil DateTime?
+ externalEvidence String?
+ lastError String?
 }
