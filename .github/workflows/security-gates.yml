@@ -95,6 +95,9 @@ jobs:
       - name: Verify transactional payment fulfillment on PostgreSQL
         run: node scripts/check-payment-concurrency.mjs
 
+      - name: Verify durable delivery and recovery on PostgreSQL
+        run: node scripts/check-delivery-concurrency.mjs
+
       - name: Rehearse PostgreSQL backup and restore with synthetic records
         env:
           PGPASSWORD: example

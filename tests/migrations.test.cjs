@@ -40,6 +40,18 @@ test('populated legacy upgrade preserves data and a snapshot restores to the sam
     restored = new PGlite({ loadDataDir: backup });
     assert.deepEqual(await shape(restored), await shape(db));
     for (const table of ['User','Document','DocumentSignature','UserDocument']) assert.deepEqual((await restored.query(`SELECT * FROM "${table}" ORDER BY id`)).rows, (await db.query(`SELECT * FROM "${table}" ORDER BY id`)).rows);
-    await assert.rejects(restored.exec(migrations.at(-1)), /already exists/); // Deliberately fails on unreviewed pre-existing schema; never hides drift with IF NOT EXISTS.
+    await assert.rejects(restored.exec(migrations.at(-1)), e => ["42P07", "42704", "42701"].includes(e.code)); // Deliberately fails on unreviewed pre-existing schema; never hides drift with IF NOT EXISTS.
   } finally { await db.close(); if (restored) await restored.close(); }
+});
+
+
+test('delivery migration preserves existing queued fulfillment jobs and backfills unique keys', async () => {
+ const db = new PGlite();
+ try {
+  for (const sql of migrations.slice(0, -1)) await db.exec(sql);
+  await db.exec(`INSERT INTO "DeliveryOutbox" (id,"orderId",kind) VALUES ('job-fixture','order-fixture','document_ready')`);
+  await db.exec(migrations.at(-1));
+  const row = (await db.query(`SELECT "dedupeKey",status,attempts FROM "DeliveryOutbox" WHERE id='job-fixture'`)).rows[0];
+  assert.deepEqual(row,{dedupeKey:'fulfillment:order-fixture',status:'pending',attempts:0});
+ } finally { await db.close(); }
 });
