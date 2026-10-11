@@ -169,7 +169,7 @@ export default async function DocumentsPage() {
                             <Crown className="h-3 w-3" />Included
                           </Badge>
                         ) : (
-                          <span className="text-sm font-semibold text-foreground">${doc.price}</span>
+                          <span className="text-sm font-semibold text-foreground">Price at checkout</span>
                         )}
                       </div>
                     </div>

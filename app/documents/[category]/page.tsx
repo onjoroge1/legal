@@ -199,7 +199,7 @@ export default async function CategoryHubPage({ params }: PageProps) {
                                 <Crown className="h-3 w-3" />Included with Subscription
                               </Badge>
                             ) : (
-                              <span className="text-sm font-semibold text-foreground">${doc.price}</span>
+                              <span className="text-sm font-semibold text-foreground">Price at checkout</span>
                             )}
                           </div>
                           <div className="flex items-center gap-1 text-sm text-primary opacity-0 transition-all duration-200 group-hover:opacity-100">
