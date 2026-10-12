@@ -31,7 +31,7 @@ Minnesota joined California in 2023, enacting a flat ban on non-competes for emp
 
 In April 2024, the Federal Trade Commission issued a sweeping rule that would have banned nearly all non-compete agreements nationwide, affecting roughly 30 million workers. The FTC framed it as a competition issue: when workers can't change jobs freely, wages stagnate and innovation slows.
 
-The rule was challenged almost immediately. A federal judge in Texas struck it down in August 2024, holding that the FTC lacked statutory authority to issue such a broad rule. As of this writing, the nationwide ban is not in effect, and the matter remains in litigation. Employers and employees are back to state law.
+The rule was challenged almost immediately. A federal judge in Texas struck it down in August 2024, holding that the FTC lacked statutory authority to issue such a broad rule. Correction checked October 12, 2026: the FTC says the rule is not in effect or enforceable and records steps on September 5, 2025 to dismiss the Fifth Circuit appeal. Source: https://www.ftc.gov/legal-library/browse/rules/noncompete-rule . Applicable state and other law still require individual review.
 
 ## What Courts Look For When They Do Enforce Non-Competes
 
@@ -837,7 +837,7 @@ Most states recognize self-proving affidavits under their version of the Uniform
 
 ## When an Attorney Is Truly Necessary
 
-A DIY will is appropriate for people with relatively simple estates: clear beneficiaries, no substantial business interests, no significant real estate in multiple states, no blended family complications, and no expectation of estate tax liability (federal estate tax only applies to estates over $13.61 million in 2024).
+A DIY will is appropriate for people with relatively simple estates: clear beneficiaries, no substantial business interests, no significant real estate in multiple states, no blended family complications, and no expectation of estate tax liability (the IRS lists a $15 million federal basic exclusion for 2026, but filing requirements, adjusted taxable gifts and state taxes need individual review).
 
 You should consult an estate planning attorney if you have minor children from multiple relationships, are in a second marriage with children from a prior marriage, own business interests, have a beneficiary with special needs (a special needs trust is often preferable to a direct inheritance that could disqualify them from government benefits), expect family conflict over the estate, own real estate in multiple states, or have a taxable estate. These situations require planning beyond what a basic will provides.
 
@@ -1254,13 +1254,13 @@ The borrower benefits too. A clear promissory note protects them from vague and 
 
 This is the part most people don't know: if you make a below-market loan to a family member, the IRS may treat the forgone interest as a taxable gift. The IRS publishes the Applicable Federal Rate (AFR) monthly — the minimum interest rate for loans to be treated as loans rather than gifts. In mid-2025, the short-term AFR for loans up to three years was approximately 4–5% annually.
 
-If you lend money at below the AFR, the IRS imputes interest: it treats the lender as having received the AFR interest and the borrower as having received a gift in that amount. The lender may owe income tax on imputed interest income, and the gift may need to be counted toward the annual gift tax exclusion ($18,000 per person in 2024).
+If you lend money at below the AFR, the IRS imputes interest: it treats the lender as having received the AFR interest and the borrower as having received a gift in that amount. The lender may owe income tax on imputed interest income, and the gift may need to be counted toward the annual gift tax exclusion ($19,000 per recipient in 2026; verify the applicable year with the IRS).
 
 The good news: for loans under $10,000, the IRS generally doesn't require any minimum interest rate. For loans between $10,000 and $100,000, special rules apply (imputed interest only applies if the borrower has net investment income over $1,000). For loans over $100,000, charging at least the AFR is the cleanest approach.
 
 ## The Gift Tax Exclusion Alternative
 
-If the amount is small and you don't expect — or particularly care — about being repaid, simply making it a gift is cleaner. You can give up to $18,000 per year per recipient (2024 exclusion) without any gift tax filing requirement. If you're married, you and your spouse can together give $36,000 to one person in a year. Amounts above the annual exclusion count against the lifetime gift and estate tax exemption ($13.61 million in 2024 for federal purposes) but don't necessarily create a tax bill.
+For 2026, the IRS lists a $19,000 annual gift exclusion per recipient and a $15,000,000 estate and gift tax basic exclusion. Filing requirements and exclusions depend on the transfer and circumstances; do not assume that a gift automatically avoids reporting. Source checked October 12, 2026: https://www.irs.gov/businesses/small-businesses-self-employed/whats-new-estate-and-gift-tax . Consult a qualified tax adviser.
 
 Making it a gift avoids the enforceability conversation entirely and eliminates the relationship stress of a debt obligation. The downside: you've genuinely given it away, and the family dynamics implications of giving a large gift to one child while others receive nothing may create their own problems.
 

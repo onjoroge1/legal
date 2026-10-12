@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const meta = getCategoryMeta(category as CategoryId)
   if (!meta) return {}
 
-  const canonical = `https://legallawdocs.com/documents/${meta.id}`
+  const canonical = `${SITE_ORIGIN}/documents/${meta.id}`
 
   return {
     title: meta.seoTitle,
@@ -75,13 +76,13 @@ export default async function CategoryHubPage({ params }: PageProps) {
     "@type": "ItemList",
     name: meta.heading,
     description: meta.description,
-    url: `https://legallawdocs.com/documents/${meta.id}`,
+    url: `${SITE_ORIGIN}/documents/${meta.id}`,
     numberOfItems: docs.length,
     itemListElement: docs.map((doc, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: doc.title,
-      url: `https://legallawdocs.com/documents/${doc.category}/${doc.slug}`,
+      url: `${SITE_ORIGIN}/documents/${doc.category}/${doc.slug}`,
     })),
   }
 

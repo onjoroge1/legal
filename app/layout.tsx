@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site-metadata"
 import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { SessionProvider } from '@/components/session-provider'
@@ -8,9 +9,10 @@ import { SitewideLegalNotice } from '@/components/legal/sitewide-legal-notice'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'LegalLawDocs.com | AI-Powered Legal Document Drafting',
-  description:
-    'Compile professional legal document drafts in minutes with AI-assembled, state-aware templates. Not a law firm — drafts are a starting point you should review with an attorney before signing.',
+ metadataBase: new URL(SITE_ORIGIN),
+ title: 'LegalLawDocs | Drafts for professional review',
+ description: 'Self-help document drafting software. Availability depends on the reviewed launch scope. Not a law firm or legal advice.',
+ robots: { index: false, follow: true },
 }
 
 export const viewport: Viewport = {

@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import type { CatalogDocument } from "./document-catalog"
 
 export interface DocumentSeo {
@@ -10,7 +11,7 @@ export interface DocumentSeo {
   keywords: string[]
 }
 
-const BASE_URL = "https://legallawdocs.com"
+const BASE_URL = SITE_ORIGIN
 const DEFAULT_IMAGE = `${BASE_URL}/images/hero-legal.jpg`
 
 /** Keyed by new hyphenated slug */

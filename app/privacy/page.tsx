@@ -1,19 +1,23 @@
+import { pageMetadata } from "@/lib/site-metadata"
+import { PolicyStatus } from "@/components/legal/policy-status"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/privacy", {
   title: "Privacy Policy — LegalLawDocs.com",
   description:
     "Learn how LegalLawDocs.com collects, uses, and protects your personal data. Covers GDPR and CCPA rights, payment processing, data retention, and contact information.",
-}
+})
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen">
       <Header />
       <main>
+          <PolicyStatus />
+          <p className="mx-auto max-w-4xl px-4">Support requests store your message and staff reply for up to 30 days plus the daily cleanup interval. Signed-in requests are linked to your account and included in export/erasure. Guest requests use a private access code and are not matched to an account by email. Codes are stored only as hashes. Backups follow the retention process below.</p>
         <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8 lg:py-24">
           {/* Header */}
           <div className="mb-10 border-b border-border/40 pb-8">
@@ -198,6 +202,12 @@ export default function PrivacyPage() {
               </ul>
             </section>
 
+            <section id="data-controls" className="rounded border p-5">
+              <h2 className="text-2xl font-bold">Export and deletion controls</h2>
+              <p>Signed-in customers can <Link className="underline" href="/dashboard/settings/privacy">download account data and request deletion</Link>. Deletion requests freeze account access and revoke sessions. Local erasure requires an approved retention policy and a minimum 24-hour wait; a request is not confirmation that all copies have been erased.</p>
+              <p>Active subscriptions, unsettled payments, shared records and signature evidence require review. Required payment evidence may remain restricted. Private avatar objects, provider-held copies and backup expiration are tracked separately before a request is marked complete.</p>
+              <p>Document generation uses Google Gemini when enabled. Other AI routes may use OpenAI. Resend processes transactional email, Stripe processes payments, and Vercel provides hosting and private avatar storage. Database hosting depends on the configured deployment. We do not promise zero provider retention or exclusion from training without verification of the applicable account settings and terms.</p>
+            </section>
             <section id="retention">
               <h2 className="font-serif text-2xl font-bold text-foreground mb-4">
                 5. Data retention

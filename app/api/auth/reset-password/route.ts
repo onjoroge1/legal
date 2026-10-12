@@ -37,6 +37,7 @@ export async function POST(request: Request) {
     const result = await prisma.user.updateMany({
       where: {
         id: user.id,
+        privacyState: "active",
         resetToken: hashedToken,
         resetTokenExpiry: { gt: new Date() },
       },

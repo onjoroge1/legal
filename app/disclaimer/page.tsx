@@ -1,14 +1,15 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AlertTriangle } from "lucide-react"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/disclaimer", {
   title: "Legal Disclaimer — LegalLawDocs.com",
   description:
     "Important legal disclaimer: LegalLawDocs.com is not a law firm and does not provide legal advice. Our documents are for informational and self-help purposes only.",
-}
+})
 
 export default function DisclaimerPage() {
   return (

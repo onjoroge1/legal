@@ -1,10 +1,11 @@
+import { requireCommercialPolicy } from "@/lib/commercial-policy"
 import { createCheckout } from "@/lib/checkout"
 import { requestError } from "@/lib/request-guard"
 import { requireLegalDisclaimerAcceptance } from "@/lib/legal-disclaimer-server"
 import { requireEmergencyFeature } from "@/lib/feature-flags"
 export async function POST(request: Request) {
   try {
-    const blocked = requireLegalDisclaimerAcceptance(request) ?? requireEmergencyFeature("ENABLE_PAYMENTS", "Checkout")
+    const blocked = requireLegalDisclaimerAcceptance(request) ?? requireEmergencyFeature("ENABLE_PAYMENTS", "Checkout") ?? requireCommercialPolicy()
     if (blocked) return blocked
     const result = await createCheckout(request, true)
     if (result.expired) return Response.json({ error: "Checkout expired. Try again to create a new checkout." }, { status: 409 })

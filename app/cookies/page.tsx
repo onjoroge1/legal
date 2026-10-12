@@ -1,13 +1,14 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/cookies", {
   title: "Cookie Policy — LegalLawDocs.com",
   description:
     "Learn how LegalLawDocs.com uses cookies and similar technologies, what types of cookies we set, and how you can control them.",
-}
+})
 
 export default function CookiesPage() {
   return (
