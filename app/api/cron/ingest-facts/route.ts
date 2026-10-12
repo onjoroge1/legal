@@ -1,3 +1,5 @@
+import { trackedOperation } from "@/lib/operations-telemetry"
+import { scopedToken } from "@/lib/scoped-token"
 /**
  * GET /api/cron/ingest-facts
  *
@@ -41,7 +43,7 @@ function isAuthorized(request: Request): boolean {
   return header === `Bearer ${secret}`
 }
 
-export async function GET(request: Request) {
+async function run(request: Request) {
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
@@ -94,7 +96,7 @@ export async function GET(request: Request) {
           fetched: result.fetched,
           newlyPending: result.newlyPending,
           alreadyKnown: result.alreadyKnown,
-          ...(result.error ? { error: result.error } : {}),
+          ...(result.error ? { error: "INGEST_FAILED" } : {}),
         },
       },
     })
@@ -105,7 +107,7 @@ export async function GET(request: Request) {
       source: entry.source,
       fetched: result.fetched,
       newlyPending: result.newlyPending,
-      ...(result.error ? { error: result.error } : {}),
+      ...(result.error ? { error: "INGEST_FAILED" } : {}),
     })
   }
 
@@ -116,12 +118,17 @@ export async function GET(request: Request) {
   )
 
   return NextResponse.json({
-    ok: true,
+    ok: !processedSummary.some(p => p.error),
     batchSize: BATCH_SIZE,
     processed: processedSummary.length,
     totalNewlyPending: totalNew,
     tookMs,
     seeded: seedResult,
     details: processedSummary,
-  })
+  }, { status: processedSummary.some(p => p.error) ? 503 : 200 })
+}
+
+export async function GET(request: Request) {
+ if (!scopedToken(request,process.env.CRON_SECRET)) return Response.json({error:"Unauthorized"},{status:401})
+ try {return await trackedOperation("sources",()=>run(request))}catch{return Response.json({error:"Operation unavailable"},{status:503})}
 }
