@@ -1,3 +1,4 @@
+import { PolicyStatus } from "@/components/legal/policy-status"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -81,6 +82,7 @@ export default function TermsPage() {
     <div className="min-h-screen">
       <Header />
       <main>
+          <PolicyStatus />
         <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8 lg:py-24">
 
           {/* ── Page header ───────────────────────────────────────────────── */}

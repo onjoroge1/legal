@@ -43,6 +43,7 @@ export default async function AdminLayout({
           <span className="font-semibold text-sm tracking-wide">Admin</span>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
+          <Link href="/admin/support" className="block p-3">Support inbox</Link>
           <Link
             href="/admin/lawyers"
             className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-foreground hover:bg-muted transition-colors"

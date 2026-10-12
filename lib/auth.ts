@@ -28,11 +28,11 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.trim().toLowerCase() },
           select: {
-            id: true, email: true, password: true, name: true,
+            id: true, email: true, password: true, name: true, privacyState: true,
             firstName: true, lastName: true, image: true,
           },
         })
-        if (!user?.password || !(await bcrypt.compare(credentials.password, user.password))) return null
+        if (user?.privacyState !== "active" || !user?.password || !(await bcrypt.compare(credentials.password, user.password))) return null
 
         const displayName = user.name
           || [user.firstName, user.lastName].filter(Boolean).join(" ").trim()
@@ -49,9 +49,9 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { jwtVersion: true },
+          select: { jwtVersion: true, privacyState: true },
         })
-        if (!dbUser) {
+        if (!dbUser || dbUser.privacyState !== "active") {
           token.revoked = true
           return token
         }
@@ -67,9 +67,9 @@ export const authOptions: NextAuthOptions = {
       } else if (token.id && token.sessionId) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
-          select: { jwtVersion: true, activeSessions: true },
+          select: { jwtVersion: true, activeSessions: true, privacyState: true },
         })
-        if (!dbUser || dbUser.jwtVersion !== token.jwtVersion || !hasActiveSession(dbUser.activeSessions, token.sessionId)) {
+        if (!dbUser || dbUser.privacyState !== "active" || dbUser.jwtVersion !== token.jwtVersion || !hasActiveSession(dbUser.activeSessions, token.sessionId)) {
           token.revoked = true
           return token
         }

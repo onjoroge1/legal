@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs"
+import { readFileSync, readdirSync } from "node:fs"
 import { exit } from "node:process"
 
 const read = (file) => readFileSync(file, "utf8")
@@ -73,7 +73,9 @@ const prohibitedClaims = [
   ["unsupported audit claim", /independently audited security/i],
 ]
 
-for (const file of publicClaimFiles) {
+function files(dir) { return readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? files(`${dir}/${e.name}`) : /\.(tsx?|jsx?)$/.test(e.name) ? [`${dir}/${e.name}`] : []) }
+const allPublicFiles = [...new Set([...publicClaimFiles, ...files("app").filter(f => !/^app\/(api|dashboard|admin)\//.test(f)), ...files("components").filter(f => !/^components\/(dashboard|ui)\//.test(f))])]
+for (const file of allPublicFiles) {
   const source = read(file)
   for (const [label, pattern] of prohibitedClaims) {
     if (pattern.test(source)) failures.push(`${file}: ${label}.`)

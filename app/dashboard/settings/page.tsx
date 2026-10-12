@@ -208,6 +208,7 @@ export default function SettingsPage() {
         <p className="text-muted-foreground">Manage your account settings and preferences</p>
       </div>
 
+      <a href="/dashboard/settings/privacy" className="inline-block underline">Export your data or request account deletion</a>
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
           <TabsTrigger value="profile" className="gap-1">
