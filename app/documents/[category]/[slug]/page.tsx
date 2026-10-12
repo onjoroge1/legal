@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { resolveDocument } from "@/lib/document-resolver"
@@ -9,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  const { category, slug } = await params, path = `/documents/${category}/${slug}`
  let doc; try { doc = resolveDocument(category, slug).doc } catch { return { robots: { index: false, follow: false } } }
  const entry = approvedPublication(path)
- return { title: entry?.publication.title ?? `${doc.title} — Review pending`, description: entry?.publication.description ?? "This document scope is awaiting review and is not available in the supported launch collection.", robots: { index: !!entry, follow: true }, alternates: { canonical: `https://www.legallawdocs.com${path}` } }
+ return pageMetadata(path, { title: entry?.publication.title ?? `${doc.title} — Review pending`, description: entry?.publication.description ?? "This document scope is awaiting review and is not available in the supported launch collection.",  }, !!entry)
 }
 export default async function DocumentDetailPage({ params }: Props) {
  const { category, slug } = await params

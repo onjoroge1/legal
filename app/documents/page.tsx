@@ -1,3 +1,5 @@
+import { canonicalUrl } from "@/lib/site-origin.mjs"
+import { pageMetadata } from "@/lib/site-metadata"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -11,7 +13,7 @@ import { documentCatalog, getDocumentPath } from "@/lib/document-catalog"
 import { getSubscriptionFromSession } from "@/lib/subscription"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/documents", {
   title: "Legal Document Templates — Create Online | LegalLawDocs.com",
   description:
     "Browse 52 AI-assisted document drafting workflows across 7 categories. State-aware inputs, PDF and DOCX output, and attorney review required before use.",
@@ -25,16 +27,16 @@ export const metadata: Metadata = {
     "nda template",
     "llc operating agreement",
   ],
-  alternates: { canonical: "https://legallawdocs.com/documents" },
+  alternates: { canonical: canonicalUrl('/documents') },
   openGraph: {
     type: "website",
-    url: "https://legallawdocs.com/documents",
+    url: canonicalUrl('/documents'),
     title: "Legal Document Templates — LegalLawDocs.com",
     description:
       "Browse 52 AI-assisted drafting workflows across business, employment, real estate, estate planning, and more. Not legal advice.",
     siteName: "LegalLawDocs.com",
   },
-}
+})
 
 export default async function DocumentsPage() {
   const subscription = await getSubscriptionFromSession()

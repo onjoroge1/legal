@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -15,11 +16,11 @@ import {
   ArrowRight,
 } from "lucide-react"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/blog", {
   title: "Legal Guides & Blog — LegalLawDocs.com",
   description:
     "In-depth legal guides on contracts, lease agreements, employment law, estate planning, and more. Written in plain language for individuals and small businesses.",
-}
+})
 
 const categories = [
   {

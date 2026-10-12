@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { resolveDocument } from "@/lib/document-resolver"
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic"
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
  const { category, slug, intent } = await params, path = `/documents/${category}/${slug}/${intent}`
  const entry = approvedPublication(path)
- return { title: entry?.publication.title ?? "Document variation — Review pending", description: entry?.publication.description ?? "This document variation is awaiting review.", robots: { index: !!entry, follow: true }, alternates: { canonical: `https://www.legallawdocs.com${path}` } }
+ return pageMetadata(path, { title: entry?.publication.title ?? "Document variation — Review pending", description: entry?.publication.description ?? "This document variation is awaiting review.",  }, !!entry)
 }
 export default async function IntentPage({ params }: Props) {
  const { category, slug, intent } = await params

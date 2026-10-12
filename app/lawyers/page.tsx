@@ -1,3 +1,5 @@
+import { canonicalUrl } from "@/lib/site-origin.mjs"
+import { pageMetadata } from "@/lib/site-metadata"
 import Link from "next/link"
 import { Suspense } from "react"
 import { Header } from "@/components/header"
@@ -18,7 +20,7 @@ import { getPracticeLabel } from "@/lib/lawyer-utils"
 import { LawyerFilters } from "./lawyer-filters"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/lawyers", {
   title: "Find a Lawyer — Attorney Directory | LegalLawDocs.com",
   description:
     "Browse submitted attorney advertising profiles by practice area and state. Independently verify credentials, license status, fees, and fit before hiring.",
@@ -31,16 +33,16 @@ export const metadata: Metadata = {
     "estate planning attorney",
     "real estate lawyer",
   ],
-  alternates: { canonical: "https://legallawdocs.com/lawyers" },
+  alternates: { canonical: canonicalUrl('/lawyers') },
   openGraph: {
     type: "website",
-    url: "https://legallawdocs.com/lawyers",
+    url: canonicalUrl('/lawyers'),
     title: "Find a Lawyer — Attorney Directory | LegalLawDocs.com",
     description:
       "Browse submitted attorney advertising profiles. LegalLawDocs does not recommend, endorse, or guarantee any listed professional.",
     siteName: "LegalLawDocs.com",
   },
-}
+})
 
 interface PageProps {
   searchParams: Promise<{ q?: string; practiceArea?: string; state?: string }>

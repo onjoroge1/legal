@@ -1,14 +1,15 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import { PolicyStatus } from "@/components/legal/policy-status"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/privacy", {
   title: "Privacy Policy — LegalLawDocs.com",
   description:
     "Learn how LegalLawDocs.com collects, uses, and protects your personal data. Covers GDPR and CCPA rights, payment processing, data retention, and contact information.",
-}
+})
 
 export default function PrivacyPage() {
   return (

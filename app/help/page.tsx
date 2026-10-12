@@ -1,7 +1,8 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-export const metadata = { title: "Product help — LegalLawDocs", description: "Help with saved drafts, purchases, recovery and account privacy." }
+export const metadata = pageMetadata("/help", { title: "Product help — LegalLawDocs", description: "Help with saved drafts, purchases, recovery and account privacy." })
 export default function Help() { return <><Header /><main className="mx-auto max-w-3xl space-y-6 px-4 py-16"><h1 className="text-3xl font-bold">Product help</h1>
  <h2 className="text-xl font-semibold">Save, reopen and revise</h2><p>Use your dashboard to reopen a saved version or revise its inputs. A revision creates a new version; a one-time purchase covers the exact version purchased. PDF and DOCX export require ownership, paid access and document review.</p>
  <h2 className="text-xl font-semibold">Pricing and refunds</h2><p>Checkout shows the configured price before payment when new sales are enabled. New purchases currently require approved business and refund terms. For an existing charge, delivery problem or refund request, open a support ticket. A request is not a promise of a refund or a waiver of your rights.</p>

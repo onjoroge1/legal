@@ -1,3 +1,6 @@
+import { OrganizationSchema } from "@/components/seo/organization-schema"
+import { pageMetadata } from "@/lib/site-metadata"
+export const metadata = pageMetadata("/", { title: "LegalLawDocs | Drafts for professional review" })
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { LogoCloud } from "@/components/logo-cloud"
@@ -16,6 +19,7 @@ export default function Page() {
   return (
     <div className="min-h-screen">
       <Header />
+      <OrganizationSchema />
       <main>
         <HeroSection />
         <LogoCloud />

@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Header } from "@/components/header"
@@ -72,11 +73,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${lawyer.name} — Attorney Profile | LegalLawDocs.com`,
     description,
     alternates: {
-      canonical: `https://legallawdocs.com/lawyers/${slug}`,
+      canonical: `${SITE_ORIGIN}/lawyers/${slug}`,
     },
     openGraph: {
       type: "profile",
-      url: `https://legallawdocs.com/lawyers/${slug}`,
+      url: `${SITE_ORIGIN}/lawyers/${slug}`,
       title: `${lawyer.name} — Attorney | LegalLawDocs.com`,
       description,
       siteName: "LegalLawDocs.com",

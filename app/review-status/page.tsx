@@ -1,9 +1,10 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { publishedContent } from "@/lib/publication-policy"
 export const dynamic = "force-dynamic"
-export const metadata = { title: "Review status and corrections", robots: { index: false, follow: true } }
+export const metadata = pageMetadata("/review-status", { title: "Review status and corrections" })
 export default function ReviewStatus() {
  const entries = publishedContent()
  return <><Header /><main className="mx-auto max-w-3xl px-4 py-16 space-y-6"><h1 className="text-3xl font-bold">Review status and corrections</h1>

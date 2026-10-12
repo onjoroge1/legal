@@ -1,3 +1,4 @@
+import { canonicalUrl, jsonLd } from "@/lib/site-metadata"
 import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
 
@@ -12,7 +13,7 @@ interface BreadcrumbProps {
   withSchema?: boolean
 }
 
-const BASE_URL = "https://legallawdocs.com"
+
 
 export function Breadcrumb({ items, withSchema = true }: BreadcrumbProps) {
   const all = [{ label: "Home", href: "/" }, ...items]
@@ -21,7 +22,7 @@ export function Breadcrumb({ items, withSchema = true }: BreadcrumbProps) {
     "@type": "ListItem",
     position: i + 1,
     name: item.label,
-    ...(item.href ? { item: `${BASE_URL}${item.href}` } : {}),
+    ...(item.href ? { item: canonicalUrl(item.href) } : {}),
   }))
 
   const schema = {
@@ -35,7 +36,7 @@ export function Breadcrumb({ items, withSchema = true }: BreadcrumbProps) {
       {withSchema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
         />
       )}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground flex-wrap">

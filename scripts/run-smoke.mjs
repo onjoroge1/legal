@@ -10,7 +10,9 @@ try {
     await new Promise(resolve => setTimeout(resolve, 1000))
   }
   if (!ready) throw new Error('Production server failed to become ready')
-  const child = spawn(process.execPath, ['scripts/smoke-tests.mjs'], { stdio: 'inherit', env: process.env })
-  const code = await new Promise(resolve => child.on('exit', resolve))
-  if (code !== 0) process.exitCode = 1
+  for (const script of ['scripts/smoke-tests.mjs', 'scripts/check-seo-rendered.mjs']) {
+    const child = spawn(process.execPath, [script], { stdio: 'inherit', env: process.env })
+    const code = await new Promise(resolve => child.on('exit', resolve))
+    if (code !== 0) process.exitCode = 1
+  }
 } finally { server.kill('SIGTERM') }

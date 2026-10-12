@@ -1,40 +1,6 @@
-/**
- * Injects Organization + WebSite JSON-LD — render once in the root layout.
- */
+import { canonicalUrl, jsonLd } from "@/lib/site-metadata"
 export function OrganizationSchema() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://legallawdocs.com/#organization",
-        name: "LegalLawDocs.com",
-        url: "https://legallawdocs.com",
-        description:
-          "Self-help, AI-assisted document drafting software with state-aware inputs. Not a law firm and not legal advice; attorney review is required before use.",
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://legallawdocs.com/#website",
-        url: "https://legallawdocs.com",
-        name: "LegalLawDocs.com",
-        publisher: { "@id": "https://legallawdocs.com/#organization" },
-        potentialAction: {
-          "@type": "SearchAction",
-          target: {
-            "@type": "EntryPoint",
-            urlTemplate: "https://legallawdocs.com/documents?q={search_term_string}",
-          },
-          "query-input": "required name=search_term_string",
-        },
-      },
-    ],
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
+ // Product identity only. Legal entity and professional credentials need owner evidence.
+ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "LegalLawDocs", url: canonicalUrl("/"), description: "Self-help document drafting software. Not a law firm or legal advice." }
+ return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }

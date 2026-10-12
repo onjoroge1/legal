@@ -1,52 +1,16 @@
+import { OrganizationSchema } from "@/components/seo/organization-schema"
+import { pageMetadata } from "@/lib/site-metadata"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FileText, MapPin, Scale, Users, Lightbulb, Heart, Linkedin } from "lucide-react"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/about", {
   title: "About LegalLawDocs.com — AI-Powered Legal Document Drafting",
   description:
     "Learn about LegalLawDocs.com, its self-help document drafting mission, its founder, and the limits of its AI-assisted drafts.",
-}
-
-/**
- * Structured data — adds verifiable Organization + founder Person entities
- * for Google's E-E-A-T signals on this YMYL page. Renders inline below.
- */
-const aboutPageJsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://legallawdocs.com/#organization",
-      name: "LegalLawDocs.com",
-      url: "https://legallawdocs.com",
-      description:
-        "AI-powered legal document drafting platform. Not a law firm — drafts should be reviewed by a qualified attorney before signing.",
-      founder: {
-        "@id": "https://legallawdocs.com/about#founder",
-      },
-    },
-    {
-      "@type": "Person",
-      "@id": "https://legallawdocs.com/about#founder",
-      name: "Obadiah Kimani",
-      jobTitle: "Founder",
-      worksFor: {
-        "@id": "https://legallawdocs.com/#organization",
-      },
-      sameAs: ["https://www.linkedin.com/in/obadiah-njoroge-93103246/"],
-    },
-    {
-      "@type": "AboutPage",
-      url: "https://legallawdocs.com/about",
-      isPartOf: {
-        "@id": "https://legallawdocs.com/#organization",
-      },
-    },
-  ],
-}
+})
 
 const trustSignals = [
   {
@@ -91,10 +55,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Structured data: Organization + founder Person — improves YMYL E-E-A-T signals */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
-      />
+      <OrganizationSchema />
       <Header />
       <main>
         {/* Hero */}
