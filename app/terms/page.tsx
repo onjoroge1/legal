@@ -1,14 +1,16 @@
+import { pageMetadata } from "@/lib/site-metadata"
+import { PolicyStatus } from "@/components/legal/policy-status"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AlertTriangle, Scale } from "lucide-react"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/terms", {
   title: "Terms of Service — LegalLawDocs.com",
   description:
     "Terms of Service for LegalLawDocs.com. Read our complete terms covering AI-generated document limitations, no legal advice, liability, indemnification, and governing law.",
-}
+})
 
 const SECTIONS = [
   ["1. Acceptance of terms", "#acceptance"],
@@ -81,6 +83,7 @@ export default function TermsPage() {
     <div className="min-h-screen">
       <Header />
       <main>
+          <PolicyStatus />
         <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8 lg:py-24">
 
           {/* ── Page header ───────────────────────────────────────────────── */}
@@ -313,11 +316,7 @@ export default function TermsPage() {
                 <Li>
                   We are not a substitute for a licensed attorney. For legal advice tailored to
                   your specific circumstances, please consult a licensed attorney in your
-                  jurisdiction. You can find attorneys through our{" "}
-                  <Link href="/lawyers" className="text-primary underline underline-offset-4 hover:text-primary/80">
-                    attorney directory
-                  </Link>
-                  .
+                  jurisdiction. Your state bar association can help you locate licensed counsel.
                 </Li>
               </ul>
             </section>

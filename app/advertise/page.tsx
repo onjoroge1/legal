@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/site-metadata"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -15,11 +16,11 @@ import {
   ArrowRight,
 } from "lucide-react"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata("/advertise", {
   title: "Advertise to Legal Document Users — LegalLawDocs.com",
   description:
     "Apply for the LegalLawDocs directory pilot. Listing availability, placement, pricing, review criteria, and terms are confirmed in writing before publication.",
-}
+})
 
 const valueProps = [
   {

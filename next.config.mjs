@@ -1,7 +1,11 @@
+import { intentRedirects } from "./lib/intent-redirects.mjs"
+import { SITE_ORIGIN, searchIndexingEnabled } from "./lib/site-origin.mjs"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
-    return [{ source: "/:path*", headers: [
+    const privateSources = ["/api/:path*", "/dashboard/:path*", "/admin/:path*", "/login", "/signup", "/forgot-password", "/reset-password", "/verify-email", "/recover-purchase/:path*", "/sign/:path*", "/documents/:category/:slug/generate", "/documents/:category/:slug/preview", "/documents/:category/:slug/checkout", "/documents/:category/:slug/download", "/lawyers/:path*", "/advertise", "/terms", "/privacy", "/cookies"]
+    return [...privateSources.map(source => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] })), { source: "/:path*", headers: [
+      ...(!searchIndexingEnabled() ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] : []),
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "DENY" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -64,7 +68,7 @@ const nextConfig = {
       },
     ]
 
-    return [...generated, ...categoryMoves]
+    return [{ source: "/:path*", has: [{ type: "host", value: "legallawdocs.com" }], destination: `${SITE_ORIGIN}/:path*`, permanent: true }, ...intentRedirects.map(([source, destination]) => ({ source, destination, permanent: true })), ...generated, ...categoryMoves]
   },
 }
 

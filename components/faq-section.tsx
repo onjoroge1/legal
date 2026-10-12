@@ -6,36 +6,11 @@ import {
 } from "@/components/ui/accordion"
 
 const faqs = [
-  {
-    question: "Does LegalLawDocs determine whether my document is enforceable?",
-    answer:
-      "No. Enforceability depends on your facts, jurisdiction, document terms, and execution requirements. LegalLawDocs supplies a self-help draft, not a legal opinion. Ask a licensed attorney in your jurisdiction to review the draft before you rely on or sign it.",
-  },
-  {
-    question: "What does state-aware drafting mean?",
-    answer:
-      "Selecting a state changes some questions, drafting notes, and reference material. Laws and official guidance change, and the software cannot verify that a draft meets every requirement that applies to you. Review current official sources and consult a licensed attorney.",
-  },
-  {
-    question: "Can I edit the documents after they are generated?",
-    answer:
-      "Absolutely. All documents are delivered in editable formats (Word and PDF). You can make modifications as needed. Professional and Enterprise plan users also have access to our built-in document editor with guided legal suggestions.",
-  },
-  {
-    question: "What types of documents can I create?",
-    answer:
-      "We offer 50+ document templates spanning business (NDAs, LLC agreements, partnership agreements), real estate (lease agreements, purchase contracts), employment (contracts, offer letters, non-competes), and personal (wills, power of attorney, living trusts) categories.",
-  },
-  {
-    question: "How is my data protected?",
-    answer:
-      "We use account access controls and service providers described in our Privacy Policy. When payments are enabled, card details are entered on Stripe's hosted checkout rather than sent to LegalLawDocs. No internet service can promise absolute security.",
-  },
-  {
-    question: "Do you offer refunds?",
-    answer:
-      "Completed digital purchases and commenced subscription periods are generally final, except where law requires otherwise. If a verified technical failure prevents delivery, contact support within 7 days so we can resolve it or consider a credit. See the Terms for the controlling policy.",
-  },
+ { question: "Can this service give legal advice?", answer: "No. LegalLawDocs prepares drafts. Ask a licensed attorney in your jurisdiction to review your circumstances and document before use." },
+ { question: "Can I revise a saved draft?", answer: "Yes. Reopen a saved version in your dashboard and revise its inputs to create a new version. A one-time purchase applies only to the version purchased. Export also requires document review." },
+ { question: "What is available at launch?", answer: "The Documents collection lists currently reviewed scopes. Other document types and jurisdiction pages remain pending review. See Review status for current availability." },
+ { question: "What does checkout cost?", answer: "When new sales are enabled, checkout displays the configured price before payment. New purchases are blocked until approved business and refund terms are published." },
+ { question: "How do I get help with a charge?", answer: "Open a support ticket on the Contact page. Save its access code to read the response. Support cannot provide legal advice." },
 ]
 
 export function FaqSection() {

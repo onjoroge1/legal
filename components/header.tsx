@@ -10,13 +10,9 @@ import { Menu, Scale, LayoutDashboard, ChevronDown, FileText } from "lucide-reac
 import { useSession, signOut } from "next-auth/react"
 
 const categoryNav = [
-  { label: "Business", href: "/documents/business" },
-  { label: "Employment", href: "/documents/employment" },
-  { label: "Real Estate", href: "/documents/real-estate" },
-  { label: "Estate Planning", href: "/documents/estate-planning" },
-  { label: "Legal Letters", href: "/documents/legal-letters" },
-  { label: "Financial", href: "/documents/financial" },
-  { label: "Personal", href: "/documents/personal" },
+ { label: "Reviewed collection", href: "/documents" },
+ { label: "Review status", href: "/review-status" },
+ { label: "Product help", href: "/help" },
 ]
 
 const navLinks = [
@@ -64,6 +60,8 @@ export function Header() {
           >
             <button
               className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
+              onClick={() => setDocsOpen(v => !v)}
+              onKeyDown={event => { if (event.key === "Escape") setDocsOpen(false) }}
               aria-expanded={docsOpen}
               aria-haspopup="true"
             >

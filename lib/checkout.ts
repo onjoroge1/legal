@@ -1,3 +1,4 @@
+import { requestJourney, recordFunnel } from "./funnel"
 import { createHash, randomUUID } from "crypto"
 import { z } from "zod"
 import { getServerSession } from "next-auth"
@@ -29,6 +30,7 @@ export async function createCheckout(request: Request, billing = false) {
   await guardAccount(request)
   const quote = await checkoutPrice(input.paymentType)
   const activeKey = createHash("sha256").update(`${ownerId ?? saved!.draft.id}:${input.paymentType}:${input.paymentType === "single" ? saved!.version.id : "account"}`).digest("hex")
+  const funnelJourneyId = await requestJourney(request)
   const order = await prisma.$transaction(async tx => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(710080)`
     if (input.paymentType === "subscription" && await tx.billingSubscription.findFirst({ where: { ownerId: ownerId!, status: { in: ["active", "trialing", "past_due", "unpaid", "incomplete", "paused"] } } })) throw new RequestError(409, "MANAGE_EXISTING_SUBSCRIPTION")
@@ -42,7 +44,7 @@ export async function createCheckout(request: Request, billing = false) {
     return tx.checkoutOrder.create({ data: { id: randomUUID(), activeKey, ownerId, draftId: saved?.draft.id, versionId: saved?.version.id, contentHash: saved?.version.contentHash, guestEmail, kind: input.paymentType, priceId: quote.priceId, amount: quote.amount, currency: quote.currency, customerId: user?.stripeCustomerId, disclaimerVersion: getLegalDisclaimerAcceptance(request).version, expiresAt: new Date(Math.floor(Date.now() / 1000) * 1000 + 3600000) } })
   })
   // Serialize publication, preserving the same provider key and immutable parameters after any crash.
-  return prisma.$transaction(async tx => {
+  const result = await prisma.$transaction(async tx => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(710081)`
     const current = await tx.checkoutOrder.findUniqueOrThrow({ where: { id: order.id } })
     if (current.sessionId) {
@@ -73,4 +75,16 @@ export async function createCheckout(request: Request, billing = false) {
     await tx.checkoutOrder.update({ where: { id: current.id }, data: { sessionId: remote.id } })
     return { url: remote.url }
   }, { maxWait: 10000, timeout: 20000 })
+  if (result.url) {
+    // Optional attribution must never prevent a payment or overwrite an existing attribution.
+    if (funnelJourneyId) try {
+      await prisma.$transaction(async tx => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(710090)`
+        if (ownerId && (await tx.user.findUnique({ where: { id: ownerId }, select: { privacyState: true } }))?.privacyState !== "active") return
+        await tx.checkoutOrder.updateMany({ where: { id: order.id, funnelJourneyId: null }, data: { funnelJourneyId } })
+      }, { maxWait: 1000, timeout: 2000 })
+    } catch { console.warn("FUNNEL_MEASUREMENT_UNAVAILABLE") }
+    await recordFunnel(request, "checkout")
+  }
+  return result
 }

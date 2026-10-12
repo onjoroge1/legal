@@ -1,3 +1,4 @@
+import { recordFunnel } from "@/lib/funnel"
 import { requireReviewedVersion } from "@/lib/document-review"
 import { z } from "zod"
 import { readVersion } from "@/lib/document-versions"
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
 
     if (format === "pdf") {
       const buffer = await generatePDF(documentText, safeTitle, { isWatermarked: access.watermark })
+      await recordFunnel(request, "download")
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/pdf",
@@ -111,6 +113,7 @@ export async function POST(request: Request) {
 
     if (format === "docx") {
       const buffer = await generateDOCX(documentText, safeTitle)
+      await recordFunnel(request, "download")
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

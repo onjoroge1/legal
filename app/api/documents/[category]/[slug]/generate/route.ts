@@ -1,3 +1,5 @@
+import { recordFunnel } from "@/lib/funnel"
+import { beginOperation, finishOperation } from "@/lib/operations-telemetry"
 import { reviewedScope } from "@/lib/reviewed-document-scopes"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
@@ -16,6 +18,7 @@ import { getDocumentQuestions } from "@/lib/document-questions"
 export const maxDuration = 60
 
 export async function POST(request: Request, { params }: { params: Promise<{ category: string; slug: string }> }) {
+  let metric: Awaited<ReturnType<typeof beginOperation>> | null = null; let success = false
   try {
     const acceptanceError = requireLegalDisclaimerAcceptance(request)
     if (acceptanceError) return acceptanceError
@@ -36,6 +39,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ cat
       if (draft.canonicalSlug !== resolved.doc.slug || draft.intent !== resolved.intent || draft.jurisdiction !== resolved.jurisdiction) throw new RequestError(409, "DRAFT_IDENTITY_CONFLICT")
     }
     await guardAI(request)
+    metric = await beginOperation("generation")
     const facts = await prisma.verifiedFact.findMany({ where: { jurisdiction: { in: jurisdictionKeys(resolved) }, documentSlug: resolved.doc.parentSlug ?? resolved.doc.slug, status: "approved" }, take: 100 })
     const ground = grounding(resolved, facts)
     // Old generic templates are deliberately not used: a unilateral seed cannot override mutual intent.
@@ -51,6 +55,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ cat
     const review = { issues, readyForExport: issues.length === 0, scopeKey, scopeEvidenceUrl: scope?.evidenceUrl ?? null, sourceSnapshot: ground.sources, checkedAt: new Date().toISOString(), intent: resolved.intent }
     const saved = await saveVersion(request, resolved, formData, cleaned.cleaned, review, draftId)
     const { cookie, ...identity } = saved
+    await recordFunnel(request, "generation")
+    success = true
     return Response.json({ document: cleaned.cleaned, ...identity, review, citations: { verified: cleaned.verified, flagged: cleaned.flagged, list: cleaned.list }, legalDisclaimer: { version: LEGAL_DISCLAIMER_VERSION, copy: LEGAL_DISCLAIMER_PRIMARY_COPY } }, { headers: { "Cache-Control": "no-store", ...(cookie ? { "Set-Cookie": cookie } : {}) } })
   } catch (error) { return requestError(error) ?? Response.json({ error: "GENERATION_UNAVAILABLE" }, { status: 503 }) }
+  finally { if (metric) await finishOperation(metric.id,metric.startedAt,success) }
 }

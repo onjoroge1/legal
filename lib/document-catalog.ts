@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import {
   FileText,
   Building2,
@@ -1646,7 +1647,7 @@ export function getDocumentPath(doc: CatalogDocument): string {
 
 /** Canonical absolute URL */
 export function getDocumentCanonicalUrl(doc: CatalogDocument): string {
-  return `https://legallawdocs.com/documents/${doc.category}/${doc.slug}`
+  return `${SITE_ORIGIN}/documents/${doc.category}/${doc.slug}`
 }
 
 /**

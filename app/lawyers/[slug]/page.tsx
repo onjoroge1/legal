@@ -1,3 +1,5 @@
+import { DirectoryPending } from "@/components/legal/directory-pending"
+import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Header } from "@/components/header"
@@ -56,6 +58,7 @@ async function getLawyer(slug: string): Promise<LawyerProfile | null> {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (process.env.ENABLE_REVIEWED_DIRECTORY !== "true") return { title: "Directory review pending", robots: { index: false, follow: true } }
   const { slug } = await params
   const lawyer = await getLawyer(slug)
 
@@ -72,11 +75,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${lawyer.name} — Attorney Profile | LegalLawDocs.com`,
     description,
     alternates: {
-      canonical: `https://legallawdocs.com/lawyers/${slug}`,
+      canonical: `${SITE_ORIGIN}/lawyers/${slug}`,
     },
     openGraph: {
       type: "profile",
-      url: `https://legallawdocs.com/lawyers/${slug}`,
+      url: `${SITE_ORIGIN}/lawyers/${slug}`,
       title: `${lawyer.name} — Attorney | LegalLawDocs.com`,
       description,
       siteName: "LegalLawDocs.com",
@@ -138,6 +141,7 @@ function LawyerAvatar({
 }
 
 export default async function LawyerProfilePage({ params }: PageProps) {
+  if (process.env.ENABLE_REVIEWED_DIRECTORY !== "true") return <DirectoryPending />
   const { slug } = await params
   const lawyer = await getLawyer(slug)
 
