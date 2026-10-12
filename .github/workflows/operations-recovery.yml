@@ -1,0 +1,36 @@
+name: Scheduled operations recovery
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: operations-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: operations
+    steps:
+      - name: Invoke authenticated recovery and monitoring
+        env:
+          OPERATIONS_BASE_URL: ${{ secrets.OPERATIONS_BASE_URL }}
+          OPERATIONS_CRON_SECRET: ${{ secrets.OPERATIONS_CRON_SECRET }}
+        run: |
+          node --input-type=module <<'JS'
+          const raw=process.env.OPERATIONS_BASE_URL, secret=process.env.OPERATIONS_CRON_SECRET
+          if(!raw||!secret)throw Error('Operations environment secrets required')
+          const url=new URL(raw)
+          if(url.protocol!=='https:'||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw Error('Canonical HTTPS origin required')
+          let failures=0
+          for(const path of ['/api/cron/reconcile-payments','/api/cron/deliver-purchases','/api/cron/monitor-operations']){
+            try{
+              const response=await fetch(new URL(path,url),{headers:{Authorization:`Bearer ${secret}`},redirect:'error',signal:AbortSignal.timeout(305000)})
+              console.log(path,response.status)
+              if(!response.ok)failures++
+            }catch{console.log(path,'unavailable');failures++}
+          }
+          if(failures)process.exitCode=1
+          JS

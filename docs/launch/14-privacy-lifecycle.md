@@ -1,0 +1,24 @@
+# PR-12: privacy lifecycle (PRIV-01)
+
+Customers can password-confirm an owner-scoped JSON export or request account deletion from Settings → Your data. Exports omit credentials, recovery tokens, arbitrary signing metadata and other accounts. Large exports (>5,000 rows in any category or 50 MiB) require scoped support handling; there is no silently truncated download. An export is a consistent database snapshot, not a provider/backups archive. Avatar bytes remain available through the authenticated profile image URL before deletion.
+
+A deletion request checks active/nonterminal subscriptions, pending/disputed checkouts, legacy/shared/signed records and staff-authored records. These need separate review; the product never silently cancels paid service or destroys another person's evidence. Eligible requests atomically freeze the account, revoke sessions/reset links, and wait at least 24 hours to drain previously admitted work. Forgotten-password and normal login cannot reactivate frozen accounts.
+
+The authenticated `/api/cron/privacy-erasure` worker only executes with `ENABLE_PRIVACY_ERASURE=true`, an approved `PRIVACY_POLICY_VERSION` and a positive `PAYMENT_RECORD_RETENTION_DAYS`. No default legal retention period is invented. These settings are blank/off in the example. Before enabling, qualified policy owners must approve periods, provider handling, deletion scope and exceptions. No production deletion is run by this PR.
+
+Erasure rechecks blockers under payment and avatar locks, clears document/form/party/profile content, credentials, notifications and delivery ciphertext, invalidates recovery links and retires private avatars. Opaque user/version/order keys, hashes and financial state remain restricted for payment reconciliation. Payment replays do not recreate documents or delivery jobs for frozen/erased owners. This is data minimization and pseudonymization, not a claim that financial records become anonymous. Account and payment evidence retention deadlines are recorded for review, not automatically destroyed.
+
+States: `requested` → `local_erased` → `complete`; newly discovered blockers become `needs_review`. `GET /api/admin/privacy` is database-admin-only. Admin POST `{id, action:"retry"|"complete", evidence:"approved ticket/reference"}` can retry a reviewed blocker or acknowledge external completion. Completion requires zero outstanding avatar objects. The evidence reference must document provider handling, backup expiry/deletion and the payment retention exception; never put personal data or credentials in it. The endpoint records operator attestation, not independent proof from providers.
+
+## Provider and restore procedure
+
+- Verify the actual deployed database provider and retention/backups. Vercel hosts the application/private avatar objects; Resend handles mail; Stripe holds financial records; Google Gemini handles the current document generator; other routes can use OpenAI. No new analytics SDK is installed.
+- Verify AI account training/retention settings and contracts before enabling generation. Do not infer zero retention from API access or add unsupported provider options. Minimize prompts to data needed for the requested document; application diagnostics must contain static codes only.
+- Clear completed provider mail artifacts where permitted; preserve necessary suppression records. Reconcile Stripe records against the approved financial retention requirements rather than blindly deleting customers with billing history.
+- Run `/api/cron/cleanup-avatars` until the user's pending/retired rows are gone. Provider deletion failure leaves records discoverable and prevents completion.
+- Keep PrivacyRequest IDs and erasure timestamps in the restricted recovery record. Before restoring traffic to any backup, replay deletion requests and reconcile retained evidence against this ledger. Backups are not erased by a successful database transaction; record expiry/purge evidence before completion.
+- On local deletion success, browser controls clear cookies/cache/storage using Clear-Site-Data and local/session storage cleanup. Previously downloaded files or other devices' cached/downloaded copies cannot be remotely erased; session revocation blocks future authorized reads.
+
+Verification uses synthetic records and mocked provider traffic only: password checks, policy fail-closed tests, concurrent PostgreSQL requests/workers, billing blockers, export exclusions, data erasure and isolation, plus payment replay after erasure. Actual processor settings, retention approval, support handling and backup evidence remain operational gates.
+
+Rollback: disable the erasure worker first. Never roll back authentication code to a version that ignores privacyState. A backup restore must reapply the privacy ledger before reopening traffic. Erased content has no application undo; this is why provider/backup and policy gates are explicit.

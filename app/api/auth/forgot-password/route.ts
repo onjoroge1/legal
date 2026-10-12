@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({ where: { email } })
 
     // Always return success to prevent email enumeration
-    if (!user) {
+    if (!user || user.privacyState !== "active") {
       return successResponse()
     }
 
