@@ -35,6 +35,7 @@ async function eligible(order: CheckoutOrder) {
 async function prepare(job: DeliveryOutbox, order: CheckoutOrder) {
   const version = await eligible(order)
   const user = order.ownerId ? await prisma.user.findUniqueOrThrow({ where: { id: order.ownerId } }) : null
+  if (user && user.privacyState !== "active") throw new Error("PAYMENT_NOT_ELIGIBLE")
   const email = user?.email ?? order.guestEmail
   if (!email) throw new Error("DELIVERY_RECIPIENT_REQUIRED")
   const hash = recipientHash(email)

@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       take: 3,
     }),
     prisma.user.findMany({
-      where: { isAdmin: true },
+      where: { isAdmin: true, privacyState: "active" },
       select: { email: true, name: true },
     }),
   ])
