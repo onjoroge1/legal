@@ -6,9 +6,14 @@ import { consentMeasurement, journeyCookie, measurementAllowed, measurementCooki
 import { guardAccount } from "@/lib/request-budget"
 import { readJson, requestError, RequestError } from "@/lib/request-guard"
 export async function GET(request: Request) {
- await requestJourney(request) // Honor a received GPC/DNT withdrawal.
- return Response.json({ enabled: measurementAllowed(request), consented: !!journeyCookie(request) }, { headers: { "Cache-Control": "private, no-store" } })
+ try {
+  await requestJourney(request) // Honor a received GPC/DNT withdrawal.
+  const id = journeyCookie(request)
+  const retained = id ? await prisma.funnelJourney.findFirst({ where: { id, expiresAt: { gt: new Date() } }, select: { id: true } }) : null
+  return Response.json({ enabled: measurementAllowed(request), consented: !!retained }, { headers: { "Cache-Control": "private, no-store", ...(id && !retained ? { "Set-Cookie": measurementCookie(null) } : {}) } })
+ } catch { return Response.json({ error: "MEASUREMENT_UNAVAILABLE" }, { status: 503, headers: { "Cache-Control": "no-store" } }) }
 }
+
 export async function POST(request: Request) {
  try {
   if (request.headers.get("origin") !== new URL(request.url).origin) throw new RequestError(403, "CROSS_ORIGIN_REQUEST")

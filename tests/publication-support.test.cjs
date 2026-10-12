@@ -6,6 +6,7 @@ test('publication requires a current, hash-bound review, official sources, journ
  assert.equal(approvedPublication(publication.path,now,[entry]),entry);assert.equal(publishedContent(now).length,0);
  for(const changed of [{...entry,expiresAt:'2026-10-11'},{...entry,reviewedAt:'2026-10-13'},{...entry,publication:{...publication,description:'Changed'}},{...entry,credentials:''},{...entry,journeyEvidenceUrl:''}])assert.equal(approvedPublication(publication.path,now,[changed]),undefined);
  assert.equal(approvedPublication(publication.path,now,[entry,entry]),undefined);
+ const alias={...publication,path:'/documents/business/nda'};assert.equal(approvedPublication(alias.path,now,[{...entry,publication:alias,contentHash:publicationHash(alias)}]),undefined);
  const other={...publication,scopeKey:'unreviewed'};assert.equal(approvedPublication(other.path,now,[{...entry,publication:other,contentHash:publicationHash(other)}]),undefined);
 });
 test('new checkout fails closed without commercial approval even when payment flag is enabled',async()=>{

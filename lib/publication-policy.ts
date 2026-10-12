@@ -38,6 +38,7 @@ export function approvedPublication(path: string, now = new Date(), entries = PU
    const [, family, category, slug, intent, extra] = path.split("/")
    if (family !== "documents" || extra) return undefined
    let resolved = resolveDocument(category, slug, intent)
+   if (resolved.doc.slug !== slug && !resolved.jurisdiction) return undefined // Reject legacy aliases within category paths.
    if (!resolved.jurisdiction) resolved = resolveDocument(category, slug, intent, { state: p.jurisdiction })
    if (resolved.country || !resolved.jurisdiction || resolved.jurisdiction !== p.jurisdiction || resolved.doc.slug !== slug && resolved.sourceSlug !== slug) return undefined
    const key = `${resolved.doc.slug}:${resolved.intent ?? "standard"}:${resolved.jurisdiction}`
