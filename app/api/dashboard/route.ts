@@ -6,12 +6,12 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id || !session.user.email) return Response.json({ error: "Unauthorized" }, { status: 401 })
-    const where = { userId: session.user.id, deletedAt: null }
+    const where = { OR: [{ claimedOwnerId: session.user.id }, { claimedOwnerId: null, draft: { ownerId: session.user.id } }] }
     const [totalDocuments, recentDocuments, subscription] = await Promise.all([
-      prisma.userDocument.count({ where }),
-      prisma.userDocument.findMany({ where, take: 5, orderBy: { createdAt: "desc" }, select: { id: true, title: true, type: true, createdAt: true, status: true, metadata: true } }),
+      prisma.documentVersion.count({ where }),
+      prisma.documentVersion.findMany({ where, take: 5, orderBy: { createdAt: "desc" }, select: { id: true, title: true, createdAt: true } }),
       getUserSubscriptionInfo(session.user.email),
     ])
-    return Response.json({ totalDocuments, documentsCreated: totalDocuments, storage: { used: null, total: null }, subscription: { type: subscription?.tier ?? "free", status: subscription?.status ?? "inactive" }, recentDocuments }, { headers: { "Cache-Control": "private, no-store" } })
+    return Response.json({ totalDocuments, documentsCreated: totalDocuments, storage: { used: null, total: null }, subscription: { type: subscription?.tier ?? "free", status: subscription?.status ?? "inactive" }, recentDocuments: recentDocuments.map(d => ({ ...d, type: "Saved version", status: "draft" })) }, { headers: { "Cache-Control": "private, no-store" } })
   } catch { return Response.json({ error: "Dashboard temporarily unavailable" }, { status: 503 }) }
 }

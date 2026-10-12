@@ -690,3 +690,12 @@ model EmailSuppression {
   reason String
   createdAt DateTime @default(now())
 }
+
+model StoredAvatar {
+  id String @id
+  userId String
+  pathname String @unique
+  status String @default("pending")
+  createdAt DateTime @default(now())
+  @@index([userId, status])
+}

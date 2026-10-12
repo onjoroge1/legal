@@ -1,112 +1,32 @@
-import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
-import { existsSync } from "fs"
-
-// Try to import Prisma
-let prisma: any
-
-try {
-  const prismaModule = require("@/lib/prisma")
-  prisma = prismaModule.prisma
-} catch {
-  console.log("Prisma not available")
-}
-
-/**
- * Upload user avatar
- * POST /api/settings/avatar
- */
+import { guardAccount } from "@/lib/request-budget"
+import { RequestError, requestError } from "@/lib/request-guard"
+import { readAvatar, storeAvatar } from "@/lib/avatar-storage"
+export const runtime = "nodejs"
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
-    }
-
-    const formData = await request.formData()
-    const file = formData.get("file") as File | null
-
-    if (!file) {
-      return NextResponse.json(
-        { error: "No file provided" },
-        { status: 400 }
-      )
-    }
-
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Only images are allowed." },
-        { status: 400 }
-      )
-    }
-
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: "File size exceeds 5MB limit" },
-        { status: 400 }
-      )
-    }
-
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Generate unique filename
-    const fileExtension = file.name.split(".").pop()
-    const timestamp = Date.now()
-    const randomString = Math.random().toString(36).substring(2, 15)
-    const filename = `avatar-${timestamp}-${randomString}.${fileExtension}`
-
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), "public", "uploads", "avatars")
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true })
-    }
-
-    // Save file
-    const filepath = join(uploadsDir, filename)
-    await writeFile(filepath, buffer)
-
-    // Generate public URL
-    const publicUrl = `/uploads/avatars/${filename}`
-
-    // Update user's image in database
-    if (prisma) {
-      try {
-        await prisma.user.update({
-          where: { email: session.user.email },
-          data: { image: publicUrl },
-        })
-      } catch {
-        console.error("Database error:")
-        // File is already saved, so we continue
-      }
-    }
-
-    return NextResponse.json({
-      message: "Avatar uploaded successfully",
-      url: publicUrl,
-    })
-  } catch {
-    console.error("Avatar upload error:")
-    return NextResponse.json(
-      { error: "Failed to upload avatar" },
-      { status: 500 }
-    )
-  }
+    if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 })
+    if (request.headers.get("origin") !== new URL(request.url).origin) throw new RequestError(403,"CROSS_ORIGIN_REQUEST")
+    await guardAccount(request)
+    const reader = request.body?.getReader(); if (!reader) throw new RequestError(400,"IMAGE_REQUIRED")
+    const chunks: Uint8Array[] = []; let size = 0
+    try { while (true) { const { done, value } = await reader.read(); if (done) break; size += value.length; if (size > 2*1024*1024+8192) { await reader.cancel(); throw new RequestError(413,"AVATAR_TOO_LARGE") }; chunks.push(value) } } finally { reader.releaseLock() }
+    const form = await new Response(Buffer.concat(chunks), { headers: { "Content-Type": request.headers.get("content-type") ?? "" } }).formData()
+    const file = form.get("file")
+    if (!(file instanceof File) || file.size > 2*1024*1024 || !file.size) throw new RequestError(400,"INVALID_AVATAR_IMAGE")
+    const url = await storeAvatar(session.user.id, Buffer.from(await file.arrayBuffer()))
+    return Response.json({ url }, { headers: { "Cache-Control": "no-store" } })
+  } catch (error) { return requestError(error) ?? Response.json({ error: "Avatar unavailable. Please try again later." }, { status: 503 }) }
 }
-
-
-
-
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return new Response(null,{ status:401 })
+    const id = new URL(request.url).searchParams.get("id") ?? ""
+    const result = await readAvatar(session.user.id,id)
+    if (!result || result.statusCode !== 200) return new Response(null,{ status:404 })
+    return new Response(result.stream,{ headers:{ "Content-Type":"image/webp", "Cache-Control":"private, no-store", "X-Content-Type-Options":"nosniff" } })
+  } catch { return new Response(null,{ status:503 }) }
+}
