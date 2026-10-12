@@ -113,9 +113,7 @@ const maxPrice = Math.max(...catalogPrices)
 if (catalogCount === 0 || !Number.isFinite(minPrice) || !Number.isFinite(maxPrice)) {
   failures.push("Unable to derive document count and price range from the catalog.")
 } else {
-  if (!read("components/stats-section.tsx").includes(`value: "${catalogCount}"`)) {
-    failures.push(`Homepage document count does not match the ${catalogCount}-item catalog.`)
-  }
+  if (!read("components/stats-section.tsx").includes("publishedContent")) failures.push("Homepage scope count must come from current publication approvals.")
 
   // Commercial prices now come from configured Stripe prices, not catalog suggestions.
   for (const file of ["components/pricing-section.tsx", "app/dashboard/billing/page.tsx", "app/help/page.tsx"]) {

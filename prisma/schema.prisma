@@ -599,6 +599,8 @@ model BillingSubscription {
 
 /// Immutable quote and identity snapshot; no guest email is resolved into a User.
 model CheckoutOrder {
+  funnelJourneyId String?
+  funnelJourney FunnelJourney? @relation(fields: [funnelJourneyId], references: [id], onDelete: SetNull)
   lastReconciledAt DateTime?
   lastReconcileError String?
   id String @id
@@ -757,4 +759,23 @@ model SupportTicket {
  @@index([status, createdAt])
  @@index([userId])
  @@index([expiresAt])
+}
+
+model FunnelJourney {
+ id String @id
+ userId String?
+ source String
+ createdAt DateTime @default(now())
+ expiresAt DateTime
+ events FunnelEvent[]
+ orders CheckoutOrder[]
+ @@index([userId])
+ @@index([expiresAt])
+}
+model FunnelEvent {
+ journeyId String
+ stage String
+ createdAt DateTime @default(now())
+ journey FunnelJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+ @@id([journeyId, stage])
 }

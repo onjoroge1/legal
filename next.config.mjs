@@ -1,3 +1,4 @@
+import { intentRedirects } from "./lib/intent-redirects.mjs"
 import { SITE_ORIGIN, searchIndexingEnabled } from "./lib/site-origin.mjs"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -67,7 +68,7 @@ const nextConfig = {
       },
     ]
 
-    return [{ source: "/:path*", has: [{ type: "host", value: "legallawdocs.com" }], destination: `${SITE_ORIGIN}/:path*`, permanent: true }, ...generated, ...categoryMoves]
+    return [{ source: "/:path*", has: [{ type: "host", value: "legallawdocs.com" }], destination: `${SITE_ORIGIN}/:path*`, permanent: true }, ...intentRedirects.map(([source, destination]) => ({ source, destination, permanent: true })), ...generated, ...categoryMoves]
   },
 }
 

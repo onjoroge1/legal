@@ -15,8 +15,8 @@ export const metadata = pageMetadata("/about", {
 const trustSignals = [
   {
     icon: FileText,
-    label: "52 document types",
-    description: "Guided workflows across seven common categories.",
+    label: "Reviewed launch scope",
+    description: "Availability is limited to the current reviewed collection.",
   },
   {
     icon: MapPin,

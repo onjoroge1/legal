@@ -1,3 +1,4 @@
+import { MeasurementChoice } from "@/components/measurement-choice"
 import { SITE_ORIGIN } from "@/lib/site-metadata"
 import React from "react"
 import type { Metadata, Viewport } from 'next'
@@ -33,6 +34,7 @@ export default function RootLayout({
           <SessionProvider>
             {children}
             <SitewideLegalNotice />
+            <MeasurementChoice />
             <Toaster />
           </SessionProvider>
         </QueryProvider>

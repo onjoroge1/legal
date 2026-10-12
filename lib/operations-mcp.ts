@@ -14,7 +14,7 @@ export function operationsServer() {
   }
   tool("get_release_status", "Deployment identity, expected migration and containment switches; does not infer CI or database migration success.", async () => ({
     revision: /^[a-f0-9]{40}$/.test(process.env.VERCEL_GIT_COMMIT_SHA ?? "") ? process.env.VERCEL_GIT_COMMIT_SHA : "unavailable",
-    expectedMigration: "20261017000000_support_inbox", appliedMigration: "unavailable", ciEvidence: "unavailable",
+    expectedMigration: "20261018000000_consent_funnel", appliedMigration: "unavailable", ciEvidence: "unavailable",
     flags: Object.fromEntries(flags.map(f => [f, isEmergencyFeatureEnabled(f)])),
   }))
   tool("get_usage_budget", "Reserved AI budget and live leases. Reservations are not provider-billed spend.", async () => {

@@ -1,3 +1,4 @@
+import { DirectoryPending } from "@/components/legal/directory-pending"
 import { canonicalUrl } from "@/lib/site-origin.mjs"
 import { pageMetadata } from "@/lib/site-metadata"
 import Link from "next/link"
@@ -136,6 +137,7 @@ function LawyerAvatar({
 }
 
 export default async function LawyersPage({ searchParams }: PageProps) {
+  if (process.env.ENABLE_REVIEWED_DIRECTORY !== "true") return <DirectoryPending />
   const params = await searchParams
   const q = params.q?.trim() ?? ""
   const practiceArea = params.practiceArea ?? ""

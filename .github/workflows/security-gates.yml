@@ -101,6 +101,9 @@ jobs:
       - name: Verify privacy lifecycle on PostgreSQL
         run: node scripts/check-privacy-lifecycle.mjs
 
+      - name: Verify consent funnel and privacy on PostgreSQL
+        run: node scripts/check-funnel-concurrency.mjs
+
       - name: Verify operational recovery on PostgreSQL
         run: node scripts/check-operations-concurrency.mjs
 

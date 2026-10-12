@@ -20,6 +20,10 @@
     {
       "path": "/api/cron/cleanup-support",
       "schedule": "45 7 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-measurement",
+      "schedule": "0 8 * * *"
     }
   ]
 }

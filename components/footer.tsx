@@ -3,20 +3,10 @@ import { Scale } from "lucide-react"
 
 const footerLinks = {
   Documents: [
-    { label: "Business Documents", href: "/documents/business" },
-    { label: "Employment Documents", href: "/documents/employment" },
-    { label: "Real Estate Documents", href: "/documents/real-estate" },
-    { label: "Estate Planning", href: "/documents/estate-planning" },
-    { label: "Legal Letters", href: "/documents/legal-letters" },
-    { label: "Financial Documents", href: "/documents/financial" },
-  ],
-  "Popular Templates": [
-    { label: "Non-Disclosure Agreement", href: "/documents/business/non-disclosure-agreement" },
-    { label: "LLC Operating Agreement", href: "/documents/business/llc-operating-agreement" },
-    { label: "Residential Lease Agreement", href: "/documents/real-estate/residential-lease-agreement" },
-    { label: "Power of Attorney", href: "/documents/estate-planning/power-of-attorney" },
-    { label: "Employment Contract", href: "/documents/employment/employment-contract" },
-    { label: "Partnership Agreement", href: "/documents/business/partnership-agreement" },
+    { label: "Reviewed collection", href: "/documents" },
+    { label: "Review status", href: "/review-status" },
+    { label: "Saved documents", href: "/dashboard/documents" },
+    { label: "Purchase recovery", href: "/recover-purchase" },
   ],
   Company: [
     { label: "About Us", href: "/about" },

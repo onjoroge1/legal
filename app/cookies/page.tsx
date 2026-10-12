@@ -15,6 +15,7 @@ export default function CookiesPage() {
     <div className="min-h-screen">
       <Header />
       <main>
+        <p className="mx-auto max-w-4xl px-4 py-6">Optional measurement is off until you allow it. The legallawdocs_measurement cookie identifies a random browser journey for 30 days. We record only a broad source category and successful flow stages, with no document text, email, URL query or full referrer in events. A checkout may temporarily link to that journey to confirm payment. Signed-in journeys participate in account export/deletion. Withdraw using the measurement controls to delete this journey and detach its orders. Expired journeys are removed by daily cleanup. Backups follow the privacy retention process.</p>
         <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8 lg:py-24">
           {/* Header */}
           <div className="mb-10 border-b border-border/40 pb-8">

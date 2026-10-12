@@ -33,7 +33,7 @@ const documents = documentCatalog.map((doc) => ({
   title: doc.title,
   category: doc.category,
   icon: doc.icon,
-  description: doc.description,
+  description: "Prepare an experimental draft for professional review.",
   popular: doc.popular,
   color: doc.color,
   slug: getDocumentPath(doc),
@@ -77,17 +77,18 @@ export default function TemplatesPage() {
             {hasActiveSubscription && (
               <Badge className="gap-1 border-accent/30 bg-accent/10 text-accent" variant="outline">
                 <Crown className="h-3 w-3" />
-                Unlimited Access
+                Active subscription
               </Badge>
             )}
           </div>
           <p className="text-muted-foreground">
             {hasActiveSubscription 
-              ? "Generate unlimited documents with your subscription"
-              : "Browse and generate legal documents from our collection of templates"}
+              ? "Drafting is subject to usage limits and review requirements"
+              : "Experimental drafts: these templates are not the reviewed launch collection"}
           </p>
         </div>
         <TemplateActions />
+        <Link href="/review-status" className="underline">Review status and limits</Link>
       </div>
 
       {/* Search Bar */}

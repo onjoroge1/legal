@@ -1,3 +1,4 @@
+import { DirectoryPending } from "@/components/legal/directory-pending"
 import { SITE_ORIGIN } from "@/lib/site-origin.mjs"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -57,6 +58,7 @@ async function getLawyer(slug: string): Promise<LawyerProfile | null> {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (process.env.ENABLE_REVIEWED_DIRECTORY !== "true") return { title: "Directory review pending", robots: { index: false, follow: true } }
   const { slug } = await params
   const lawyer = await getLawyer(slug)
 
@@ -139,6 +141,7 @@ function LawyerAvatar({
 }
 
 export default async function LawyerProfilePage({ params }: PageProps) {
+  if (process.env.ENABLE_REVIEWED_DIRECTORY !== "true") return <DirectoryPending />
   const { slug } = await params
   const lawyer = await getLawyer(slug)
 

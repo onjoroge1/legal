@@ -316,11 +316,7 @@ export default function TermsPage() {
                 <Li>
                   We are not a substitute for a licensed attorney. For legal advice tailored to
                   your specific circumstances, please consult a licensed attorney in your
-                  jurisdiction. You can find attorneys through our{" "}
-                  <Link href="/lawyers" className="text-primary underline underline-offset-4 hover:text-primary/80">
-                    attorney directory
-                  </Link>
-                  .
+                  jurisdiction. Your state bar association can help you locate licensed counsel.
                 </Li>
               </ul>
             </section>

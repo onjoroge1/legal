@@ -28,6 +28,7 @@ export async function requestErasure(userId: string) {
   await blockers(tx,userId)
   const row = await tx.privacyRequest.create({data:{id:randomUUID(),userId,eligibleAt:new Date(Date.now()+86400000)}})
   await tx.user.update({where:{id:userId},data:{privacyState:"pending",jwtVersion:{increment:1},activeSessions:null,resetToken:null,resetTokenExpiry:null,verificationToken:null,verificationTokenExpiry:null}})
+  await tx.funnelJourney.deleteMany({where:{OR:[{userId},{orders:{some:{ownerId:userId}}}]}})
   await tx.session.deleteMany({where:{userId}})
   return row
  })

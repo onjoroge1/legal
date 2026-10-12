@@ -1,3 +1,4 @@
+import { recordFunnel } from "@/lib/funnel"
 import { beginOperation, finishOperation } from "@/lib/operations-telemetry"
 import { reviewedScope } from "@/lib/reviewed-document-scopes"
 import { generateText } from "ai"
@@ -54,6 +55,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ cat
     const review = { issues, readyForExport: issues.length === 0, scopeKey, scopeEvidenceUrl: scope?.evidenceUrl ?? null, sourceSnapshot: ground.sources, checkedAt: new Date().toISOString(), intent: resolved.intent }
     const saved = await saveVersion(request, resolved, formData, cleaned.cleaned, review, draftId)
     const { cookie, ...identity } = saved
+    await recordFunnel(request, "generation")
     success = true
     return Response.json({ document: cleaned.cleaned, ...identity, review, citations: { verified: cleaned.verified, flagged: cleaned.flagged, list: cleaned.list }, legalDisclaimer: { version: LEGAL_DISCLAIMER_VERSION, copy: LEGAL_DISCLAIMER_PRIMARY_COPY } }, { headers: { "Cache-Control": "no-store", ...(cookie ? { "Set-Cookie": cookie } : {}) } })
   } catch (error) { return requestError(error) ?? Response.json({ error: "GENERATION_UNAVAILABLE" }, { status: 503 }) }

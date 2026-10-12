@@ -10,9 +10,10 @@ export async function exportCustomer(userId: string) {
   const subscriptions=await tx.billingSubscription.findMany({where:{ownerId:userId},take:5001,select:{id:true,status:true,paidThrough:true,trialEndsAt:true,cancelAtPeriodEnd:true}})
   const notifications=await tx.notification.findMany({where:{userId},take:5001,select:{id:true,type:true,title:true,message:true,createdAt:true,read:true}})
   const memberships=await tx.teamMember.findMany({where:{userId},take:5001,select:{teamId:true,role:true,joinedAt:true}})
+  const measurement=await tx.funnelJourney.findMany({where:{OR:[{userId},{orders:{some:{ownerId:userId}}}]},take:5001,select:{source:true,createdAt:true,expiresAt:true,events:{select:{stage:true,createdAt:true}}}})
   const support=await tx.supportTicket.findMany({where:{userId},take:5001,select:{id:true,topic:true,message:true,response:true,status:true,createdAt:true,expiresAt:true}})
   const legacy=await tx.$queryRaw`SELECT id,title,content,"createdAt" FROM "Document" WHERE "userId"=${userId} LIMIT 5001`
-  const data={support,profile:user,drafts,versions,documents,payments,subscriptions,notifications,memberships,legacy,avatarDownload:"/api/settings/avatar (use your profile image URL while signed in)",exceptions:"Provider-held records, backups, and shared/signature evidence require a scoped support review; authentication credentials and other users' account data are excluded."}
+  const data={measurement,support,profile:user,drafts,versions,documents,payments,subscriptions,notifications,memberships,legacy,avatarDownload:"/api/settings/avatar (use your profile image URL while signed in)",exceptions:"Provider-held records, backups, and shared/signature evidence require a scoped support review; authentication credentials and other users' account data are excluded."}
   for(const value of Object.values(data)) if(Array.isArray(value)&&value.length>5000) throw new RequestError(413,"EXPORT_REQUIRES_SUPPORT")
   return data
  },{isolationLevel:"RepeatableRead",timeout:20000})

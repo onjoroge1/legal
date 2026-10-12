@@ -10,7 +10,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 1000))
   }
   if (!ready) throw new Error('Production server failed to become ready')
-  for (const script of ['scripts/smoke-tests.mjs', 'scripts/check-seo-rendered.mjs']) {
+  for (const script of ['scripts/smoke-tests.mjs', 'scripts/check-seo-rendered.mjs', 'scripts/check-discovery.mjs']) {
     const child = spawn(process.execPath, [script], { stdio: 'inherit', env: process.env })
     const code = await new Promise(resolve => child.on('exit', resolve))
     if (code !== 0) process.exitCode = 1
